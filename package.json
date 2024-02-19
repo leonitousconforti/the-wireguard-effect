@@ -1,0 +1,74 @@
+{
+    "name": "the-wireguard-effect",
+    "version": "0.0.1-alpha.0",
+    "description": "Userspace wireguard api for nodejs built on wireguard-go with effect-ts",
+    "keywords": [
+        "wireguard",
+        "vpn"
+    ],
+    "homepage": "https://github.com/leonitousconforti/the-wireguard-effect",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/leonitousconforti/the-wireguard-effect.git"
+    },
+    "license": "MIT",
+    "author": "Leo Conforti <leo@leoconforti.us> (https://leoconforti.us)",
+    "type": "module",
+    "main": "dist/src/index.js",
+    "files": [
+        "dist/src",
+        "dist/cli",
+        "dist/package.json"
+    ],
+    "scripts": {
+        "build": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" heft test --clean --production",
+        "dev": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" heft test-watch --clean"
+    },
+    "devDependencies": {
+        "@actions/artifact": "2.1.1",
+        "@actions/core": "1.10.1",
+        "@effect/cli": "0.33.12",
+        "@effect/platform": "0.45.4",
+        "@effect/printer": "0.31.7",
+        "@effect/printer-ansi": "0.32.7",
+        "@effect/schema": "0.62.8",
+        "@effect/typeclass": "0.22.22",
+        "@rushstack/eslint-config": "3.6.4",
+        "@rushstack/heft": "0.64.7",
+        "@rushstack/heft-jest-plugin": "0.11.7",
+        "@rushstack/heft-lint-plugin": "0.3.7",
+        "@rushstack/heft-typescript-plugin": "0.3.7",
+        "@rushstack/heft-webpack5-plugin": "0.9.24",
+        "@types/heft-jest": "1.0.6",
+        "@types/node": "20.11.19",
+        "@types/uuid": "9.0.8",
+        "ci-info": "4.0.0",
+        "cross-env": "7.0.3",
+        "effect": "2.3.7",
+        "eslint": "8.56.0",
+        "eslint-config-prettier": "9.1.0",
+        "eslint-plugin-prettier": "5.1.3",
+        "eslint-plugin-unicorn": "51.0.1",
+        "fast-check": "3.15.1",
+        "prettier": "3.2.5",
+        "prettier-plugin-jsdoc": "1.3.0",
+        "prettier-plugin-packagejson": "2.4.11",
+        "tsx": "4.7.1",
+        "typescript": "5.3.3",
+        "uuid": "9.0.1",
+        "webpack": "5.82.1"
+    },
+    "peerDependencies": {
+        "@effect/schema": "0.62.8",
+        "effect": "2.3.7"
+    },
+    "engines": {
+        "node": ">=16"
+    },
+    "pnpm": {
+        "patchedDependencies": {
+            "@rushstack/heft-jest-plugin@0.11.7": "patches/@rushstack__heft-jest-plugin@0.11.7.patch",
+            "@rushstack/heft@0.64.7": "patches/@rushstack__heft@0.64.7.patch"
+        }
+    }
+}
