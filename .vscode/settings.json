@@ -1,3 +1,13 @@
 {
-    "cSpell.words": ["Conforti", "packagejson", "rushstack", "typeclass", "Userspace"]
+    "cSpell.words": [
+        "bufferutil",
+        "Conforti",
+        "execa",
+        "fwmark",
+        "packagejson",
+        "preshared",
+        "rushstack",
+        "typeclass",
+        "Userspace"
+    ]
 }

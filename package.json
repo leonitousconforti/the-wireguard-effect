@@ -1,7 +1,7 @@
 {
     "name": "the-wireguard-effect",
     "version": "0.0.1-alpha.0",
-    "description": "Userspace wireguard api for nodejs built on wireguard-go with effect-ts",
+    "description": "Cross platform userspace wireguard api implementation for nodejs built on wireguard-go with effect-ts",
     "keywords": [
         "wireguard",
         "vpn"
@@ -17,18 +17,20 @@
     "main": "dist/src/index.js",
     "files": [
         "dist/src",
-        "dist/cli",
         "dist/package.json"
     ],
     "scripts": {
         "build": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" heft test --clean --production",
         "dev": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" heft test-watch --clean"
     },
+    "dependencies": {
+        "execa": "^8.0.1"
+    },
     "devDependencies": {
         "@actions/artifact": "2.1.1",
         "@actions/core": "1.10.1",
-        "@effect/cli": "0.33.12",
         "@effect/platform": "0.45.4",
+        "@effect/platform-node": "0.44.5",
         "@effect/printer": "0.31.7",
         "@effect/printer-ansi": "0.32.7",
         "@effect/schema": "0.62.8",
@@ -59,6 +61,8 @@
         "webpack": "5.82.1"
     },
     "peerDependencies": {
+        "@effect/platform": "0.45.4",
+        "@effect/platform-node": "0.44.5",
         "@effect/schema": "0.62.8",
         "effect": "2.3.7"
     },
