@@ -1,7 +1,7 @@
 {
     "name": "the-wireguard-effect",
     "version": "0.0.1-alpha.0",
-    "description": "Cross platform userspace wireguard api implementation for nodejs built on wireguard-go with effect-ts",
+    "description": "Cross platform userspace wireguard api client for nodejs built on wireguard-go with effect-ts",
     "keywords": [
         "wireguard",
         "vpn"
