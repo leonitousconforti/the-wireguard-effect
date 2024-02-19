@@ -1,12 +1,12 @@
 {
     "Gen Function _": {
         "prefix": "gg",
-        "body": ["Effect.gen(function*(_: Effect.Adapter) {", "    $0", "})"],
-        "description": "Generator Function with a _ parameter"
+        "body": ["Effect.gen(function*(λ: Effect.Adapter) {", "    $0", "})"],
+        "description": "Generator Function with a λ parameter"
     },
     "Gen Yield _": {
         "prefix": "yy",
-        "body": ["yield* _($0)"],
-        "description": "Yield generator calling _()"
+        "body": ["yield* λ($0)"],
+        "description": "Yield generator calling λ()"
     }
 }
