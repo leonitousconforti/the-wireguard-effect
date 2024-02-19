@@ -1,6 +1,7 @@
 import * as Schema from "@effect/schema/Schema";
 import * as Data from "effect/Data";
 
+/** Generic wireguard interface config error. */
 export class WireguardError extends Data.TaggedError("WireguardError")<{ message: string }> {}
 
 /** @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/wgtypes/types.go#L236-L276 */
@@ -45,7 +46,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      * fwmark of the interface. The value may 0 in the case of a set operation,
      * in which case it indicates that the fwmark should be removed.
      */
-    FirewallMark: Schema.number,
+    FirewallMark: Schema.optional(Schema.number),
 
     /**
      * The value for this key should be a lowercase hex-encoded private key of
@@ -63,5 +64,5 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
     ReplacePeers: Schema.optional(Schema.boolean, { default: () => true }),
 
     /** List of peers to add. */
-    Peers: Schema.array(WireguardPeer),
+    Peers: Schema.nonEmptyArray(WireguardPeer),
 }) {}

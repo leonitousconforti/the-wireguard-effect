@@ -44,8 +44,8 @@ export const applyConfig = (
     interfaceName: string,
     config: WireguardSchemas.WireguardInterface
 ): Effect.Effect<void, WireguardSchemas.WireguardError | Cause.TimeoutException, never> =>
-    Effect.gen(function* (_: Effect.Adapter) {
-        const socket: net.Socket = yield* _(socketFromInterfaceName(interfaceName));
+    Effect.gen(function* (λ: Effect.Adapter) {
+        const socket: net.Socket = yield* λ(socketFromInterfaceName(interfaceName));
 
         if (config.PrivateKey) {
             socket.write(`private-key=${config.PrivateKey}\n`);

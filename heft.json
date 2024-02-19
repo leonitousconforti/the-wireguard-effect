@@ -2,9 +2,19 @@
     "$schema": "https://developer.microsoft.com/json-schemas/heft/v0/heft.schema.json",
     "phasesByName": {
         "build": {
-            "cleanFiles": [{ "sourcePath": "dist" }],
+            "cleanFiles": [{ "sourcePath": "dist" }, { "sourcePath": "build" }],
             "tasksByName": {
+                "wireguard-go": {
+                    "taskPlugin": {
+                        "pluginName": "run-script-plugin",
+                        "pluginPackage": "@rushstack/heft",
+                        "options": {
+                            "scriptPath": "./submodules/build.cjs"
+                        }
+                    }
+                },
                 "typescript": {
+                    "taskDependencies": ["wireguard-go"],
                     "taskPlugin": {
                         "pluginPackage": "@rushstack/heft-typescript-plugin"
                     }
@@ -22,6 +32,12 @@
                         "options": {
                             "configurationPath": "webpack.config.cjs"
                         }
+                    }
+                },
+                "api-docs": {
+                    "taskDependencies": ["bundle-cli"],
+                    "taskPlugin": {
+                        "pluginPackage": "@rushstack/heft-api-extractor-plugin"
                     }
                 }
             }

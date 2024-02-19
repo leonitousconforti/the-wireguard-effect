@@ -33,5 +33,5 @@
         "isolatedModules": true,
         "forceConsistentCasingInFileNames": true
     },
-    "include": ["bin/**/*.ts", "src/**/*.ts", "test/**/*.ts", "examples/**/*.ts", ".github/**/*.ts"]
+    "include": ["src/**/*.ts", "test/**/*.ts", "examples/**/*.ts", "actions/**/*.ts"]
 }
