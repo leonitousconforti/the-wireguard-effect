@@ -1,3 +1,3 @@
 # the-wireguard-effect
 
-Userspace wireguard api for nodejs built on wireguard-go with effect-ts
+Cross platform userspace wireguard api implementation for nodejs built on wireguard-go with effect-ts
