@@ -1,5 +1,6 @@
 import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
+import * as Predicate from "effect/Predicate";
 import * as net from "node:net";
 import * as WireguardSchemas from "./schema.js";
 
@@ -46,48 +47,29 @@ export const applyConfig = (
 ): Effect.Effect<void, WireguardSchemas.WireguardError | Cause.TimeoutException, never> =>
     Effect.gen(function* (λ: Effect.Adapter) {
         const socket: net.Socket = yield* λ(socketFromInterfaceName(interfaceName));
+        socket.write(`private-key=${config.PrivateKey}\n`);
+        socket.write(`listen-port=${config.ListenPort}\n`);
+        socket.write(`replace-peers=${config.ReplacePeers}\n`);
 
-        if (config.PrivateKey) {
-            socket.write(`private-key=${config.PrivateKey}\n`);
-        }
-
-        if (config.ListenPort) {
-            socket.write(`listen-port=${config.ListenPort}\n`);
-        }
-
-        if (config.FirewallMark) {
+        if (Predicate.isNotUndefined(config.FirewallMark)) {
             socket.write(`fwmark=${config.FirewallMark}\n`);
         }
 
-        if (config.ReplacePeers) {
-            socket.write(`replace-peers=${config.ReplacePeers}\n`);
-        }
-
         for (const peer of config.Peers) {
-            if (peer.PublicKey) {
-                socket.write(`public-key=${peer.PublicKey}\n`);
-            }
+            socket.write(`public-key=${peer.PublicKey}\n`);
+            socket.write(`endpoint=${peer.Endpoint}\n`);
+            socket.write("replace_allowed_ips=true\n");
 
-            if (peer.PresharedKey) {
+            if (Predicate.isNotUndefined(peer.PresharedKey)) {
                 socket.write(`preshared_key=${peer.PresharedKey}\n`);
             }
 
-            if (peer.Endpoint) {
-                socket.write(`endpoint=${peer.Endpoint}\n`);
-            }
-
             if (peer.PersistentKeepaliveInterval) {
-                socket.write(`persistent_keepalive_interval=${peer.PersistentKeepalive}\n`);
+                socket.write(`persistent_keepalive_interval=${peer.PersistentKeepaliveInterval}\n`);
             }
 
-            if (peer.ReplaceAllowedIPs) {
-                socket.write("replace_allowed_ips=true\n");
-            }
-
-            if (peer.AllowedIPs) {
-                for (const allowedIP of peer.AllowedIPs) {
-                    socket.write(`allowed-ips=${allowedIP}\n`);
-                }
+            for (const allowedIP of peer.AllowedIPs) {
+                socket.write(`allowed-ips=${allowedIP}\n`);
             }
         }
     });

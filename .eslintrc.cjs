@@ -15,9 +15,20 @@ module.exports = {
     parserOptions: { ecmaVersion: 2022, sourceType: "module" },
     rules: {
         "no-console": "warn",
+        "tsdoc/syntax": "off",
         "@typescript-eslint/typedef": "off",
         "unicorn/no-array-callback-reference": "off",
         "unicorn/no-array-method-this-argument": "off",
+        "@typescript-eslint/naming-convention": [
+            "error",
+            { format: null, selector: "parameter", filter: { regex: "^_", match: false } },
+        ],
     },
+    overrides: [
+        {
+            files: ["src/schema.ts"],
+            rules: { "@rushstack/security/no-unsafe-regexp": "off" },
+        },
+    ],
     ignorePatterns: ["dist/", ".eslintrc.cjs"],
 };

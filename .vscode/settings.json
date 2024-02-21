@@ -10,7 +10,9 @@
         "packagejson",
         "preshared",
         "rushstack",
+        "tsdoc",
         "typeclass",
-        "Userspace"
+        "Userspace",
+        "utun"
     ]
 }
