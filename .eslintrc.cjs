@@ -29,6 +29,10 @@ module.exports = {
             files: ["src/schema.ts"],
             rules: { "@rushstack/security/no-unsafe-regexp": "off" },
         },
+        {
+            files: ["src/index.ts"],
+            rules: { "@typescript-eslint/explicit-function-return-type": "off" },
+        },
     ],
     ignorePatterns: ["dist/", ".eslintrc.cjs"],
 };

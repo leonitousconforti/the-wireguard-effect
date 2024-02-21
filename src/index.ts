@@ -1,32 +1,38 @@
-import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
-import * as Scope from "effect/Scope";
 
 import * as WireguardResource from "./resource.js";
 import * as WireguardSchemas from "./schema.js";
 
 export * from "./schema.js";
 
-export const up = (
-    config: WireguardSchemas.WireguardInterface,
-    interfaceName: string | undefined = "wg0"
-): Effect.Effect<void, WireguardSchemas.WireguardError | Cause.TimeoutException, never> =>
+/**
+ * Starts a wireguard tunnel in the background (daemon mode). This tunnel will
+ * continue to run and serve traffic even after the nodejs process exits.
+ *
+ * @since 1.0.0
+ * @category Wireguard
+ */
+export const up = (config: WireguardSchemas.WireguardInterfaceConfig, interfaceName: string) =>
     WireguardResource.acquireBackground(interfaceName, config);
 
-export const down = (interfaceName: string | undefined = "wg0"): Effect.Effect<void> =>
-    WireguardResource.releaseBackground(interfaceName);
+/**
+ * Stops a wireguard tunnel that was started in the background (daemon mode).
+ * This can stop tunnels that are started in the foreground (child mode), but
+ * that is not the intended use case. Instead you should use `upScoped`.
+ *
+ * @since 1.0.0
+ * @category Wireguard
+ */
+export const down = (interfaceName: string) => WireguardResource.releaseBackground(interfaceName);
 
 /**
- * Runs the given wireguard interface configuration in a scoped environment;
- * acquiring a wireguard-go subprocess and applying the configuration then
- * releasing the subprocess when the scope is closed. If a interfaceName is not
- * provided, one will be chosen according to the operating system rules starting
- * at wg0.
+ * Starts a wireguard tunnel in the foreground (child mode). This tunnel will be
+ * gracefully shutdown once the scope is closed.
+ *
+ * @since 1.0.0
+ * @category Wireguard
  */
-export const upScoped = (
-    config: WireguardSchemas.WireguardInterface,
-    interfaceName: string | undefined = "wg0"
-): Effect.Effect<void, WireguardSchemas.WireguardError | Cause.TimeoutException, Scope.Scope> =>
+export const upScoped = (config: WireguardSchemas.WireguardInterfaceConfig, interfaceName: string) =>
     Effect.acquireRelease(
         WireguardResource.acquireForeground(interfaceName, config),
         WireguardResource.releaseForeground

@@ -4,46 +4,55 @@ import * as Predicate from "effect/Predicate";
 import * as net from "node:net";
 import * as WireguardSchemas from "./schema.js";
 
-const socketFromInterfaceName = (
+export const socketLocationForPlatform = (
     interfaceName: string
-): Effect.Effect<net.Socket, WireguardSchemas.WireguardError | Cause.TimeoutException, never> => {
-    const tryOpenSocket = (
-        path: string
-    ): Effect.Effect<net.Socket, WireguardSchemas.WireguardError | Cause.TimeoutException, never> =>
-        Effect.tryPromise({
-            try: () =>
-                new Promise<net.Socket>((resolve, reject) => {
-                    const socket: net.Socket = net.createConnection({ path });
-                    socket.on("connect", () => resolve(socket));
-                    socket.on("error", (error) => reject(error));
-                }),
-            catch: (error) => new WireguardSchemas.WireguardError({ message: String(error) }),
-        })
-            .pipe(Effect.timeout("5 seconds"))
-            .pipe(Effect.retry({ times: 3 }));
+): Effect.Effect<string, WireguardSchemas.WireguardError, never> =>
+    Effect.gen(function* (λ) {
+        switch (process.platform) {
+            case "linux": {
+                return `/var/run/wireguard/${interfaceName}.sock`;
+            }
+            case "darwin": {
+                return `/var/run/wireguard/${interfaceName}.sock`;
+            }
+            case "win32": {
+                return `\\\\.\\pipe\\wireguard\\${interfaceName}`;
+            }
+            default: {
+                return yield* λ(
+                    Effect.fail(
+                        new WireguardSchemas.WireguardError({
+                            message: `Unsupported platform ${process.platform}`,
+                        })
+                    )
+                );
+            }
+        }
+    });
 
-    switch (process.platform) {
-        case "linux": {
-            return tryOpenSocket(`/var/run/wireguard/${interfaceName}.sock`);
-        }
-        case "darwin": {
-            return tryOpenSocket(`/var/run/wireguard/${interfaceName}.sock`);
-        }
-        case "win32": {
-            return tryOpenSocket(`\\\\.\\pipe\\wireguard\\${interfaceName}`);
-        }
-        default: {
-            return Effect.fail(
-                new WireguardSchemas.WireguardError({ message: `Unsupported platform ${process.platform}` })
-            );
-        }
-    }
-};
+export const socketFromInterfaceName = (
+    interfaceName: string
+): Effect.Effect<net.Socket, WireguardSchemas.WireguardError | Cause.TimeoutException, never> =>
+    socketLocationForPlatform(interfaceName).pipe(
+        Effect.andThen((path) =>
+            Effect.tryPromise({
+                try: () =>
+                    new Promise<net.Socket>((resolve, reject) => {
+                        const socket: net.Socket = net.createConnection({ path });
+                        socket.on("connect", () => resolve(socket));
+                        socket.on("error", (error) => reject(error));
+                    }),
+                catch: (error) => new WireguardSchemas.WireguardError({ message: String(error) }),
+            })
+                .pipe(Effect.timeout("5 seconds"))
+                .pipe(Effect.retry({ times: 3 }))
+        )
+    );
 
 /** @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101 */
 export const applyConfig = (
     interfaceName: string,
-    config: WireguardSchemas.WireguardInterface
+    config: WireguardSchemas.WireguardInterfaceConfig
 ): Effect.Effect<void, WireguardSchemas.WireguardError | Cause.TimeoutException, never> =>
     Effect.gen(function* (λ: Effect.Adapter) {
         const socket: net.Socket = yield* λ(socketFromInterfaceName(interfaceName));
