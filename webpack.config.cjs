@@ -1,11 +1,23 @@
 const path = require("node:path");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = () => ({
     target: "node",
     mode: "production",
     resolve: { extensions: [".js", ".json"] },
-    externals: ["bufferutil", "utf-8-validate"],
-    entry: path.join(__dirname, "dist", "bin", "cli.js"),
-    module: { rules: [{ test: /\.node$/, loader: "node-loader" }] },
-    output: { path: path.join(__dirname, "dist", "cli"), filename: "cli.cjs" },
+    entry: {
+        expose: path.join(__dirname, "dist", "actions", "expose.js"),
+        connect: path.join(__dirname, "dist", "actions", "connect.js"),
+    },
+    output: {
+        path: path.join(__dirname, ".github", "actions", "workflow-level-service"),
+        filename: "[name]/[name].cjs",
+    },
+    optimization: {
+        minimizer: [
+            new TerserPlugin({
+                extractComments: false,
+            }),
+        ],
+    },
 });
