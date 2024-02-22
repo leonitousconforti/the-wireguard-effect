@@ -1,6 +1,6 @@
 # the-wireguard-effect
 
-Cross platform userspace wireguard api client for nodejs built on wireguard-go with effect-ts.
+Cross platform userspace wireguard api client for nodejs built on wireguard-go with effect-ts. The [Wireguard cross platform docs](https://www.wireguard.com/xplatform/) are a good place to look if you don't know what I am talking about.
 
 ## Motivation/ideation :bulb:
 
@@ -29,7 +29,3 @@ As of writing, there is only one version of the wireguard api. If this changes i
 ## Contributing and getting help :speech_balloon: :beers:
 
 Contributions, suggestions, and questions are welcome! I'll review prs and respond to issues/discussion here on GitHub but if you want more synchronous communication you can find me in the [effect discord](https://discord.gg/effect-ts) as @leonitous
-
-## Wireguard XPlatform docs
-
-https://www.wireguard.com/xplatform/
