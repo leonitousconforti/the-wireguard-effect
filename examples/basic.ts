@@ -1,19 +1,44 @@
+import * as net from "node:net";
+
 import * as PlatformNode from "@effect/platform-node";
 import * as Cause from "effect/Cause";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
+
 import * as Wireguard from "../src/index.js";
 
-const config = new Wireguard.WireguardInterface({
+const config = new Wireguard.WireguardInterfaceConfig({
+    ListenPort: 51_820,
     ReplacePeers: false,
+    PrivateKey: "",
+    Peers: [
+        new Wireguard.WireguardPeerConfig({
+            PublicKey: "public-key",
+            AllowedIPs: [],
+            Endpoint: "3.3.3.3:51820",
+            ReplaceAllowedIPs: true,
+        }),
+    ],
 });
+
+const ping = (endpoint: string): Effect.Effect<void, Cause.TimeoutException, never> =>
+    Effect.promise(
+        () =>
+            new Promise<net.Socket>((resolve, reject) => {
+                const socket: net.Socket = net.createConnection(endpoint);
+                socket.on("connect", () => resolve(socket));
+                socket.on("error", (error) => reject(error));
+            })
+    )
+        .pipe(Effect.timeout("5 seconds"))
+        .pipe(Effect.retry({ times: 3 }));
 
 export const main: Effect.Effect<void, Wireguard.WireguardError | Cause.TimeoutException, never> = Effect.gen(
     function* (λ) {
-        yield* λ(Wireguard.upScoped(config));
-        const peer1Endpoint: string = config.Peers[0].Endpoint;
+        yield* λ(Wireguard.upScoped("wg0", config));
+        const peer1Endpoint = config.Peers[0].Endpoint;
         yield* λ(Console.log(peer1Endpoint));
-        yield* λ(Effect.sleep("10 seconds"));
+        yield* λ(ping(peer1Endpoint));
     }
 ).pipe(Effect.scoped);
 
