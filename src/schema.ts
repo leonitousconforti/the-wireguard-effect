@@ -4,6 +4,11 @@ import * as Schema from "@effect/schema/Schema";
 import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
+import * as Option from "effect/Option";
+import * as ReadonlyArray from "effect/ReadonlyArray";
+import * as Tuple from "effect/Tuple";
+import * as ini from "ini";
+import * as crypto from "node:crypto";
 
 /**
  * An operating system port number.
@@ -16,8 +21,7 @@ export const Port = Function.pipe(
     Schema.between(0, 2 ** 16 - 1),
     Schema.identifier("Port"),
     Schema.description("A port number"),
-    Schema.message(() => "a port number"),
-    Schema.brand("Port")
+    Schema.message(() => "a port number")
 );
 
 /**
@@ -41,8 +45,7 @@ export const IPv4 = Function.pipe(
     Schema.pattern(IPv4AddressRegExp),
     Schema.identifier("IPv4"),
     Schema.description("An ipv4 address"),
-    Schema.message(() => "an ipv4 address"),
-    Schema.brand("IPv4")
+    Schema.message(() => "an ipv4 address")
 );
 
 /**
@@ -76,8 +79,7 @@ export const IPv6 = Function.pipe(
     Schema.pattern(IPv6AddressRegExp),
     Schema.identifier("IPv6"),
     Schema.description("An ipv6 address"),
-    Schema.message(() => "an ipv6 address"),
-    Schema.brand("IPv6")
+    Schema.message(() => "an ipv6 address")
 );
 
 /**
@@ -97,8 +99,7 @@ export const CidrBlock = Function.pipe(
     Schema.templateLiteral(Schema.union(IPv4, IPv6), Schema.literal("/"), Schema.number.pipe(Schema.between(0, 32))),
     Schema.identifier("CidrBlock"),
     Schema.description("A cidr block"),
-    Schema.message(() => "a cidr block"),
-    Schema.brand("CidrBlock")
+    Schema.message(() => "a cidr block")
 );
 
 /**
@@ -118,8 +119,7 @@ export const IPv4Endpoint = Function.pipe(
     Schema.templateLiteral(IPv4, Schema.literal(":"), Port),
     Schema.identifier("IPv4Endpoint"),
     Schema.description("An ipv4 wireguard endpoint"),
-    Schema.message(() => "an ipv4 wireguard endpoint"),
-    Schema.brand("IPv4Endpoint")
+    Schema.message(() => "an ipv4 wireguard endpoint")
 );
 
 /**
@@ -139,8 +139,7 @@ export const IPv6Endpoint = Function.pipe(
     Schema.templateLiteral(Schema.literal("["), IPv6, Schema.literal("]"), Schema.literal(":"), Port),
     Schema.identifier("IPv6Endpoint"),
     Schema.description("An ipv6 wireguard endpoint"),
-    Schema.message(() => "an ipv6 wireguard endpoint"),
-    Schema.brand("IPv6Endpoint")
+    Schema.message(() => "an ipv6 wireguard endpoint")
 );
 
 /**
@@ -159,8 +158,7 @@ export const Endpoint = Function.pipe(
     Schema.union(IPv4Endpoint, IPv6Endpoint),
     Schema.identifier("Endpoint"),
     Schema.description("A wireguard endpoint"),
-    Schema.message(() => "a wireguard endpoint"),
-    Schema.brand("Endpoint")
+    Schema.message(() => "a wireguard endpoint")
 );
 
 /**
@@ -172,17 +170,17 @@ export type Endpoint = Schema.Schema.To<typeof Endpoint>;
 /**
  * A wireguard key, which is a 32-byte hex-encoded string.
  *
+ * FIXME: This needs to be stricter
+ *
  * @since 1.0.0
  * @category Datatypes
  */
 export const WireguardKey = Function.pipe(
     Schema.string,
     Schema.nonEmpty(),
-    Schema.pattern(/^[\da-f]{64}$/),
     Schema.identifier("WireguardKey"),
     Schema.description("A wireguard key"),
-    Schema.message(() => "a wireguard key"),
-    Schema.brand("WireguardKey")
+    Schema.message(() => "a wireguard key")
 );
 
 /**
@@ -226,8 +224,7 @@ export const WireguardInterfaceName = Function.pipe(
     ),
     Schema.identifier("WireguardInterfaceName"),
     Schema.description("A wireguard interface name"),
-    Schema.message(() => "a wireguard interface name"),
-    Schema.brand("WireguardInterfaceName")
+    Schema.message(() => "a wireguard interface name")
 );
 
 /**
@@ -353,22 +350,28 @@ export class WireguardInterfaceConfig extends Schema.Class<WireguardInterfaceCon
         Effect.gen(function* (λ) {
             const fs = yield* λ(Platform.FileSystem.FileSystem);
             const config = yield* λ(fs.readFileString(file));
-            return yield* λ(Schema.decode(Schema.parseIni(WireguardInterfaceConfig))(config));
-        });
+            const sections = config.split("[Peer]");
 
-    /**
-     * Writes a wireguard interface configuration to an INI file.
-     *
-     * @since 1.0.0
-     * @category Constructors
-     */
-    public writeToFile = (
-        file: string
-    ): Effect.Effect<void, Platform.Error.PlatformError, Platform.FileSystem.FileSystem> =>
-        Effect.gen(function* (λ) {
-            const fs = yield* λ(Platform.FileSystem.FileSystem);
-            const config = yield* λ(Schema.encode(Schema.writeIni(WireguardInterfaceConfig))(this));
-            return yield* λ(fs.writeFileString(file, config));
+            const peers = yield* λ(
+                Function.pipe(
+                    sections,
+                    ReadonlyArray.filter((text) => text.startsWith("[Peer]")),
+                    ReadonlyArray.map(ini.parse),
+                    ReadonlyArray.map((peer) => Schema.decodeUnknown(Schema.parseJson(WireguardPeerConfig))(peer)),
+                    Effect.allWith({ concurrency: "unbounded", batching: "inherit" })
+                )
+            );
+
+            const makeConfig = Function.pipe(
+                sections,
+                ReadonlyArray.findFirst((text) => text.startsWith("[Interface]")),
+                Option.getOrThrowWith(() => new WireguardError({ message: "No [Interface] section found" })),
+                ini.parse,
+                (jsonConfig) => ({ ...jsonConfig["Interface"], peers }),
+                Schema.decodeUnknown(Schema.parseJson(WireguardInterfaceConfig))
+            );
+
+            return yield* λ(makeConfig);
         });
 
     /**
@@ -378,12 +381,123 @@ export class WireguardInterfaceConfig extends Schema.Class<WireguardInterfaceCon
      * @since 1.0.0
      * @category Constructors
      */
-    public static generateP2PConfig = (): Effect.Effect<
-        [WireguardInterfaceConfig, WireguardPeerConfig],
-        never,
-        never
-    > =>
-        Effect.gen(function* (λ) {
-            return [] as any;
+    public static generateP2PConfigs = (
+        aliceEndpoint: Endpoint,
+        bobEndpoint: Endpoint
+    ): [aliceConfig: WireguardInterfaceConfig, bobConfig: WireguardInterfaceConfig] => {
+        const hubEndpoint = aliceEndpoint;
+        const spokeEndpoints = ReadonlyArray.make(bobEndpoint);
+        const [aliceConfig, [bobConfig]] = WireguardInterfaceConfig.generateHubSpokeConfigs(
+            hubEndpoint,
+            spokeEndpoints
+        );
+        return Tuple.make(aliceConfig, bobConfig);
+    };
+
+    /**
+     * Generates a collection of wireguard configurations for a star network
+     * with a single central node and many peers all connected it.
+     *
+     * @since 1.0.0
+     * @category Constructors
+     */
+    public static generateHubSpokeConfigs = (
+        hubEndpoint: Endpoint,
+        spokeEndpoints: ReadonlyArray.NonEmptyReadonlyArray<Endpoint>
+    ): [
+        hubConfig: WireguardInterfaceConfig,
+        spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardInterfaceConfig>,
+    ] => {
+        const hubIp = `${hubEndpoint}/32` as const;
+        const spokeIPs = ReadonlyArray.map(spokeEndpoints, (endpoint) => `${endpoint}/32` as const);
+        const hubKeys = WireguardInterfaceConfig.generateKeyPair();
+
+        const a = hubEndpoint.split(":");
+
+        // This hub peer config will be added to all the spoke interface configs
+        const hubPeerConfig = new WireguardPeerConfig({
+            Endpoint: hubEndpoint,
+            AllowedIPs: spokeIPs,
+            PublicKey: hubKeys.publicKey,
+            ReplaceAllowedIPs: true,
         });
+
+        // All these spoke peer configs will be added to the hub interface config
+        const spokePeerConfigs = ReadonlyArray.map(spokeEndpoints, (endpoint) => {
+            const keys = WireguardInterfaceConfig.generateKeyPair();
+            const peerConfig = new WireguardPeerConfig({
+                Endpoint: endpoint,
+                AllowedIPs: [hubIp],
+                PublicKey: keys.publicKey,
+                ReplaceAllowedIPs: true,
+            });
+            return Tuple.make(keys.privateKey, peerConfig);
+        });
+
+        // The hub interface config will have all the spoke peer configs
+        const hubConfig = new WireguardInterfaceConfig({
+            ListenPort: 51_820,
+            ReplacePeers: true,
+            PrivateKey: hubKeys.privateKey,
+            Peers: ReadonlyArray.map(spokePeerConfigs, Tuple.getSecond),
+        });
+
+        // Each spoke interface config will have the hub peer config
+        const spokeConfigs = ReadonlyArray.map(spokePeerConfigs, ([privateKey]) => {
+            return new WireguardInterfaceConfig({
+                ListenPort: 51_820,
+                ReplacePeers: true,
+                PrivateKey: privateKey,
+                Peers: [hubPeerConfig],
+            });
+        });
+
+        return Tuple.make(hubConfig, spokeConfigs);
+    };
+
+    /**
+     * Generates a wireguard public private key pair.
+     *
+     * @since 1.0.0
+     * @category Constructors
+     */
+    public static generateKeyPair = (): { privateKey: WireguardKey; publicKey: WireguardKey } => {
+        const keys = crypto.generateKeyPairSync("x25519", {
+            publicKeyEncoding: { format: "der", type: "spki" },
+            privateKeyEncoding: { format: "der", type: "pkcs8" },
+        });
+        return {
+            publicKey: keys.publicKey.subarray(12).toString("base64"),
+            privateKey: keys.privateKey.subarray(16).toString("base64"),
+        };
+    };
+
+    /**
+     * Writes a wireguard interface configuration to an INI file.
+     *
+     * @since 1.0.0
+     * @category Constructors
+     */
+    public writeToFile = (
+        file: string
+    ): Effect.Effect<void, ParseResult.ParseError | Platform.Error.PlatformError, Platform.FileSystem.FileSystem> => {
+        const self = this;
+        return Effect.gen(function* (λ) {
+            const fs = yield* λ(Platform.FileSystem.FileSystem);
+            const config = yield* λ(Schema.encode(Schema.parseJson(WireguardInterfaceConfig))(self));
+            return yield* λ(fs.writeFileString(file, config));
+        });
+    };
+
+    /**
+     * Generates a QR code for the wireguard interface configuration.
+     *
+     * TODO: Implement this
+     *
+     * @since 1.0.0
+     * @category Constructors
+     */
+    public generateQRCode = (): string => {
+        return "";
+    };
 }
