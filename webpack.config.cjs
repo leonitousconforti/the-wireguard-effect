@@ -11,7 +11,7 @@ module.exports = () => ({
     },
     output: {
         path: path.join(__dirname, ".github", "actions", "workflow-level-service"),
-        filename: "[name]/[name].cjs",
+        filename: `[name]${path.sep}[name].cjs`,
     },
     optimization: {
         minimizer: [
