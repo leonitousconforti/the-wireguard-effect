@@ -1,9 +1,8 @@
 import * as Effect from "effect/Effect";
-
 import * as WireguardResource from "./resource.js";
 import * as WireguardSchemas from "./schema.js";
 
-export * from "./schema.js";
+export { WireguardError, WireguardInterfaceConfig, WireguardPeerConfig } from "./schema.js";
 
 /**
  * Starts a wireguard tunnel in the background (daemon mode). This tunnel will
@@ -12,7 +11,7 @@ export * from "./schema.js";
  * @since 1.0.0
  * @category Wireguard
  */
-export const up = (config: WireguardSchemas.WireguardInterfaceConfig, interfaceName: string) =>
+export const up = (interfaceName: string, config: WireguardSchemas.WireguardInterfaceConfig) =>
     WireguardResource.acquireBackground(interfaceName, config);
 
 /**
@@ -32,7 +31,7 @@ export const down = (interfaceName: string) => WireguardResource.releaseBackgrou
  * @since 1.0.0
  * @category Wireguard
  */
-export const upScoped = (config: WireguardSchemas.WireguardInterfaceConfig, interfaceName: string) =>
+export const upScoped = (interfaceName: string, config: WireguardSchemas.WireguardInterfaceConfig) =>
     Effect.acquireRelease(
         WireguardResource.acquireForeground(interfaceName, config),
         WireguardResource.releaseForeground

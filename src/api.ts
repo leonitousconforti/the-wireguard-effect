@@ -4,6 +4,10 @@ import * as Predicate from "effect/Predicate";
 import * as net from "node:net";
 import * as WireguardSchemas from "./schema.js";
 
+/**
+ * @since 1.0.0
+ * @category API
+ */
 export const socketLocationForPlatform = (
     interfaceName: string
 ): Effect.Effect<string, WireguardSchemas.WireguardError, never> =>
@@ -30,6 +34,10 @@ export const socketLocationForPlatform = (
         }
     });
 
+/**
+ * @since 1.0.0
+ * @category API
+ */
 export const socketFromInterfaceName = (
     interfaceName: string
 ): Effect.Effect<net.Socket, WireguardSchemas.WireguardError | Cause.TimeoutException, never> =>
@@ -49,7 +57,11 @@ export const socketFromInterfaceName = (
         )
     );
 
-/** @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101 */
+/**
+ * @since 1.0.0
+ * @category API
+ * @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101
+ */
 export const applyConfig = (
     interfaceName: string,
     config: WireguardSchemas.WireguardInterfaceConfig
