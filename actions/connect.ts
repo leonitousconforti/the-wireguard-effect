@@ -1,6 +1,7 @@
 import * as GithubCore from "@actions/core";
 import * as Platform from "@effect/platform";
 import * as PlatformNode from "@effect/platform-node";
+import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as ConfigError from "effect/ConfigError";
 import * as Effect from "effect/Effect";
@@ -9,6 +10,7 @@ import * as Schedule from "effect/Schedule";
 import * as dgram from "node:dgram";
 import * as stun from "stun";
 import * as uuid from "uuid";
+import * as Wireguard from "../src/index.js";
 import * as helpers from "./helpers.js";
 
 const client_identifier = uuid.v4();
@@ -75,22 +77,10 @@ const waitForResponse = Effect.gen(function* (λ) {
         const data = yield* λ(helpers.downloadSingleFileArtifact(connectionResponse.id, connectionResponse.name));
         yield* λ(helpers.deleteArtifact(connectionResponse.name));
         GithubCore.info(data);
-        const parsed = data.match(/AllowedIPs = (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\/\d{1,3}/);
-        if (!parsed) {
-            return yield* λ(Effect.fail(new Error("Invalid connection response artifact contents")));
-        }
-        if (parsed[1]) {
-            GithubCore.info(parsed[1]);
-            GithubCore.setOutput("service-address", parsed[1]);
-            const a = wireguard.parseConfigString(data);
-            const config = new wireguard.WgConfig(a);
-            yield* λ(Effect.promise(() => config.writeToFile(`./wg${service_identifier}.conf`)));
-            b();
-            yield* λ(Effect.promise(() => config.up(`./wg${service_identifier}.conf`)));
-            return;
-        } else {
-            yield* λ(Effect.fail(new Error("Invalid connection response artifact contents")));
-        }
+        GithubCore.setOutput("service-address", data);
+        const config = yield* λ(Schema.decode(Schema.parseJson(Wireguard.WireguardInterfaceConfig))(data));
+        b();
+        yield* λ(Wireguard.up("wg0", config));
     }
 
     // Still waiting for a connection response
