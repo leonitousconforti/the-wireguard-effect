@@ -24,7 +24,8 @@
         "dev": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" heft test-watch --clean"
     },
     "dependencies": {
-        "execa": "^8.0.1"
+        "execa": "^8.0.1",
+        "ini": "^4.1.1"
     },
     "devDependencies": {
         "@actions/artifact": "2.1.1",
@@ -35,6 +36,8 @@
         "@effect/printer-ansi": "0.32.7",
         "@effect/schema": "0.62.8",
         "@effect/typeclass": "0.22.22",
+        "@protobuf-ts/runtime": "2.9.3",
+        "@protobuf-ts/runtime-rpc": "2.9.3",
         "@rushstack/eslint-config": "3.6.4",
         "@rushstack/heft": "0.64.7",
         "@rushstack/heft-api-extractor-plugin": "0.3.7",
@@ -43,6 +46,7 @@
         "@rushstack/heft-typescript-plugin": "0.3.7",
         "@rushstack/heft-webpack5-plugin": "0.9.24",
         "@types/heft-jest": "1.0.6",
+        "@types/ini": "4.1.0",
         "@types/node": "20.11.19",
         "@types/uuid": "9.0.8",
         "cross-env": "7.0.3",
@@ -55,6 +59,8 @@
         "prettier": "3.2.5",
         "prettier-plugin-jsdoc": "1.3.0",
         "prettier-plugin-packagejson": "2.4.11",
+        "stun": "2.1.0",
+        "terser-webpack-plugin": "5.3.10",
         "typescript": "5.3.3",
         "uuid": "9.0.1",
         "webpack": "5.82.1"
