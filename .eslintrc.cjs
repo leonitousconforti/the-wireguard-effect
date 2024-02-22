@@ -27,11 +27,19 @@ module.exports = {
     overrides: [
         {
             files: ["src/schema.ts"],
-            rules: { "@rushstack/security/no-unsafe-regexp": "off" },
+            rules: {
+                "dot-notation": "off",
+                "unicorn/no-this-assignment": "off",
+                "@rushstack/security/no-unsafe-regexp": "off",
+            },
         },
         {
             files: ["src/index.ts"],
             rules: { "@typescript-eslint/explicit-function-return-type": "off" },
+        },
+        {
+            files: ["examples/**/*.ts"],
+            rules: { "no-console": "off" },
         },
     ],
     ignorePatterns: ["dist/", ".eslintrc.cjs"],
