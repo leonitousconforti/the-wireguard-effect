@@ -62,6 +62,8 @@ jobs:
     needs: [update-pnpm-caches]
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: 'true'
       - uses: ./.github/actions/common-setup
       - run: pnpm build
 
