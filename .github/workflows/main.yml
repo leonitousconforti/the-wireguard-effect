@@ -62,7 +62,7 @@ jobs:
     needs: [update-pnpm-caches]
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/common-setup/action.yml
+      - uses: ./.github/actions/common-setup
       - run: pnpm build
 
   linux-service1:
