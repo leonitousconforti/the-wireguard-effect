@@ -30,8 +30,8 @@
     "devDependencies": {
         "@actions/artifact": "2.1.1",
         "@actions/core": "1.10.1",
-        "@effect/platform": "0.46.0",
-        "@effect/platform-node": "0.44.8",
+        "@effect/platform": "0.46.1",
+        "@effect/platform-node": "0.44.9",
         "@effect/printer": "0.31.9",
         "@effect/printer-ansi": "0.32.9",
         "@effect/schema": "0.63.0",
@@ -39,15 +39,15 @@
         "@protobuf-ts/runtime": "2.9.3",
         "@protobuf-ts/runtime-rpc": "2.9.3",
         "@rushstack/eslint-config": "3.6.4",
-        "@rushstack/heft": "0.65.3",
-        "@rushstack/heft-api-extractor-plugin": "0.3.12",
-        "@rushstack/heft-jest-plugin": "0.11.12",
-        "@rushstack/heft-lint-plugin": "0.3.12",
-        "@rushstack/heft-typescript-plugin": "0.3.12",
-        "@rushstack/heft-webpack5-plugin": "0.9.29",
+        "@rushstack/heft": "0.65.4",
+        "@rushstack/heft-api-extractor-plugin": "0.3.13",
+        "@rushstack/heft-jest-plugin": "0.11.14",
+        "@rushstack/heft-lint-plugin": "0.3.13",
+        "@rushstack/heft-typescript-plugin": "0.3.13",
+        "@rushstack/heft-webpack5-plugin": "0.9.30",
         "@types/heft-jest": "1.0.6",
         "@types/ini": "4.1.0",
-        "@types/node": "20.11.19",
+        "@types/node": "20.11.20",
         "@types/uuid": "9.0.8",
         "cross-env": "7.0.3",
         "effect": "2.4.0",
@@ -58,7 +58,7 @@
         "fast-check": "3.15.1",
         "prettier": "3.2.5",
         "prettier-plugin-jsdoc": "1.3.0",
-        "prettier-plugin-packagejson": "2.4.11",
+        "prettier-plugin-packagejson": "2.4.12",
         "stun": "2.1.0",
         "terser-webpack-plugin": "5.3.10",
         "typescript": "5.3.3",
@@ -76,8 +76,8 @@
     },
     "pnpm": {
         "patchedDependencies": {
-            "@rushstack/heft-jest-plugin@0.11.12": "patches/@rushstack__heft-jest-plugin@0.11.12.patch",
-            "@rushstack/heft@0.65.3": "patches/@rushstack__heft@0.65.3.patch"
+            "@rushstack/heft-jest-plugin@0.11.14": "patches/@rushstack__heft-jest-plugin@0.11.14.patch",
+            "@rushstack/heft@0.65.4": "patches/@rushstack__heft@0.65.4.patch"
         }
     }
 }
