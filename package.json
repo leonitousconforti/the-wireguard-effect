@@ -30,7 +30,7 @@
     "devDependencies": {
         "@actions/artifact": "2.1.1",
         "@actions/core": "1.10.1",
-        "@effect/platform": "0.46.0",
+        "@effect/platform": "0.46.1",
         "@effect/platform-node": "0.44.8",
         "@effect/printer": "0.31.9",
         "@effect/printer-ansi": "0.32.9",
