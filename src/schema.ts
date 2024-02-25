@@ -10,6 +10,15 @@ import * as Tuple from "effect/Tuple";
 import * as ini from "ini";
 import * as crypto from "node:crypto";
 
+/** @see https://stackoverflow.com/questions/70831365/can-i-slice-literal-type-in-typescript */
+type Split<S extends string, D extends string> = string extends S
+    ? string[]
+    : S extends ""
+      ? []
+      : S extends `${infer T}${D}${infer U}`
+        ? [T, ...Split<U, D>]
+        : [S];
+
 /**
  * An operating system port number.
  *
@@ -89,6 +98,26 @@ export const IPv6 = Function.pipe(
 export type IPv6 = Schema.Schema.To<typeof IPv6>;
 
 /**
+ * A cidr mask, which is a number between 0 and 32.
+ *
+ * @since 1.0.0
+ * @category Datatypes
+ */
+export const CidrMask = Function.pipe(
+    Schema.number,
+    Schema.between(0, 32),
+    Schema.identifier("CidrMask"),
+    Schema.description("A cidr mask"),
+    Schema.message(() => "a cidr mask")
+);
+
+/**
+ * @since 1.0.0
+ * @category Brands
+ */
+export type CidrMask = Schema.Schema.To<typeof CidrMask>;
+
+/**
  * A cidr block, which is an IP address followed by a slash and a number between
  * 0 and 32.
  *
@@ -96,7 +125,18 @@ export type IPv6 = Schema.Schema.To<typeof IPv6>;
  * @category Datatypes
  */
 export const CidrBlock = Function.pipe(
-    Schema.templateLiteral(Schema.union(IPv4, IPv6), Schema.literal("/"), Schema.number.pipe(Schema.between(0, 32))),
+    Schema.transformOrFail(
+        Schema.templateLiteral(Schema.string, Schema.literal("/"), Schema.number),
+        Schema.templateLiteral(Schema.string, Schema.literal("/"), Schema.number),
+        (s, _options, ast) =>
+            Effect.gen(function* (λ: Effect.Adapter) {
+                const [ip, mask] = s.split("/") as Split<typeof s, "/">;
+                yield* λ(Schema.decode(Schema.union(IPv4, IPv6))(ip));
+                yield* λ(Schema.decode(CidrMask)(Number.parseInt(mask)));
+                return s;
+            }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, s, error.message))),
+        (s) => Effect.succeed(s)
+    ),
     Schema.identifier("CidrBlock"),
     Schema.description("A cidr block"),
     Schema.message(() => "a cidr block")
@@ -116,7 +156,18 @@ export type CidrBlock = Schema.Schema.To<typeof CidrBlock>;
  * @category Datatypes
  */
 export const IPv4Endpoint = Function.pipe(
-    Schema.templateLiteral(IPv4, Schema.literal(":"), Port),
+    Schema.transformOrFail(
+        Schema.templateLiteral(Schema.string, Schema.literal(":"), Schema.number),
+        Schema.templateLiteral(Schema.string, Schema.literal(":"), Schema.number),
+        (s, _options, ast) =>
+            Effect.gen(function* (λ: Effect.Adapter) {
+                const [ip, port] = s.split(":") as Split<typeof s, ":">;
+                yield* λ(Schema.decode(IPv4)(ip));
+                yield* λ(Schema.decode(Port)(Number.parseInt(port)));
+                return s;
+            }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, s, error.message))),
+        (s) => Effect.succeed(s)
+    ),
     Schema.identifier("IPv4Endpoint"),
     Schema.description("An ipv4 wireguard endpoint"),
     Schema.message(() => "an ipv4 wireguard endpoint")
@@ -136,7 +187,30 @@ export type IPv4Endpoint = Schema.Schema.To<typeof IPv4Endpoint>;
  * @category Datatypes
  */
 export const IPv6Endpoint = Function.pipe(
-    Schema.templateLiteral(Schema.literal("["), IPv6, Schema.literal("]"), Schema.literal(":"), Port),
+    Schema.transformOrFail(
+        Schema.templateLiteral(
+            Schema.literal("["),
+            Schema.string,
+            Schema.literal("]"),
+            Schema.literal(":"),
+            Schema.number
+        ),
+        Schema.templateLiteral(
+            Schema.literal("["),
+            Schema.string,
+            Schema.literal("]"),
+            Schema.literal(":"),
+            Schema.number
+        ),
+        (s, _options, ast) =>
+            Effect.gen(function* (λ: Effect.Adapter) {
+                const [ip, port] = s.split("]") as Split<typeof s, "]:">;
+                yield* λ(Schema.decode(IPv6)(ip.slice(1)));
+                yield* λ(Schema.decode(Port)(Number.parseInt(port)));
+                return s;
+            }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, s, error.message))),
+        (s) => Effect.succeed(s)
+    ),
     Schema.identifier("IPv6Endpoint"),
     Schema.description("An ipv6 wireguard endpoint"),
     Schema.message(() => "an ipv6 wireguard endpoint")
@@ -168,16 +242,15 @@ export const Endpoint = Function.pipe(
 export type Endpoint = Schema.Schema.To<typeof Endpoint>;
 
 /**
- * A wireguard key, which is a 32-byte hex-encoded string.
- *
- * FIXME: This needs to be stricter
+ * A wireguard key, which is a 44 character base64 string.
  *
  * @since 1.0.0
  * @category Datatypes
+ * @see https://lists.zx2c4.com/pipermail/wireguard/2020-December/006222.html
  */
 export const WireguardKey = Function.pipe(
     Schema.string,
-    Schema.nonEmpty(),
+    Schema.pattern(/^[\d+/A-Za-z]{42}[048AEIMQUYcgkosw]=$/),
     Schema.identifier("WireguardKey"),
     Schema.description("A wireguard key"),
     Schema.message(() => "a wireguard key")
@@ -408,11 +481,17 @@ export class WireguardInterfaceConfig extends Schema.Class<WireguardInterfaceCon
         hubConfig: WireguardInterfaceConfig,
         spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardInterfaceConfig>,
     ] => {
-        const hubIp = `${hubEndpoint}/32` as const;
-        const spokeIPs = ReadonlyArray.map(spokeEndpoints, (endpoint) => `${endpoint}/32` as const);
+        const split = hubEndpoint.split(":") as Split<Endpoint, ":">;
+        const hubPort = Number.parseInt(split[1]);
+        const hubIp = `${split[0]}/32` as const;
         const hubKeys = WireguardInterfaceConfig.generateKeyPair();
 
-        const a = hubEndpoint.split(":");
+        const spokeIPs = Function.pipe(
+            spokeEndpoints,
+            ReadonlyArray.map((endpoint) => endpoint.split(":") as Split<Endpoint, ":">),
+            ReadonlyArray.map((split) => split[0]),
+            ReadonlyArray.map((ip) => `${ip}/32` as const)
+        );
 
         // This hub peer config will be added to all the spoke interface configs
         const hubPeerConfig = new WireguardPeerConfig({
@@ -431,21 +510,24 @@ export class WireguardInterfaceConfig extends Schema.Class<WireguardInterfaceCon
                 PublicKey: keys.publicKey,
                 ReplaceAllowedIPs: true,
             });
-            return Tuple.make(keys.privateKey, peerConfig);
+            return Tuple.make(
+                Tuple.make(keys.privateKey, Number.parseInt((endpoint.split(":") as Split<Endpoint, ":">)[1])),
+                peerConfig
+            );
         });
 
         // The hub interface config will have all the spoke peer configs
         const hubConfig = new WireguardInterfaceConfig({
-            ListenPort: 51_820,
+            ListenPort: hubPort,
             ReplacePeers: true,
             PrivateKey: hubKeys.privateKey,
             Peers: ReadonlyArray.map(spokePeerConfigs, Tuple.getSecond),
         });
 
         // Each spoke interface config will have the hub peer config
-        const spokeConfigs = ReadonlyArray.map(spokePeerConfigs, ([privateKey]) => {
+        const spokeConfigs = ReadonlyArray.map(spokePeerConfigs, ([[privateKey, port]]) => {
             return new WireguardInterfaceConfig({
-                ListenPort: 51_820,
+                ListenPort: port,
                 ReplacePeers: true,
                 PrivateKey: privateKey,
                 Peers: [hubPeerConfig],
@@ -487,17 +569,5 @@ export class WireguardInterfaceConfig extends Schema.Class<WireguardInterfaceCon
             const config = yield* λ(Schema.encode(Schema.parseJson(WireguardInterfaceConfig))(self));
             return yield* λ(fs.writeFileString(file, config));
         });
-    };
-
-    /**
-     * Generates a QR code for the wireguard interface configuration.
-     *
-     * TODO: Implement this
-     *
-     * @since 1.0.0
-     * @category Constructors
-     */
-    public generateQRCode = (): string => {
-        return "";
     };
 }
