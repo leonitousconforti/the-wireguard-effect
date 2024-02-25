@@ -612,10 +612,12 @@ export class WireguardInterfaceConfig extends Schema.Class<WireguardInterfaceCon
                                 Partial<Schema.Schema.From<WireguardInterfaceConfig>>
                             >;
                             delete peerData["AllowedIPs"];
-                            const allowedIps = peer.AllowedIPs.join(", ");
+                            const allowedIps = yield* λ(
+                                Effect.all(ReadonlyArray.map(peer.AllowedIPs, (x) => Schema.encode(CidrBlock)(x)))
+                            );
                             return (
                                 ini.encode(peerData, { bracketedArray: false, section: "Peer" }) +
-                                `AllowedIPs = ${allowedIps}`
+                                `AllowedIPs = ${allowedIps.join(", ")}`
                             );
                         })
                     )
