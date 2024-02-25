@@ -11,9 +11,9 @@ describe("Wireguard tests", () => {
                 ["10.0.0.2:23456", "10.0.0.3:4598"]
             );
 
-            yield* λ(hubConfig.writeToFile("docs/hub.conf"));
+            yield* λ(hubConfig.writeToFile("test/hub.conf"));
             for (const [index, spokeConfig] of spokeConfigs.entries()) {
-                yield* λ(spokeConfig.writeToFile(`docs/spoke${index}.conf`));
+                yield* λ(spokeConfig.writeToFile(`test/spoke${index}.conf`));
             }
         })
             .pipe(Effect.provide(Platform.NodeContext.layer))
