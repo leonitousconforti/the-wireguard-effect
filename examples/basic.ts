@@ -15,7 +15,7 @@ const config = new Wireguard.WireguardInterfaceConfig({
         new Wireguard.WireguardPeerConfig({
             PublicKey: "public-key",
             AllowedIPs: [],
-            Endpoint: "3.3.3.3:51820",
+            Endpoint: { ip: "3.3.3.3", port: 51_820 },
             ReplaceAllowedIPs: true,
         }),
     ],
@@ -38,7 +38,7 @@ export const main: Effect.Effect<void, Wireguard.WireguardError | Cause.TimeoutE
         yield* λ(Wireguard.upScoped("wg0", config));
         const peer1Endpoint = config.Peers[0].Endpoint;
         yield* λ(Console.log(peer1Endpoint));
-        yield* λ(ping(peer1Endpoint));
+        yield* λ(ping(`${peer1Endpoint.ip}:${peer1Endpoint.port}`));
     }
 ).pipe(Effect.scoped);
 

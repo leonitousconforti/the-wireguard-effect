@@ -1,3 +1,8 @@
+import * as PlatformNode from "@effect/platform-node";
+import * as ParseResult from "@effect/schema/ParseResult";
+import * as Console from "effect/Console";
+import * as Effect from "effect/Effect";
+
 import * as Wireguard from "../src/index.js";
 
 // Alice will be the hub
@@ -9,13 +14,19 @@ const charlieEndpoint = "10.0.3.1:51820";
 const daveEndpoint = "10.0.4.1:51820";
 const eveEndpoint = "10.0.5.1:51820";
 
-// Distribute these configs somehow
-const [hubConfig, spokeConfigs] = Wireguard.WireguardInterfaceConfig.generateHubSpokeConfigs(aliceEndpoint, [
-    bobEndpoint,
-    charlieEndpoint,
-    daveEndpoint,
-    eveEndpoint,
-]);
+const main: Effect.Effect<void, ParseResult.ParseError, never> = Effect.gen(function* (λ) {
+    // Distribute these configs somehow
+    const [hubConfig, spokeConfigs] = yield* λ(
+        Wireguard.WireguardInterfaceConfig.generateHubSpokeConfigs(aliceEndpoint, [
+            bobEndpoint,
+            charlieEndpoint,
+            daveEndpoint,
+            eveEndpoint,
+        ])
+    );
 
-console.log(hubConfig);
-console.log(spokeConfigs);
+    yield* λ(Console.log(hubConfig));
+    yield* λ(Console.log(spokeConfigs));
+});
+
+Effect.suspend(() => main).pipe(Effect.provide(PlatformNode.NodeContext.layer), PlatformNode.NodeRuntime.runMain);

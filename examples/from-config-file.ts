@@ -28,9 +28,9 @@ export const main: Effect.Effect<
 > = Effect.gen(function* (λ) {
     const config = yield* λ(Wireguard.WireguardInterfaceConfig.fromIniConfigFile("examples/wireguard-config.conf"));
     yield* λ(Wireguard.upScoped("wg0", config));
-    const peer1Endpoint: string = config.Peers[0].Endpoint;
+    const peer1Endpoint = config.Peers[0].Endpoint;
     yield* λ(Console.log(peer1Endpoint));
-    yield* λ(ping(peer1Endpoint));
+    yield* λ(ping(`${peer1Endpoint.ip}:${peer1Endpoint.port}`));
 }).pipe(Effect.scoped);
 
 Effect.suspend(() => main).pipe(Effect.provide(PlatformNode.NodeContext.layer), PlatformNode.NodeRuntime.runMain);
