@@ -39,12 +39,12 @@
         "@protobuf-ts/runtime": "2.9.3",
         "@protobuf-ts/runtime-rpc": "2.9.3",
         "@rushstack/eslint-config": "3.6.4",
-        "@rushstack/heft": "0.65.4",
-        "@rushstack/heft-api-extractor-plugin": "0.3.13",
+        "@rushstack/heft": "0.65.5",
+        "@rushstack/heft-api-extractor-plugin": "0.3.14",
         "@rushstack/heft-jest-plugin": "0.11.14",
-        "@rushstack/heft-lint-plugin": "0.3.13",
-        "@rushstack/heft-typescript-plugin": "0.3.13",
-        "@rushstack/heft-webpack5-plugin": "0.9.30",
+        "@rushstack/heft-lint-plugin": "0.3.14",
+        "@rushstack/heft-typescript-plugin": "0.3.14",
+        "@rushstack/heft-webpack5-plugin": "0.9.31",
         "@types/heft-jest": "1.0.6",
         "@types/ini": "4.1.0",
         "@types/node": "20.11.20",
@@ -78,7 +78,7 @@
     "pnpm": {
         "patchedDependencies": {
             "@rushstack/heft-jest-plugin@0.11.14": "patches/@rushstack__heft-jest-plugin@0.11.14.patch",
-            "@rushstack/heft@0.65.4": "patches/@rushstack__heft@0.65.4.patch"
+            "@rushstack/heft@0.65.5": "patches/@rushstack__heft@0.65.5.patch"
         }
     }
 }
