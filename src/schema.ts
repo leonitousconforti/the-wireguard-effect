@@ -566,8 +566,15 @@ export class WireguardInterfaceConfig extends Schema.Class<WireguardInterfaceCon
         const self = this;
         return Effect.gen(function* (λ) {
             const fs = yield* λ(Platform.FileSystem.FileSystem);
-            const config = yield* λ(Schema.encode(Schema.parseJson(WireguardInterfaceConfig))(self));
-            return yield* λ(fs.writeFileString(file, config));
+            const data = yield* λ(Schema.encode(WireguardInterfaceConfig)(self));
+
+            type Writable<T> = { -readonly [P in keyof T]: T[P] };
+            const interfaceData = { ...data } as Writable<Partial<WireguardInterfaceConfig>>;
+            delete interfaceData["Peers"];
+
+            const interfaceConfig = ini.encode(interfaceData, { section: "Interface" });
+            const peersConfig = self.Peers.map((peer) => ini.encode(peer, { bracketedArray: false, section: "Peer" }));
+            return yield* λ(fs.writeFileString(file, interfaceConfig + "\n" + peersConfig.join("\n")));
         });
     };
 }
