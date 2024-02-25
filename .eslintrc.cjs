@@ -30,16 +30,14 @@ module.exports = {
             rules: {
                 "dot-notation": "off",
                 "unicorn/no-this-assignment": "off",
+                "@typescript-eslint/member-ordering": "off",
+                "unicorn/consistent-function-scoping": "off",
                 "@rushstack/security/no-unsafe-regexp": "off",
             },
         },
         {
             files: ["src/index.ts"],
             rules: { "@typescript-eslint/explicit-function-return-type": "off" },
-        },
-        {
-            files: ["examples/**/*.ts"],
-            rules: { "no-console": "off" },
         },
     ],
     ignorePatterns: ["dist/", ".eslintrc.cjs"],
