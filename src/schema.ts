@@ -573,8 +573,23 @@ export class WireguardInterfaceConfig extends Schema.Class<WireguardInterfaceCon
             delete interfaceData["Peers"];
 
             const interfaceConfig = ini.encode(interfaceData, { section: "Interface" });
-            const peersConfig = self.Peers.map((peer) => ini.encode(peer, { bracketedArray: false, section: "Peer" }));
-            return yield* λ(fs.writeFileString(file, interfaceConfig + "\n" + peersConfig.join("\n")));
+            const peersConfig = yield* λ(
+                Effect.all(
+                    ReadonlyArray.map(self.Peers, (peer) =>
+                        Effect.gen(function* (λ) {
+                            const data2 = yield* λ(Schema.encode(WireguardPeerConfig)(peer));
+                            const peerData = { ...data2 } as Writable<Partial<WireguardPeerConfig>>;
+                            delete peerData["AllowedIPs"];
+                            const allowedIps = peer.AllowedIPs.join(", ");
+                            return (
+                                ini.encode(peerData, { bracketedArray: false, section: "Peer" }) +
+                                `AllowedIPs = ${allowedIps}`
+                            );
+                        })
+                    )
+                ).pipe(Effect.map(ReadonlyArray.join("\n\n")))
+            );
+            return yield* λ(fs.writeFileString(file, interfaceConfig + "\n" + peersConfig));
         });
     };
 }
