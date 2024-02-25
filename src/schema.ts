@@ -126,15 +126,19 @@ export type CidrMask = Schema.Schema.To<typeof CidrMask>;
  */
 export const CidrBlock = Function.pipe(
     Schema.transformOrFail(
-        Schema.templateLiteral(Schema.string, Schema.literal("/"), Schema.number),
+        Schema.union(
+            Schema.struct({ ip: IPv4, mask: CidrMask }),
+            Schema.templateLiteral(Schema.string, Schema.literal("/"), Schema.number)
+        ),
         Schema.struct({ ip: IPv4, mask: CidrMask }),
-        (string, _options, ast) =>
+        (data, _options, ast) =>
             Effect.gen(function* (λ) {
-                const [ip, mask] = string.split("/") as Split<typeof string, "/">;
+                if (typeof data === "object") return data;
+                const [ip, mask] = data.split("/") as Split<typeof data, "/">;
                 const ipParsed = yield* λ(Schema.decode(Schema.union(IPv4, IPv6))(ip));
                 const maskParsed = yield* λ(Schema.decode(CidrMask)(Number.parseInt(mask)));
                 return { ip: ipParsed, mask: maskParsed };
-            }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, string, error.message))),
+            }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
         ({ ip, mask }) => Effect.succeed(`${ip}/${mask}` as const)
     ),
     Schema.identifier("CidrBlock"),
@@ -163,15 +167,19 @@ export type CidrBlockFrom = Schema.Schema.From<typeof CidrBlock>;
  */
 export const IPv4Endpoint = Function.pipe(
     Schema.transformOrFail(
-        Schema.templateLiteral(Schema.string, Schema.literal(":"), Schema.number),
+        Schema.union(
+            Schema.struct({ ip: IPv4, port: Port }),
+            Schema.templateLiteral(Schema.string, Schema.literal(":"), Schema.number)
+        ),
         Schema.struct({ ip: IPv4, port: Port }),
-        (string, _options, ast) =>
+        (data, _options, ast) =>
             Effect.gen(function* (λ) {
-                const [ip, port] = string.split(":") as Split<typeof string, ":">;
+                if (typeof data === "object") return data;
+                const [ip, port] = data.split(":") as Split<typeof data, ":">;
                 const ipParsed = yield* λ(Schema.decode(IPv4)(ip));
                 const portParsed = yield* λ(Schema.decode(Port)(Number.parseInt(port)));
                 return { ip: ipParsed, port: portParsed };
-            }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, string, error.message))),
+            }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
         ({ ip, port }) => Effect.succeed(`${ip}:${port}` as const)
     ),
     Schema.identifier("IPv4Endpoint"),
@@ -200,21 +208,25 @@ export type IPv4EndpointFrom = Schema.Schema.From<typeof IPv4Endpoint>;
  */
 export const IPv6Endpoint = Function.pipe(
     Schema.transformOrFail(
-        Schema.templateLiteral(
-            Schema.literal("["),
-            Schema.string,
-            Schema.literal("]"),
-            Schema.literal(":"),
-            Schema.number
+        Schema.union(
+            Schema.struct({ ip: IPv6, port: Port }),
+            Schema.templateLiteral(
+                Schema.literal("["),
+                Schema.string,
+                Schema.literal("]"),
+                Schema.literal(":"),
+                Schema.number
+            )
         ),
         Schema.struct({ ip: IPv6, port: Port }),
-        (string, _options, ast) =>
+        (data, _options, ast) =>
             Effect.gen(function* (λ) {
-                const [ip, port] = string.split("]") as Split<typeof string, "]:">;
+                if (typeof data === "object") return data;
+                const [ip, port] = data.split("]") as Split<typeof data, "]:">;
                 const ipParsed = yield* λ(Schema.decode(IPv6)(ip.slice(1)));
                 const portParsed = yield* λ(Schema.decode(Port)(Number.parseInt(port)));
                 return { ip: ipParsed, port: portParsed };
-            }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, string, error.message))),
+            }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
         ({ ip, port }) => Effect.succeed(`[${ip}]:${port}` as const)
     ),
     Schema.identifier("IPv6Endpoint"),
