@@ -6,9 +6,11 @@ import * as Wireguard from "../src/index.js";
 describe("Wireguard tests", () => {
     it("should", async () =>
         Effect.gen(function* (λ) {
-            const [hubConfig, spokeConfigs] = Wireguard.WireguardInterfaceConfig.generateHubSpokeConfigs(
-                "10.0.0.1:12345",
-                ["10.0.0.2:23456", "10.0.0.3:4598"]
+            const hub = "10.0.0.1:12345";
+            const spokes = ["10.0.0.2:23456", "10.0.0.3:4598"] as const;
+
+            const [hubConfig, spokeConfigs] = yield* λ(
+                Wireguard.WireguardInterfaceConfig.generateHubSpokeConfigs(hub, spokes)
             );
 
             yield* λ(hubConfig.writeToFile("test/hub.conf"));
