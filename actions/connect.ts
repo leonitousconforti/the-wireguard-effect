@@ -15,7 +15,10 @@ import * as helpers from "./helpers.js";
 
 const client_identifier = uuid.v4();
 let timer: NodeJS.Timeout | undefined;
-const unbind = (stunSocket: dgram.Socket) => () => stunSocket.close();
+const unbind =
+    (stunSocket: dgram.Socket): (() => void) =>
+    () =>
+        stunSocket.close();
 let b: () => void = () => {};
 
 /**
