@@ -96,6 +96,8 @@ Effect.suspend(() => uploadConnectionRequestArtifact).pipe(
     Effect.andThen(
         Effect.retry(waitForResponse, { times: 100, schedule: Schedule.forever.pipe(Schedule.addDelay(() => 30_000)) })
     ),
+    Effect.catchAll(Console.log),
+    Effect.catchAllDefect(Console.log),
     Effect.provide(PlatformNode.NodeContext.layer),
     PlatformNode.NodeRuntime.runMain
 );
