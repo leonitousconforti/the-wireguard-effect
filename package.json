@@ -34,7 +34,7 @@
         "@effect/platform-node": "0.44.9",
         "@effect/printer": "0.31.9",
         "@effect/printer-ansi": "0.32.9",
-        "@effect/schema": "0.63.0",
+        "@effect/schema": "0.63.1",
         "@effect/typeclass": "0.23.0",
         "@protobuf-ts/runtime": "2.9.3",
         "@protobuf-ts/runtime-rpc": "2.9.3",
