@@ -47,7 +47,7 @@
         "@rushstack/heft-webpack5-plugin": "0.9.31",
         "@types/heft-jest": "1.0.6",
         "@types/ini": "4.1.0",
-        "@types/node": "20.11.20",
+        "@types/node": "20.11.21",
         "@types/uuid": "9.0.8",
         "cross-env": "7.0.3",
         "effect": "2.4.0",
