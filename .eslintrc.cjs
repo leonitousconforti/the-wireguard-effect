@@ -26,7 +26,7 @@ module.exports = {
     },
     overrides: [
         {
-            files: ["src/schema.ts"],
+            files: ["src/index.ts"],
             rules: {
                 "dot-notation": "off",
                 "unicorn/no-this-assignment": "off",
@@ -34,10 +34,6 @@ module.exports = {
                 "unicorn/consistent-function-scoping": "off",
                 "@rushstack/security/no-unsafe-regexp": "off",
             },
-        },
-        {
-            files: ["src/index.ts"],
-            rules: { "@typescript-eslint/explicit-function-return-type": "off" },
         },
     ],
     ignorePatterns: ["dist/", ".eslintrc.cjs"],
