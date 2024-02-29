@@ -14,6 +14,7 @@ module.exports = () => ({
         filename: `[name]${path.sep}[name].cjs`,
     },
     optimization: {
+        minimize: false,
         minimizer: [
             new TerserPlugin({
                 extractComments: false,
