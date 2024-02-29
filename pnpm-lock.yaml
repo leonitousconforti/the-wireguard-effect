@@ -27,6 +27,9 @@ devDependencies:
   '@actions/core':
     specifier: 1.10.1
     version: 1.10.1
+  '@effect/experimental':
+    specifier: 0.9.19
+    version: 0.9.19(@effect/platform-node@0.44.10)(@effect/platform@0.46.2)(@effect/schema@0.63.1)(effect@2.4.0)(ws@8.16.0)
   '@effect/platform':
     specifier: 0.46.2
     version: 0.46.2(@effect/schema@0.63.1)(effect@2.4.0)
@@ -71,7 +74,7 @@ devDependencies:
     version: 0.3.16(@rushstack/heft@0.65.7)(@types/node@20.11.24)
   '@rushstack/heft-webpack5-plugin':
     specifier: 0.9.33
-    version: 0.9.33(@rushstack/heft@0.65.7)(@types/node@20.11.24)(supports-color@9.4.0)(webpack@5.82.1)
+    version: 0.9.33(@rushstack/heft@0.65.7)(@types/node@20.11.24)(bufferutil@4.0.8)(supports-color@9.4.0)(utf-8-validate@6.0.3)(webpack@5.82.1)
   '@types/heft-jest':
     specifier: 1.0.6
     version: 1.0.6
@@ -84,6 +87,9 @@ devDependencies:
   '@types/uuid':
     specifier: 9.0.8
     version: 9.0.8
+  bufferutil:
+    specifier: 4.0.8
+    version: 4.0.8
   cross-env:
     specifier: 7.0.3
     version: 7.0.3
@@ -123,12 +129,18 @@ devDependencies:
   typescript:
     specifier: 5.3.3
     version: 5.3.3
+  utf-8-validate:
+    specifier: 6.0.3
+    version: 6.0.3
   uuid:
     specifier: 9.0.1
     version: 9.0.1
   webpack:
     specifier: 5.82.1
     version: 5.82.1
+  ws:
+    specifier: 8.16.0
+    version: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
 
 packages:
 
@@ -622,6 +634,32 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
+  /@effect/experimental@0.9.19(@effect/platform-node@0.44.10)(@effect/platform@0.46.2)(@effect/schema@0.63.1)(effect@2.4.0)(ws@8.16.0):
+    resolution: {integrity: sha512-Lt/5Q14D/M/LwIXrmMiwhx/rTGaMMYsvJzkITjQGiv/9H2LXp6Likj+nRZrPDztPrmrLKG7UY64RkYDHXG6Wfw==}
+    peerDependencies:
+      '@effect/platform': ^0.46.2
+      '@effect/platform-node': ^0.44.10
+      '@effect/schema': ^0.63.1
+      effect: ^2.4.0
+      lmdb: ^2.9.2
+      ws: ^8.14
+    peerDependenciesMeta:
+      '@effect/platform-node':
+        optional: true
+      lmdb:
+        optional: true
+      ws:
+        optional: true
+    dependencies:
+      '@effect/platform': 0.46.2(@effect/schema@0.63.1)(effect@2.4.0)
+      '@effect/platform-node': 0.44.10(@effect/platform@0.46.2)(effect@2.4.0)
+      '@effect/schema': 0.63.1(effect@2.4.0)(fast-check@3.15.1)
+      effect: 2.4.0
+      isomorphic-ws: 5.0.0(ws@8.16.0)
+      msgpackr: 1.10.1
+      ws: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
+    dev: true
+
   /@effect/platform-node-shared@0.2.2(@effect/platform@0.46.2)(effect@2.4.0):
     resolution: {integrity: sha512-eybC46ZLOO1zVZWJfwanzkcGylRatATS5ohRnFlFKIKKl0yYC/BboaUAw1arMBIX6tfOBnFuBlvifdTwTezXsQ==}
     peerDependencies:
@@ -1066,6 +1104,54 @@ packages:
     resolution: {integrity: sha512-9b8mPpKrfeGRuhFH5iO1iwCLeIIsV6+H1sRfxbkoGXIyQE2BTsPd9zqSqQJ+pv5sJ/hT5M1zvOFL02MnEezFug==}
     dev: true
 
+  /@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.2:
+    resolution: {integrity: sha512-9bfjwDxIDWmmOKusUcqdS4Rw+SETlp9Dy39Xui9BEGEk19dDwH0jhipwFzEff/pFg95NKymc6TOTbRKcWeRqyQ==}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.2:
+    resolution: {integrity: sha512-lwriRAHm1Yg4iDf23Oxm9n/t5Zpw1lVnxYU3HnJPTi2lJRkKTrps1KVgvL6m7WvmhYVt/FIsssWay+k45QHeuw==}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.2:
+    resolution: {integrity: sha512-FU20Bo66/f7He9Fp9sP2zaJ1Q8L9uLPZQDub/WlUip78JlPeMbVL8546HbZfcW9LNciEXc8d+tThSJjSC+tmsg==}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@msgpackr-extract/msgpackr-extract-linux-arm@3.0.2:
+    resolution: {integrity: sha512-MOI9Dlfrpi2Cuc7i5dXdxPbFIgbDBGgKR5F2yWEa6FVEtSWncfVNKW5AKjImAQ6CZlBK9tympdsZJ2xThBiWWA==}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@msgpackr-extract/msgpackr-extract-linux-x64@3.0.2:
+    resolution: {integrity: sha512-gsWNDCklNy7Ajk0vBBf9jEx04RUxuDQfBse918Ww+Qb9HCPoGzS+XJTLe96iN3BVK7grnLiYghP/M4L8VsaHeA==}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@msgpackr-extract/msgpackr-extract-win32-x64@3.0.2:
+    resolution: {integrity: sha512-O+6Gs8UeDbyFpbSh2CPEz/UOrrdWPTBYNblZK5CxxLisYt4kGX3Sc+czffFonyjiGSq3jWLwJS/CCJc7tBr4sQ==}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -1413,7 +1499,7 @@ packages:
       - '@types/node'
     dev: true
 
-  /@rushstack/heft-webpack5-plugin@0.9.33(@rushstack/heft@0.65.7)(@types/node@20.11.24)(supports-color@9.4.0)(webpack@5.82.1):
+  /@rushstack/heft-webpack5-plugin@0.9.33(@rushstack/heft@0.65.7)(@types/node@20.11.24)(bufferutil@4.0.8)(supports-color@9.4.0)(utf-8-validate@6.0.3)(webpack@5.82.1):
     resolution: {integrity: sha512-LygHFVcrkqcMIStcgwD8efBROfDhVOz2ZML+XQR1e5tRd2BBCO4vBTk79X9ldFMWmOVGk+56FopZmwNOa2sUYw==}
     peerDependencies:
       '@rushstack/heft': ^0.65.7
@@ -1426,7 +1512,7 @@ packages:
       tapable: 1.1.3
       watchpack: 2.4.0
       webpack: 5.82.1
-      webpack-dev-server: 4.9.3(supports-color@9.4.0)(webpack@5.82.1)
+      webpack-dev-server: 4.9.3(bufferutil@4.0.8)(supports-color@9.4.0)(utf-8-validate@6.0.3)(webpack@5.82.1)
     transitivePeerDependencies:
       - '@types/node'
       - bufferutil
@@ -2556,6 +2642,14 @@ packages:
   /buffers@0.1.1:
     resolution: {integrity: sha512-9q/rDEGSb/Qsvv2qvzIzdluL5k7AaJOTrw23z9reQthrbF7is4CtlT0DXyO1oei2DCp4uojjzQ7igaSHp1kAEQ==}
     engines: {node: '>=0.2.0'}
+    dev: true
+
+  /bufferutil@4.0.8:
+    resolution: {integrity: sha512-4T53u4PdgsXqKaIctwF8ifXlRTTmEPJ8iEPWFdGZvcf7sbwYo6FKFEX9eNNAnzFZ7EzJAQ3CJeOtCRA4rDp7Pw==}
+    engines: {node: '>=6.14.2'}
+    requiresBuild: true
+    dependencies:
+      node-gyp-build: 4.8.0
     dev: true
 
   /builtin-modules@3.3.0:
@@ -4416,6 +4510,14 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
+  /isomorphic-ws@5.0.0(ws@8.16.0):
+    resolution: {integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==}
+    peerDependencies:
+      ws: '*'
+    dependencies:
+      ws: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
+    dev: true
+
   /istanbul-lib-coverage@3.2.2:
     resolution: {integrity: sha512-O8dpsF+r0WV/8MNRKfnmrtCWhuKjxrq2w+jpzBL5UZKTi2LeVWnWOmWRxFlesJONmc+wLAGvKQZEOanko0LFTg==}
     engines: {node: '>=8'}
@@ -5501,6 +5603,28 @@ packages:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
     dev: true
 
+  /msgpackr-extract@3.0.2:
+    resolution: {integrity: sha512-SdzXp4kD/Qf8agZ9+iTu6eql0m3kWm1A2y1hkpTeVNENutaB0BwHlSvAIaMxwntmRUAUjon2V4L8Z/njd0Ct8A==}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      node-gyp-build-optional-packages: 5.0.7
+    optionalDependencies:
+      '@msgpackr-extract/msgpackr-extract-darwin-arm64': 3.0.2
+      '@msgpackr-extract/msgpackr-extract-darwin-x64': 3.0.2
+      '@msgpackr-extract/msgpackr-extract-linux-arm': 3.0.2
+      '@msgpackr-extract/msgpackr-extract-linux-arm64': 3.0.2
+      '@msgpackr-extract/msgpackr-extract-linux-x64': 3.0.2
+      '@msgpackr-extract/msgpackr-extract-win32-x64': 3.0.2
+    dev: true
+    optional: true
+
+  /msgpackr@1.10.1:
+    resolution: {integrity: sha512-r5VRLv9qouXuLiIBrLpl2d5ZvPt8svdQTl5/vMvE4nzDMyEX4sgW5yWhuBBj5UmgwOTWj8CIdSXn5sAfsHAWIQ==}
+    optionalDependencies:
+      msgpackr-extract: 3.0.2
+    dev: true
+
   /multicast-dns@7.2.5:
     resolution: {integrity: sha512-2eznPJP8z2BFLX50tf0LuODrpINqP1RVIm/CObbTcBRITQgmC/TjcREF1NeTBzIcR5XO/ukWo+YHOjBbFwIupg==}
     hasBin: true
@@ -5552,6 +5676,18 @@ packages:
   /node-forge@1.3.1:
     resolution: {integrity: sha512-dPEtOeMvF9VMcYV/1Wb8CPoVAXtp6MKMlcbAt4ddqmGqUJ6fQZFXkNZNkNlfevtNkGtaSoXf/vNNNSvgrdXwtA==}
     engines: {node: '>= 6.13.0'}
+    dev: true
+
+  /node-gyp-build-optional-packages@5.0.7:
+    resolution: {integrity: sha512-YlCCc6Wffkx0kHkmam79GKvDQ6x+QZkMjFGrIMxgFNILFvGSbCp2fCBC55pGTT9gVaz8Na5CLmxt/urtzRv36w==}
+    hasBin: true
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /node-gyp-build@4.8.0:
+    resolution: {integrity: sha512-u6fs2AEUljNho3EYTJNBfImO5QTo/J/1Etd+NVdCj7qWKUSN/bSLkZwhDv7I+w/MSC6qJ4cknepkAYykDdK8og==}
+    hasBin: true
     dev: true
 
   /node-int64@0.4.0:
@@ -7109,6 +7245,14 @@ packages:
       punycode: 2.3.1
     dev: true
 
+  /utf-8-validate@6.0.3:
+    resolution: {integrity: sha512-uIuGf9TWQ/y+0Lp+KGZCMuJWc3N9BHA+l/UmHd/oUHwJJDeysyTRxNQVkbzsIWfGFbRe3OcgML/i0mvVRPOyDA==}
+    engines: {node: '>=6.14.2'}
+    requiresBuild: true
+    dependencies:
+      node-gyp-build: 4.8.0
+    dev: true
+
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
     dev: true
@@ -7192,7 +7336,7 @@ packages:
       webpack: 5.82.1
     dev: true
 
-  /webpack-dev-server@4.9.3(supports-color@9.4.0)(webpack@5.82.1):
+  /webpack-dev-server@4.9.3(bufferutil@4.0.8)(supports-color@9.4.0)(utf-8-validate@6.0.3)(webpack@5.82.1):
     resolution: {integrity: sha512-3qp/eoboZG5/6QgiZ3llN8TUzkSpYg1Ko9khWX1h40MIEUNS2mDoIa8aXsPfskER+GbTvs/IJZ1QTBBhhuetSw==}
     engines: {node: '>= 12.13.0'}
     hasBin: true
@@ -7232,7 +7376,7 @@ packages:
       spdy: 4.0.2(supports-color@9.4.0)
       webpack: 5.82.1
       webpack-dev-middleware: 5.3.3(webpack@5.82.1)
-      ws: 8.16.0
+      ws: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -7373,7 +7517,7 @@ packages:
       signal-exit: 3.0.7
     dev: true
 
-  /ws@8.16.0:
+  /ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3):
     resolution: {integrity: sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
@@ -7384,6 +7528,9 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dependencies:
+      bufferutil: 4.0.8
+      utf-8-validate: 6.0.3
     dev: true
 
   /xml2js@0.5.0:
