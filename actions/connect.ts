@@ -7,6 +7,7 @@ import * as ConfigError from "effect/ConfigError";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as ReadonlyArray from "effect/ReadonlyArray";
+import * as Schedule from "effect/Schedule";
 import * as dgram from "node:dgram";
 import * as stun from "stun";
 import * as uuid from "uuid";
@@ -92,11 +93,9 @@ const waitForResponse = Effect.gen(function* (λ) {
 });
 
 Effect.suspend(() => uploadConnectionRequestArtifact).pipe(
-    // Effect.andThen(
-    //     Effect.retry(waitForResponse, { times: 100, schedule: Schedule.forever.pipe(Schedule.addDelay(() => 30_000)) })
-    // ),
-    // Effect.catchAll(Console.log),
-    // Effect.catchAllDefect(Console.log),
+    Effect.andThen(
+        Effect.retry(waitForResponse, { times: 100, schedule: Schedule.forever.pipe(Schedule.addDelay(() => 30_000)) })
+    ),
     Effect.provide(PlatformNode.NodeContext.layer),
     PlatformNode.NodeRuntime.runMain
 );
