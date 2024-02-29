@@ -120,9 +120,6 @@ devDependencies:
   supports-color:
     specifier: 9.4.0
     version: 9.4.0
-  terser-webpack-plugin:
-    specifier: 5.3.10
-    version: 5.3.10(webpack@5.82.1)
   typescript:
     specifier: 5.3.3
     version: 5.3.3
