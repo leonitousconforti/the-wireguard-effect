@@ -7,7 +7,7 @@
         "sourceMap": true,
         "declaration": true,
         "outDir": "./dist",
-        "resolveJsonModule": true,
+        "stripInternal": true,
         "types": ["node", "heft-jest"],
 
         // https://github.com/tsconfig/bases/blob/main/bases/node18.json
