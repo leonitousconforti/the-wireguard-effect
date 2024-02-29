@@ -17,7 +17,7 @@ const eveEndpoint = "10.0.5.1:51820";
 const main: Effect.Effect<void, ParseResult.ParseError, never> = Effect.gen(function* (λ) {
     // Distribute these configs somehow
     const [hubConfig, spokeConfigs] = yield* λ(
-        Wireguard.WireguardInterfaceConfig.generateHubSpokeConfigs(aliceEndpoint, [
+        Wireguard.WireguardConfig.generateHubSpokeConfigs(aliceEndpoint, [
             bobEndpoint,
             charlieEndpoint,
             daveEndpoint,

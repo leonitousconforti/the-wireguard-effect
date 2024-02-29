@@ -8,10 +8,7 @@ describe("Wireguard tests", () => {
         Effect.gen(function* (λ) {
             const hub = "10.0.0.1:12345";
             const spokes = ["10.0.0.2:23456", "10.0.0.3:4598"] as const;
-
-            const [hubConfig, spokeConfigs] = yield* λ(
-                Wireguard.WireguardInterfaceConfig.generateHubSpokeConfigs(hub, spokes)
-            );
+            const [hubConfig, spokeConfigs] = yield* λ(Wireguard.WireguardConfig.generateHubSpokeConfigs(hub, spokes));
 
             yield* λ(hubConfig.writeToFile("test/hub.conf"));
             for (const [index, spokeConfig] of spokeConfigs.entries()) {

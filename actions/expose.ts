@@ -4,7 +4,6 @@ import * as Platform from "@effect/platform";
 import * as PlatformNode from "@effect/platform-node";
 import * as Cause from "effect/Cause";
 import * as ConfigError from "effect/ConfigError";
-import * as Console from "effect/Console";
 import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -13,6 +12,7 @@ import * as Schedule from "effect/Schedule";
 import * as dgram from "node:dgram";
 import * as stun from "stun";
 import * as uuid from "uuid";
+import * as Wireguard from "../src/index.js";
 import * as helpers from "./helpers.js";
 
 const processConnectionRequest = (
@@ -23,7 +23,6 @@ const processConnectionRequest = (
     Platform.FileSystem.FileSystem
 > =>
     Effect.gen(function* (λ) {
-        const fs = yield* λ(Platform.FileSystem.FileSystem);
         const service_identifier: number = yield* λ(helpers.SERVICE_IDENTIFIER);
         const client_identifier: string | undefined = connectionRequest.name.split("_")[2];
 
@@ -49,7 +48,7 @@ const processConnectionRequest = (
             Effect.promise(() => stun.request("stun.l.google.com:19302", { socket: stunSocket }))
         );
         const mappedAddress = stunResponse.getAttribute(stun.constants.STUN_ATTR_XOR_MAPPED_ADDRESS).value;
-        const myLocation = `${mappedAddress.address}:${mappedAddress.port}`;
+        const myLocation = `${mappedAddress.address}:${mappedAddress.port}` as const;
         GithubCore.info(`Stun response received: ${JSON.stringify(myLocation)}`);
         yield* λ(
             Effect.loop(0, {
@@ -62,69 +61,17 @@ const processConnectionRequest = (
             })
         );
 
-        // const hostKeys = yield* _(Effect.promise(() => wireguard.generateKeyPair()));
-        // const peerKeys = yield* _(Effect.promise(() => wireguard.generateKeyPair()));
-
-        // const hostConfig = new wireguard.WgConfig({
-        //     wgInterface: {
-        //         name: `wg-${service_identifier}-${client_identifier}`,
-        //         address: [`192.168.${service_identifier}.1/30`],
-        //         privateKey: hostKeys.privateKey,
-        //         listenPort: stunSocket.address().port,
-        //     },
-        //     peers: [
-        //         {
-        //             persistentKeepalive: 25,
-        //             publicKey: peerKeys.publicKey,
-        //             endpoint: `${clientIp}:${natPort}`,
-        //             allowedIps: [`192.168.${service_identifier}.2/32`],
-        //         },
-        //     ],
-        // });
-
-        // const peerConfig = new wireguard.WgConfig({
-        //     wgInterface: {
-        //         name: `wg-${service_identifier}-${client_identifier}`,
-        //         address: [`192.168.${service_identifier}.2/30`],
-        //         privateKey: peerKeys.privateKey,
-        //         listenPort: Number.parseInt(hostPort),
-        //     },
-        //     peers: [
-        //         {
-        //             endpoint: myLocation,
-        //             persistentKeepalive: 25,
-        //             publicKey: hostKeys.publicKey,
-        //             allowedIps: [`192.168.${service_identifier}.1/32`],
-        //         },
-        //     ],
-        // });
-
-        // const exists = yield* _(fs.exists("./wg"));
-        // if (!exists) yield* _(fs.makeDirectory("./wg"));
-        // const files = yield* _(fs.readDirectory("./wg"));
-        // core.info(`Existing wireguard interfaces: ${JSON.stringify(files)}`);
-        // const maxInterface =
-        //     files.length > 0
-        //         ? Math.max(
-        //               ...files
-        //                   .filter((file) => file.startsWith("wg"))
-        //                   .map((file) => file.replace("wg", ""))
-        //                   .map(Number.parseInt)
-        //           )
-        //         : 0;
-        // yield* _(Effect.promise(() => hostConfig.writeToFile(`./wg/wg${maxInterface + 1}.conf`)));
-        // stunSocket.close();
-        // yield* _(Effect.promise(() => hostConfig.up(`./wg/wg${maxInterface + 1}.conf`)));
-
-        // yield* _(
-        //     helpers.uploadSingleFileArtifact(
-        //         `${service_identifier}_connection-response_${client_identifier}`,
-        //         peerConfig.toString()
-        //     )
-        // );
-    })
-        .pipe(Effect.tapError(Console.log))
-        .pipe(Effect.tapDefect(Console.log));
+        const [aliceConfig, bobConfig] = yield* λ(
+            Wireguard.WireguardConfig.generateP2PConfigs(myLocation, `${clientIp}:${Number.parseInt(natPort)}`)
+        );
+        yield* λ(aliceConfig.up());
+        yield* λ(
+            helpers.uploadSingleFileArtifact(
+                `${service_identifier}_connection-response_${client_identifier}`,
+                bobConfig.toString()
+            )
+        );
+    });
 
 class NoStopRequest extends Data.TaggedError("NoStopRequest")<{ message: string }> {}
 class HasStopRequest extends Data.TaggedError("HasStopRequest")<{ message: string }> {}

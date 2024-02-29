@@ -10,9 +10,7 @@ const bobEndpoint = "10.0.2.1:51820";
 
 const main: Effect.Effect<void, ParseResult.ParseError, never> = Effect.gen(function* (λ) {
     // Distribute these configs somehow
-    const [aliceConfig, bobConfig] = yield* λ(
-        Wireguard.WireguardInterfaceConfig.generateP2PConfigs(aliceEndpoint, bobEndpoint)
-    );
+    const [aliceConfig, bobConfig] = yield* λ(Wireguard.WireguardConfig.generateP2PConfigs(aliceEndpoint, bobEndpoint));
 
     yield* λ(Console.log(aliceConfig));
     yield* λ(Console.log(bobConfig));

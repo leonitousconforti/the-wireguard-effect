@@ -4,7 +4,6 @@ import * as PlatformNode from "@effect/platform-node";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as ConfigError from "effect/ConfigError";
-import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Schedule from "effect/Schedule";
@@ -58,7 +57,6 @@ const uploadConnectionRequestArtifact: Effect.Effect<
  * the service.
  */
 const waitForResponse = Effect.gen(function* (λ) {
-    yield* λ(Console.log("here"));
     const artifacts = yield* λ(helpers.listArtifacts);
     const service_identifier: number = yield* λ(helpers.SERVICE_IDENTIFIER);
 
@@ -82,10 +80,10 @@ const waitForResponse = Effect.gen(function* (λ) {
         const data = yield* λ(helpers.downloadSingleFileArtifact(connectionResponse.id, connectionResponse.name));
         yield* λ(helpers.deleteArtifact(connectionResponse.name));
         GithubCore.info(data);
-        GithubCore.setOutput("service-address", data);
-        const config = yield* λ(Schema.decode(Schema.parseJson(Wireguard.WireguardInterfaceConfig))(data));
+        const config = yield* λ(Schema.decode(Schema.parseJson(Wireguard.WireguardConfig))(data));
+        GithubCore.setOutput("service-address", `${config.Peers[0].Endpoint.ip}:${config.Peers[0].Endpoint.port}`);
         b();
-        yield* λ(Wireguard.up("wg0", config));
+        yield* λ(config.up());
     }
 
     // Still waiting for a connection response

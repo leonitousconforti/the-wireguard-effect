@@ -7,12 +7,12 @@ import * as Effect from "effect/Effect";
 
 import * as Wireguard from "../src/index.js";
 
-const config = new Wireguard.WireguardInterfaceConfig({
+const config = new Wireguard.WireguardConfig({
     ListenPort: 51_820,
     ReplacePeers: false,
     PrivateKey: "",
     Peers: [
-        new Wireguard.WireguardPeerConfig({
+        new Wireguard.WireguardPeer({
             PublicKey: "public-key",
             AllowedIPs: [],
             Endpoint: { ip: "3.3.3.3", port: 51_820 },
@@ -35,7 +35,7 @@ const ping = (endpoint: string): Effect.Effect<void, Cause.TimeoutException, nev
 
 export const main: Effect.Effect<void, Wireguard.WireguardError | Cause.TimeoutException, never> = Effect.gen(
     function* (λ) {
-        yield* λ(Wireguard.upScoped("wg0", config));
+        yield* λ(config.upScoped());
         const peer1Endpoint = config.Peers[0].Endpoint;
         yield* λ(Console.log(peer1Endpoint));
         yield* λ(ping(`${peer1Endpoint.ip}:${peer1Endpoint.port}`));
