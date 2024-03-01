@@ -327,6 +327,7 @@ export type WireguardKey = Schema.Schema.To<typeof WireguardKey>;
 /**
  * @since 1.0.0
  * @category Errors
+ * @public
  */
 export class WireguardError extends Data.TaggedError("WireguardError")<{ message: string }> {}
 
@@ -335,6 +336,7 @@ export class WireguardError extends Data.TaggedError("WireguardError")<{ message
  *
  * @since 1.0.0
  * @category Datatypes
+ * @public
  */
 export class WireguardInterfaceName extends Schema.Class<WireguardInterfaceName>()({
     Name: Schema.transformOrFail(
@@ -426,6 +428,7 @@ export class WireguardInterfaceName extends Schema.Class<WireguardInterfaceName>
  *
  * @since 1.0.0
  * @category Datatypes
+ * @public
  */
 export class WireguardPeer extends Schema.Class<WireguardPeer>()({
     /** @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/wgtypes/types.go#L236-L276 */
@@ -462,6 +465,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>()({
  *
  * @since 1.0.0
  * @category Datatypes
+ * @public
  */
 export class WireguardConfig extends Schema.Class<WireguardConfig>()({
     /** @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/wgtypes/types.go#L207-L232 */
