@@ -40,8 +40,7 @@ export const Port = Function.pipe(
     Schema.Int,
     Schema.between(0, 2 ** 16 - 1),
     Schema.identifier("Port"),
-    Schema.description("A port number"),
-    Schema.message(() => "a port number")
+    Schema.description("A port number")
 );
 
 /**
@@ -66,8 +65,7 @@ export const IPv4 = Function.pipe(
     Schema.string,
     Schema.pattern(IPv4AddressRegExp),
     Schema.identifier("IPv4"),
-    Schema.description("An ipv4 address"),
-    Schema.message(() => "an ipv4 address")
+    Schema.description("An ipv4 address")
 );
 
 /**
@@ -102,8 +100,7 @@ export const IPv6 = Function.pipe(
     Schema.string,
     Schema.pattern(IPv6AddressRegExp),
     Schema.identifier("IPv6"),
-    Schema.description("An ipv6 address"),
-    Schema.message(() => "an ipv6 address")
+    Schema.description("An ipv6 address")
 );
 
 /**
@@ -112,6 +109,29 @@ export const IPv6 = Function.pipe(
  * @internal
  */
 export type IPv6 = Schema.Schema.To<typeof IPv6>;
+
+/**
+ * An IP address, which is either an IPv4 or IPv6 address.
+ *
+ * @since 1.0.0
+ * @category Datatypes
+ * @internal
+ */
+export const Address = Schema.union(IPv4, IPv6);
+
+/**
+ * @since 1.0.0
+ * @category Brands
+ * @internal
+ */
+export type AddressTo = Schema.Schema.To<typeof Address>;
+
+/**
+ * @since 1.0.0
+ * @category Brands
+ * @internal
+ */
+export type AddressFrom = Schema.Schema.From<typeof Address>;
 
 /**
  * A cidr mask, which is a number between 0 and 32.
@@ -124,8 +144,7 @@ const CidrMask = Function.pipe(
     Schema.number,
     Schema.between(0, 32),
     Schema.identifier("CidrMask"),
-    Schema.description("A cidr mask"),
-    Schema.message(() => "a cidr mask")
+    Schema.description("A cidr mask")
 );
 
 /**
@@ -161,8 +180,7 @@ const CidrBlock = Function.pipe(
         ({ ip, mask }) => Effect.succeed(`${ip}/${mask}` as const)
     ),
     Schema.identifier("CidrBlock"),
-    Schema.description("A cidr block"),
-    Schema.message(() => "a cidr block")
+    Schema.description("A cidr block")
 );
 
 /**
@@ -205,8 +223,7 @@ const IPv4Endpoint = Function.pipe(
         ({ ip, port }) => Effect.succeed(`${ip}:${port}` as const)
     ),
     Schema.identifier("IPv4Endpoint"),
-    Schema.description("An ipv4 wireguard endpoint"),
-    Schema.message(() => "an ipv4 wireguard endpoint")
+    Schema.description("An ipv4 wireguard endpoint")
 );
 
 /**
@@ -255,8 +272,7 @@ export const IPv6Endpoint = Function.pipe(
         ({ ip, port }) => Effect.succeed(`[${ip}]:${port}` as const)
     ),
     Schema.identifier("IPv6Endpoint"),
-    Schema.description("An ipv6 wireguard endpoint"),
-    Schema.message(() => "an ipv6 wireguard endpoint")
+    Schema.description("An ipv6 wireguard endpoint")
 );
 
 /**
@@ -283,8 +299,7 @@ export type IPv6EndpointFrom = Schema.Schema.From<typeof IPv6Endpoint>;
 export const Endpoint = Function.pipe(
     Schema.union(IPv4Endpoint, IPv6Endpoint),
     Schema.identifier("Endpoint"),
-    Schema.description("A wireguard endpoint"),
-    Schema.message(() => "a wireguard endpoint")
+    Schema.description("A wireguard endpoint")
 );
 
 /**
@@ -302,6 +317,33 @@ export type EndpointTo = Schema.Schema.To<typeof Endpoint>;
 export type EndpointFrom = Schema.Schema.From<typeof Endpoint>;
 
 /**
+ * A wireguard setup data, which consists of an endpoint followed by an address.
+ *
+ * @since 1.0.0
+ * @category Datatypes
+ * @internal
+ */
+export const SetupData = Function.pipe(
+    Schema.tuple(Endpoint, Address),
+    Schema.identifier("SetupData"),
+    Schema.description("A wireguard setup data")
+);
+
+/**
+ * @since 1.0.0
+ * @category Brands
+ * @internal
+ */
+export type SetupDataTo = Schema.Schema.To<typeof SetupData>;
+
+/**
+ * @since 1.0.0
+ * @category Brands
+ * @internal
+ */
+export type SetupDataFrom = Schema.Schema.From<typeof SetupData>;
+
+/**
  * A wireguard key, which is a 44 character base64 string.
  *
  * @since 1.0.0
@@ -313,8 +355,7 @@ export const WireguardKey = Function.pipe(
     Schema.string,
     Schema.pattern(/^[\d+/A-Za-z]{42}[048AEIMQUYcgkosw]=$/),
     Schema.identifier("WireguardKey"),
-    Schema.description("A wireguard key"),
-    Schema.message(() => "a wireguard key")
+    Schema.description("A wireguard key")
 );
 
 /**
@@ -470,6 +511,8 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>()({
 export class WireguardConfig extends Schema.Class<WireguardConfig>()({
     /** @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/wgtypes/types.go#L207-L232 */
 
+    Address: Address,
+
     /**
      * The value for this is a decimal-string integer corresponding to the
      * listening port of the interface.
@@ -569,18 +612,18 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
      */
     public static generateP2PConfigs: {
         (
-            aliceEndpoint: EndpointFrom,
-            bobEndpoint: EndpointFrom
+            aliceData: SetupDataFrom,
+            bobEndpoint: SetupDataFrom
         ): Effect.Effect<[aliceConfig: WireguardConfig, bobConfig: WireguardConfig], ParseResult.ParseError, never>;
         (
-            aliceEndpoint: EndpointFrom
+            aliceData: SetupDataFrom
         ): (
-            bobEndpoint: EndpointFrom
+            bobData: SetupDataFrom
         ) => Effect.Effect<[aliceConfig: WireguardConfig, bobConfig: WireguardConfig], ParseResult.ParseError, never>;
-    } = Function.dual(2, (aliceEndpoint: EndpointFrom, bobEndpoint: EndpointFrom) =>
+    } = Function.dual(2, (aliceData: SetupDataFrom, bobData: SetupDataFrom) =>
         Effect.gen(function* (λ) {
-            const hubEndpoint = aliceEndpoint;
-            const spokeEndpoints = ReadonlyArray.make(bobEndpoint);
+            const hubEndpoint = aliceData;
+            const spokeEndpoints = ReadonlyArray.make(bobData);
             const [aliceConfig, [bobConfig]] = yield* λ(
                 WireguardConfig.generateHubSpokeConfigs(hubEndpoint, spokeEndpoints)
             );
@@ -596,8 +639,8 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
      * @category Constructors
      */
     public static generateHubSpokeConfigs = (
-        hubEndpoint: EndpointFrom,
-        spokeEndpoints: ReadonlyArray.NonEmptyReadonlyArray<EndpointFrom>
+        hubData: SetupDataFrom,
+        spokeData: ReadonlyArray.NonEmptyReadonlyArray<SetupDataFrom>
     ): Effect.Effect<
         [hubConfig: WireguardConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig>],
         ParseResult.ParseError,
@@ -605,46 +648,48 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
     > =>
         Effect.gen(function* (λ) {
             const hubKeys = WireguardConfig.generateKeyPair();
-            const hubEndpointData = yield* λ(Schema.decode(Endpoint)(hubEndpoint));
-            const spokeEndpointsData = yield* λ(
-                Effect.all(ReadonlyArray.map(spokeEndpoints, (endpoint) => Schema.decode(Endpoint)(endpoint)))
+            const hubsData = yield* λ(Schema.decode(SetupData)(hubData));
+            const spokesData = yield* λ(
+                Effect.all(ReadonlyArray.map(spokeData, (spoke) => Schema.decode(SetupData)(spoke)))
             );
 
             // This hub peer config will be added to all the spoke interface configs
             const hubPeerConfig = new WireguardPeer({
                 ReplaceAllowedIPs: true,
-                Endpoint: hubEndpointData,
                 PublicKey: hubKeys.publicKey,
-                AllowedIPs: spokeEndpointsData.map((endpoint) => ({ ip: endpoint.ip, mask: 32 })),
+                Endpoint: Tuple.getFirst(hubsData),
+                AllowedIPs: [{ ip: Tuple.getSecond(hubsData), mask: 32 }],
             });
 
             // All these spoke peer configs will be added to the hub interface config
-            const spokePeerConfigs = ReadonlyArray.map(spokeEndpointsData, (endpoint) => {
+            const spokePeerConfigs = ReadonlyArray.map(spokesData, (spoke) => {
                 const keys = WireguardConfig.generateKeyPair();
                 const peerConfig = new WireguardPeer({
-                    Endpoint: endpoint,
+                    Endpoint: Tuple.getFirst(spoke),
                     ReplaceAllowedIPs: true,
                     PublicKey: keys.publicKey,
-                    AllowedIPs: [{ ip: hubEndpointData.ip, mask: 32 }],
+                    AllowedIPs: [{ ip: Tuple.getSecond(spoke), mask: 32 }],
                 });
-                return Tuple.make(Tuple.make(keys.privateKey, endpoint.port), peerConfig);
+                return Tuple.make(Tuple.make(keys.privateKey, spoke), peerConfig);
             });
 
             // The hub interface config will have all the spoke peer configs
             const hubConfig = new WireguardConfig({
                 ReplacePeers: true,
                 PrivateKey: hubKeys.privateKey,
-                ListenPort: hubEndpointData.port,
+                Address: Tuple.getSecond(hubsData),
+                ListenPort: Tuple.getFirst(hubsData).port,
                 Peers: ReadonlyArray.map(spokePeerConfigs, Tuple.getSecond),
             });
 
             // Each spoke interface config will have the hub peer config
-            const spokeConfigs = ReadonlyArray.map(spokePeerConfigs, ([[privateKey, port]]) => {
+            const spokeConfigs = ReadonlyArray.map(spokePeerConfigs, ([[privateKey, spoke]]) => {
                 return new WireguardConfig({
-                    ListenPort: port,
                     ReplacePeers: true,
                     PrivateKey: privateKey,
                     Peers: [hubPeerConfig],
+                    Address: Tuple.getSecond(spoke),
+                    ListenPort: Tuple.getFirst(spoke).port,
                 });
             });
 

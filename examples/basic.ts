@@ -9,6 +9,7 @@ import * as Effect from "effect/Effect";
 import * as Wireguard from "../src/index.js";
 
 const config = new Wireguard.WireguardConfig({
+    Address: "3.3.3.3",
     ListenPort: 51_820,
     ReplacePeers: false,
     PrivateKey: "",

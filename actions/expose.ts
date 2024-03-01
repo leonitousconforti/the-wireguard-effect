@@ -9,6 +9,7 @@ import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Schedule from "effect/Schedule";
+import * as Tuple from "effect/Tuple";
 import * as dgram from "node:dgram";
 import * as stun from "stun";
 import * as uuid from "uuid";
@@ -61,9 +62,9 @@ const processConnectionRequest = (
             })
         );
 
-        const [aliceConfig, bobConfig] = yield* λ(
-            Wireguard.WireguardConfig.generateP2PConfigs(myLocation, `${clientIp}:${Number.parseInt(natPort)}`)
-        );
+        const aliceData = Tuple.make(myLocation, "");
+        const bobData = Tuple.make(`${clientIp}:${Number.parseInt(natPort)}` as const, "");
+        const [aliceConfig, bobConfig] = yield* λ(Wireguard.WireguardConfig.generateP2PConfigs(aliceData, bobData));
         yield* λ(aliceConfig.up());
         yield* λ(
             helpers.uploadSingleFileArtifact(
