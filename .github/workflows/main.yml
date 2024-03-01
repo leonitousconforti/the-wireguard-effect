@@ -69,7 +69,8 @@ jobs:
       - uses: tj-actions/verify-changed-files@v19
         with:
           fail-if-changed: true
-          match-gitignore-files: true
+          files: |
+             !*test/*.conf
 
   linux-service1:
     needs: [build]
