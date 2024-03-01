@@ -3,7 +3,7 @@ const path = require("node:path");
 module.exports = () => ({
     target: "node",
     mode: "production",
-    resolve: { extensions: [".js", ".json"] },
+    resolve: { extensions: [".js"] },
     entry: {
         expose: path.join(__dirname, "dist", "actions", "expose.js"),
         connect: path.join(__dirname, "dist", "actions", "connect.js"),
