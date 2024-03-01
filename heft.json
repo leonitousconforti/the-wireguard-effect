@@ -37,7 +37,31 @@
                 "api-docs": {
                     "taskDependencies": ["bundle-actions"],
                     "taskPlugin": {
-                        "pluginPackage": "@rushstack/heft-api-extractor-plugin"
+                        "pluginPackage": "@rushstack/heft-api-extractor-plugin",
+                        "options": {
+                            "useProjectTypescriptVersion": true
+                        }
+                    }
+                },
+                "copy-wireguard-go-executables": {
+                    "taskDependencies": ["api-docs"],
+                    "taskPlugin": {
+                        "pluginName": "copy-files-plugin",
+                        "pluginPackage": "@rushstack/heft",
+                        "options": {
+                            "copyOperations": [
+                                {
+                                    "hardlink": false,
+                                    "sourcePath": "build",
+                                    "destinationFolders": ["dist/build"]
+                                },
+                                {
+                                    "hardlink": true,
+                                    "sourcePath": "build",
+                                    "destinationFolders": [".github/actions/workflow-level-service/build"]
+                                }
+                            ]
+                        }
                     }
                 }
             }
