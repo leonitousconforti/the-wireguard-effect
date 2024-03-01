@@ -122,10 +122,10 @@ jobs:
         uses: ./.github/actions/workflow-level-service/connect
         with:
           service-identifier: ${{ env.linux-service-identifier1 }}
-      - id: connect2
-        uses: ./.github/actions/workflow-level-service/connect
-        with:
-          service-identifier: ${{ env.linux-service-identifier2 }}
+      # - id: connect2
+      #   uses: ./.github/actions/workflow-level-service/connect
+      #   with:
+      #     service-identifier: ${{ env.linux-service-identifier2 }}
       # - id: connect3
       #   uses: ./.github/actions/workflow-level-service/connect
       #   with:
