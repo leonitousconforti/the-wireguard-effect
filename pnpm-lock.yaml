@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
+  '@rushstack/heft-api-extractor-plugin@0.3.17':
+    hash: vnsnze2aosi7bjuzjljbqfo72q
+    path: patches/@rushstack__heft-api-extractor-plugin@0.3.17.patch
   '@rushstack/heft-jest-plugin@0.11.18':
     hash: n6k2ue4lp6ap7o3pnlbmjotjeu
     path: patches/@rushstack__heft-jest-plugin@0.11.18.patch
@@ -48,6 +51,9 @@ devDependencies:
   '@effect/typeclass':
     specifier: 0.23.1
     version: 0.23.1(effect@2.4.1)
+  '@microsoft/api-extractor':
+    specifier: 7.42.1
+    version: 7.42.1(@types/node@20.11.24)
   '@protobuf-ts/runtime':
     specifier: 2.9.3
     version: 2.9.3
@@ -62,7 +68,7 @@ devDependencies:
     version: 0.65.8(patch_hash=ox6odirr3wstbc5ukwnhm7ow6q)(@types/node@20.11.24)
   '@rushstack/heft-api-extractor-plugin':
     specifier: 0.3.17
-    version: 0.3.17(@rushstack/heft@0.65.8)(@types/node@20.11.24)
+    version: 0.3.17(patch_hash=vnsnze2aosi7bjuzjljbqfo72q)(@rushstack/heft@0.65.8)(@types/node@20.11.24)
   '@rushstack/heft-jest-plugin':
     specifier: 0.11.18
     version: 0.11.18(patch_hash=n6k2ue4lp6ap7o3pnlbmjotjeu)(@rushstack/heft@0.65.8)(@types/node@20.11.24)(supports-color@9.4.0)
@@ -1091,6 +1097,37 @@ packages:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
     dev: true
 
+  /@microsoft/api-extractor-model@7.28.13(@types/node@20.11.24):
+    resolution: {integrity: sha512-39v/JyldX4MS9uzHcdfmjjfS6cYGAoXV+io8B5a338pkHiSt+gy2eXQ0Q7cGFJ7quSa1VqqlMdlPrB6sLR/cAw==}
+    dependencies:
+      '@microsoft/tsdoc': 0.14.2
+      '@microsoft/tsdoc-config': 0.16.2
+      '@rushstack/node-core-library': 4.0.2(@types/node@20.11.24)
+    transitivePeerDependencies:
+      - '@types/node'
+    dev: true
+
+  /@microsoft/api-extractor@7.42.1(@types/node@20.11.24):
+    resolution: {integrity: sha512-eswRJCfiscDDcgu+0DPBdpYKRCVXaeFOOp9h4Y4ixoCCeGoEwgNi/P9zp39O+61pLWxZ3pAShTY0pe8vw5LtrQ==}
+    hasBin: true
+    dependencies:
+      '@microsoft/api-extractor-model': 7.28.13(@types/node@20.11.24)
+      '@microsoft/tsdoc': 0.14.2
+      '@microsoft/tsdoc-config': 0.16.2
+      '@rushstack/node-core-library': 4.0.2(@types/node@20.11.24)
+      '@rushstack/rig-package': 0.5.2
+      '@rushstack/terminal': 0.10.0(@types/node@20.11.24)
+      '@rushstack/ts-command-line': 4.18.1(@types/node@20.11.24)
+      lodash: 4.17.21
+      minimatch: 3.0.8
+      resolve: 1.22.8
+      semver: 7.5.4
+      source-map: 0.6.1
+      typescript: 5.3.3
+    transitivePeerDependencies:
+      - '@types/node'
+    dev: true
+
   /@microsoft/tsdoc-config@0.16.2:
     resolution: {integrity: sha512-OGiIzzoBLgWWR0UdRJX98oYO+XKGf7tiK4Zk6tQ/E4IJqGCe7dvkTvgDZV5cFJUzLGDOjeAXrnZoA6QkVySuxw==}
     dependencies:
@@ -1415,7 +1452,7 @@ packages:
       - typescript
     dev: true
 
-  /@rushstack/heft-api-extractor-plugin@0.3.17(@rushstack/heft@0.65.8)(@types/node@20.11.24):
+  /@rushstack/heft-api-extractor-plugin@0.3.17(patch_hash=vnsnze2aosi7bjuzjljbqfo72q)(@rushstack/heft@0.65.8)(@types/node@20.11.24):
     resolution: {integrity: sha512-677bd3cBrK91+iFKH+zsyyYcmjPxkr6g3fbpCnrjsRegR7xMaXQKSLWTxoFZZKxKKC9eCbtIke4nWrgFxRrIPw==}
     peerDependencies:
       '@rushstack/heft': 0.65.8
@@ -1427,6 +1464,7 @@ packages:
     transitivePeerDependencies:
       - '@types/node'
     dev: true
+    patched: true
 
   /@rushstack/heft-config-file@0.14.14(@types/node@20.11.24):
     resolution: {integrity: sha512-3DolQTSw7GTq3GtIPgTAL9bkuNxy2Z3niUN9MAgYxNla0Bi6d2SDRjTnDirLbasRhU8T/9AbGuiLwExiBnQ3sA==}
@@ -5550,6 +5588,12 @@ packages:
 
   /minimalistic-assert@1.0.1:
     resolution: {integrity: sha512-UtJcAD4yEaGtjPezWuO9wC4nwUnVH/8/Im3yEHQP4b67cXlD/Qr9hdITCU1xDbSEXg2XKNaP8jsReV7vQd00/A==}
+    dev: true
+
+  /minimatch@3.0.8:
+    resolution: {integrity: sha512-6FsRAQsxQ61mw+qP1ZzbL9Bc78x2p5OqNgNpnoAFLTrX8n5Kxph0CsnhmKKNXTWjXqU5L0pGPR7hYk+XWZr60Q==}
+    dependencies:
+      brace-expansion: 1.1.11
     dev: true
 
   /minimatch@3.1.2:

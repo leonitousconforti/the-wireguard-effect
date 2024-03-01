@@ -37,6 +37,7 @@
         "@effect/printer-ansi": "0.32.10",
         "@effect/schema": "0.63.2",
         "@effect/typeclass": "0.23.1",
+        "@microsoft/api-extractor": "7.42.1",
         "@protobuf-ts/runtime": "2.9.3",
         "@protobuf-ts/runtime-rpc": "2.9.3",
         "@rushstack/eslint-config": "3.6.4",
@@ -81,8 +82,9 @@
     },
     "pnpm": {
         "patchedDependencies": {
+            "@rushstack/heft@0.65.8": "patches/@rushstack__heft@0.65.8.patch",
             "@rushstack/heft-jest-plugin@0.11.18": "patches/@rushstack__heft-jest-plugin@0.11.18.patch",
-            "@rushstack/heft@0.65.8": "patches/@rushstack__heft@0.65.8.patch"
+            "@rushstack/heft-api-extractor-plugin@0.3.17": "patches/@rushstack__heft-api-extractor-plugin@0.3.17.patch"
         }
     }
 }
