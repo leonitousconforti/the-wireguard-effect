@@ -15,7 +15,6 @@ module.exports = {
     parserOptions: { ecmaVersion: 2022, sourceType: "module" },
     rules: {
         "no-console": "warn",
-        "tsdoc/syntax": "off",
         "@typescript-eslint/typedef": "off",
         "unicorn/no-array-callback-reference": "off",
         "unicorn/no-array-method-this-argument": "off",
