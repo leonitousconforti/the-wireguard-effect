@@ -17,9 +17,10 @@
     "main": "dist/src/index.js",
     "files": [
         "dist/src",
-        "dist/package.json"
+        "dist/build"
     ],
     "scripts": {
+        "api-extractor": "api-extractor run --local --verbose",
         "build": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" heft test --clean --production",
         "dev": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" heft test-watch --clean"
     },
