@@ -1,5 +1,6 @@
 import * as net from "node:net";
 
+import * as Platform from "@effect/platform";
 import * as PlatformNode from "@effect/platform-node";
 import * as Cause from "effect/Cause";
 import * as Console from "effect/Console";
@@ -33,13 +34,15 @@ const ping = (endpoint: string): Effect.Effect<void, Cause.TimeoutException, nev
         .pipe(Effect.timeout("5 seconds"))
         .pipe(Effect.retry({ times: 3 }));
 
-export const main: Effect.Effect<void, Wireguard.WireguardError | Cause.TimeoutException, never> = Effect.gen(
-    function* (λ) {
-        yield* λ(config.upScoped());
-        const peer1Endpoint = config.Peers[0].Endpoint;
-        yield* λ(Console.log(peer1Endpoint));
-        yield* λ(ping(`${peer1Endpoint.ip}:${peer1Endpoint.port}`));
-    }
-).pipe(Effect.scoped);
+export const main: Effect.Effect<
+    void,
+    Wireguard.WireguardError | Cause.TimeoutException,
+    Platform.FileSystem.FileSystem
+> = Effect.gen(function* (λ) {
+    yield* λ(config.upScoped());
+    const peer1Endpoint = config.Peers[0].Endpoint;
+    yield* λ(Console.log(peer1Endpoint));
+    yield* λ(ping(`${peer1Endpoint.ip}:${peer1Endpoint.port}`));
+}).pipe(Effect.scoped);
 
 Effect.suspend(() => main).pipe(Effect.provide(PlatformNode.NodeContext.layer), PlatformNode.NodeRuntime.runMain);
