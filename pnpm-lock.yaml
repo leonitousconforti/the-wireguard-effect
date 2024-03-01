@@ -5,12 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
-  '@rushstack/heft-jest-plugin@0.11.17':
+  '@rushstack/heft-jest-plugin@0.11.18':
     hash: n6k2ue4lp6ap7o3pnlbmjotjeu
-    path: patches/@rushstack__heft-jest-plugin@0.11.17.patch
-  '@rushstack/heft@0.65.7':
+    path: patches/@rushstack__heft-jest-plugin@0.11.18.patch
+  '@rushstack/heft@0.65.8':
     hash: ox6odirr3wstbc5ukwnhm7ow6q
-    path: patches/@rushstack__heft@0.65.7.patch
+    path: patches/@rushstack__heft@0.65.8.patch
 
 dependencies:
   execa:
@@ -22,32 +22,32 @@ dependencies:
 
 devDependencies:
   '@actions/artifact':
-    specifier: 2.1.3
-    version: 2.1.3
+    specifier: 2.1.4
+    version: 2.1.4
   '@actions/core':
     specifier: 1.10.1
     version: 1.10.1
   '@effect/experimental':
-    specifier: 0.9.19
-    version: 0.9.19(@effect/platform-node@0.44.10)(@effect/platform@0.46.2)(@effect/schema@0.63.1)(effect@2.4.0)(ws@8.16.0)
+    specifier: 0.9.20
+    version: 0.9.20(@effect/platform-node@0.44.11)(@effect/platform@0.46.3)(@effect/schema@0.63.2)(effect@2.4.1)(ws@8.16.0)
   '@effect/platform':
-    specifier: 0.46.2
-    version: 0.46.2(@effect/schema@0.63.1)(effect@2.4.0)
+    specifier: 0.46.3
+    version: 0.46.3(@effect/schema@0.63.2)(effect@2.4.1)
   '@effect/platform-node':
-    specifier: 0.44.10
-    version: 0.44.10(@effect/platform@0.46.2)(effect@2.4.0)
+    specifier: 0.44.11
+    version: 0.44.11(@effect/platform@0.46.3)(effect@2.4.1)
   '@effect/printer':
-    specifier: 0.31.9
-    version: 0.31.9(@effect/typeclass@0.23.0)(effect@2.4.0)
+    specifier: 0.31.10
+    version: 0.31.10(@effect/typeclass@0.23.1)(effect@2.4.1)
   '@effect/printer-ansi':
-    specifier: 0.32.9
-    version: 0.32.9(@effect/typeclass@0.23.0)(effect@2.4.0)
+    specifier: 0.32.10
+    version: 0.32.10(@effect/typeclass@0.23.1)(effect@2.4.1)
   '@effect/schema':
-    specifier: 0.63.1
-    version: 0.63.1(effect@2.4.0)(fast-check@3.15.1)
+    specifier: 0.63.2
+    version: 0.63.2(effect@2.4.1)(fast-check@3.15.1)
   '@effect/typeclass':
-    specifier: 0.23.0
-    version: 0.23.0(effect@2.4.0)
+    specifier: 0.23.1
+    version: 0.23.1(effect@2.4.1)
   '@protobuf-ts/runtime':
     specifier: 2.9.3
     version: 2.9.3
@@ -58,23 +58,23 @@ devDependencies:
     specifier: 3.6.4
     version: 3.6.4(eslint@8.57.0)(supports-color@9.4.0)(typescript@5.3.3)
   '@rushstack/heft':
-    specifier: 0.65.7
-    version: 0.65.7(patch_hash=ox6odirr3wstbc5ukwnhm7ow6q)(@types/node@20.11.24)
+    specifier: 0.65.8
+    version: 0.65.8(patch_hash=ox6odirr3wstbc5ukwnhm7ow6q)(@types/node@20.11.24)
   '@rushstack/heft-api-extractor-plugin':
-    specifier: 0.3.16
-    version: 0.3.16(@rushstack/heft@0.65.7)(@types/node@20.11.24)
+    specifier: 0.3.17
+    version: 0.3.17(@rushstack/heft@0.65.8)(@types/node@20.11.24)
   '@rushstack/heft-jest-plugin':
-    specifier: 0.11.17
-    version: 0.11.17(patch_hash=n6k2ue4lp6ap7o3pnlbmjotjeu)(@rushstack/heft@0.65.7)(@types/node@20.11.24)(supports-color@9.4.0)
+    specifier: 0.11.18
+    version: 0.11.18(patch_hash=n6k2ue4lp6ap7o3pnlbmjotjeu)(@rushstack/heft@0.65.8)(@types/node@20.11.24)(supports-color@9.4.0)
   '@rushstack/heft-lint-plugin':
-    specifier: 0.3.16
-    version: 0.3.16(@rushstack/heft@0.65.7)(@types/node@20.11.24)
+    specifier: 0.3.17
+    version: 0.3.17(@rushstack/heft@0.65.8)(@types/node@20.11.24)
   '@rushstack/heft-typescript-plugin':
-    specifier: 0.3.16
-    version: 0.3.16(@rushstack/heft@0.65.7)(@types/node@20.11.24)
+    specifier: 0.3.17
+    version: 0.3.17(@rushstack/heft@0.65.8)(@types/node@20.11.24)
   '@rushstack/heft-webpack5-plugin':
-    specifier: 0.9.33
-    version: 0.9.33(@rushstack/heft@0.65.7)(@types/node@20.11.24)(bufferutil@4.0.8)(supports-color@9.4.0)(utf-8-validate@6.0.3)(webpack@5.82.1)
+    specifier: 0.9.34
+    version: 0.9.34(@rushstack/heft@0.65.8)(@types/node@20.11.24)(bufferutil@4.0.8)(supports-color@9.4.0)(utf-8-validate@6.0.3)(webpack@5.82.1)
   '@types/heft-jest':
     specifier: 1.0.6
     version: 1.0.6
@@ -94,8 +94,8 @@ devDependencies:
     specifier: 7.0.3
     version: 7.0.3
   effect:
-    specifier: 2.4.0
-    version: 2.4.0
+    specifier: 2.4.1
+    version: 2.4.1
   eslint:
     specifier: 8.57.0
     version: 8.57.0(supports-color@9.4.0)
@@ -149,8 +149,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /@actions/artifact@2.1.3:
-    resolution: {integrity: sha512-ovuxwbMn0aX8zeQ2ORiZZ0KQYhWwW4NuTCBie530rvxUqaq/83XpqWl1/tHONJuVkck46lfShxjfxhLywTKwyg==}
+  /@actions/artifact@2.1.4:
+    resolution: {integrity: sha512-nKgNduFA02drKt4rFqXsF6PjWmfKdxZDuWWdenoI1bBzgys3y8O7kw4gAS+gvLOT3EfsyV+mwTIisuXBjwQ3RA==}
     dependencies:
       '@actions/core': 1.10.1
       '@actions/github': 5.1.1
@@ -196,12 +196,12 @@ packages:
       undici: 5.28.3
     dev: true
 
-  /@ampproject/remapping@2.2.1:
-    resolution: {integrity: sha512-lFMjJTrFL3j7L9yBxwYfCq2k6qqwHyzuUl/XBnif78PWTJYyL/dfowQHWE3sp6U6ZzqWiiIZnpTMO96zhkjwtg==}
+  /@ampproject/remapping@2.3.0:
+    resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.4
-      '@jridgewell/trace-mapping': 0.3.23
+      '@jridgewell/gen-mapping': 0.3.5
+      '@jridgewell/trace-mapping': 0.3.24
     dev: true
 
   /@azure/abort-controller@1.1.0:
@@ -322,7 +322,7 @@ packages:
     resolution: {integrity: sha512-fQfkg0Gjkza3nf0c7/w6Xf34BW4YvzNfACRLmmb7XRLa6XHdR+K9AlJlxneFfWYf6uhOzuzZVTjF/8KfndZANw==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@ampproject/remapping': 2.2.1
+      '@ampproject/remapping': 2.3.0
       '@babel/code-frame': 7.23.5
       '@babel/generator': 7.23.6
       '@babel/helper-compilation-targets': 7.23.6
@@ -346,8 +346,8 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/types': 7.24.0
-      '@jridgewell/gen-mapping': 0.3.4
-      '@jridgewell/trace-mapping': 0.3.23
+      '@jridgewell/gen-mapping': 0.3.5
+      '@jridgewell/trace-mapping': 0.3.24
       jsesc: 2.5.2
     dev: true
 
@@ -634,13 +634,13 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@effect/experimental@0.9.19(@effect/platform-node@0.44.10)(@effect/platform@0.46.2)(@effect/schema@0.63.1)(effect@2.4.0)(ws@8.16.0):
-    resolution: {integrity: sha512-Lt/5Q14D/M/LwIXrmMiwhx/rTGaMMYsvJzkITjQGiv/9H2LXp6Likj+nRZrPDztPrmrLKG7UY64RkYDHXG6Wfw==}
+  /@effect/experimental@0.9.20(@effect/platform-node@0.44.11)(@effect/platform@0.46.3)(@effect/schema@0.63.2)(effect@2.4.1)(ws@8.16.0):
+    resolution: {integrity: sha512-YR5ev8ijr39QAw715Oltlp4IdZTV5UwLFYn8yTJHKfBexcuXrE0F1EPx5vuXEIsuD8aLKB/WWZ4BdJa/yW0V8g==}
     peerDependencies:
-      '@effect/platform': ^0.46.2
-      '@effect/platform-node': ^0.44.10
-      '@effect/schema': ^0.63.1
-      effect: ^2.4.0
+      '@effect/platform': ^0.46.3
+      '@effect/platform-node': ^0.44.11
+      '@effect/schema': ^0.63.2
+      effect: ^2.4.1
       lmdb: ^2.9.2
       ws: ^8.14
     peerDependenciesMeta:
@@ -651,88 +651,88 @@ packages:
       ws:
         optional: true
     dependencies:
-      '@effect/platform': 0.46.2(@effect/schema@0.63.1)(effect@2.4.0)
-      '@effect/platform-node': 0.44.10(@effect/platform@0.46.2)(effect@2.4.0)
-      '@effect/schema': 0.63.1(effect@2.4.0)(fast-check@3.15.1)
-      effect: 2.4.0
+      '@effect/platform': 0.46.3(@effect/schema@0.63.2)(effect@2.4.1)
+      '@effect/platform-node': 0.44.11(@effect/platform@0.46.3)(effect@2.4.1)
+      '@effect/schema': 0.63.2(effect@2.4.1)(fast-check@3.15.1)
+      effect: 2.4.1
       isomorphic-ws: 5.0.0(ws@8.16.0)
       msgpackr: 1.10.1
       ws: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     dev: true
 
-  /@effect/platform-node-shared@0.2.2(@effect/platform@0.46.2)(effect@2.4.0):
-    resolution: {integrity: sha512-eybC46ZLOO1zVZWJfwanzkcGylRatATS5ohRnFlFKIKKl0yYC/BboaUAw1arMBIX6tfOBnFuBlvifdTwTezXsQ==}
+  /@effect/platform-node-shared@0.2.3(@effect/platform@0.46.3)(effect@2.4.1):
+    resolution: {integrity: sha512-H+cwy1O1wqhS5B/F8KiU6vbhSZsTetbe7d5IcJZ3I2iHYqYQIhbJXSsCjBLTyF+s6IdMJLqq//j2VCQKheoUJw==}
     peerDependencies:
-      '@effect/platform': ^0.46.2
-      effect: ^2.4.0
+      '@effect/platform': ^0.46.3
+      effect: ^2.4.1
     dependencies:
-      '@effect/platform': 0.46.2(@effect/schema@0.63.1)(effect@2.4.0)
-      effect: 2.4.0
+      '@effect/platform': 0.46.3(@effect/schema@0.63.2)(effect@2.4.1)
+      effect: 2.4.1
       multipasta: 0.1.21
     dev: true
 
-  /@effect/platform-node@0.44.10(@effect/platform@0.46.2)(effect@2.4.0):
-    resolution: {integrity: sha512-U+VGDXosEMNnc27m5mUrINGSpCfhYVoyFJW+3gt2tFeookg5SIr2nVQeo+JrAmOqebVwjLExLuS6Ts/Sce4Aag==}
+  /@effect/platform-node@0.44.11(@effect/platform@0.46.3)(effect@2.4.1):
+    resolution: {integrity: sha512-cj2vDaMcpxlvPeEtuzsN7fznmmCAKU6H7HGRKkzXpny8uY0zvAGJU2kFuTSRo26oJaRvJaaYHhHERAlv8vo9wA==}
     peerDependencies:
-      '@effect/platform': ^0.46.2
-      effect: ^2.4.0
+      '@effect/platform': ^0.46.3
+      effect: ^2.4.1
     dependencies:
-      '@effect/platform': 0.46.2(@effect/schema@0.63.1)(effect@2.4.0)
-      '@effect/platform-node-shared': 0.2.2(@effect/platform@0.46.2)(effect@2.4.0)
-      effect: 2.4.0
+      '@effect/platform': 0.46.3(@effect/schema@0.63.2)(effect@2.4.1)
+      '@effect/platform-node-shared': 0.2.3(@effect/platform@0.46.3)(effect@2.4.1)
+      effect: 2.4.1
       mime: 3.0.0
     dev: true
 
-  /@effect/platform@0.46.2(@effect/schema@0.63.1)(effect@2.4.0):
-    resolution: {integrity: sha512-DR/YBFxT7Ds7+U2/DeDupOqzYe6/3OJfRfDa5Ugne2Z/IHSxjYQ8nHxka4p4s19/SqWmT3ESWGyyK50rm1p5hQ==}
+  /@effect/platform@0.46.3(@effect/schema@0.63.2)(effect@2.4.1):
+    resolution: {integrity: sha512-FnCUE21hxxkwQ8/NlhvKOgvUEfSq0UEeBhsAWVj397wPs6B+NqrfB5DZUpGPy3Y8lbs/ioUqXsxQZsyUHHYpgw==}
     peerDependencies:
-      '@effect/schema': ^0.63.1
-      effect: ^2.4.0
+      '@effect/schema': ^0.63.2
+      effect: ^2.4.1
     dependencies:
-      '@effect/schema': 0.63.1(effect@2.4.0)(fast-check@3.15.1)
-      effect: 2.4.0
+      '@effect/schema': 0.63.2(effect@2.4.1)(fast-check@3.15.1)
+      effect: 2.4.1
       find-my-way-ts: 0.1.1
       multipasta: 0.1.21
       path-browserify: 1.0.1
     dev: true
 
-  /@effect/printer-ansi@0.32.9(@effect/typeclass@0.23.0)(effect@2.4.0):
-    resolution: {integrity: sha512-EJiS07ASmc6c5uPIjiDXOJYXI2pda1L9XQr6FajUgJOGPdWGopYXtURN5oDiy9sScy6E6D6ct0NuxqlIBlPW/A==}
+  /@effect/printer-ansi@0.32.10(@effect/typeclass@0.23.1)(effect@2.4.1):
+    resolution: {integrity: sha512-BOLoDUOP840C5WaTfCxAvvoSp8XXwrrH6GnF9WjJ9ViKOL8EZKc0G1PQMLqZwLl7uero0It1Q4Og+PIVDdV+IQ==}
     peerDependencies:
-      '@effect/typeclass': ^0.23.0
-      effect: ^2.4.0
+      '@effect/typeclass': ^0.23.1
+      effect: ^2.4.1
     dependencies:
-      '@effect/printer': 0.31.9(@effect/typeclass@0.23.0)(effect@2.4.0)
-      '@effect/typeclass': 0.23.0(effect@2.4.0)
-      effect: 2.4.0
+      '@effect/printer': 0.31.10(@effect/typeclass@0.23.1)(effect@2.4.1)
+      '@effect/typeclass': 0.23.1(effect@2.4.1)
+      effect: 2.4.1
     dev: true
 
-  /@effect/printer@0.31.9(@effect/typeclass@0.23.0)(effect@2.4.0):
-    resolution: {integrity: sha512-3vK34sHWfRqrr8g24NxO+4Fl5A/MvUZ+6QmITsgdzz+N4VAXSxarMMFmBpnnK1vzINfDUFHV9T28+WI7rv10Aw==}
+  /@effect/printer@0.31.10(@effect/typeclass@0.23.1)(effect@2.4.1):
+    resolution: {integrity: sha512-wmrCUhKB6YB/o+JrBsJBD73M/EVuL2yqypXbT4UdqoPtm7zNoQs3WQ5iOmP93yB15KAB82FKdWh67F3roR8gUg==}
     peerDependencies:
-      '@effect/typeclass': ^0.23.0
-      effect: ^2.4.0
+      '@effect/typeclass': ^0.23.1
+      effect: ^2.4.1
     dependencies:
-      '@effect/typeclass': 0.23.0(effect@2.4.0)
-      effect: 2.4.0
+      '@effect/typeclass': 0.23.1(effect@2.4.1)
+      effect: 2.4.1
     dev: true
 
-  /@effect/schema@0.63.1(effect@2.4.0)(fast-check@3.15.1):
-    resolution: {integrity: sha512-Vs7g72qbPTLWXZ4jcaPzprfbY1ODZxwqfOTrMhwvSUc6kgt1i2KP88LxFy7dFLJasx3CYPz8MTvP0x8mbBCftw==}
+  /@effect/schema@0.63.2(effect@2.4.1)(fast-check@3.15.1):
+    resolution: {integrity: sha512-piS+6dlGmcX8sAPGXdY4T6QmBbY2YXVnYjUguXpClk6FL7lQ9u2aIDib5kjCpciawJjil2VwltmPnMj0NJKKQQ==}
     peerDependencies:
-      effect: ^2.4.0
+      effect: ^2.4.1
       fast-check: ^3.13.2
     dependencies:
-      effect: 2.4.0
+      effect: 2.4.1
       fast-check: 3.15.1
     dev: true
 
-  /@effect/typeclass@0.23.0(effect@2.4.0):
-    resolution: {integrity: sha512-AqQh9ZkHEx0RP8PBccXxSAe+yDenXcVivzFcgeboW7dRw9Rp6GCKDssEoNySh3kC0uAXweVh2Ycz8Ynbax22Ug==}
+  /@effect/typeclass@0.23.1(effect@2.4.1):
+    resolution: {integrity: sha512-9IpWSR8sqBAaaXgoLZmCmvpS1CVQmrvXE0xB3ABFR+f4RjrMrnKE+5Np5YuXrc9n3cwGQiGSAD4s259yn8MNsQ==}
     peerDependencies:
-      effect: ^2.4.0
+      effect: ^2.4.1
     dependencies:
-      effect: 2.4.0
+      effect: 2.4.1
     dev: true
 
   /@eslint-community/eslint-utils@4.4.0(eslint@8.57.0):
@@ -933,7 +933,7 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.5.0(supports-color@9.4.0)
       '@jest/types': 29.6.3
-      '@jridgewell/trace-mapping': 0.3.23
+      '@jridgewell/trace-mapping': 0.3.24
       '@types/node': 20.11.24
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
@@ -967,7 +967,7 @@ packages:
     resolution: {integrity: sha512-MHjT95QuipcPrpLM+8JMSzFx6eHp5Bm+4XeFDJlwsvVBjmKNiIAvasGK2fxz2WbGRlnvqehFbh07MMa7n3YJnw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@jridgewell/trace-mapping': 0.3.23
+      '@jridgewell/trace-mapping': 0.3.24
       callsites: 3.1.0
       graceful-fs: 4.2.11
     dev: true
@@ -998,7 +998,7 @@ packages:
     dependencies:
       '@babel/core': 7.24.0(supports-color@9.4.0)
       '@jest/types': 29.6.3
-      '@jridgewell/trace-mapping': 0.3.23
+      '@jridgewell/trace-mapping': 0.3.24
       babel-plugin-istanbul: 6.1.1(supports-color@9.4.0)
       chalk: 4.1.2
       convert-source-map: 2.0.0
@@ -1021,7 +1021,7 @@ packages:
     dependencies:
       '@babel/core': 7.24.0(supports-color@9.4.0)
       '@jest/types': 29.6.3
-      '@jridgewell/trace-mapping': 0.3.23
+      '@jridgewell/trace-mapping': 0.3.24
       babel-plugin-istanbul: 6.1.1(supports-color@9.4.0)
       chalk: 4.1.2
       convert-source-map: 2.0.0
@@ -1050,13 +1050,13 @@ packages:
       chalk: 4.1.2
     dev: true
 
-  /@jridgewell/gen-mapping@0.3.4:
-    resolution: {integrity: sha512-Oud2QPM5dHviZNn4y/WhhYKSXksv+1xLEIsNrAbGcFzUN3ubqWRFT5gwPchNc5NuzILOU4tPBDTZ4VwhL8Y7cw==}
+  /@jridgewell/gen-mapping@0.3.5:
+    resolution: {integrity: sha512-IzL8ZoEDIBRWEzlCcRhOaCupYyN5gdIK+Q6fbFdPDg6HqX6jpkItn7DFIpW9LQzXG6Df9sA7+OKnq0qlz/GaQg==}
     engines: {node: '>=6.0.0'}
     dependencies:
       '@jridgewell/set-array': 1.2.1
       '@jridgewell/sourcemap-codec': 1.4.15
-      '@jridgewell/trace-mapping': 0.3.23
+      '@jridgewell/trace-mapping': 0.3.24
     dev: true
 
   /@jridgewell/resolve-uri@3.1.2:
@@ -1072,16 +1072,16 @@ packages:
   /@jridgewell/source-map@0.3.5:
     resolution: {integrity: sha512-UTYAUj/wviwdsMfzoSJspJxbkH5o1snzwX0//0ENX1u/55kkZZkcTZP6u9bwKGkv+dkk9at4m1Cpt0uY80kcpQ==}
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.4
-      '@jridgewell/trace-mapping': 0.3.23
+      '@jridgewell/gen-mapping': 0.3.5
+      '@jridgewell/trace-mapping': 0.3.24
     dev: true
 
   /@jridgewell/sourcemap-codec@1.4.15:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
     dev: true
 
-  /@jridgewell/trace-mapping@0.3.23:
-    resolution: {integrity: sha512-9/4foRoUKp8s96tSkh8DlAAc5A0Ty8vLXld+l9gjKKY6ckwI8G15f0hskGmuLZu78ZlGa1vtsfOa+lnB4vG6Jg==}
+  /@jridgewell/trace-mapping@0.3.24:
+    resolution: {integrity: sha512-+VaWXDa6+l6MhflBvVXjIEAzb59nQ2JUK3bwRp2zRpPtU+8TFRy9Gg/5oIcNlkEL5PGlBFGfemUVvIgLnTzq7Q==}
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
@@ -1338,8 +1338,8 @@ packages:
     resolution: {integrity: sha512-nivzCpg/qYD0RX2OmHOahJALb8ndjGmUhNBcTJ0BbXoqKwCSM6vYA+vegzS3rhuaPgbyC7Ec8idlnizzUfIRuw==}
     dev: true
 
-  /@rushstack/debug-certificate-manager@1.3.33(@types/node@20.11.24):
-    resolution: {integrity: sha512-liNSMTTt5xLXiLjC5d4jxnIR5qd6V/BeX4iUEVvecWQqNbguOMmTqizWF4NUeXQy+Y7+HK4WNaplzbX/JYbVoQ==}
+  /@rushstack/debug-certificate-manager@1.3.34(@types/node@20.11.24):
+    resolution: {integrity: sha512-CDVnumbPAGUvZ1OTwFM+Y4X322wfuoUQAvwfVkNDilMrUR4kUS/JFx4SFGRf474G9BIAL0O6YuKtHu2Qee+8Xg==}
     dependencies:
       '@rushstack/node-core-library': 4.0.2(@types/node@20.11.24)
       '@rushstack/terminal': 0.10.0(@types/node@20.11.24)
@@ -1415,12 +1415,12 @@ packages:
       - typescript
     dev: true
 
-  /@rushstack/heft-api-extractor-plugin@0.3.16(@rushstack/heft@0.65.7)(@types/node@20.11.24):
-    resolution: {integrity: sha512-zQR9a2sejpuEac9FfR/OmAPLOO8NDiSpAxKXacGDPa2Tx3j9gk9kg5l+3TatX+KhTzxCTk4X3a+NxvipERH/rg==}
+  /@rushstack/heft-api-extractor-plugin@0.3.17(@rushstack/heft@0.65.8)(@types/node@20.11.24):
+    resolution: {integrity: sha512-677bd3cBrK91+iFKH+zsyyYcmjPxkr6g3fbpCnrjsRegR7xMaXQKSLWTxoFZZKxKKC9eCbtIke4nWrgFxRrIPw==}
     peerDependencies:
-      '@rushstack/heft': 0.65.7
+      '@rushstack/heft': 0.65.8
     dependencies:
-      '@rushstack/heft': 0.65.7(patch_hash=ox6odirr3wstbc5ukwnhm7ow6q)(@types/node@20.11.24)
+      '@rushstack/heft': 0.65.8(patch_hash=ox6odirr3wstbc5ukwnhm7ow6q)(@types/node@20.11.24)
       '@rushstack/heft-config-file': 0.14.14(@types/node@20.11.24)
       '@rushstack/node-core-library': 4.0.2(@types/node@20.11.24)
       semver: 7.5.4
@@ -1440,10 +1440,10 @@ packages:
       - '@types/node'
     dev: true
 
-  /@rushstack/heft-jest-plugin@0.11.17(patch_hash=n6k2ue4lp6ap7o3pnlbmjotjeu)(@rushstack/heft@0.65.7)(@types/node@20.11.24)(supports-color@9.4.0):
-    resolution: {integrity: sha512-NV1ol4DwBWjtPVh1h9bJq6OiZSD1/O6cBuIljJ5b1TIMTa5PRoJmXftVRKAWJ5qIWDYRVgq46P0flJSXyyafDQ==}
+  /@rushstack/heft-jest-plugin@0.11.18(patch_hash=n6k2ue4lp6ap7o3pnlbmjotjeu)(@rushstack/heft@0.65.8)(@types/node@20.11.24)(supports-color@9.4.0):
+    resolution: {integrity: sha512-ax6xTCTx94cJRXpyLHBXNSFqnVHggPESebrEXYYHFNuldiDbb0ckvMh7oeIcuNxZO8psDtIkXy3Cl4idI+sivg==}
     peerDependencies:
-      '@rushstack/heft': ^0.65.7
+      '@rushstack/heft': ^0.65.8
       jest-environment-jsdom: ^29.5.0
       jest-environment-node: ^29.5.0
     peerDependenciesMeta:
@@ -1455,7 +1455,7 @@ packages:
       '@jest/core': 29.5.0(supports-color@9.4.0)
       '@jest/reporters': 29.5.0(supports-color@9.4.0)
       '@jest/transform': 29.5.0(supports-color@9.4.0)
-      '@rushstack/heft': 0.65.7(patch_hash=ox6odirr3wstbc5ukwnhm7ow6q)(@types/node@20.11.24)
+      '@rushstack/heft': 0.65.8(patch_hash=ox6odirr3wstbc5ukwnhm7ow6q)(@types/node@20.11.24)
       '@rushstack/heft-config-file': 0.14.14(@types/node@20.11.24)
       '@rushstack/node-core-library': 4.0.2(@types/node@20.11.24)
       '@rushstack/terminal': 0.10.0(@types/node@20.11.24)
@@ -1472,24 +1472,24 @@ packages:
     dev: true
     patched: true
 
-  /@rushstack/heft-lint-plugin@0.3.16(@rushstack/heft@0.65.7)(@types/node@20.11.24):
-    resolution: {integrity: sha512-9MU14LKxc8p8w2bDIYwjjxh4nHFWZn4bR6T7DK7iv0UZT0Ktwn24XgpHS+9z5wCiF6XDRbMoXqRoOrwg6lQKmw==}
+  /@rushstack/heft-lint-plugin@0.3.17(@rushstack/heft@0.65.8)(@types/node@20.11.24):
+    resolution: {integrity: sha512-OxeooioGc6nYYpZPSU5JjZPwyBsPosfSFbhFd0fkPp+0ahFk33JX+mqRxEQ2ZJF+iYL3GdZMkgZ/mG8+immGKw==}
     peerDependencies:
-      '@rushstack/heft': 0.65.7
+      '@rushstack/heft': 0.65.8
     dependencies:
-      '@rushstack/heft': 0.65.7(patch_hash=ox6odirr3wstbc5ukwnhm7ow6q)(@types/node@20.11.24)
+      '@rushstack/heft': 0.65.8(patch_hash=ox6odirr3wstbc5ukwnhm7ow6q)(@types/node@20.11.24)
       '@rushstack/node-core-library': 4.0.2(@types/node@20.11.24)
       semver: 7.5.4
     transitivePeerDependencies:
       - '@types/node'
     dev: true
 
-  /@rushstack/heft-typescript-plugin@0.3.16(@rushstack/heft@0.65.7)(@types/node@20.11.24):
-    resolution: {integrity: sha512-Enlryw6fZUnp1E7rnu4gTh2Xe5eOcuN6WdaQeu9+q7UNd+fdPN1OgwkyYAAF/i7NQkxrIqjLfDRMleL1fANyzA==}
+  /@rushstack/heft-typescript-plugin@0.3.17(@rushstack/heft@0.65.8)(@types/node@20.11.24):
+    resolution: {integrity: sha512-BLKw92rNdGt9HmPSrw18b0OlLjM32R58J8+F6TwEGwbXEu+To3rLe9E5OZfZ/zTKVLJH4W1mtUpvltnUFC0Xyg==}
     peerDependencies:
-      '@rushstack/heft': 0.65.7
+      '@rushstack/heft': 0.65.8
     dependencies:
-      '@rushstack/heft': 0.65.7(patch_hash=ox6odirr3wstbc5ukwnhm7ow6q)(@types/node@20.11.24)
+      '@rushstack/heft': 0.65.8(patch_hash=ox6odirr3wstbc5ukwnhm7ow6q)(@types/node@20.11.24)
       '@rushstack/heft-config-file': 0.14.14(@types/node@20.11.24)
       '@rushstack/node-core-library': 4.0.2(@types/node@20.11.24)
       '@types/tapable': 1.0.6
@@ -1499,14 +1499,14 @@ packages:
       - '@types/node'
     dev: true
 
-  /@rushstack/heft-webpack5-plugin@0.9.33(@rushstack/heft@0.65.7)(@types/node@20.11.24)(bufferutil@4.0.8)(supports-color@9.4.0)(utf-8-validate@6.0.3)(webpack@5.82.1):
-    resolution: {integrity: sha512-LygHFVcrkqcMIStcgwD8efBROfDhVOz2ZML+XQR1e5tRd2BBCO4vBTk79X9ldFMWmOVGk+56FopZmwNOa2sUYw==}
+  /@rushstack/heft-webpack5-plugin@0.9.34(@rushstack/heft@0.65.8)(@types/node@20.11.24)(bufferutil@4.0.8)(supports-color@9.4.0)(utf-8-validate@6.0.3)(webpack@5.82.1):
+    resolution: {integrity: sha512-Q6o0rxhoB5c83VIqQBZI99G41t/gwswBM+dGBZwRPoqbg/QojjkeobAxIMljj2wkXk/QhTHgprBSEVIBsNZ3LQ==}
     peerDependencies:
-      '@rushstack/heft': ^0.65.7
+      '@rushstack/heft': ^0.65.8
       webpack: ~5.82.1
     dependencies:
-      '@rushstack/debug-certificate-manager': 1.3.33(@types/node@20.11.24)
-      '@rushstack/heft': 0.65.7(patch_hash=ox6odirr3wstbc5ukwnhm7ow6q)(@types/node@20.11.24)
+      '@rushstack/debug-certificate-manager': 1.3.34(@types/node@20.11.24)
+      '@rushstack/heft': 0.65.8(patch_hash=ox6odirr3wstbc5ukwnhm7ow6q)(@types/node@20.11.24)
       '@rushstack/node-core-library': 4.0.2(@types/node@20.11.24)
       '@types/tapable': 1.0.6
       tapable: 1.1.3
@@ -1522,8 +1522,8 @@ packages:
       - webpack-cli
     dev: true
 
-  /@rushstack/heft@0.65.7(patch_hash=ox6odirr3wstbc5ukwnhm7ow6q)(@types/node@20.11.24):
-    resolution: {integrity: sha512-/CSGZF3DHAjzeUv96kxO3rMB768oFwZ3HijatJ0JseFU0ipMVhXh1viOSFU5NtlIr75LqTJ05Pftdk7cYTbceA==}
+  /@rushstack/heft@0.65.8(patch_hash=ox6odirr3wstbc5ukwnhm7ow6q)(@types/node@20.11.24):
+    resolution: {integrity: sha512-siw92sNwIVBDdoIr2pxfnips0stblKYHIEKIcT6hDAfZKuMp7TbuamZKSxY9SEp10IvC3ldqoWqVNvsYjOcNdg==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dependencies:
@@ -1532,7 +1532,7 @@ packages:
       '@rushstack/operation-graph': 0.2.14(@types/node@20.11.24)
       '@rushstack/rig-package': 0.5.2
       '@rushstack/terminal': 0.10.0(@types/node@20.11.24)
-      '@rushstack/ts-command-line': 4.18.0(@types/node@20.11.24)
+      '@rushstack/ts-command-line': 4.18.1(@types/node@20.11.24)
       '@types/tapable': 1.0.6
       fast-glob: 3.3.2
       git-repo-info: 2.1.1
@@ -1599,8 +1599,8 @@ packages:
     resolution: {integrity: sha512-IBsPzcdZhzlMfYWEZxK87Zuqzu7gEOY5eB6KkkD9HfMHLXP2l/54jKI0Tmo5OcbrVa8aivwy0AlVcaPlobLwaQ==}
     dev: true
 
-  /@rushstack/ts-command-line@4.18.0(@types/node@20.11.24):
-    resolution: {integrity: sha512-iq8+NCtnOhz4BR4hwmFCRzULmFd8hSbDqJWbdGG44t/fXMRsK3Drft1fiDkxWGPuD3V1x3RDYdXxAfJqKU3XpQ==}
+  /@rushstack/ts-command-line@4.18.1(@types/node@20.11.24):
+    resolution: {integrity: sha512-A3x3ARWzoW4ARU1XS87wFVJvdywzo2j27aRm5SIFY3Nwl5vQqo0hvzaQDYCq/hEGBxAdBGW8q6N5clNk36H34A==}
     dependencies:
       '@rushstack/terminal': 0.10.0(@types/node@20.11.24)
       '@types/argparse': 1.0.38
@@ -2607,7 +2607,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001591
-      electron-to-chromium: 1.4.688
+      electron-to-chromium: 1.4.690
       node-releases: 2.0.14
       update-browserslist-db: 1.0.13(browserslist@4.23.0)
     dev: true
@@ -3167,12 +3167,12 @@ packages:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
     dev: true
 
-  /effect@2.4.0:
-    resolution: {integrity: sha512-HAtFVAbAGYDzfGbrSrX1gzMzXym15zk1+ps72X8W1wdZY0vxq+u23w8u9DhAZjiJPHT4W9ZYL7QWQqpP4t+dSg==}
+  /effect@2.4.1:
+    resolution: {integrity: sha512-YsoMB/EGCohGKFyTPYqaFe2B7UCU2MM303dkoowF8DNOdks/4q/00cyhTbBUmM/0FMDoUPmUi/AJ0Aj3E7vO1A==}
     dev: true
 
-  /electron-to-chromium@1.4.688:
-    resolution: {integrity: sha512-3/tHg2ChPF00eukURIB8cSVt3/9oeS1oTUIEt3ivngBInUaEcBhG2VdyEDejhwQdR6SLqaiEAEc0dHS0V52pOw==}
+  /electron-to-chromium@1.4.690:
+    resolution: {integrity: sha512-+2OAGjUx68xElQhydpcbqH50hE8Vs2K6TkAeLhICYfndb67CVH0UsZaijmRUE3rHlIxU1u0jxwhgVe6fK3YANA==}
     dev: true
 
   /emittery@0.13.1:
@@ -6960,7 +6960,7 @@ packages:
       uglify-js:
         optional: true
     dependencies:
-      '@jridgewell/trace-mapping': 0.3.23
+      '@jridgewell/trace-mapping': 0.3.24
       jest-worker: 27.5.1
       schema-utils: 3.3.0
       serialize-javascript: 6.0.2
@@ -7276,7 +7276,7 @@ packages:
     resolution: {integrity: sha512-/EH/sDgxU2eGxajKdwLCDmQ4FWq+kpi3uCmBGpw1xJtnAxEjlD8j8PEiGWpCIMIs3ciNAgH0d3TTJiUkYzyZjA==}
     engines: {node: '>=10.12.0'}
     dependencies:
-      '@jridgewell/trace-mapping': 0.3.23
+      '@jridgewell/trace-mapping': 0.3.24
       '@types/istanbul-lib-coverage': 2.0.6
       convert-source-map: 2.0.0
     dev: true
