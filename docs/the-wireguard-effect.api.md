@@ -15,6 +15,21 @@ import * as ReadonlyArray_2 from 'effect/ReadonlyArray';
 import * as Schema from '@effect/schema/Schema';
 import * as Scope from 'effect/Scope';
 
+// Warning: (ae-internal-missing-underscore) The name "Address" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
+export const Address: Schema.Schema<string, string, never>;
+
+// Warning: (ae-internal-missing-underscore) The name "AddressFrom" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
+export type AddressFrom = Schema.Schema.From<typeof Address>;
+
+// Warning: (ae-internal-missing-underscore) The name "AddressTo" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
+export type AddressTo = Schema.Schema.To<typeof Address>;
+
 // Warning: (ae-forgotten-export) The symbol "CidrBlock" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "CidrBlockFrom" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -109,6 +124,33 @@ export const Port: Schema.Schema<number, number, never>;
 // @internal
 export type Port = Schema.Schema.To<typeof Port>;
 
+// Warning: (ae-internal-missing-underscore) The name "SetupData" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
+export const SetupData: Schema.Schema<readonly [{
+    readonly ip: string;
+    readonly port: number;
+} | {
+    readonly ip: string;
+    readonly port: number;
+}, string], readonly [{
+    readonly ip: string;
+    readonly port: number;
+} | `${string}:${number}` | {
+    readonly ip: string;
+    readonly port: number;
+} | `[${string}]:${number}`, string], never>;
+
+// Warning: (ae-internal-missing-underscore) The name "SetupDataFrom" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
+export type SetupDataFrom = Schema.Schema.From<typeof SetupData>;
+
+// Warning: (ae-internal-missing-underscore) The name "SetupDataTo" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
+export type SetupDataTo = Schema.Schema.To<typeof SetupData>;
+
 // Warning: (ae-forgotten-export) The symbol "WireguardConfig_base" needs to be exported by the entry point index.d.ts
 //
 // @public
@@ -116,20 +158,25 @@ export class WireguardConfig extends WireguardConfig_base {
     down: (interfaceName: WireguardInterfaceName) => Effect.Effect<void, Platform.Error.PlatformError | WireguardError, Platform.FileSystem.FileSystem>;
     static fromIniConfigFile: (file: string) => Effect.Effect<WireguardConfig, ParseResult.ParseError | Platform.Error.PlatformError, Platform.FileSystem.FileSystem>;
     static fromJsonConfigFile: (file: string) => Effect.Effect<WireguardConfig, ParseResult.ParseError | Platform.Error.PlatformError, Platform.FileSystem.FileSystem>;
-    // Warning: (ae-incompatible-release-tags) The symbol "generateHubSpokeConfigs" is marked as @public, but its signature references "EndpointFrom" which is marked as @internal
-    static generateHubSpokeConfigs: (hubEndpoint: EndpointFrom, spokeEndpoints: readonly [{
+    static generateHubSpokeConfigs: (hubData: readonly [{
         readonly ip: string;
         readonly port: number;
     } | `${string}:${number}` | {
         readonly ip: string;
         readonly port: number;
-    } | `[${string}]:${number}`, ...({
+    } | `[${string}]:${number}`, string], spokeData: readonly [readonly [{
         readonly ip: string;
         readonly port: number;
     } | `${string}:${number}` | {
         readonly ip: string;
         readonly port: number;
-    } | `[${string}]:${number}`)[]]) => Effect.Effect<[
+    } | `[${string}]:${number}`, string], ...(readonly [{
+        readonly ip: string;
+        readonly port: number;
+    } | `${string}:${number}` | {
+        readonly ip: string;
+        readonly port: number;
+    } | `[${string}]:${number}`, string])[]]) => Effect.Effect<[
     hubConfig: WireguardConfig,
     spokeConfigs: ReadonlyArray_2.NonEmptyReadonlyArray<WireguardConfig>
     ], ParseResult.ParseError, never>;
@@ -138,8 +185,8 @@ export class WireguardConfig extends WireguardConfig_base {
         publicKey: WireguardKey;
     };
     static generateP2PConfigs: {
-        (aliceEndpoint: EndpointFrom, bobEndpoint: EndpointFrom): Effect.Effect<[aliceConfig: WireguardConfig, bobConfig: WireguardConfig], ParseResult.ParseError, never>;
-        (aliceEndpoint: EndpointFrom): (bobEndpoint: EndpointFrom) => Effect.Effect<[aliceConfig: WireguardConfig, bobConfig: WireguardConfig], ParseResult.ParseError, never>;
+        (aliceData: SetupDataFrom, bobEndpoint: SetupDataFrom): Effect.Effect<[aliceConfig: WireguardConfig, bobConfig: WireguardConfig], ParseResult.ParseError, never>;
+        (aliceData: SetupDataFrom): (bobData: SetupDataFrom) => Effect.Effect<[aliceConfig: WireguardConfig, bobConfig: WireguardConfig], ParseResult.ParseError, never>;
     };
     up: (interfaceName?: Option.Option<WireguardInterfaceName>) => Effect.Effect<WireguardInterfaceName, WireguardError | Cause.TimeoutException, Platform.FileSystem.FileSystem>;
     upScoped: (interfaceName?: Option.Option<WireguardInterfaceName>) => Effect.Effect<WireguardInterfaceName, WireguardError | Cause.TimeoutException, Scope.Scope | Platform.FileSystem.FileSystem>;
@@ -188,10 +235,10 @@ export class WireguardPeer extends WireguardPeer_base {
 
 // Warnings were encountered during analysis:
 //
-// src/index.ts:571:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @public, but its signature references "EndpointFrom" which is marked as @internal
-// src/index.ts:575:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @public, but its signature references "EndpointFrom" which is marked as @internal
-// src/index.ts:660:43 - (ae-incompatible-release-tags) The symbol "privateKey" is marked as @public, but its signature references "WireguardKey" which is marked as @internal
-// src/index.ts:660:69 - (ae-incompatible-release-tags) The symbol "publicKey" is marked as @public, but its signature references "WireguardKey" which is marked as @internal
+// src/index.ts:614:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @public, but its signature references "SetupDataFrom" which is marked as @internal
+// src/index.ts:618:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @public, but its signature references "SetupDataFrom" which is marked as @internal
+// src/index.ts:705:43 - (ae-incompatible-release-tags) The symbol "privateKey" is marked as @public, but its signature references "WireguardKey" which is marked as @internal
+// src/index.ts:705:69 - (ae-incompatible-release-tags) The symbol "publicKey" is marked as @public, but its signature references "WireguardKey" which is marked as @internal
 
 // (No @packageDocumentation comment for this package)
 

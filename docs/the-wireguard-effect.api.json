@@ -399,16 +399,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "(hubEndpoint: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "EndpointFrom",
-                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": ", spokeEndpoints: readonly [{\n        readonly ip: string;\n        readonly port: number;\n    } | `${string}:${number}` | {\n        readonly ip: string;\n        readonly port: number;\n    } | `[${string}]:${number}`, ...({\n        readonly ip: string;\n        readonly port: number;\n    } | `${string}:${number}` | {\n        readonly ip: string;\n        readonly port: number;\n    } | `[${string}]:${number}`)[]]) => "
+                  "text": "(hubData: readonly [{\n        readonly ip: string;\n        readonly port: number;\n    } | `${string}:${number}` | {\n        readonly ip: string;\n        readonly port: number;\n    } | `[${string}]:${number}`, string], spokeData: readonly [readonly [{\n        readonly ip: string;\n        readonly port: number;\n    } | `${string}:${number}` | {\n        readonly ip: string;\n        readonly port: number;\n    } | `[${string}]:${number}`, string], ...(readonly [{\n        readonly ip: string;\n        readonly port: number;\n    } | `${string}:${number}` | {\n        readonly ip: string;\n        readonly port: number;\n    } | `[${string}]:${number}`, string])[]]) => "
                 },
                 {
                   "kind": "Reference",
@@ -466,7 +457,7 @@
               "name": "generateHubSpokeConfigs",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 14
+                "endIndex": 12
               },
               "isStatic": true,
               "isProtected": false,
@@ -531,12 +522,12 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "{\n        (aliceEndpoint: "
+                  "text": "{\n        (aliceData: "
                 },
                 {
                   "kind": "Reference",
-                  "text": "EndpointFrom",
-                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
+                  "text": "SetupDataFrom",
+                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
                 },
                 {
                   "kind": "Content",
@@ -544,8 +535,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "EndpointFrom",
-                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
+                  "text": "SetupDataFrom",
+                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
                 },
                 {
                   "kind": "Content",
@@ -585,21 +576,21 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ", never>;\n        (aliceEndpoint: "
+                  "text": ", never>;\n        (aliceData: "
                 },
                 {
                   "kind": "Reference",
-                  "text": "EndpointFrom",
-                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
+                  "text": "SetupDataFrom",
+                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
                 },
                 {
                   "kind": "Content",
-                  "text": "): (bobEndpoint: "
+                  "text": "): (bobData: "
                 },
                 {
                   "kind": "Reference",
-                  "text": "EndpointFrom",
-                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
+                  "text": "SetupDataFrom",
+                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
                 },
                 {
                   "kind": "Content",
