@@ -108,12 +108,13 @@ jobs:
           service-identifier: ${{ env.macos-service-identifier }}
 
   clients:
-    runs-on: ${{ matrix.os }}
+    # runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     needs: [compute-matricies, build]
-    strategy:
-      matrix:
-        os: ${{ fromJSON(needs.compute-matricies.outputs.os-variants) }}
-        node-version: ${{ fromJSON(needs.compute-matricies.outputs.node-versions) }}
+    # strategy:
+    #   matrix:
+    #     os: ${{ fromJSON(needs.compute-matricies.outputs.os-variants) }}
+    #     node-version: ${{ fromJSON(needs.compute-matricies.outputs.node-versions) }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/common-setup
@@ -121,18 +122,18 @@ jobs:
         uses: ./.github/actions/workflow-level-service/connect
         with:
           service-identifier: ${{ env.linux-service-identifier1 }}
-      - id: connect2
-        uses: ./.github/actions/workflow-level-service/connect
-        with:
-          service-identifier: ${{ env.linux-service-identifier2 }}
-      - id: connect3
-        uses: ./.github/actions/workflow-level-service/connect
-        with:
-          service-identifier: ${{ env.windows-service-identifier }}
-      - id: connect4
-        uses: ./.github/actions/workflow-level-service/connect
-        with:
-          service-identifier: ${{ env.macos-service-identifier }}
+      # - id: connect2
+      #   uses: ./.github/actions/workflow-level-service/connect
+      #   with:
+      #     service-identifier: ${{ env.linux-service-identifier2 }}
+      # - id: connect3
+      #   uses: ./.github/actions/workflow-level-service/connect
+      #   with:
+      #     service-identifier: ${{ env.windows-service-identifier }}
+      # - id: connect4
+      #   uses: ./.github/actions/workflow-level-service/connect
+      #   with:
+      #     service-identifier: ${{ env.macos-service-identifier }}
 
   stop-services:
     if: ${{ always() }}

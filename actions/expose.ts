@@ -62,8 +62,8 @@ const processConnectionRequest = (
             })
         );
 
-        const aliceData = Tuple.make(myLocation, "");
-        const bobData = Tuple.make(`${clientIp}:${Number.parseInt(natPort)}` as const, "");
+        const aliceData = Tuple.make(myLocation, "10.0.0.1");
+        const bobData = Tuple.make(`${clientIp}:${Number.parseInt(natPort)}` as const, "10.0.0.2");
         const [aliceConfig, bobConfig] = yield* λ(Wireguard.WireguardConfig.generateP2PConfigs(aliceData, bobData));
         yield* λ(aliceConfig.up());
         yield* λ(
