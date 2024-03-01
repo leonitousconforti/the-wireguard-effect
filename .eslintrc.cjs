@@ -29,6 +29,7 @@ module.exports = {
             files: ["src/index.ts"],
             rules: {
                 "dot-notation": "off",
+                "unicorn/switch-case-braces": "off",
                 "unicorn/no-this-assignment": "off",
                 "@typescript-eslint/member-ordering": "off",
                 "unicorn/consistent-function-scoping": "off",
