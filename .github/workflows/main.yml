@@ -66,6 +66,9 @@ jobs:
           submodules: 'true'
       - uses: ./.github/actions/common-setup
       - uses: actions/setup-go@v5
+        with:
+          cache-dependency-path: |
+            submodules/wireguard-go/go.sum
       - run: pnpm build
 
   linux-service1:
