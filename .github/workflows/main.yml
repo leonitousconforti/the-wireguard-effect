@@ -11,55 +11,14 @@ env:
   linux-service-identifier1: "2"
   linux-service-identifier2: "3"
   windows-service-identifier: "4"
-  node-versions: "['16.x', '18.x', '20.x']"
-  os-variants: "['ubuntu-latest', 'macos-latest', 'windows-latest']"
 
 concurrency:
   cancel-in-progress: true
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
 
 jobs:
-  compute-matricies:
-    runs-on: ubuntu-latest
-    outputs:
-      os-variants: ${{ steps.compute-matricies.outputs.os-variants }}
-      node-versions: ${{ steps.compute-matricies.outputs.node-versions }}
-    steps:
-      - id: compute-matricies
-        run: |
-          echo "os-variants=${{ env.os-variants }}" >> $GITHUB_OUTPUT
-          echo "node-versions=${{ env.node-versions }}" >> $GITHUB_OUTPUT
-
-  update-pnpm-caches:
-    runs-on: ${{ matrix.os }}
-    needs: [compute-matricies]
-    strategy:
-      matrix:
-        os: ${{ fromJSON(needs.compute-matricies.outputs.os-variants) }}
-        node-version: ${{ fromJSON(needs.compute-matricies.outputs.node-versions) }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: "Install pnpm"
-        shell: bash
-        run: npm install pnpm@8 -g
-      - name: "Get pnpm store"
-        id: get-store-path
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-      - uses: actions/cache@v4
-        with:
-          path: ${{ steps.get-store-path.outputs.STORE_PATH }}
-          restore-keys: ${{ runner.os }}-node${{ matrix.node-version }}-pnpm-store-
-          key: ${{ runner.os }}-node${{ matrix.node-version }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-      - run: pnpm install
-
   build:
     runs-on: ubuntu-latest
-    needs: [update-pnpm-caches]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -112,13 +71,11 @@ jobs:
           service-identifier: ${{ env.macos-service-identifier }}
 
   clients:
-    # runs-on: ${{ matrix.os }}
-    runs-on: ubuntu-latest
-    needs: [compute-matricies, build]
-    # strategy:
-    #   matrix:
-    #     os: ${{ fromJSON(needs.compute-matricies.outputs.os-variants) }}
-    #     node-version: ${{ fromJSON(needs.compute-matricies.outputs.node-versions) }}
+    runs-on: ${{ matrix.os }}
+    needs: [build]
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]
     steps:
       - uses: actions/checkout@v4
       - id: connect1
