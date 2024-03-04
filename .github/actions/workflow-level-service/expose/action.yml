@@ -22,13 +22,13 @@ runs:
     - name: "Expose service (Unix)"
       shell: bash
       if: runner.os != 'Windows'
-      run: sudo -E node .github/actions/workflow-level-service/expose/expose.cjs
+      run: sudo -E node .github/actions/workflow-level-service/expose/expose.bundle.mjs
       env:
         SERVICE_IDENTIFIER: ${{ inputs.service-identifier }}
 
     - name: "Expose service (Windows)"
       shell: bash
       if: runner.os == 'Windows'
-      run: node .github/actions/workflow-level-service/expose/expose.cjs
+      run: node .github/actions/workflow-level-service/expose/expose.bundle.mjs
       env:
         SERVICE_IDENTIFIER: ${{ inputs.service-identifier }}

@@ -21,13 +21,11 @@ import * as os from "node:os";
 import * as url from "node:url";
 
 /** @see https://stackoverflow.com/questions/70831365/can-i-slice-literal-type-in-typescript */
-type Split<S extends string, D extends string> = string extends S
+type Split<S extends string, D extends string> = string extends S | ""
     ? string[]
-    : S extends ""
-      ? string[]
-      : S extends `${infer T}${D}${infer U}`
-        ? [T, ...Split<U, D>]
-        : [S];
+    : S extends `${infer T}${D}${infer U}`
+      ? [T, ...Split<U, D>]
+      : [S];
 
 /**
  * An operating system port number.
@@ -40,7 +38,8 @@ export const Port = Function.pipe(
     Schema.Int,
     Schema.between(0, 2 ** 16 - 1),
     Schema.identifier("Port"),
-    Schema.description("A port number")
+    Schema.description("A port number"),
+    Schema.brand("Port")
 );
 
 /**
@@ -65,7 +64,8 @@ export const IPv4 = Function.pipe(
     Schema.string,
     Schema.pattern(IPv4AddressRegExp),
     Schema.identifier("IPv4"),
-    Schema.description("An ipv4 address")
+    Schema.description("An ipv4 address"),
+    Schema.brand("IPv4")
 );
 
 /**
@@ -100,7 +100,8 @@ export const IPv6 = Function.pipe(
     Schema.string,
     Schema.pattern(IPv6AddressRegExp),
     Schema.identifier("IPv6"),
-    Schema.description("An ipv6 address")
+    Schema.description("An ipv6 address"),
+    Schema.brand("IPv6")
 );
 
 /**
@@ -117,21 +118,19 @@ export type IPv6 = Schema.Schema.To<typeof IPv6>;
  * @category Datatypes
  * @internal
  */
-export const Address = Schema.union(IPv4, IPv6);
+export const Address = Function.pipe(
+    Schema.union(IPv4, IPv6),
+    Schema.identifier("Address"),
+    Schema.description("An ipv4 or ipv6 address"),
+    Schema.brand("Address")
+);
 
 /**
  * @since 1.0.0
  * @category Brands
  * @internal
  */
-export type AddressTo = Schema.Schema.To<typeof Address>;
-
-/**
- * @since 1.0.0
- * @category Brands
- * @internal
- */
-export type AddressFrom = Schema.Schema.From<typeof Address>;
+export type Address = Schema.Schema.To<typeof Address>;
 
 /**
  * A cidr mask, which is a number between 0 and 32.
@@ -144,7 +143,8 @@ const CidrMask = Function.pipe(
     Schema.number,
     Schema.between(0, 32),
     Schema.identifier("CidrMask"),
-    Schema.description("A cidr mask")
+    Schema.description("A cidr mask"),
+    Schema.brand("CidrMask")
 );
 
 /**
@@ -166,9 +166,10 @@ const CidrBlock = Function.pipe(
     Schema.transformOrFail(
         Schema.union(
             Schema.struct({ ip: IPv4, mask: CidrMask }),
+            Schema.struct({ ip: IPv6, mask: CidrMask }),
             Schema.templateLiteral(Schema.string, Schema.literal("/"), Schema.number)
         ),
-        Schema.struct({ ip: IPv4, mask: CidrMask }),
+        Schema.union(Schema.struct({ ip: IPv4, mask: CidrMask }), Schema.struct({ ip: IPv6, mask: CidrMask })),
         (data, _options, ast) =>
             Effect.gen(function* (λ) {
                 if (typeof data === "object") return data;
@@ -223,7 +224,8 @@ const IPv4Endpoint = Function.pipe(
         ({ ip, port }) => Effect.succeed(`${ip}:${port}` as const)
     ),
     Schema.identifier("IPv4Endpoint"),
-    Schema.description("An ipv4 wireguard endpoint")
+    Schema.description("An ipv4 wireguard endpoint"),
+    Schema.brand("IPv4Endpoint")
 );
 
 /**
@@ -272,7 +274,8 @@ export const IPv6Endpoint = Function.pipe(
         ({ ip, port }) => Effect.succeed(`[${ip}]:${port}` as const)
     ),
     Schema.identifier("IPv6Endpoint"),
-    Schema.description("An ipv6 wireguard endpoint")
+    Schema.description("An ipv6 wireguard endpoint"),
+    Schema.brand("IPv6Endpoint")
 );
 
 /**
@@ -299,7 +302,8 @@ export type IPv6EndpointFrom = Schema.Schema.From<typeof IPv6Endpoint>;
 export const Endpoint = Function.pipe(
     Schema.union(IPv4Endpoint, IPv6Endpoint),
     Schema.identifier("Endpoint"),
-    Schema.description("A wireguard endpoint")
+    Schema.description("A wireguard endpoint"),
+    Schema.brand("Endpoint")
 );
 
 /**
@@ -326,7 +330,8 @@ export type EndpointFrom = Schema.Schema.From<typeof Endpoint>;
 export const SetupData = Function.pipe(
     Schema.tuple(Endpoint, Address),
     Schema.identifier("SetupData"),
-    Schema.description("A wireguard setup data")
+    Schema.description("A wireguard setup data"),
+    Schema.brand("SetupData")
 );
 
 /**
@@ -355,7 +360,8 @@ export const WireguardKey = Function.pipe(
     Schema.string,
     Schema.pattern(/^[\d+/A-Za-z]{42}[048AEIMQUYcgkosw]=$/),
     Schema.identifier("WireguardKey"),
-    Schema.description("A wireguard key")
+    Schema.description("A wireguard key"),
+    Schema.brand("WireguardKey")
 );
 
 /**
@@ -658,7 +664,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
                 ReplaceAllowedIPs: true,
                 PublicKey: hubKeys.publicKey,
                 Endpoint: Tuple.getFirst(hubsData),
-                AllowedIPs: [{ ip: Tuple.getSecond(hubsData), mask: 32 }],
+                AllowedIPs: [{ ip: IPv4(Tuple.getSecond(hubsData)), mask: CidrMask(32) }],
             });
 
             // All these spoke peer configs will be added to the hub interface config
@@ -668,7 +674,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
                     Endpoint: Tuple.getFirst(spoke),
                     ReplaceAllowedIPs: true,
                     PublicKey: keys.publicKey,
-                    AllowedIPs: [{ ip: Tuple.getSecond(spoke), mask: 32 }],
+                    AllowedIPs: [{ ip: IPv4(Tuple.getSecond(spoke)), mask: CidrMask(32) }],
                 });
                 return Tuple.make(Tuple.make(keys.privateKey, spoke), peerConfig);
             });
@@ -708,8 +714,8 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
             privateKeyEncoding: { format: "der", type: "pkcs8" },
         });
         return {
-            publicKey: keys.publicKey.subarray(12).toString("base64"),
-            privateKey: keys.privateKey.subarray(16).toString("base64"),
+            publicKey: WireguardKey(keys.publicKey.subarray(12).toString("base64")),
+            privateKey: WireguardKey(keys.privateKey.subarray(16).toString("base64")),
         };
     };
 

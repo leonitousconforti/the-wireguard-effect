@@ -9,15 +9,15 @@ import * as Effect from "effect/Effect";
 import * as Wireguard from "../src/index.js";
 
 const config = new Wireguard.WireguardConfig({
-    Address: "3.3.3.3",
-    ListenPort: 51_820,
+    Address: Wireguard.Address("3.3.3.3"),
+    ListenPort: Wireguard.Port(51_820),
     ReplacePeers: false,
-    PrivateKey: "",
+    PrivateKey: Wireguard.WireguardKey(""),
     Peers: [
         new Wireguard.WireguardPeer({
-            PublicKey: "public-key",
+            PublicKey: Wireguard.WireguardKey(""),
             AllowedIPs: [],
-            Endpoint: { ip: "3.3.3.3", port: 51_820 },
+            Endpoint: Wireguard.Endpoint({ ip: Wireguard.IPv4("3.3.3.3"), port: Wireguard.Port(51_820) }),
             ReplaceAllowedIPs: true,
         }),
     ],

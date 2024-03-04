@@ -4,6 +4,7 @@
 
 ```ts
 
+import { Brand } from 'effect/Brand';
 import * as Cause from 'effect/Cause';
 import { Duration } from 'effect/Duration';
 import * as Effect from 'effect/Effect';
@@ -18,17 +19,10 @@ import * as Scope from 'effect/Scope';
 // Warning: (ae-internal-missing-underscore) The name "Address" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const Address: Schema.Schema<string, string, never>;
+export const Address: Schema.BrandSchema<((string & Brand<"IPv4">) | (string & Brand<"IPv6">)) & Brand<"Address">, string, never>;
 
-// Warning: (ae-internal-missing-underscore) The name "AddressFrom" should be prefixed with an underscore because the declaration is marked as @internal
-//
 // @internal
-export type AddressFrom = Schema.Schema.From<typeof Address>;
-
-// Warning: (ae-internal-missing-underscore) The name "AddressTo" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export type AddressTo = Schema.Schema.To<typeof Address>;
+export type Address = Schema.Schema.To<typeof Address>;
 
 // Warning: (ae-forgotten-export) The symbol "CidrBlock" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "CidrBlockFrom" should be prefixed with an underscore because the declaration is marked as @internal
@@ -44,13 +38,13 @@ export type CidrBlockTo = Schema.Schema.To<typeof CidrBlock>;
 // Warning: (ae-internal-missing-underscore) The name "Endpoint" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const Endpoint: Schema.Schema<{
-    readonly ip: string;
-    readonly port: number;
-} | {
-    readonly ip: string;
-    readonly port: number;
-}, {
+export const Endpoint: Schema.BrandSchema<(({
+    readonly ip: string & Brand<"IPv4">;
+    readonly port: number & Brand<"Port">;
+} & Brand<"IPv4Endpoint">) | ({
+    readonly ip: string & Brand<"IPv6">;
+    readonly port: number & Brand<"Port">;
+} & Brand<"IPv6Endpoint">)) & Brand<"Endpoint">, {
     readonly ip: string;
     readonly port: number;
 } | `${string}:${number}` | {
@@ -71,7 +65,7 @@ export type EndpointTo = Schema.Schema.To<typeof Endpoint>;
 // Warning: (ae-internal-missing-underscore) The name "IPv4" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const IPv4: Schema.Schema<string, string, never>;
+export const IPv4: Schema.BrandSchema<string & Brand<"IPv4">, string, never>;
 
 // @internal
 export type IPv4 = Schema.Schema.To<typeof IPv4>;
@@ -90,7 +84,7 @@ export type IPv4EndpointTo = Schema.Schema.To<typeof IPv4Endpoint>;
 // Warning: (ae-internal-missing-underscore) The name "IPv6" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const IPv6: Schema.Schema<string, string, never>;
+export const IPv6: Schema.BrandSchema<string & Brand<"IPv6">, string, never>;
 
 // @internal
 export type IPv6 = Schema.Schema.To<typeof IPv6>;
@@ -98,10 +92,10 @@ export type IPv6 = Schema.Schema.To<typeof IPv6>;
 // Warning: (ae-internal-missing-underscore) The name "IPv6Endpoint" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const IPv6Endpoint: Schema.Schema<{
-    readonly ip: string;
-    readonly port: number;
-}, {
+export const IPv6Endpoint: Schema.BrandSchema<{
+    readonly ip: string & Brand<"IPv6">;
+    readonly port: number & Brand<"Port">;
+} & Brand<"IPv6Endpoint">, {
     readonly ip: string;
     readonly port: number;
 } | `[${string}]:${number}`, never>;
@@ -119,7 +113,7 @@ export type IPv6EndpointTo = Schema.Schema.To<typeof IPv6Endpoint>;
 // Warning: (ae-internal-missing-underscore) The name "Port" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const Port: Schema.Schema<number, number, never>;
+export const Port: Schema.BrandSchema<number & Brand<"Port">, number, never>;
 
 // @internal
 export type Port = Schema.Schema.To<typeof Port>;
@@ -127,13 +121,13 @@ export type Port = Schema.Schema.To<typeof Port>;
 // Warning: (ae-internal-missing-underscore) The name "SetupData" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const SetupData: Schema.Schema<readonly [{
-    readonly ip: string;
-    readonly port: number;
-} | {
-    readonly ip: string;
-    readonly port: number;
-}, string], readonly [{
+export const SetupData: Schema.BrandSchema<readonly [(({
+    readonly ip: string & Brand<"IPv4">;
+    readonly port: number & Brand<"Port">;
+} & Brand<"IPv4Endpoint">) | ({
+    readonly ip: string & Brand<"IPv6">;
+    readonly port: number & Brand<"Port">;
+} & Brand<"IPv6Endpoint">)) & Brand<"Endpoint">, ((string & Brand<"IPv4">) | (string & Brand<"IPv6">)) & Brand<"Address">] & Brand<"SetupData">, readonly [{
     readonly ip: string;
     readonly port: number;
 } | `${string}:${number}` | {
@@ -222,7 +216,7 @@ export class WireguardInterfaceName extends WireguardInterfaceName_base {
 // Warning: (ae-internal-missing-underscore) The name "WireguardKey" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const WireguardKey: Schema.Schema<string, string, never>;
+export const WireguardKey: Schema.BrandSchema<string & Brand<"WireguardKey">, string, never>;
 
 // @internal
 export type WireguardKey = Schema.Schema.To<typeof WireguardKey>;
@@ -235,10 +229,10 @@ export class WireguardPeer extends WireguardPeer_base {
 
 // Warnings were encountered during analysis:
 //
-// src/index.ts:614:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @public, but its signature references "SetupDataFrom" which is marked as @internal
-// src/index.ts:618:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @public, but its signature references "SetupDataFrom" which is marked as @internal
-// src/index.ts:705:43 - (ae-incompatible-release-tags) The symbol "privateKey" is marked as @public, but its signature references "WireguardKey" which is marked as @internal
-// src/index.ts:705:69 - (ae-incompatible-release-tags) The symbol "publicKey" is marked as @public, but its signature references "WireguardKey" which is marked as @internal
+// src/index.ts:620:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @public, but its signature references "SetupDataFrom" which is marked as @internal
+// src/index.ts:624:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @public, but its signature references "SetupDataFrom" which is marked as @internal
+// src/index.ts:711:43 - (ae-incompatible-release-tags) The symbol "privateKey" is marked as @public, but its signature references "WireguardKey" which is marked as @internal
+// src/index.ts:711:69 - (ae-incompatible-release-tags) The symbol "publicKey" is marked as @public, but its signature references "WireguardKey" which is marked as @internal
 
 // (No @packageDocumentation comment for this package)
 
