@@ -91,7 +91,9 @@ const waitForResponse = Effect.gen(function* (λ) {
 
     // Still waiting for a connection response
     yield* λ(Effect.fail(new Error("Still waiting for a connection response")));
-});
+})
+    .pipe(Effect.catchAll(Console.log))
+    .pipe(Effect.catchAllDefect(Console.log));
 
 Effect.suspend(() => uploadConnectionRequestArtifact).pipe(
     Effect.andThen(
