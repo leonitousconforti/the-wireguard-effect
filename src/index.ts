@@ -4,16 +4,18 @@ import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
-import * as Console from "effect/Console";
 import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Match from "effect/Match";
+import * as Number from "effect/Number";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
 import * as ReadonlyArray from "effect/ReadonlyArray";
+import * as ReadonlyRecord from "effect/ReadonlyRecord";
 import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
+import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
 import * as execa from "execa";
 import * as ini from "ini";
@@ -33,7 +35,7 @@ type Split<S extends string, D extends string> = string extends S | ""
  *
  * @since 1.0.0
  * @category Datatypes
- * @internal
+ * @alpha
  */
 export const Port = Function.pipe(
     Schema.Int,
@@ -46,7 +48,7 @@ export const Port = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
 export type Port = Schema.Schema.To<typeof Port>;
 
@@ -59,7 +61,7 @@ const IPv4AddressRegExp = new RegExp(`^${IPv4AddressFormat}$`);
  *
  * @since 1.0.0
  * @category Datatypes
- * @internal
+ * @alpha
  */
 export const IPv4 = Function.pipe(
     Schema.string,
@@ -72,7 +74,7 @@ export const IPv4 = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
 export type IPv4 = Schema.Schema.To<typeof IPv4>;
 
@@ -95,7 +97,7 @@ const IPv6AddressRegExp = new RegExp(
  *
  * @since 1.0.0
  * @category Datatypes
- * @internal
+ * @alpha
  */
 export const IPv6 = Function.pipe(
     Schema.string,
@@ -108,7 +110,7 @@ export const IPv6 = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
 export type IPv6 = Schema.Schema.To<typeof IPv6>;
 
@@ -117,7 +119,7 @@ export type IPv6 = Schema.Schema.To<typeof IPv6>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @internal
+ * @alpha
  */
 export const Address = Function.pipe(
     Schema.union(IPv4, IPv6),
@@ -129,7 +131,7 @@ export const Address = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
 export type Address = Schema.Schema.To<typeof Address>;
 
@@ -138,9 +140,9 @@ export type Address = Schema.Schema.To<typeof Address>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @internal
+ * @alpha
  */
-const CidrMask = Function.pipe(
+export const CidrMask = Function.pipe(
     Schema.number,
     Schema.between(0, 32),
     Schema.identifier("CidrMask"),
@@ -151,9 +153,9 @@ const CidrMask = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
-type CidrMask = Schema.Schema.To<typeof CidrMask>;
+export type CidrMask = Schema.Schema.To<typeof CidrMask>;
 
 /**
  * A cidr block, which is an IP address followed by a slash and a number between
@@ -161,9 +163,9 @@ type CidrMask = Schema.Schema.To<typeof CidrMask>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @internal
+ * @alpha
  */
-const CidrBlock = Function.pipe(
+export const CidrBlock = Function.pipe(
     Schema.transformOrFail(
         Schema.union(
             Schema.struct({ ip: IPv4, mask: CidrMask }),
@@ -176,7 +178,7 @@ const CidrBlock = Function.pipe(
                 if (typeof data === "object") return data;
                 const [ip, mask] = data.split("/") as Split<typeof data, "/">;
                 const ipParsed = yield* λ(Schema.decode(Schema.union(IPv4, IPv6))(ip));
-                const maskParsed = yield* λ(Schema.decode(CidrMask)(Number.parseInt(mask)));
+                const maskParsed = yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, CidrMask))(mask));
                 return { ip: ipParsed, mask: maskParsed };
             }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
         ({ ip, mask }) => Effect.succeed(`${ip}/${mask}` as const)
@@ -188,14 +190,14 @@ const CidrBlock = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
 export type CidrBlockTo = Schema.Schema.To<typeof CidrBlock>;
 
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
 export type CidrBlockFrom = Schema.Schema.From<typeof CidrBlock>;
 
@@ -205,9 +207,9 @@ export type CidrBlockFrom = Schema.Schema.From<typeof CidrBlock>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @internal
+ * @alpha
  */
-const IPv4Endpoint = Function.pipe(
+export const IPv4Endpoint = Function.pipe(
     Schema.transformOrFail(
         Schema.union(
             Schema.struct({ ip: IPv4, port: Port }),
@@ -219,7 +221,7 @@ const IPv4Endpoint = Function.pipe(
                 if (typeof data === "object") return data;
                 const [ip, port] = data.split(":") as Split<typeof data, ":">;
                 const ipParsed = yield* λ(Schema.decode(IPv4)(ip));
-                const portParsed = yield* λ(Schema.decode(Port)(Number.parseInt(port)));
+                const portParsed = yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, CidrMask))(port));
                 return { ip: ipParsed, port: portParsed };
             }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
         ({ ip, port }) => Effect.succeed(`${ip}:${port}` as const)
@@ -232,14 +234,14 @@ const IPv4Endpoint = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
 export type IPv4EndpointTo = Schema.Schema.To<typeof IPv4Endpoint>;
 
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
 export type IPv4EndpointFrom = Schema.Schema.From<typeof IPv4Endpoint>;
 
@@ -249,7 +251,7 @@ export type IPv4EndpointFrom = Schema.Schema.From<typeof IPv4Endpoint>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @internal
+ * @alpha
  */
 export const IPv6Endpoint = Function.pipe(
     Schema.transformOrFail(
@@ -269,7 +271,7 @@ export const IPv6Endpoint = Function.pipe(
                 if (typeof data === "object") return data;
                 const [ip, port] = data.split("]") as Split<typeof data, "]:">;
                 const ipParsed = yield* λ(Schema.decode(IPv6)(ip.slice(1)));
-                const portParsed = yield* λ(Schema.decode(Port)(Number.parseInt(port)));
+                const portParsed = yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, CidrMask))(port));
                 return { ip: ipParsed, port: portParsed };
             }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
         ({ ip, port }) => Effect.succeed(`[${ip}]:${port}` as const)
@@ -282,14 +284,14 @@ export const IPv6Endpoint = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
 export type IPv6EndpointTo = Schema.Schema.To<typeof IPv6Endpoint>;
 
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
 export type IPv6EndpointFrom = Schema.Schema.From<typeof IPv6Endpoint>;
 
@@ -298,7 +300,7 @@ export type IPv6EndpointFrom = Schema.Schema.From<typeof IPv6Endpoint>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @internal
+ * @alpha
  */
 export const Endpoint = Function.pipe(
     Schema.union(IPv4Endpoint, IPv6Endpoint),
@@ -310,14 +312,14 @@ export const Endpoint = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
 export type EndpointTo = Schema.Schema.To<typeof Endpoint>;
 
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
 export type EndpointFrom = Schema.Schema.From<typeof Endpoint>;
 
@@ -326,7 +328,7 @@ export type EndpointFrom = Schema.Schema.From<typeof Endpoint>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @internal
+ * @alpha
  */
 export const SetupData = Function.pipe(
     Schema.tuple(Endpoint, Address),
@@ -338,14 +340,14 @@ export const SetupData = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
 export type SetupDataTo = Schema.Schema.To<typeof SetupData>;
 
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
 export type SetupDataFrom = Schema.Schema.From<typeof SetupData>;
 
@@ -354,7 +356,7 @@ export type SetupDataFrom = Schema.Schema.From<typeof SetupData>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @internal
+ * @alpha
  * @see https://lists.zx2c4.com/pipermail/wireguard/2020-December/006222.html
  */
 export const WireguardKey = Function.pipe(
@@ -368,31 +370,49 @@ export const WireguardKey = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @internal
+ * @alpha
  */
 export type WireguardKey = Schema.Schema.To<typeof WireguardKey>;
 
 /**
  * @since 1.0.0
  * @category Errors
- * @public
+ * @alpha
  */
 export class WireguardError extends Data.TaggedError("WireguardError")<{ message: string }> {}
+
+/**
+ * @since 1.0.0
+ * @category Constructors
+ */
+const wireguardGoExecutablePath = (): Effect.Effect<
+    string,
+    Platform.Error.PlatformError,
+    Platform.FileSystem.FileSystem
+> =>
+    Effect.gen(function* (λ) {
+        const fs = yield* λ(Platform.FileSystem.FileSystem);
+        const arch = process.arch === "x64" ? "amd64" : process.arch;
+        const path = new url.URL(`../build/${process.platform}-${arch}-wireguard-go`, import.meta.url);
+        const pathString = url.fileURLToPath(path);
+        yield* λ(fs.access(pathString));
+        return pathString;
+    });
 
 /**
  * A wireguard interface name.
  *
  * @since 1.0.0
  * @category Datatypes
- * @public
+ * @alpha
  */
-export class WireguardInterfaceName extends Schema.Class<WireguardInterfaceName>()({
+export class WireguardInterface extends Schema.Class<WireguardInterface>()({
     Name: Schema.transformOrFail(
         Schema.string,
         Schema.string,
         (s, _options, ast): Effect.Effect<string, ParseResult.Forbidden, never> =>
             Function.pipe(
-                WireguardInterfaceName.InterfaceRegExpForPlatform,
+                WireguardInterface.InterfaceRegExpForPlatform,
                 Effect.mapError((error) => ParseResult.forbidden(ast, s, error.message)),
                 Effect.flatMap((x) =>
                     x.test(s)
@@ -414,40 +434,40 @@ export class WireguardInterfaceName extends Schema.Class<WireguardInterfaceName>
      * @category Constructors
      */
     protected static InterfaceRegExpForPlatform: Effect.Effect<RegExp, WireguardError, never> = Function.pipe(
-        Match.value(process.platform),
-        Match.when("linux", () => Effect.succeed(WireguardInterfaceName.LinuxInterfaceNameRegExp)),
-        Match.when("win32", () => Effect.succeed(WireguardInterfaceName.WindowsInterfaceNameRegExp)),
-        Match.when("darwin", () => Effect.succeed(WireguardInterfaceName.DarwinInterfaceNameRegExp)),
-        Match.when("openbsd", () => Effect.succeed(WireguardInterfaceName.OpenBSDInterfaceNameRegExp)),
-        Match.when("freebsd", () => Effect.succeed(WireguardInterfaceName.FreeBSDInterfaceNameRegExp)),
-        Match.orElse((platform) => Effect.fail(new WireguardError({ message: `Unsupported platform ${platform}` })))
+        Match.value(`${process.arch}:${process.platform}`),
+        Match.not(Predicate.or(String.startsWith("x64"), String.startsWith("arm64")), (bad) =>
+            Effect.fail(new WireguardError({ message: `Unsupported architecture ${bad}` }))
+        ),
+        Match.when(String.endsWith("linux"), () => Effect.succeed(WireguardInterface.LinuxInterfaceNameRegExp)),
+        Match.when(String.endsWith("win32"), () => Effect.succeed(WireguardInterface.WindowsInterfaceNameRegExp)),
+        Match.when(String.endsWith("darwin"), () => Effect.succeed(WireguardInterface.DarwinInterfaceNameRegExp)),
+        Match.when(String.endsWith("openbsd"), () => Effect.succeed(WireguardInterface.OpenBSDInterfaceNameRegExp)),
+        Match.when(String.endsWith("freebsd"), () => Effect.succeed(WireguardInterface.FreeBSDInterfaceNameRegExp)),
+        Match.orElse((bad) => Effect.fail(new WireguardError({ message: `Unsupported platform ${bad}` })))
     );
 
     /**
      * @since 1.0.0
      * @category Constructors
      */
-    private static fromString = (name: string): WireguardInterfaceName =>
-        Schema.decodeSync(WireguardInterfaceName)({ Name: name });
-
-    /**
-     * @since 1.0.0
-     * @category Constructors
-     */
-    public static getNextAvailableInterface = (): Effect.Effect<WireguardInterfaceName, WireguardError, never> =>
+    public static getNextAvailableInterface = (): Effect.Effect<WireguardInterface, WireguardError, never> =>
         Effect.gen(function* (λ) {
-            const regex = yield* λ(WireguardInterfaceName.InterfaceRegExpForPlatform);
+            // Determine all the used interface indexes
+            const regex = yield* λ(WireguardInterface.InterfaceRegExpForPlatform);
             const usedInterfaceIndexes = Function.pipe(
-                Object.keys(os.networkInterfaces()),
+                os.networkInterfaces(),
+                ReadonlyRecord.keys,
                 ReadonlyArray.filter((name) => regex.test(name)),
-                ReadonlyArray.map((name) => name.replaceAll(/a-z/, "")),
-                ReadonlyArray.map((name) => Number.parseInt(name))
+                ReadonlyArray.map(String.replaceAll(/a-z/, "")),
+                ReadonlyArray.map(Number.parse),
+                ReadonlyArray.filterMap(Function.identity)
             );
 
+            // Find the next available interface index
             const nextAvailableInterfaceIndex = yield* λ(
                 Function.pipe(
                     Stream.iterate(0, (x) => x + 1),
-                    Stream.find((x) => !usedInterfaceIndexes.includes(x)),
+                    Stream.find((x) => !ReadonlyArray.contains(usedInterfaceIndexes, x)),
                     Stream.take(1),
                     Stream.runCollect,
                     Effect.map(Chunk.head),
@@ -455,20 +475,147 @@ export class WireguardInterfaceName extends Schema.Class<WireguardInterfaceName>
                 )
             );
 
+            // Construct the next available interface name
+            const fromString = Schema.decodeSync(WireguardInterface);
             switch (process.platform) {
                 case "win32":
                 case "freebsd":
-                    return WireguardInterfaceName.fromString(`eth${nextAvailableInterfaceIndex}`);
+                    return fromString({ Name: `eth${nextAvailableInterfaceIndex}` });
                 case "linux":
-                    return WireguardInterfaceName.fromString(`wg${nextAvailableInterfaceIndex}`);
+                    return fromString({ Name: `wg${nextAvailableInterfaceIndex}` });
                 case "openbsd":
-                    return WireguardInterfaceName.fromString(`tun${nextAvailableInterfaceIndex}`);
+                    return fromString({ Name: `tun${nextAvailableInterfaceIndex}` });
                 case "darwin":
-                    return WireguardInterfaceName.fromString(`utun${nextAvailableInterfaceIndex}`);
+                    return fromString({ Name: `utun${nextAvailableInterfaceIndex}` });
                 default:
                     return yield* λ(new WireguardError({ message: `Unsupported platform ${process.platform}` }));
             }
         });
+
+    /**
+     * @since 1.0.0
+     * @category Constructors
+     */
+    public socketLocation = (): string =>
+        Function.pipe(
+            Match.value(process.platform),
+            Match.when("win32", () => `\\\\.\\pipe\\wireguard\\${this.Name}`),
+            Match.when("linux", () => `/var/run/wireguard/${this.Name}.sock`),
+            Match.when("darwin", () => `/var/run/wireguard/${this.Name}.sock`),
+            Match.when("freebsd", () => ""),
+            Match.when("openbsd", () => ""),
+            // Should never happen
+            Match.orElse(() => {
+                throw new WireguardError({ message: `Unsupported platform ${process.platform}` });
+            })
+        );
+
+    /**
+     * @since 1.0.0
+     * @category API
+     * @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101
+     */
+    public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError, never> => {
+        const peers = config.Peers.flatMap((peer) => [
+            `public-key=${peer.PublicKey}\n`,
+            `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.port}\n`,
+            `replace-allowed-ips=true\n`,
+            Predicate.isNotUndefined(peer.PresharedKey) ? `preshared-key=${peer.PresharedKey}\n` : "",
+            Predicate.isNotUndefined(peer.PersistentKeepaliveInterval)
+                ? `persistent-keepalive-interval=${peer.PersistentKeepaliveInterval}\n`
+                : "",
+            `allowed-ips=${peer.AllowedIPs.map((allowedIP) => `${allowedIP.ip}/${allowedIP.mask}\n`).join(", ")}\n`,
+        ]);
+
+        const stream = Stream.fromIterable([
+            `private-key=${config.PrivateKey}\n`,
+            `listen-port=${config.ListenPort}\n`,
+            `replace-peers=${config.ReplacePeers}\n`,
+            Predicate.isNotUndefined(config.FirewallMark) ? `fwmark=${config.FirewallMark}\n` : "",
+            ...peers,
+            "\n\n",
+        ]).pipe(Stream.encodeText);
+
+        const channel = Socket.makeNetChannel({ path: this.socketLocation() });
+        return Function.pipe(
+            stream,
+            Stream.pipeThroughChannelOrFail(channel),
+            Stream.runDrain,
+            Effect.catchTag("SocketError", (error) => new WireguardError({ message: error.message }))
+        );
+    };
+
+    /**
+     * Starts a wireguard tunnel in the foreground (child mode). This tunnel
+     * will be gracefully shutdown once the scope is closed.
+     *
+     * @since 1.0.0
+     * @category Wireguard
+     */
+    public upScoped = (
+        config: WireguardConfig
+    ): Effect.Effect<
+        WireguardInterface,
+        WireguardError | Cause.TimeoutException,
+        Scope.Scope | Platform.FileSystem.FileSystem
+    > => Effect.acquireRelease(this.up(config), Function.compose(this.down, Effect.orDie));
+
+    /**
+     * Starts a wireguard tunnel in the background (daemon mode). This tunnel
+     * will continue to run and serve traffic even after the nodejs process
+     * exits.
+     *
+     * @since 1.0.0
+     * @category Wireguard
+     */
+    public up = (
+        config: WireguardConfig
+    ): Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Platform.FileSystem.FileSystem> => {
+        const self = this;
+        return Effect.gen(function* (λ) {
+            const executablePath = yield* λ(wireguardGoExecutablePath().pipe(Effect.orDie));
+
+            yield* λ(
+                Effect.tryPromise({
+                    try: () => {
+                        const subprocess = execa.execaCommand(`sudo ${executablePath} ${self.Name}`, {
+                            detached: true,
+                            stdio: "ignore",
+                            cleanup: false,
+                        });
+                        subprocess.unref();
+                        return subprocess;
+                    },
+                    catch: (error) => new WireguardError({ message: `${error}` }),
+                })
+            );
+
+            yield* λ(self.applyConfig(config));
+            return self;
+        });
+    };
+
+    /**
+     * Stops a wireguard tunnel that was started in the background (daemon
+     * mode). This can stop tunnels that are started in the foreground (child
+     * mode), but that is not the intended use case. Instead you should use
+     * `upScoped`.
+     *
+     * @since 1.0.0
+     * @category Wireguard
+     */
+    public down = (): Effect.Effect<
+        void,
+        Platform.Error.PlatformError | WireguardError,
+        Platform.FileSystem.FileSystem
+    > => {
+        const self = this;
+        return Effect.gen(function* (λ) {
+            const fs = yield* λ(Platform.FileSystem.FileSystem);
+            const path = self.socketLocation();
+            yield* λ(fs.remove(path));
+        });
+    };
 }
 
 /**
@@ -476,7 +623,7 @@ export class WireguardInterfaceName extends Schema.Class<WireguardInterfaceName>
  *
  * @since 1.0.0
  * @category Datatypes
- * @public
+ * @alpha
  */
 export class WireguardPeer extends Schema.Class<WireguardPeer>()({
     /** @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/wgtypes/types.go#L236-L276 */
@@ -513,7 +660,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>()({
  *
  * @since 1.0.0
  * @category Datatypes
- * @public
+ * @alpha
  */
 export class WireguardConfig extends Schema.Class<WireguardConfig>()({
     /** @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/wgtypes/types.go#L207-L232 */
@@ -761,33 +908,6 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
         });
     };
 
-    private socketLocationForPlatform = (
-        interfaceName: WireguardInterfaceName
-    ): Effect.Effect<string, WireguardError, never> =>
-        Function.pipe(
-            Match.value(process.platform),
-            Match.when("win32", () => Effect.succeed(`\\\\.\\pipe\\wireguard\\${interfaceName}`)),
-            Match.when("linux", () => Effect.succeed(`/var/run/wireguard/${interfaceName}.sock`)),
-            Match.when("darwin", () => Effect.succeed(`/var/run/wireguard/${interfaceName}.sock`)),
-            Match.when("freebsd", () => Effect.succeed("")),
-            Match.when("openbsd", () => Effect.succeed("")),
-            Match.orElse((platform) => Effect.fail(new WireguardError({ message: `Unsupported platform ${platform}` })))
-        );
-
-    private static getWireguardGoExecutablePath = (): Effect.Effect<
-        string,
-        Platform.Error.PlatformError,
-        Platform.FileSystem.FileSystem
-    > =>
-        Effect.gen(function* (λ) {
-            const fs = yield* λ(Platform.FileSystem.FileSystem);
-            const arch = process.arch === "x64" ? "amd64" : process.arch;
-            const path = new URL(`../build/${process.platform}-${arch}-wireguard-go`, import.meta.url);
-            const pathString = url.fileURLToPath(path);
-            yield* λ(fs.access(pathString));
-            return pathString;
-        });
-
     /**
      * Starts a wireguard tunnel in the foreground (child mode). This tunnel
      * will be gracefully shutdown once the scope is closed.
@@ -796,9 +916,9 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
      * @category Wireguard
      */
     public upScoped = (
-        interfaceName: Option.Option<WireguardInterfaceName> = Option.none()
+        interfaceName: Option.Option<WireguardInterface> = Option.none()
     ): Effect.Effect<
-        WireguardInterfaceName,
+        WireguardInterface,
         WireguardError | Cause.TimeoutException,
         Scope.Scope | Platform.FileSystem.FileSystem
     > => Effect.acquireRelease(this.up(interfaceName), Function.compose(this.down, Effect.orDie));
@@ -812,37 +932,32 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
      * @category Wireguard
      */
     public up = (
-        interfaceName: Option.Option<WireguardInterfaceName> = Option.none()
-    ): Effect.Effect<
-        WireguardInterfaceName,
-        WireguardError | Cause.TimeoutException,
-        Platform.FileSystem.FileSystem
-    > => {
+        interfaceName: Option.Option<WireguardInterface> = Option.none()
+    ): Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Platform.FileSystem.FileSystem> => {
         const self = this;
         return Effect.gen(function* (λ) {
             const interfaceObject = Option.isNone(interfaceName)
-                ? yield* λ(WireguardInterfaceName.getNextAvailableInterface())
+                ? yield* λ(WireguardInterface.getNextAvailableInterface())
                 : interfaceName.value;
 
-            const executablePath = yield* λ(WireguardConfig.getWireguardGoExecutablePath().pipe(Effect.orDie));
+            const executablePath = yield* λ(wireguardGoExecutablePath().pipe(Effect.orDie));
 
             yield* λ(
                 Effect.tryPromise({
                     try: () => {
-                        const a = execa.execaCommand(`sudo ${executablePath} ${interfaceObject.Name}`, {
+                        const subprocess = execa.execaCommand(`sudo ${executablePath} ${interfaceObject.Name}`, {
                             detached: true,
                             stdio: "ignore",
                             cleanup: false,
                         });
-                        a.unref();
-                        return a;
+                        subprocess.unref();
+                        return subprocess;
                     },
                     catch: (error) => new WireguardError({ message: `${error}` }),
                 })
             );
 
-            yield* λ(Console.log("here"));
-            yield* λ(self.applyConfig(interfaceObject));
+            yield* λ(interfaceObject.applyConfig(self));
             return interfaceObject;
         });
     };
@@ -857,52 +972,11 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
      * @category Wireguard
      */
     public down = (
-        interfaceName: WireguardInterfaceName
-    ): Effect.Effect<void, Platform.Error.PlatformError | WireguardError, Platform.FileSystem.FileSystem> => {
-        const self = this;
-        return Effect.gen(function* (λ) {
+        interfaceName: WireguardInterface
+    ): Effect.Effect<void, Platform.Error.PlatformError | WireguardError, Platform.FileSystem.FileSystem> =>
+        Effect.gen(function* (λ) {
             const fs = yield* λ(Platform.FileSystem.FileSystem);
-            const path = yield* λ(self.socketLocationForPlatform(interfaceName));
+            const path = interfaceName.socketLocation();
             yield* λ(fs.remove(path));
         });
-    };
-
-    /**
-     * @since 1.0.0
-     * @category API
-     * @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101
-     */
-    private applyConfig = (
-        interfaceName: WireguardInterfaceName
-    ): Effect.Effect<WireguardInterfaceName, WireguardError, never> => {
-        const peers = this.Peers.flatMap((peer) => [
-            `public-key=${peer.PublicKey}\n`,
-            `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.port}\n`,
-            `replace-allowed-ips=true\n`,
-            Predicate.isNotUndefined(peer.PresharedKey) ? `preshared-key=${peer.PresharedKey}\n` : "",
-            Predicate.isNotUndefined(peer.PersistentKeepaliveInterval)
-                ? `persistent-keepalive-interval=${peer.PersistentKeepaliveInterval}\n`
-                : "",
-            `allowed-ips=${peer.AllowedIPs.map((allowedIP) => `${allowedIP.ip}/${allowedIP.mask}\n`).join(", ")}\n`,
-        ]);
-
-        const stream = Stream.fromIterable([
-            `private-key=${this.PrivateKey}\n`,
-            `listen-port=${this.ListenPort}\n`,
-            `replace-peers=${this.ReplacePeers}\n`,
-            Predicate.isNotUndefined(this.FirewallMark) ? `fwmark=${this.FirewallMark}\n` : "",
-            ...peers,
-        ]).pipe(Stream.encodeText);
-
-        const channel = this.socketLocationForPlatform(interfaceName).pipe(
-            Effect.map((path) => Socket.makeNetChannel({ path }))
-        );
-
-        return Function.pipe(
-            channel,
-            Effect.map((c) => Stream.pipeThroughChannelOrFail(stream, c)),
-            Stream.runDrain,
-            Effect.map(() => interfaceName)
-        );
-    };
 }
