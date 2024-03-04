@@ -121,8 +121,6 @@ jobs:
     #     node-version: ${{ fromJSON(needs.compute-matricies.outputs.node-versions) }}
     steps:
       - uses: actions/checkout@v4
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
       - id: connect1
         uses: ./.github/actions/workflow-level-service/connect
         with:

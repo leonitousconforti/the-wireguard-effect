@@ -782,7 +782,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
         Effect.gen(function* (λ) {
             const fs = yield* λ(Platform.FileSystem.FileSystem);
             const arch = process.arch === "x64" ? "amd64" : process.arch;
-            const path = new URL(`sudo ../build/${process.platform}-${arch}-wireguard-go`, import.meta.url);
+            const path = new URL(`../build/${process.platform}-${arch}-wireguard-go`, import.meta.url);
             const pathString = url.fileURLToPath(path);
             yield* λ(fs.access(pathString));
             return pathString;
@@ -829,7 +829,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
             yield* λ(
                 Effect.tryPromise({
                     try: () => {
-                        const a = execa.execaCommand(`${executablePath} ${interfaceObject.Name}`, {
+                        const a = execa.execaCommand(`sudo ${executablePath} ${interfaceObject.Name}`, {
                             detached: true,
                             stdio: "ignore",
                             cleanup: false,
