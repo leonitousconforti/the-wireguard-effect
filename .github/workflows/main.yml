@@ -79,6 +79,7 @@ jobs:
         with:
           service-identifier: ${{ env.linux-service-identifier1 }}
       - uses: mxschmitt/action-tmate@v3
+        if: ${{ always() }}
       # - id: connect2
       #   uses: ./.github/actions/workflow-level-service/connect
       #   with:
@@ -118,4 +119,4 @@ jobs:
     needs: [clients, linux-service1, linux-service2, windows-service, macos-service]
     steps:
       - run: exit 1
-        if: ${{ contains(needs.clients.result, 'failure') || contains(needs.clients.result, 'cancelled') || contains(needs.clients.result, 'skipped') }}
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped') }}
