@@ -78,6 +78,7 @@ jobs:
         uses: ./.github/actions/workflow-level-service/connect
         with:
           service-identifier: ${{ env.linux-service-identifier1 }}
+      - uses: mxschmitt/action-tmate@v3
       # - id: connect2
       #   uses: ./.github/actions/workflow-level-service/connect
       #   with:
