@@ -827,7 +827,15 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
 
             yield* λ(
                 Effect.tryPromise({
-                    try: () => execa.execaCommand(`${executablePath} ${interfaceObject.Name}`, { detached: true }),
+                    try: () => {
+                        const a = execa.execaCommand(`${executablePath} ${interfaceObject.Name}`, {
+                            detached: true,
+                            stdio: "ignore",
+                            cleanup: false,
+                        });
+                        a.unref();
+                        return a;
+                    },
                     catch: (error) => new WireguardError({ message: `${error}` }),
                 })
             );
