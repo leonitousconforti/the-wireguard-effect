@@ -4,6 +4,7 @@ import * as PlatformNode from "@effect/platform-node";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as ConfigError from "effect/ConfigError";
+import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Schedule from "effect/Schedule";
@@ -84,7 +85,8 @@ const waitForResponse = Effect.gen(function* (λ) {
         GithubCore.setOutput("service-address", `${config.Peers[0].Endpoint.ip}:${config.Peers[0].Endpoint.port}`);
         b();
         yield* λ(config.up());
-        return;
+        yield* λ(Console.log("Connection established"));
+        return yield* λ(Effect.unit);
     }
 
     // Still waiting for a connection response
