@@ -53,6 +53,7 @@
         "@types/node": "20.11.24",
         "@types/uuid": "9.0.8",
         "bufferutil": "4.0.8",
+        "ci-info": "4.0.0",
         "cross-env": "7.0.3",
         "effect": "2.4.1",
         "eslint": "8.57.0",

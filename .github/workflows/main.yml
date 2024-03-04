@@ -121,7 +121,6 @@ jobs:
     #     node-version: ${{ fromJSON(needs.compute-matricies.outputs.node-versions) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/common-setup
       - id: connect1
         uses: ./.github/actions/workflow-level-service/connect
         with:
