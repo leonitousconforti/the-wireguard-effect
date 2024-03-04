@@ -41,7 +41,7 @@ devDependencies:
     version: 0.32.9(@effect/typeclass@0.23.0)(effect@2.4.0)
   '@effect/schema':
     specifier: 0.63.0
-    version: 0.63.0(effect@2.4.0)(fast-check@3.15.1)
+    version: 0.63.0(effect@2.4.0)(fast-check@3.16.0)
   '@effect/typeclass':
     specifier: 0.23.0
     version: 0.23.0(effect@2.4.0)
@@ -103,8 +103,8 @@ devDependencies:
     specifier: 51.0.1
     version: 51.0.1(eslint@8.57.0)(supports-color@9.4.0)
   fast-check:
-    specifier: 3.15.1
-    version: 3.15.1
+    specifier: 3.16.0
+    version: 3.16.0
   prettier:
     specifier: 3.2.5
     version: 3.2.5
@@ -654,7 +654,7 @@ packages:
       '@effect/schema': ^0.63.0
       effect: ^2.4.0
     dependencies:
-      '@effect/schema': 0.63.0(effect@2.4.0)(fast-check@3.15.1)
+      '@effect/schema': 0.63.0(effect@2.4.0)(fast-check@3.16.0)
       effect: 2.4.0
       find-my-way-ts: 0.1.1
       multipasta: 0.1.21
@@ -682,14 +682,14 @@ packages:
       effect: 2.4.0
     dev: true
 
-  /@effect/schema@0.63.0(effect@2.4.0)(fast-check@3.15.1):
+  /@effect/schema@0.63.0(effect@2.4.0)(fast-check@3.16.0):
     resolution: {integrity: sha512-z+QTqCUexkh/qyEz5WMHVV/dDLr5jN2eOMUsXzgxzmtBFiBy1L8xunbt+/JgGBhPLOBqLzDysLlnL56edzTNzQ==}
     peerDependencies:
       effect: ^2.4.0
       fast-check: ^3.13.2
     dependencies:
       effect: 2.4.0
-      fast-check: 3.15.1
+      fast-check: 3.16.0
     dev: true
 
   /@effect/typeclass@0.23.0(effect@2.4.0):
@@ -3585,8 +3585,8 @@ packages:
       - supports-color
     dev: true
 
-  /fast-check@3.15.1:
-    resolution: {integrity: sha512-GutOXZ+SCxGaFWfHe0Pbeq8PrkpGtPxA9/hdkI3s9YzqeMlrq5RdJ+QfYZ/S93jMX+tAyqgW0z5c9ppD+vkGUw==}
+  /fast-check@3.16.0:
+    resolution: {integrity: sha512-k8GtQHi4pJoRQ1gVDFQno+/FVkowo/ehiz/aCj9O/D7HRWb1sSFzNrw+iPVU8QlWtH+jNwbuN+dDVg3QkS56DQ==}
     engines: {node: '>=8.0.0'}
     dependencies:
       pure-rand: 6.0.4
