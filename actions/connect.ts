@@ -84,6 +84,7 @@ const waitForResponse = Effect.gen(function* (λ) {
         GithubCore.setOutput("service-address", `${config.Peers[0].Endpoint.ip}:${config.Peers[0].Endpoint.port}`);
         b();
         yield* λ(config.up());
+        return;
     }
 
     // Still waiting for a connection response

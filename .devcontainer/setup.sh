@@ -9,7 +9,7 @@ source /home/vscode/.bashrc
 pnpm config set store-dir $PNPM_HOME/store
 
 echo "📦 Installing global dependencies..."
-npm install -g @devcontainers/cli tsx @microsoft/api-extractor
+npm install -g @devcontainers/cli tsx @microsoft/api-extractor npm-check-updates
 
 echo "📦 Installing repo dependencies..."
 pnpm install
