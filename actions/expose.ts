@@ -2,6 +2,7 @@ import * as GithubArtifacts from "@actions/artifact";
 import * as GithubCore from "@actions/core";
 import * as Platform from "@effect/platform";
 import * as PlatformNode from "@effect/platform-node";
+import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as ConfigError from "effect/ConfigError";
 import * as Console from "effect/Console";
@@ -67,12 +68,8 @@ const processConnectionRequest = (
         const bobData = Tuple.make(`${clientIp}:${Number.parseInt(natPort)}` as const, "10.0.0.2");
         const [aliceConfig, bobConfig] = yield* λ(Wireguard.WireguardConfig.generateP2PConfigs(aliceData, bobData));
         yield* λ(aliceConfig.up());
-        yield* λ(
-            helpers.uploadSingleFileArtifact(
-                `${service_identifier}_connection-response_${client_identifier}`,
-                bobConfig.toString()
-            )
-        );
+        const g = yield* λ(Schema.encode(Schema.parseJson(Wireguard.WireguardConfig))(bobConfig));
+        yield* λ(helpers.uploadSingleFileArtifact(`${service_identifier}_connection-response_${client_identifier}`, g));
     })
         .pipe(Effect.catchAll(Console.log))
         .pipe(Effect.catchAllDefect(Console.log));
