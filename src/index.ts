@@ -832,7 +832,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
                 })
             );
 
-            yield* λ(self.applyConfig(interfaceObject));
+            // yield* λ(self.applyConfig(interfaceObject));
             return interfaceObject;
         });
     };
