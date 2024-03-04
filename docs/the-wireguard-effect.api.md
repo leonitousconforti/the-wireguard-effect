@@ -229,10 +229,10 @@ export class WireguardPeer extends WireguardPeer_base {
 
 // Warnings were encountered during analysis:
 //
-// src/index.ts:620:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @public, but its signature references "SetupDataFrom" which is marked as @internal
-// src/index.ts:624:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @public, but its signature references "SetupDataFrom" which is marked as @internal
-// src/index.ts:711:43 - (ae-incompatible-release-tags) The symbol "privateKey" is marked as @public, but its signature references "WireguardKey" which is marked as @internal
-// src/index.ts:711:69 - (ae-incompatible-release-tags) The symbol "publicKey" is marked as @public, but its signature references "WireguardKey" which is marked as @internal
+// src/index.ts:621:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @public, but its signature references "SetupDataFrom" which is marked as @internal
+// src/index.ts:625:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @public, but its signature references "SetupDataFrom" which is marked as @internal
+// src/index.ts:712:43 - (ae-incompatible-release-tags) The symbol "privateKey" is marked as @public, but its signature references "WireguardKey" which is marked as @internal
+// src/index.ts:712:69 - (ae-incompatible-release-tags) The symbol "publicKey" is marked as @public, but its signature references "WireguardKey" which is marked as @internal
 
 // (No @packageDocumentation comment for this package)
 

@@ -4,6 +4,7 @@ import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
+import * as Console from "effect/Console";
 import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -840,6 +841,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
                 })
             );
 
+            yield* λ(Console.log("here"));
             yield* λ(self.applyConfig(interfaceObject));
             return interfaceObject;
         });
