@@ -15,6 +15,7 @@ import * as Platform from '@effect/platform';
 import * as ReadonlyArray_2 from 'effect/ReadonlyArray';
 import * as Schema from '@effect/schema/Schema';
 import * as Scope from 'effect/Scope';
+import * as Socket from '@effect/experimental/Socket/Node';
 
 // @alpha
 export const Address: Schema.BrandSchema<((string & Brand<"IPv4">) | (string & Brand<"IPv6">)) & Brand<"Address">, string, never>;
@@ -176,8 +177,8 @@ export class WireguardConfig extends WireguardConfig_base {
         (aliceData: SetupDataFrom, bobEndpoint: SetupDataFrom): Effect.Effect<[aliceConfig: WireguardConfig, bobConfig: WireguardConfig], ParseResult.ParseError, never>;
         (aliceData: SetupDataFrom): (bobData: SetupDataFrom) => Effect.Effect<[aliceConfig: WireguardConfig, bobConfig: WireguardConfig], ParseResult.ParseError, never>;
     };
-    up: (interfaceName?: Option.Option<WireguardInterface>) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Platform.FileSystem.FileSystem>;
-    upScoped: (interfaceName?: Option.Option<WireguardInterface>) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Scope.Scope | Platform.FileSystem.FileSystem>;
+    up: (interfaceName?: Option.Option<WireguardInterface>) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException | Socket.SocketError, Platform.FileSystem.FileSystem>;
+    upScoped: (interfaceName?: Option.Option<WireguardInterface>) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException | Socket.SocketError, Scope.Scope | Platform.FileSystem.FileSystem>;
     writeToFile: (file: string) => Effect.Effect<void, ParseResult.ParseError | Platform.Error.PlatformError, Platform.FileSystem.FileSystem>;
 }
 
@@ -193,7 +194,7 @@ export class WireguardError extends WireguardError_base<{
 //
 // @alpha
 export class WireguardInterface extends WireguardInterface_base {
-    applyConfig: (config: WireguardConfig) => Effect.Effect<void, WireguardError, never>;
+    applyConfig: (config: WireguardConfig) => Effect.Effect<void, WireguardError | Socket.SocketError, never>;
     // (undocumented)
     protected static readonly DarwinInterfaceNameRegExp: RegExp;
     down: () => Effect.Effect<void, Platform.Error.PlatformError | WireguardError, Platform.FileSystem.FileSystem>;
@@ -206,8 +207,8 @@ export class WireguardInterface extends WireguardInterface_base {
     // (undocumented)
     protected static readonly OpenBSDInterfaceNameRegExp: RegExp;
     socketLocation: () => string;
-    up: (config: WireguardConfig) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Platform.FileSystem.FileSystem>;
-    upScoped: (config: WireguardConfig) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Scope.Scope | Platform.FileSystem.FileSystem>;
+    up: (config: WireguardConfig) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException | Socket.SocketError, Platform.FileSystem.FileSystem>;
+    upScoped: (config: WireguardConfig) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException | Socket.SocketError, Scope.Scope | Platform.FileSystem.FileSystem>;
     // (undocumented)
     protected static readonly WindowsInterfaceNameRegExp: RegExp;
 }

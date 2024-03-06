@@ -1,5 +1,6 @@
 import * as net from "node:net";
 
+import * as Socket from "@effect/experimental/Socket";
 import * as Platform from "@effect/platform";
 import * as PlatformNode from "@effect/platform-node";
 import * as ParseResult from "@effect/schema/ParseResult";
@@ -23,7 +24,11 @@ const ping = (endpoint: string): Effect.Effect<void, Cause.TimeoutException, nev
 
 export const main: Effect.Effect<
     void,
-    ParseResult.ParseError | Platform.Error.PlatformError | Wireguard.WireguardError | Cause.TimeoutException,
+    | ParseResult.ParseError
+    | Platform.Error.PlatformError
+    | Wireguard.WireguardError
+    | Cause.TimeoutException
+    | Socket.SocketError,
     Platform.FileSystem.FileSystem
 > = Effect.gen(function* (λ) {
     const config = yield* λ(Wireguard.WireguardConfig.fromIniConfigFile("examples/wireguard-config.conf"));

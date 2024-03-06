@@ -1,5 +1,6 @@
 import * as net from "node:net";
 
+import * as Socket from "@effect/experimental/Socket";
 import * as Platform from "@effect/platform";
 import * as PlatformNode from "@effect/platform-node";
 import * as Cause from "effect/Cause";
@@ -37,7 +38,7 @@ const ping = (endpoint: string): Effect.Effect<void, Cause.TimeoutException, nev
 
 export const main: Effect.Effect<
     void,
-    Wireguard.WireguardError | Cause.TimeoutException,
+    Wireguard.WireguardError | Cause.TimeoutException | Socket.SocketError,
     Platform.FileSystem.FileSystem
 > = Effect.gen(function* (λ) {
     yield* λ(config.upScoped());

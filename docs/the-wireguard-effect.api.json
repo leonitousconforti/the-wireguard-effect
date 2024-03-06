@@ -1909,6 +1909,15 @@
                 },
                 {
                   "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Socket.SocketError",
+                  "canonicalReference": "@effect/experimental!SocketError:class"
+                },
+                {
+                  "kind": "Content",
                   "text": ", "
                 },
                 {
@@ -1931,7 +1940,7 @@
               "name": "up",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 16
+                "endIndex": 18
               },
               "isStatic": false,
               "isProtected": false,
@@ -2002,6 +2011,15 @@
                 },
                 {
                   "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Socket.SocketError",
+                  "canonicalReference": "@effect/experimental!SocketError:class"
+                },
+                {
+                  "kind": "Content",
                   "text": ", "
                 },
                 {
@@ -2033,7 +2051,7 @@
               "name": "upScoped",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 18
+                "endIndex": 20
               },
               "isStatic": false,
               "isProtected": false,
@@ -2238,6 +2256,15 @@
                 },
                 {
                   "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Socket.SocketError",
+                  "canonicalReference": "@effect/experimental!SocketError:class"
+                },
+                {
+                  "kind": "Content",
                   "text": ", never>"
                 },
                 {
@@ -2251,7 +2278,7 @@
               "name": "applyConfig",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 8
+                "endIndex": 10
               },
               "isStatic": false,
               "isProtected": false,
@@ -2643,6 +2670,15 @@
                 },
                 {
                   "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Socket.SocketError",
+                  "canonicalReference": "@effect/experimental!SocketError:class"
+                },
+                {
+                  "kind": "Content",
                   "text": ", "
                 },
                 {
@@ -2665,7 +2701,7 @@
               "name": "up",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 14
+                "endIndex": 16
               },
               "isStatic": false,
               "isProtected": false,
@@ -2727,6 +2763,15 @@
                 },
                 {
                   "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Socket.SocketError",
+                  "canonicalReference": "@effect/experimental!SocketError:class"
+                },
+                {
+                  "kind": "Content",
                   "text": ", "
                 },
                 {
@@ -2758,7 +2803,7 @@
               "name": "upScoped",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 16
+                "endIndex": 18
               },
               "isStatic": false,
               "isProtected": false,

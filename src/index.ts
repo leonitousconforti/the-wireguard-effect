@@ -515,7 +515,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      * @category API
      * @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101
      */
-    public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError, never> => {
+    public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError | Socket.SocketError, never> => {
         const peers = config.Peers.flatMap((peer) => [
             `public-key=${peer.PublicKey}\n`,
             `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.port}\n`,
@@ -537,12 +537,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
         ]).pipe(Stream.encodeText);
 
         const channel = Socket.makeNetChannel({ path: this.socketLocation() });
-        return Function.pipe(
-            stream,
-            Stream.pipeThroughChannelOrFail(channel),
-            Stream.runDrain,
-            Effect.catchTag("SocketError", (error) => new WireguardError({ message: error.message }))
-        );
+        return Function.pipe(stream, Stream.pipeThroughChannelOrFail(channel), Stream.runDrain);
     };
 
     /**
@@ -556,7 +551,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
         config: WireguardConfig
     ): Effect.Effect<
         WireguardInterface,
-        WireguardError | Cause.TimeoutException,
+        WireguardError | Cause.TimeoutException | Socket.SocketError,
         Scope.Scope | Platform.FileSystem.FileSystem
     > => Effect.acquireRelease(this.up(config), Function.compose(this.down, Effect.orDie));
 
@@ -570,7 +565,11 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      */
     public up = (
         config: WireguardConfig
-    ): Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Platform.FileSystem.FileSystem> => {
+    ): Effect.Effect<
+        WireguardInterface,
+        WireguardError | Cause.TimeoutException | Socket.SocketError,
+        Platform.FileSystem.FileSystem
+    > => {
         const self = this;
         return Effect.gen(function* (λ) {
             const executablePath = yield* λ(wireguardGoExecutablePath().pipe(Effect.orDie));
@@ -919,7 +918,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
         interfaceName: Option.Option<WireguardInterface> = Option.none()
     ): Effect.Effect<
         WireguardInterface,
-        WireguardError | Cause.TimeoutException,
+        WireguardError | Cause.TimeoutException | Socket.SocketError,
         Scope.Scope | Platform.FileSystem.FileSystem
     > => Effect.acquireRelease(this.up(interfaceName), Function.compose(this.down, Effect.orDie));
 
@@ -933,7 +932,11 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
      */
     public up = (
         interfaceName: Option.Option<WireguardInterface> = Option.none()
-    ): Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Platform.FileSystem.FileSystem> => {
+    ): Effect.Effect<
+        WireguardInterface,
+        WireguardError | Cause.TimeoutException | Socket.SocketError,
+        Platform.FileSystem.FileSystem
+    > => {
         const self = this;
         return Effect.gen(function* (λ) {
             const interfaceObject = Option.isNone(interfaceName)
