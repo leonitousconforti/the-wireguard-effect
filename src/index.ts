@@ -221,7 +221,7 @@ export const IPv4Endpoint = Function.pipe(
                 if (typeof data === "object") return data;
                 const [ip, port] = data.split(":") as Split<typeof data, ":">;
                 const ipParsed = yield* λ(Schema.decode(IPv4)(ip));
-                const portParsed = yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, CidrMask))(port));
+                const portParsed = yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, Port))(port));
                 return { ip: ipParsed, port: portParsed };
             }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
         ({ ip, port }) => Effect.succeed(`${ip}:${port}` as const)
@@ -271,7 +271,7 @@ export const IPv6Endpoint = Function.pipe(
                 if (typeof data === "object") return data;
                 const [ip, port] = data.split("]") as Split<typeof data, "]:">;
                 const ipParsed = yield* λ(Schema.decode(IPv6)(ip.slice(1)));
-                const portParsed = yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, CidrMask))(port));
+                const portParsed = yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, Port))(port));
                 return { ip: ipParsed, port: portParsed };
             }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
         ({ ip, port }) => Effect.succeed(`[${ip}]:${port}` as const)
