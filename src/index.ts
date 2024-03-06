@@ -536,6 +536,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
             "\n\n",
         ]).pipe(Stream.encodeText);
 
+        console.log("socketLocation", this.socketLocation());
         const channel = Socket.makeNetChannel({ path: this.socketLocation() });
         return Function.pipe(stream, Stream.pipeThroughChannelOrFail(channel), Stream.runDrain);
     };
