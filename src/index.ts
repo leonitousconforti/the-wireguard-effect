@@ -3,6 +3,7 @@ import * as Platform from "@effect/platform";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
+import * as Channel from "effect/Channel";
 import * as Chunk from "effect/Chunk";
 import * as Console from "effect/Console";
 import * as Data from "effect/Data";
@@ -545,9 +546,10 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
             yield* λ(Console.log("here1"));
             const channel = Socket.toChannelWith()(socket);
             yield* λ(Console.log("here2"));
-            yield* λ(Function.pipe(stream, Stream.pipeThroughChannelOrFail(channel), Stream.runDrain));
+            const sink = Channel.toSink(channel);
             yield* λ(Console.log("here3"));
-            return;
+            yield* λ(Stream.run(stream, sink));
+            yield* λ(Console.log("here4"));
 
             // const channel = Socket.makeNetChannel({ path: this.socketLocation() });
             // return Function.pipe(stream, Stream.pipeThroughChannelOrFail(channel), Stream.runDrain);
