@@ -4,6 +4,7 @@ import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
+import * as Console from "effect/Console";
 import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -516,29 +517,41 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      * @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101
      */
     public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError | Socket.SocketError, never> => {
-        const peers = config.Peers.flatMap((peer) => [
-            `public-key=${peer.PublicKey}\n`,
-            `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.port}\n`,
-            `replace-allowed-ips=true\n`,
-            Predicate.isNotUndefined(peer.PresharedKey) ? `preshared-key=${peer.PresharedKey}\n` : "",
-            Predicate.isNotUndefined(peer.PersistentKeepaliveInterval)
-                ? `persistent-keepalive-interval=${peer.PersistentKeepaliveInterval}\n`
-                : "",
-            `allowed-ips=${peer.AllowedIPs.map((allowedIP) => `${allowedIP.ip}/${allowedIP.mask}\n`).join(", ")}\n`,
-        ]);
+        const self = this;
+        return Effect.gen(function* (λ) {
+            const peers = config.Peers.flatMap((peer) => [
+                `public-key=${peer.PublicKey}\n`,
+                `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.port}\n`,
+                `replace-allowed-ips=true\n`,
+                Predicate.isNotUndefined(peer.PresharedKey) ? `preshared-key=${peer.PresharedKey}\n` : "",
+                Predicate.isNotUndefined(peer.PersistentKeepaliveInterval)
+                    ? `persistent-keepalive-interval=${peer.PersistentKeepaliveInterval}\n`
+                    : "",
+                `allowed-ips=${peer.AllowedIPs.map((allowedIP) => `${allowedIP.ip}/${allowedIP.mask}\n`).join(", ")}\n`,
+            ]);
 
-        const stream = Stream.fromIterable([
-            "set=1\n",
-            `private-key=${config.PrivateKey}\n`,
-            `listen-port=${config.ListenPort}\n`,
-            `replace-peers=${config.ReplacePeers}\n`,
-            Predicate.isNotUndefined(config.FirewallMark) ? `fwmark=${config.FirewallMark}\n` : "",
-            ...peers,
-            "\n\n",
-        ]).pipe(Stream.encodeText);
+            const stream = Stream.fromIterable([
+                "set=1\n",
+                `private-key=${config.PrivateKey}\n`,
+                `listen-port=${config.ListenPort}\n`,
+                `replace-peers=${config.ReplacePeers}\n`,
+                Predicate.isNotUndefined(config.FirewallMark) ? `fwmark=${config.FirewallMark}\n` : "",
+                ...peers,
+                "\n\n",
+            ]).pipe(Stream.encodeText);
 
-        const channel = Socket.makeNetChannel({ path: this.socketLocation() });
-        return Function.pipe(stream, Stream.pipeThroughChannelOrFail(channel), Stream.runDrain);
+            yield* λ(Console.log("here0"));
+            const socket = yield* λ(Socket.makeNet({ path: self.socketLocation() }));
+            yield* λ(Console.log("here1"));
+            const channel = Socket.toChannelWith()(socket);
+            yield* λ(Console.log("here2"));
+            yield* λ(Function.pipe(stream, Stream.pipeThroughChannelOrFail(channel), Stream.runDrain));
+            yield* λ(Console.log("here3"));
+            return;
+
+            // const channel = Socket.makeNetChannel({ path: this.socketLocation() });
+            // return Function.pipe(stream, Stream.pipeThroughChannelOrFail(channel), Stream.runDrain);
+        }).pipe(Effect.scoped);
     };
 
     /**
