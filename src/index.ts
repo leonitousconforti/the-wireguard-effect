@@ -584,6 +584,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
                     () =>
                         new Promise<void>((resolve, reject) => {
                             socket.on("connect", () => {
+                                console.log("here1");
                                 socket.write(`${data}\n\n`);
                                 socket.end();
                             });
@@ -593,6 +594,10 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
                             socket.on("end", () => {
                                 resolve();
                             });
+                            socket.on("data", (data) => {
+                                console.log(data.toString());
+                            });
+                            console.log("here0");
                         })
                 )
             );
