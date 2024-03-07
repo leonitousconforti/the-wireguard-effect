@@ -577,14 +577,14 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
 
             const socket = net.createConnection({ path: self.socketLocation() });
             const data = yield* λ(Stream.runCollect(stream).pipe(Effect.map(Chunk.join(""))));
-            yield* λ(Console.log(data));
+            yield* λ(Console.log(`${data}\n`));
 
             yield* λ(
                 Effect.promise(
                     () =>
                         new Promise<void>((resolve, reject) => {
                             socket.on("connect", () => {
-                                socket.write(data);
+                                socket.write(`${data}\n`);
                                 socket.end();
                             });
                             socket.on("error", (error) => {
