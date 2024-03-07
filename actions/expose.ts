@@ -23,7 +23,7 @@ const processConnectionRequest = (
 ): Effect.Effect<
     void,
     Error | ConfigError.ConfigError | Cause.UnknownException | Platform.Error.PlatformError,
-    Platform.FileSystem.FileSystem
+    Platform.FileSystem.FileSystem | Platform.Path.Path
 > =>
     Effect.gen(function* (λ) {
         const service_identifier: number = yield* λ(helpers.SERVICE_IDENTIFIER);
@@ -80,7 +80,7 @@ class HasStopRequest extends Data.TaggedError("HasStopRequest")<{ message: strin
 const program: Effect.Effect<
     void,
     ConfigError.ConfigError | Cause.UnknownException | HasStopRequest | NoStopRequest,
-    Platform.FileSystem.FileSystem
+    Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
     const service_identifier: number = yield* λ(helpers.SERVICE_IDENTIFIER);
     const artifacts: ReadonlyArray<GithubArtifacts.Artifact> = yield* λ(helpers.listArtifacts);

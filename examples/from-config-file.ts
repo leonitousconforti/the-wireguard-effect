@@ -29,7 +29,7 @@ export const main: Effect.Effect<
     | Wireguard.WireguardError
     | Cause.TimeoutException
     | Socket.SocketError,
-    Platform.FileSystem.FileSystem
+    Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
     const config = yield* λ(Wireguard.WireguardConfig.fromIniConfigFile("examples/wireguard-config.conf"));
     yield* λ(config.upScoped());

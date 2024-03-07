@@ -39,7 +39,7 @@ const ping = (endpoint: string): Effect.Effect<void, Cause.TimeoutException, nev
 export const main: Effect.Effect<
     void,
     Wireguard.WireguardError | Cause.TimeoutException | Socket.SocketError,
-    Platform.FileSystem.FileSystem
+    Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
     yield* λ(config.upScoped());
     const peer1Endpoint = config.Peers[0].Endpoint;

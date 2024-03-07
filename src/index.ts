@@ -23,7 +23,6 @@ import * as ini from "ini";
 import * as crypto from "node:crypto";
 import * as net from "node:net";
 import * as os from "node:os";
-import * as url from "node:url";
 
 /** @see https://stackoverflow.com/questions/70831365/can-i-slice-literal-type-in-typescript */
 type Split<S extends string, D extends string> = string extends S | ""
@@ -138,18 +137,18 @@ export const Address = Function.pipe(
 export type Address = Schema.Schema.To<typeof Address>;
 
 /**
- * A cidr mask, which is a number between 0 and 32.
+ * An ipv4 cidr mask, which is a number between 0 and 32.
  *
  * @since 1.0.0
  * @category Datatypes
  * @alpha
  */
-export const CidrMask = Function.pipe(
-    Schema.number,
+export const IPv4CidrMask = Function.pipe(
+    Schema.Int,
     Schema.between(0, 32),
-    Schema.identifier("CidrMask"),
-    Schema.description("A cidr mask"),
-    Schema.brand("CidrMask")
+    Schema.identifier("IPv4CidrMask"),
+    Schema.description("An ipv4 cidr mask"),
+    Schema.brand("IPv4CidrMask")
 );
 
 /**
@@ -157,7 +156,29 @@ export const CidrMask = Function.pipe(
  * @category Brands
  * @alpha
  */
-export type CidrMask = Schema.Schema.To<typeof CidrMask>;
+export type IPv4CidrMask = Schema.Schema.To<typeof IPv4CidrMask>;
+
+/**
+ * An ipv6 cidr mask, which is a number between 0 and 128.
+ *
+ * @since 1.0.0
+ * @category Datatypes
+ * @alpha
+ */
+export const IPv6CidrMask = Function.pipe(
+    Schema.Int,
+    Schema.between(0, 128),
+    Schema.identifier("IPv6CidrMask"),
+    Schema.description("An ipv6 cidr mask"),
+    Schema.brand("IPv6CidrMask")
+);
+
+/**
+ * @since 1.0.0
+ * @category Brands
+ * @alpha
+ */
+export type IPv6CidrMask = Schema.Schema.To<typeof IPv6CidrMask>;
 
 /**
  * A cidr block, which is an IP address followed by a slash and a number between
@@ -170,23 +191,26 @@ export type CidrMask = Schema.Schema.To<typeof CidrMask>;
 export const CidrBlock = Function.pipe(
     Schema.transformOrFail(
         Schema.union(
-            Schema.struct({ ip: IPv4, mask: CidrMask }),
-            Schema.struct({ ip: IPv6, mask: CidrMask }),
+            Schema.struct({ ip: IPv4, mask: IPv4CidrMask }),
+            Schema.struct({ ip: IPv6, mask: IPv6CidrMask }),
             Schema.templateLiteral(Schema.string, Schema.literal("/"), Schema.number)
         ),
-        Schema.union(Schema.struct({ ip: IPv4, mask: CidrMask }), Schema.struct({ ip: IPv6, mask: CidrMask })),
+        Schema.union(Schema.struct({ ip: IPv4, mask: IPv4CidrMask }), Schema.struct({ ip: IPv6, mask: IPv6CidrMask })),
         (data, _options, ast) =>
             Effect.gen(function* (λ) {
                 if (typeof data === "object") return data;
                 const [ip, mask] = data.split("/") as Split<typeof data, "/">;
                 const ipParsed = yield* λ(Schema.decode(Schema.union(IPv4, IPv6))(ip));
-                const maskParsed = yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, CidrMask))(mask));
+                const maskParsed = String.includes(".")(ipParsed)
+                    ? yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, IPv4CidrMask))(mask))
+                    : yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, IPv6CidrMask))(mask));
                 return { ip: ipParsed, mask: maskParsed };
             }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
         ({ ip, mask }) => Effect.succeed(`${ip}/${mask}` as const)
     ),
     Schema.identifier("CidrBlock"),
-    Schema.description("A cidr block")
+    Schema.description("A cidr block"),
+    Schema.brand("CidrBlock")
 );
 
 /**
@@ -390,14 +414,15 @@ export class WireguardError extends Data.TaggedError("WireguardError")<{ message
 const wireguardGoExecutablePath = (): Effect.Effect<
     string,
     Platform.Error.PlatformError,
-    Platform.FileSystem.FileSystem
+    Platform.FileSystem.FileSystem | Platform.Path.Path
 > =>
     Effect.gen(function* (λ) {
+        const path = yield* λ(Platform.Path.Path);
         const fs = yield* λ(Platform.FileSystem.FileSystem);
         const arch = process.arch === "x64" ? "amd64" : process.arch;
-        const path = new url.URL(`../build/${process.platform}-${arch}-wireguard-go`, import.meta.url);
-        const pathString = url.fileURLToPath(path);
-        yield* λ(fs.access(pathString));
+        const url = new URL(`../build/${process.platform}-${arch}-wireguard-go`, import.meta.url);
+        const pathString = yield* λ(path.fromFileUrl(url));
+        yield* λ(fs.access(pathString, { ok: true }));
         return pathString;
     });
 
@@ -425,6 +450,9 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
         (s) => Effect.succeed(s)
     ),
 }) {
+    private static readonly SupportedArchitectures = ["x64", "arm64"] as const;
+    private static readonly SupportedPlatforms = ["linux", "win32", "darwin", "openbsd", "freebsd"] as const;
+
     protected static readonly LinuxInterfaceNameRegExp: RegExp = /^wg\d+$/;
     protected static readonly DarwinInterfaceNameRegExp: RegExp = /^utun\d+$/;
     protected static readonly OpenBSDInterfaceNameRegExp: RegExp = /^tun\d+$/;
@@ -437,14 +465,17 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      */
     protected static InterfaceRegExpForPlatform: Effect.Effect<RegExp, WireguardError, never> = Function.pipe(
         Match.value(`${process.arch}:${process.platform}`),
-        Match.not(Predicate.or(String.startsWith("x64"), String.startsWith("arm64")), (bad) =>
-            Effect.fail(new WireguardError({ message: `Unsupported architecture ${bad}` }))
+        Match.not(
+            Predicate.some(
+                ReadonlyArray.map(WireguardInterface.SupportedArchitectures, (arch) => String.startsWith(`${arch}:`))
+            ),
+            (bad) => Effect.fail(new WireguardError({ message: `Unsupported architecture ${bad}` }))
         ),
-        Match.when(String.endsWith("linux"), () => Effect.succeed(WireguardInterface.LinuxInterfaceNameRegExp)),
-        Match.when(String.endsWith("win32"), () => Effect.succeed(WireguardInterface.WindowsInterfaceNameRegExp)),
-        Match.when(String.endsWith("darwin"), () => Effect.succeed(WireguardInterface.DarwinInterfaceNameRegExp)),
-        Match.when(String.endsWith("openbsd"), () => Effect.succeed(WireguardInterface.OpenBSDInterfaceNameRegExp)),
-        Match.when(String.endsWith("freebsd"), () => Effect.succeed(WireguardInterface.FreeBSDInterfaceNameRegExp)),
+        Match.when(String.endsWith(":linux"), () => Effect.succeed(WireguardInterface.LinuxInterfaceNameRegExp)),
+        Match.when(String.endsWith(":win32"), () => Effect.succeed(WireguardInterface.WindowsInterfaceNameRegExp)),
+        Match.when(String.endsWith(":darwin"), () => Effect.succeed(WireguardInterface.DarwinInterfaceNameRegExp)),
+        Match.when(String.endsWith(":openbsd"), () => Effect.succeed(WireguardInterface.OpenBSDInterfaceNameRegExp)),
+        Match.when(String.endsWith(":freebsd"), () => Effect.succeed(WireguardInterface.FreeBSDInterfaceNameRegExp)),
         Match.orElse((bad) => Effect.fail(new WireguardError({ message: `Unsupported platform ${bad}` })))
     );
 
@@ -477,9 +508,15 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
                 )
             );
 
+            // We know this will be a supported platform now because otherwise
+            // the WireguardInterface.InterfaceRegExpForPlatform would have failed
+            const platform: (typeof WireguardInterface.SupportedPlatforms)[number] = Function.unsafeCoerce(
+                process.platform
+            );
+
             // Construct the next available interface name
             const fromString = Schema.decodeSync(WireguardInterface);
-            switch (process.platform) {
+            switch (platform) {
                 case "win32":
                 case "freebsd":
                     return fromString({ Name: `eth${nextAvailableInterfaceIndex}` });
@@ -490,7 +527,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
                 case "darwin":
                     return fromString({ Name: `utun${nextAvailableInterfaceIndex}` });
                 default:
-                    return yield* λ(new WireguardError({ message: `Unsupported platform ${process.platform}` }));
+                    return Function.absurd<WireguardInterface>(platform);
             }
         });
 
@@ -500,24 +537,21 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      */
     public socketLocation = (): string =>
         Function.pipe(
-            Match.value(process.platform),
+            Match.type<(typeof WireguardInterface.SupportedPlatforms)[number]>(),
             Match.when("win32", () => `\\\\.\\pipe\\wireguard\\${this.Name}`),
             Match.when("linux", () => `/var/run/wireguard/${this.Name}.sock`),
             Match.when("darwin", () => `/var/run/wireguard/${this.Name}.sock`),
             Match.when("freebsd", () => ""),
             Match.when("openbsd", () => ""),
-            // Should never happen
-            Match.orElse(() => {
-                throw new WireguardError({ message: `Unsupported platform ${process.platform}` });
-            })
-        );
+            Match.orElseAbsurd
+        )(Function.unsafeCoerce(process.platform));
 
     /**
      * @since 1.0.0
      * @category API
      * @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101
      */
-    public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError | Socket.SocketError, never> => {
+    public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError, never> => {
         const self = this;
         return Effect.gen(function* (λ) {
             const peers = config.Peers.flatMap((peer) => [
@@ -544,8 +578,24 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
             const socket = net.createConnection({ path: self.socketLocation() });
             const data = yield* λ(Stream.runCollect(stream).pipe(Effect.map(Chunk.join(""))));
             yield* λ(Console.log(data));
-            socket.write(data);
-            socket.end();
+
+            yield* λ(
+                Effect.promise(
+                    () =>
+                        new Promise<void>((resolve, reject) => {
+                            socket.on("connect", () => {
+                                socket.write(data);
+                                socket.end();
+                            });
+                            socket.on("error", (error) => {
+                                reject(new WireguardError({ message: `${error}` }));
+                            });
+                            socket.on("end", () => {
+                                resolve();
+                            });
+                        })
+                )
+            );
 
             // yield* λ(Console.log("here0"));
             // const socket = yield* λ(Socket.makeNet({ path: self.socketLocation() }));
@@ -574,8 +624,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
     ): Effect.Effect<
         WireguardInterface,
         WireguardError | Cause.TimeoutException | Socket.SocketError,
-        Scope.Scope | Platform.FileSystem.FileSystem
-    > => Effect.acquireRelease(this.up(config), Function.compose(this.down, Effect.orDie));
+        Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
+    > => Effect.acquireRelease(this.up(config), Function.flow(this.down, Effect.orDie));
 
     /**
      * Starts a wireguard tunnel in the background (daemon mode). This tunnel
@@ -589,13 +639,15 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
         config: WireguardConfig
     ): Effect.Effect<
         WireguardInterface,
-        WireguardError | Cause.TimeoutException | Socket.SocketError,
-        Platform.FileSystem.FileSystem
+        WireguardError | Cause.TimeoutException,
+        Platform.FileSystem.FileSystem | Platform.Path.Path
     > => {
         const self = this;
         return Effect.gen(function* (λ) {
+            // TODO: this should be a recoverable error
             const executablePath = yield* λ(wireguardGoExecutablePath().pipe(Effect.orDie));
 
+            // FIXME: fix this command
             yield* λ(
                 Effect.tryPromise({
                     try: () => {
@@ -833,7 +885,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
                 ReplaceAllowedIPs: true,
                 PublicKey: hubKeys.publicKey,
                 Endpoint: Tuple.getFirst(hubsData),
-                AllowedIPs: [{ ip: IPv4(Tuple.getSecond(hubsData)), mask: CidrMask(32) }],
+                AllowedIPs: [CidrBlock({ ip: IPv4(Tuple.getSecond(hubsData)), mask: IPv4CidrMask(32) })],
             });
 
             // All these spoke peer configs will be added to the hub interface config
@@ -843,7 +895,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
                     Endpoint: Tuple.getFirst(spoke),
                     ReplaceAllowedIPs: true,
                     PublicKey: keys.publicKey,
-                    AllowedIPs: [{ ip: IPv4(Tuple.getSecond(spoke)), mask: CidrMask(32) }],
+                    AllowedIPs: [CidrBlock({ ip: IPv4(Tuple.getSecond(spoke)), mask: IPv4CidrMask(32) })],
                 });
                 return Tuple.make(Tuple.make(keys.privateKey, spoke), peerConfig);
             });
@@ -940,9 +992,9 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
         interfaceName: Option.Option<WireguardInterface> = Option.none()
     ): Effect.Effect<
         WireguardInterface,
-        WireguardError | Cause.TimeoutException | Socket.SocketError,
-        Scope.Scope | Platform.FileSystem.FileSystem
-    > => Effect.acquireRelease(this.up(interfaceName), Function.compose(this.down, Effect.orDie));
+        WireguardError | Cause.TimeoutException,
+        Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
+    > => Effect.acquireRelease(this.up(interfaceName), (io) => Function.flow(io.down, Effect.orDie)());
 
     /**
      * Starts a wireguard tunnel in the background (daemon mode). This tunnel
@@ -953,11 +1005,11 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
      * @category Wireguard
      */
     public up = (
-        interfaceName: Option.Option<WireguardInterface> = Option.none()
+        interfaceName: Option.Option<WireguardInterface> | undefined = Option.none()
     ): Effect.Effect<
         WireguardInterface,
-        WireguardError | Cause.TimeoutException | Socket.SocketError,
-        Platform.FileSystem.FileSystem
+        WireguardError | Cause.TimeoutException,
+        Platform.FileSystem.FileSystem | Platform.Path.Path
     > => {
         const self = this;
         return Effect.gen(function* (λ) {
@@ -965,43 +1017,9 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
                 ? yield* λ(WireguardInterface.getNextAvailableInterface())
                 : interfaceName.value;
 
-            const executablePath = yield* λ(wireguardGoExecutablePath().pipe(Effect.orDie));
-
-            yield* λ(
-                Effect.tryPromise({
-                    try: () => {
-                        const subprocess = execa.execaCommand(`sudo ${executablePath} ${interfaceObject.Name}`, {
-                            detached: true,
-                            stdio: "ignore",
-                            cleanup: false,
-                        });
-                        subprocess.unref();
-                        return subprocess;
-                    },
-                    catch: (error) => new WireguardError({ message: `${error}` }),
-                })
-            );
-
+            yield* λ(interfaceObject.up(self));
             yield* λ(interfaceObject.applyConfig(self));
             return interfaceObject;
         });
     };
-
-    /**
-     * Stops a wireguard tunnel that was started in the background (daemon
-     * mode). This can stop tunnels that are started in the foreground (child
-     * mode), but that is not the intended use case. Instead you should use
-     * `upScoped`.
-     *
-     * @since 1.0.0
-     * @category Wireguard
-     */
-    public down = (
-        interfaceName: WireguardInterface
-    ): Effect.Effect<void, Platform.Error.PlatformError | WireguardError, Platform.FileSystem.FileSystem> =>
-        Effect.gen(function* (λ) {
-            const fs = yield* λ(Platform.FileSystem.FileSystem);
-            const path = interfaceName.socketLocation();
-            yield* λ(fs.remove(path));
-        });
 }
