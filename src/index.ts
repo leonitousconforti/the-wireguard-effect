@@ -3,7 +3,6 @@ import * as Platform from "@effect/platform";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
-import * as Channel from "effect/Channel";
 import * as Chunk from "effect/Chunk";
 import * as Console from "effect/Console";
 import * as Data from "effect/Data";
@@ -22,6 +21,7 @@ import * as Tuple from "effect/Tuple";
 import * as execa from "execa";
 import * as ini from "ini";
 import * as crypto from "node:crypto";
+import * as net from "node:net";
 import * as os from "node:os";
 import * as url from "node:url";
 
@@ -539,21 +539,27 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
                 Predicate.isNotUndefined(config.FirewallMark) ? `fwmark=${config.FirewallMark}\n` : "",
                 ...peers,
                 "\n\n",
-            ]).pipe(Stream.encodeText);
+            ]);
 
-            yield* λ(Console.log("here0"));
-            const socket = yield* λ(Socket.makeNet({ path: self.socketLocation() }));
-            yield* λ(Console.log("here1"));
-            const channel = Socket.toChannelWith()(socket);
-            yield* λ(Console.log("here2"));
-            const sink = Channel.toSink(channel);
-            yield* λ(Console.log("here3"));
-            yield* λ(Stream.run(stream, sink));
-            yield* λ(Console.log("here4"));
+            const socket = net.createConnection({ path: self.socketLocation() });
+            const data = yield* λ(Stream.runCollect(stream).pipe(Effect.map(Chunk.join(""))));
+            yield* λ(Console.log(data));
+            socket.write(data);
+            socket.end();
+
+            // yield* λ(Console.log("here0"));
+            // const socket = yield* λ(Socket.makeNet({ path: self.socketLocation() }));
+            // yield* λ(Console.log("here1"));
+            // const channel = Socket.toChannelWith()(socket);
+            // yield* λ(Console.log("here2"));
+            // const sink = Channel.toSink(channel);
+            // yield* λ(Console.log("here3"));
+            // yield* λ(Stream.run(stream, sink));
+            // yield* λ(Console.log("here4"));
 
             // const channel = Socket.makeNetChannel({ path: this.socketLocation() });
             // return Function.pipe(stream, Stream.pipeThroughChannelOrFail(channel), Stream.runDrain);
-        }).pipe(Effect.scoped);
+        });
     };
 
     /**
