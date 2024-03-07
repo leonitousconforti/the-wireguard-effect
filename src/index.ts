@@ -528,6 +528,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
         ]);
 
         const stream = Stream.fromIterable([
+            "set=1\n",
             `private-key=${config.PrivateKey}\n`,
             `listen-port=${config.ListenPort}\n`,
             `replace-peers=${config.ReplacePeers}\n`,
@@ -536,7 +537,6 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
             "\n\n",
         ]).pipe(Stream.encodeText);
 
-        console.log("socketLocation", this.socketLocation());
         const channel = Socket.makeNetChannel({ path: this.socketLocation() });
         return Function.pipe(stream, Stream.pipeThroughChannelOrFail(channel), Stream.runDrain);
     };
