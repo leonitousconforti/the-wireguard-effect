@@ -576,16 +576,16 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
         Function.pipe(
             Stream.fromIterable([
                 "set=1",
+                `private_key=${Buffer.from(config.PrivateKey, "base64").toString("hex")}`,
                 `listen_port=${config.ListenPort}`,
                 "replace_peers=true",
-                ...config.Peers.map((peer) => ""),
             ]),
             Stream.map(String.concat("\n")),
             Stream.encodeText,
             Stream.pipeThroughChannelOrFail(Socket.makeNetChannel({ path: this.socketLocation() })),
             Stream.decodeText(),
             Stream.run(Sink.last()),
-            Effect.tap(Console.log(config.PrivateKey)),
+            Effect.tap(Console.log(Buffer.from(config.PrivateKey, "base64").toString("hex"))),
             Effect.map(Option.getOrThrow),
             Effect.map(String.trimEnd),
             Effect.flatMap(Schema.decodeUnknown(Errno)),
