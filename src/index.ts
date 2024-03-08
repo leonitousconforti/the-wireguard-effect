@@ -4,6 +4,7 @@ import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
+import * as Console from "effect/Console";
 import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -599,6 +600,23 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
         );
 
     /**
+     * @since 1.0.0
+     * @category API
+     * @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101
+     */
+    public getConfig = (): Effect.Effect<void, WireguardError, never> =>
+        Function.pipe(
+            Stream.make("get=1\n"),
+            Stream.encodeText,
+            Stream.pipeThroughChannelOrFail(Socket.makeNetChannel({ path: this.socketLocation() })),
+            Stream.decodeText(),
+            Stream.run(Sink.collectAll()),
+            Effect.map(Chunk.join("\n")),
+            Effect.tap(Console.log),
+            Effect.catchAll((error) => Effect.fail(new WireguardError({ message: error.message })))
+        );
+
+    /**
      * Starts a wireguard tunnel in the foreground (child mode). This tunnel
      * will be gracefully shutdown once the scope is closed.
      *
@@ -650,6 +668,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
             );
 
             yield* λ(self.applyConfig(config));
+            yield* λ(self.getConfig());
             return self;
         });
     };

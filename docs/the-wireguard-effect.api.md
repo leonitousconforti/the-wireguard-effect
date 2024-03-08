@@ -211,6 +211,7 @@ export class WireguardInterface extends WireguardInterface_base {
     down: () => Effect.Effect<void, Platform.Error.PlatformError | WireguardError, Platform.FileSystem.FileSystem>;
     // (undocumented)
     protected static readonly FreeBSDInterfaceNameRegExp: RegExp;
+    getConfig: () => Effect.Effect<void, WireguardError, never>;
     static getNextAvailableInterface: () => Effect.Effect<WireguardInterface, WireguardError, never>;
     protected static InterfaceRegExpForPlatform: Effect.Effect<RegExp, WireguardError, never>;
     // (undocumented)
