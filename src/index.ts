@@ -554,11 +554,26 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
     public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError, never> => {
         const self = this;
         return Effect.gen(function* (λ) {
+            const peers = config.Peers.flatMap((peer) => [
+                `public_key=${peer.PublicKey}\n`,
+                `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.port}\n`,
+                `replace_allowed_ips=true\n`,
+                Predicate.isNotUndefined(peer.PresharedKey) ? `preshared-key=${peer.PresharedKey}\n` : "",
+                Predicate.isNotUndefined(peer.PersistentKeepaliveInterval)
+                    ? `persistent_keepalive_interval=${peer.PersistentKeepaliveInterval}\n`
+                    : "",
+                `allowed_ip=${peer.AllowedIPs.map((allowedIP) => `${allowedIP.ip}/${allowedIP.mask}\n`).join(", ")}\n`,
+            ]);
+
             const stream = Stream.fromIterable([
                 "set=1\n",
                 `private_key=${config.PrivateKey}\n`,
                 `listen_port=${config.ListenPort}\n`,
+                `replace_peers=${config.ReplacePeers}\n`,
+                Predicate.isNotUndefined(config.FirewallMark) ? `fwmark=${config.FirewallMark}\n` : "",
+                ...peers,
             ]).pipe(Stream.encodeText);
+
             const socket = Socket.makeNetChannel({ path: self.socketLocation() });
             const a = Stream.pipeThroughChannelOrFail(stream, socket);
             const b = yield* λ(Stream.run(a, Sink.last()));
