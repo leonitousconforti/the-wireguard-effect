@@ -554,9 +554,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
     public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError, never> => {
         const self = this;
         return Effect.gen(function* (λ) {
-            const stream = Stream.make(
-                `set=1\nprivate_key=${config.PrivateKey}\nlisten_port=${config.ListenPort}\nreplace_peers=${config.ReplacePeers}\n`
-            ).pipe(Stream.encodeText);
+            const stream = Stream.make(`set=1\nlisten_port=${config.ListenPort}\n`).pipe(Stream.encodeText);
             const socket = Socket.makeNetChannel({ path: self.socketLocation() });
             const a = Stream.pipeThroughChannelOrFail(stream, socket);
             const b = yield* λ(Stream.run(a, Sink.last()));
