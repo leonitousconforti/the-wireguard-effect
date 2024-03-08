@@ -572,7 +572,6 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
                 `replace_peers=${config.ReplacePeers}\n`,
                 Predicate.isNotUndefined(config.FirewallMark) ? `fwmark=${config.FirewallMark}\n` : "",
                 ...peers,
-                "\n",
             ]).pipe(Stream.encodeText);
 
             const socket = Socket.makeNetChannel({ path: self.socketLocation() });
