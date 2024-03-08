@@ -35,6 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: python3 -m http.server &
       - uses: ./.github/actions/workflow-level-service/expose
         with:
           service-identifier: ${{ env.linux-service-identifier1 }}
@@ -78,6 +79,8 @@ jobs:
         uses: ./.github/actions/workflow-level-service/connect
         with:
           service-identifier: ${{ env.linux-service-identifier1 }}
+      - id: test1
+        run: curl http://${{steps.connect1.outputs.service-address}}:8000
       # - id: connect2
       #   uses: ./.github/actions/workflow-level-service/connect
       #   with:

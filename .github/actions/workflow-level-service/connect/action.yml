@@ -40,15 +40,6 @@ runs:
       env:
         SERVICE_IDENTIFIER: ${{ inputs.service-identifier }}
 
-    - shell: bash
-      run: ip link show
-
     - name: "Test connection"
       shell: bash
-      if: ${{ always() }}
       run: ping -c 2 ${{ steps.connect.outputs.service-address }}
-
-    - name: "Test connection"
-      shell: bash
-      if: ${{ always() }}
-      run: ping -c 2 10.0.0.2

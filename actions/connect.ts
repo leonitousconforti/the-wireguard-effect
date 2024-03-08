@@ -82,7 +82,7 @@ const waitForResponse = Effect.gen(function* (λ) {
         yield* λ(helpers.deleteArtifact(connectionResponse.name));
         GithubCore.info(data);
         const config = yield* λ(Schema.decode(Schema.parseJson(Wireguard.WireguardConfig))(data));
-        GithubCore.setOutput("service-address", `10.0.0.1`);
+        GithubCore.setOutput("service-address", `10.0.0.2`);
         b();
         yield* λ(config.up());
         yield* λ(Console.log("Connection established"));
