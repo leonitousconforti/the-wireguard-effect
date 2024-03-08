@@ -994,8 +994,9 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
                     ReadonlyArray.map(self.Peers, (peer) =>
                         Effect.gen(function* (λ) {
                             const data2 = yield* λ(Schema.encode(WireguardPeer)(peer));
-                            const peerData = { ...data2 } as Writable<Partial<Schema.Schema.From<WireguardConfig>>>;
+                            const peerData = { ...data2 } as Writable<Partial<Schema.Schema.From<WireguardPeer>>>;
                             delete peerData["AllowedIPs"];
+                            delete peerData["ReplaceAllowedIPs"];
                             const allowedIps = yield* λ(
                                 Effect.all(ReadonlyArray.map(peer.AllowedIPs, (x) => Schema.encode(CidrBlock)(x)))
                             );
