@@ -557,12 +557,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
             const peers = config.Peers.flatMap((peer) => [
                 `public_key=${peer.PublicKey}\n`,
                 `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.port}\n`,
-                `replace_allowed_ips=true\n`,
-                Predicate.isNotUndefined(peer.PresharedKey) ? `preshared-key=${peer.PresharedKey}\n` : "",
-                Predicate.isNotUndefined(peer.PersistentKeepaliveInterval)
-                    ? `persistent_keepalive_interval=${peer.PersistentKeepaliveInterval}\n`
-                    : "",
-                `allowed_ip=${peer.AllowedIPs.map((allowedIP) => `${allowedIP.ip}/${allowedIP.mask}\n`).join(", ")}\n`,
+                // `allowed_ip=${peer.AllowedIPs.map((allowedIP) => `${allowedIP.ip}/${allowedIP.mask}\n`).join(", ")}\n`,
             ]);
 
             const stream = Stream.fromIterable([
@@ -570,7 +565,6 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
                 `private_key=${config.PrivateKey}\n`,
                 `listen_port=${config.ListenPort}\n`,
                 `replace_peers=${config.ReplacePeers}\n`,
-                Predicate.isNotUndefined(config.FirewallMark) ? `fwmark=${config.FirewallMark}\n` : "",
                 ...peers,
             ]).pipe(Stream.encodeText);
 
