@@ -610,6 +610,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
             Stream.encodeText,
             Stream.pipeThroughChannelOrFail(Socket.makeNetChannel({ path: this.socketLocation() })),
             Stream.decodeText(),
+            Stream.flatMap(Function.compose(String.linesIterator, Stream.fromIterable)),
+            Stream.map(String.trimEnd),
             Stream.run(Sink.collectAll()),
             Effect.tap(Function.flow(Chunk.last, Option.getOrThrow, Schema.decodeUnknown(Errno))),
             Effect.map(Chunk.join("\n")),
