@@ -612,10 +612,10 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
             Stream.decodeText(),
             Stream.flatMap(Function.compose(String.linesIterator, Stream.fromIterable)),
             Stream.map(String.trimEnd),
+            Stream.filter(String.isNonEmpty),
             Stream.run(Sink.collectAll()),
             Effect.tap(Function.flow(Chunk.last, Option.getOrThrow, Schema.decodeUnknown(Errno))),
-            Effect.map(Chunk.join("\n")),
-            Effect.tap(Console.log),
+            Effect.tap((x) => Console.log(Chunk.join(x, "\n"))),
             Effect.catchAll((error) => Effect.fail(new WireguardError({ message: error.message })))
         );
 
