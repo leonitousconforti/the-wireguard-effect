@@ -658,12 +658,10 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
             yield* λ(
                 Effect.tryPromise({
                     try: () => {
-                        const subprocess = execa.execaCommand(`sudo ${executablePath} ${self.Name}`, {
-                            detached: true,
-                            stdio: "ignore",
-                            cleanup: false,
+                        const subprocess = execa.execaCommand(`LOG_LEVEL=debug sudo ${executablePath} ${self.Name}`, {
+                            stdio: "inherit",
                         });
-                        subprocess.unref();
+                        // subprocess.unref();
                         return subprocess;
                     },
                     catch: (error) => new WireguardError({ message: `${error}` }),
