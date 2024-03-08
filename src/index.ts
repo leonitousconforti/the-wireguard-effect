@@ -611,6 +611,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
             Stream.pipeThroughChannelOrFail(Socket.makeNetChannel({ path: this.socketLocation() })),
             Stream.decodeText(),
             Stream.run(Sink.collectAll()),
+            Effect.tap(Function.flow(Chunk.last, Schema.decodeUnknown(Errno))),
             Effect.map(Chunk.join("\n")),
             Effect.tap(Console.log),
             Effect.catchAll((error) => Effect.fail(new WireguardError({ message: error.message })))
