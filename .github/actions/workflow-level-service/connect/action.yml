@@ -24,6 +24,9 @@ runs:
           core.exportVariable('ACTIONS_RESULTS_URL', process.env['ACTIONS_RESULTS_URL'])
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN'])
 
+    - shell: bash
+      run: ifconfig
+
     # FIXME: can we get rid of this sudo -E?
     - name: "Connect to service (Unix)"
       id: connect
