@@ -9,6 +9,7 @@ inputs:
 outputs:
   service-address:
     description: "IP Address of the service connected to"
+    value: ${{ steps.connect.outputs.service-address }}
 
 runs:
   using: "composite"
