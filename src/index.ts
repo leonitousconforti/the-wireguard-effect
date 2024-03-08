@@ -573,7 +573,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      */
     public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError, never> =>
         Function.pipe(
-            Stream.make(`set=1\nlisten_port=${config.ListenPort}\n`),
+            Stream.fromIterable(["set=1", `listen_port=${config.ListenPort}`]),
+            Stream.map(String.concat("\n")),
             Stream.encodeText,
             Stream.pipeThroughChannelOrFail(Socket.makeNetChannel({ path: this.socketLocation() })),
             Stream.decodeText(),
