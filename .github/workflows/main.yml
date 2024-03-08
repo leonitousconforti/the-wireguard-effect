@@ -35,6 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: sudo apt install wireguard
       - run: python3 -m http.server &
       - uses: ./.github/actions/workflow-level-service/expose
         with:
@@ -75,6 +76,7 @@ jobs:
         os: ["ubuntu-latest"]
     steps:
       - uses: actions/checkout@v4
+      - run: sudo apt install wireguard
       - id: connect1
         uses: ./.github/actions/workflow-level-service/connect
         with:
