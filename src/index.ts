@@ -601,10 +601,10 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
             //     )
             // );
 
-            const stream = Stream.make("get=1\n").pipe(Stream.encodeText);
+            const stream = Stream.make("get=1\n\n").pipe(Stream.encodeText);
             const socket = Socket.makeNetChannel({ path: self.socketLocation() });
             const a = Stream.pipeThroughChannelOrFail(stream, socket);
-            const b = yield* λ(Stream.runHead(a));
+            const b = yield* λ(Stream.runLast(a));
             yield* λ(Console.log(b));
         })
             .pipe(Effect.tapError(Console.log))
