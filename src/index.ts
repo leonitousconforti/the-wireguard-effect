@@ -606,12 +606,12 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      */
     public getConfig = (): Effect.Effect<void, WireguardError, never> =>
         Function.pipe(
-            Stream.make("get=1\n"),
+            Stream.make("get=1\n\n"),
             Stream.encodeText,
             Stream.pipeThroughChannelOrFail(Socket.makeNetChannel({ path: this.socketLocation() })),
             Stream.decodeText(),
             Stream.run(Sink.collectAll()),
-            Effect.tap(Function.flow(Chunk.last, Schema.decodeUnknown(Errno))),
+            Effect.tap(Function.flow(Chunk.last, Option.getOrThrow, Schema.decodeUnknown(Errno))),
             Effect.map(Chunk.join("\n")),
             Effect.tap(Console.log),
             Effect.catchAll((error) => Effect.fail(new WireguardError({ message: error.message })))
