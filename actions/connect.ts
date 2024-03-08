@@ -8,6 +8,7 @@ import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Schedule from "effect/Schedule";
+import * as execa from "execa";
 import * as dgram from "node:dgram";
 import * as stun from "stun";
 import * as uuid from "uuid";
@@ -86,6 +87,7 @@ const waitForResponse = Effect.gen(function* (λ) {
         b();
         yield* λ(config.up());
         yield* λ(Console.log("Connection established"));
+        yield* λ(Effect.sync(() => execa.execaCommandSync("ifconfig", { stdio: "inherit" })));
         return yield* λ(Effect.unit);
     }
 
