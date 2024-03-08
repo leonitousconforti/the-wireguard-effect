@@ -2731,6 +2731,15 @@
                 },
                 {
                   "kind": "Content",
+                  "text": ", address2: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Address",
+                  "canonicalReference": "the-wireguard-effect!Address:type"
+                },
+                {
+                  "kind": "Content",
                   "text": ") => "
                 },
                 {
@@ -2762,7 +2771,7 @@
               "name": "setAddress",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 8
+                "endIndex": 10
               },
               "isStatic": false,
               "isProtected": false,

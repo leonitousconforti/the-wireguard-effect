@@ -603,8 +603,14 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      * @since 1.0.0
      * @category API
      */
-    public setAddress = (address: Address): Effect.Effect<void, WireguardError, never> =>
-        Effect.sync(() => execa.execaCommandSync(`sudo ip address add ${address} dev ${this.Name}`));
+    public setAddress = (address: Address, address2: Address): Effect.Effect<void, WireguardError, never> =>
+        Effect.sync(() => execa.execaCommandSync(`sudo ip address add ${address} dev ${this.Name}`))
+            .pipe(
+                Effect.andThen(
+                    Effect.sync(() => execa.execaCommandSync(`sudo ip route add ${address2} dev ${this.Name}`))
+                )
+            )
+            .pipe(Effect.andThen(Effect.sync(() => execa.execaCommandSync(`sudo ip link set up dev ${this.Name}`))));
 
     /**
      * @since 1.0.0
@@ -679,7 +685,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
 
             yield* λ(self.applyConfig(config));
             yield* λ(self.logConfig());
-            yield* λ(self.setAddress(config.Address));
+            yield* λ(self.setAddress(config.Address, Address(config.Peers[0].AllowedIPs[0]?.ip || "")));
             return self;
         });
     };
