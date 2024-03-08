@@ -4,6 +4,7 @@ import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
+import * as Console from "effect/Console";
 import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -573,12 +574,18 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      */
     public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError, never> =>
         Function.pipe(
-            Stream.fromIterable(["set=1", `listen_port=${config.ListenPort}`]),
+            Stream.fromIterable([
+                "set=1",
+                `listen_port=${config.ListenPort}`,
+                "replace_peers=true",
+                ...config.Peers.map((peer) => ""),
+            ]),
             Stream.map(String.concat("\n")),
             Stream.encodeText,
             Stream.pipeThroughChannelOrFail(Socket.makeNetChannel({ path: this.socketLocation() })),
             Stream.decodeText(),
             Stream.run(Sink.last()),
+            Effect.tap(Console.log(config.PrivateKey)),
             Effect.map(Option.getOrThrow),
             Effect.map(String.trimEnd),
             Effect.flatMap(Schema.decodeUnknown(Errno)),
