@@ -605,7 +605,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
             const socket = Socket.makeNetChannel({ path: self.socketLocation() });
             const a = Stream.pipeThroughChannelOrFail(stream, socket);
             const b = yield* λ(Stream.runLast(a));
-            yield* λ(Console.log(b));
+            yield* λ(Console.log(Option.getOrThrow(b).toString()));
         })
             .pipe(Effect.tapError(Console.log))
             .pipe(Effect.mapError((error) => new WireguardError({ message: `${error}` })));
