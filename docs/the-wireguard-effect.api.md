@@ -199,7 +199,7 @@ export class WireguardError extends WireguardError_base<{
 //
 // @alpha
 export class WireguardInterface extends WireguardInterface_base {
-    applyConfig: (config: WireguardConfig) => Effect.Effect<void, WireguardError, never>;
+    applyConfig: (_config: WireguardConfig) => Effect.Effect<void, WireguardError, never>;
     // (undocumented)
     protected static readonly DarwinInterfaceNameRegExp: RegExp;
     down: () => Effect.Effect<void, Platform.Error.PlatformError | WireguardError, Platform.FileSystem.FileSystem>;

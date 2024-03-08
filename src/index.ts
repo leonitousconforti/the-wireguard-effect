@@ -21,7 +21,6 @@ import * as Tuple from "effect/Tuple";
 import * as execa from "execa";
 import * as ini from "ini";
 import * as crypto from "node:crypto";
-import * as net from "node:net";
 import * as os from "node:os";
 
 /** @see https://stackoverflow.com/questions/70831365/can-i-slice-literal-type-in-typescript */
@@ -551,70 +550,65 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      * @category API
      * @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101
      */
-    public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError, never> => {
+    public applyConfig = (_config: WireguardConfig): Effect.Effect<void, WireguardError, never> => {
         const self = this;
         return Effect.gen(function* (λ) {
-            const peers = config.Peers.flatMap((peer) => [
-                `public-key=${peer.PublicKey}\n`,
-                `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.port}\n`,
-                `replace-allowed-ips=true\n`,
-                Predicate.isNotUndefined(peer.PresharedKey) ? `preshared-key=${peer.PresharedKey}\n` : "",
-                Predicate.isNotUndefined(peer.PersistentKeepaliveInterval)
-                    ? `persistent-keepalive-interval=${peer.PersistentKeepaliveInterval}\n`
-                    : "",
-                `allowed-ips=${peer.AllowedIPs.map((allowedIP) => `${allowedIP.ip}/${allowedIP.mask}\n`).join(", ")}\n`,
-            ]);
+            // const peers = config.Peers.flatMap((peer) => [
+            //     `public-key=${peer.PublicKey}\n`,
+            //     `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.port}\n`,
+            //     `replace-allowed-ips=true\n`,
+            //     Predicate.isNotUndefined(peer.PresharedKey) ? `preshared-key=${peer.PresharedKey}\n` : "",
+            //     Predicate.isNotUndefined(peer.PersistentKeepaliveInterval)
+            //         ? `persistent-keepalive-interval=${peer.PersistentKeepaliveInterval}\n`
+            //         : "",
+            //     `allowed-ips=${peer.AllowedIPs.map((allowedIP) => `${allowedIP.ip}/${allowedIP.mask}\n`).join(", ")}\n`,
+            // ]);
 
-            const stream = Stream.fromIterable([
-                "set=1\n",
-                `private-key=${config.PrivateKey}\n`,
-                `listen-port=${config.ListenPort}\n`,
-                `replace-peers=${config.ReplacePeers}\n`,
-                Predicate.isNotUndefined(config.FirewallMark) ? `fwmark=${config.FirewallMark}\n` : "",
-                ...peers,
-                "\n\n",
-            ]);
+            // const stream = Stream.fromIterable([
+            //     "set=1\n",
+            //     `private-key=${config.PrivateKey}\n`,
+            //     `listen-port=${config.ListenPort}\n`,
+            //     `replace-peers=${config.ReplacePeers}\n`,
+            //     Predicate.isNotUndefined(config.FirewallMark) ? `fwmark=${config.FirewallMark}\n` : "",
+            //     ...peers,
+            //     "\n\n",
+            // ]).pipe(Stream.encodeText);
 
-            const socket = net.createConnection({ path: self.socketLocation() });
-            const data = yield* λ(Stream.runCollect(stream).pipe(Effect.map(Chunk.join(""))));
-            yield* λ(Console.log(`${data}\n\n`));
+            // const socket = net.createConnection({ path: self.socketLocation() });
+            // const data = yield* λ(Stream.runCollect(stream).pipe(Effect.map(Chunk.join(""))));
+            // yield* λ(Console.log(`${data}\n\n`));
 
-            yield* λ(
-                Effect.promise(
-                    () =>
-                        new Promise<void>((resolve, reject) => {
-                            socket.on("connect", () => {
-                                console.log("here1");
-                                socket.write(`${data}\n\n`);
-                                socket.end();
-                            });
-                            socket.on("error", (error) => {
-                                reject(new WireguardError({ message: `${error}` }));
-                            });
-                            socket.on("end", () => {
-                                resolve();
-                            });
-                            socket.on("data", (data) => {
-                                console.log(data.toString());
-                            });
-                            console.log("here0");
-                        })
-                )
-            );
+            // yield* λ(
+            //     Effect.promise(
+            //         () =>
+            //             new Promise<void>((resolve, reject) => {
+            //                 socket.on("connect", () => {
+            //                     console.log("here1");
+            //                     socket.write(`${data}\n\n`);
+            //                     socket.end();
+            //                 });
+            //                 socket.on("error", (error) => {
+            //                     reject(new WireguardError({ message: `${error}` }));
+            //                 });
+            //                 socket.on("end", () => {
+            //                     resolve();
+            //                 });
+            //                 socket.on("data", (data) => {
+            //                     console.log(data.toString());
+            //                 });
+            //                 console.log("here0");
+            //             })
+            //     )
+            // );
 
-            // yield* λ(Console.log("here0"));
-            // const socket = yield* λ(Socket.makeNet({ path: self.socketLocation() }));
-            // yield* λ(Console.log("here1"));
-            // const channel = Socket.toChannelWith()(socket);
-            // yield* λ(Console.log("here2"));
-            // const sink = Channel.toSink(channel);
-            // yield* λ(Console.log("here3"));
-            // yield* λ(Stream.run(stream, sink));
-            // yield* λ(Console.log("here4"));
-
-            // const channel = Socket.makeNetChannel({ path: this.socketLocation() });
-            // return Function.pipe(stream, Stream.pipeThroughChannelOrFail(channel), Stream.runDrain);
-        });
+            const stream = Stream.make("get=1\n").pipe(Stream.encodeText);
+            const socket = Socket.makeNetChannel({ path: self.socketLocation() });
+            const a = Stream.pipeThroughChannelOrFail(stream, socket);
+            const b = yield* λ(Stream.runHead(a));
+            yield* λ(Console.log(b));
+        })
+            .pipe(Effect.tapError(Console.log))
+            .pipe(Effect.mapError((error) => new WireguardError({ message: `${error}` })));
     };
 
     /**
