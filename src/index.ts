@@ -4,7 +4,6 @@ import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
-import * as Console from "effect/Console";
 import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -580,13 +579,19 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
                 `listen_port=${config.ListenPort}`,
                 `fwmark=${Predicate.isNotUndefined(config.FirewallMark) ? config.FirewallMark : 0}`,
                 `replace_peers=${config.ReplacePeers}`,
+                ...config.Peers.flatMap((peer) => [
+                    `public_key=${Buffer.from(peer.PublicKey, "base64").toString("hex")}`,
+                    `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.port}`,
+                    `persistent_keepalive_interval=20`,
+                    `replace_allowed_ips=${peer.ReplaceAllowedIPs}`,
+                    ...peer.AllowedIPs.map((allowedIP) => `allowed_ip=${allowedIP.ip}/${allowedIP.mask}`),
+                ]),
             ]),
             Stream.map(String.concat("\n")),
             Stream.encodeText,
             Stream.pipeThroughChannelOrFail(Socket.makeNetChannel({ path: this.socketLocation() })),
             Stream.decodeText(),
             Stream.run(Sink.last()),
-            Effect.tap(Console.log(Buffer.from(config.PrivateKey, "base64").toString("hex"))),
             Effect.map(Option.getOrThrow),
             Effect.map(String.trimEnd),
             Effect.flatMap(Schema.decodeUnknown(Errno)),
