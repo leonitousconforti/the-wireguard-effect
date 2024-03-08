@@ -610,7 +610,9 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
                 Effect.andThen(
                     Effect.sync(() => execa.execaCommandSync(`sudo ip route add ${address2} dev ${this.Name}`))
                 )
-            );
+            )
+            .pipe(Effect.tap(Console.log(address)))
+            .pipe(Effect.tap(Console.log(address2)));
 
     /**
      * @since 1.0.0
