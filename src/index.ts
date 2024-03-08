@@ -603,16 +603,16 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      * @since 1.0.0
      * @category API
      */
-    public setAddress = (address: Address, address2: Address): Effect.Effect<void, WireguardError, never> =>
-        Effect.sync(() => execa.execaCommandSync(`sudo ip address add ${address2} dev ${this.Name}`))
-            .pipe(Effect.andThen(Effect.sync(() => execa.execaCommandSync(`sudo ip link set up dev ${this.Name}`))))
-            .pipe(
-                Effect.andThen(
-                    Effect.sync(() => execa.execaCommandSync(`sudo ip route add ${address} dev ${this.Name}`))
-                )
-            )
-            .pipe(Effect.tap(Console.log(address)))
-            .pipe(Effect.tap(Console.log(address2)));
+    // public setAddress = (address: Address, address2: Address): Effect.Effect<void, WireguardError, never> =>
+    //     Effect.sync(() => execa.execaCommandSync(`sudo ip address add ${address} dev ${this.Name}`))
+    //         .pipe(Effect.andThen(Effect.sync(() => execa.execaCommandSync(`sudo ip link set up dev ${this.Name}`))))
+    //         .pipe(
+    //             Effect.andThen(
+    //                 Effect.sync(() => execa.execaCommandSync(`sudo ip route add ${address2} dev ${this.Name}`))
+    //             )
+    //         )
+    //         .pipe(Effect.tap(Console.log(address)))
+    //         .pipe(Effect.tap(Console.log(address2)));
 
     /**
      * @since 1.0.0
@@ -658,7 +658,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      * @category Wireguard
      */
     public up = (
-        config: WireguardConfig
+        _config: WireguardConfig
     ): Effect.Effect<
         WireguardInterface,
         WireguardError | Cause.TimeoutException,
@@ -685,9 +685,9 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
                 })
             );
 
-            yield* λ(self.applyConfig(config));
-            yield* λ(self.logConfig());
-            yield* λ(self.setAddress(config.Address, Address(config.Peers[0].AllowedIPs[0]?.ip || "")));
+            // yield* λ(self.applyConfig(config));
+            // yield* λ(self.logConfig());
+            // yield* λ(self.setAddress(config.Address, Address(config.Peers[0].AllowedIPs[0]?.ip || "")));
             return self;
         });
     };
@@ -762,7 +762,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>()({
 export class WireguardConfig extends Schema.Class<WireguardConfig>()({
     /** @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/wgtypes/types.go#L207-L232 */
 
-    Address: Address,
+    Address: Schema.union(Address, CidrBlock, Schema.nonEmptyArray(Address)),
 
     /**
      * The value for this is a decimal-string integer corresponding to the

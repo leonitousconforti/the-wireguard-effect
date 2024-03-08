@@ -8,6 +8,7 @@ import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Schedule from "effect/Schedule";
+import * as execa from "execa";
 import * as dgram from "node:dgram";
 import * as stun from "stun";
 import * as uuid from "uuid";
@@ -32,7 +33,7 @@ let b: () => void = () => {};
 const uploadConnectionRequestArtifact: Effect.Effect<
     void,
     ConfigError.ConfigError | Platform.Error.PlatformError | Cause.UnknownException,
-    Platform.FileSystem.FileSystem
+    Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
     const service_identifier: number = yield* λ(helpers.SERVICE_IDENTIFIER);
     const stunSocket: dgram.Socket = dgram.createSocket("udp4");
@@ -84,7 +85,9 @@ const waitForResponse = Effect.gen(function* (λ) {
         const config = yield* λ(Schema.decode(Schema.parseJson(Wireguard.WireguardConfig))(data));
         GithubCore.setOutput("service-address", `10.0.0.1`);
         b();
-        yield* λ(config.up());
+        // yield* λ(config.up());
+        yield* λ(config.writeToFile("/etc/wireguard/wg0.conf"));
+        yield* λ(Effect.sync(() => execa.execaCommandSync("wg-quick up wg0")));
         yield* λ(Console.log("Connection established"));
         return yield* λ(Effect.unit);
     }

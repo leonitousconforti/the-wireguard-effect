@@ -218,9 +218,8 @@ export class WireguardInterface extends WireguardInterface_base {
     logConfig: () => Effect.Effect<void, WireguardError, never>;
     // (undocumented)
     protected static readonly OpenBSDInterfaceNameRegExp: RegExp;
-    setAddress: (address: Address, address2: Address) => Effect.Effect<void, WireguardError, never>;
     socketLocation: () => string;
-    up: (config: WireguardConfig) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Platform.FileSystem.FileSystem | Platform.Path.Path>;
+    up: (_config: WireguardConfig) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Platform.FileSystem.FileSystem | Platform.Path.Path>;
     upScoped: (config: WireguardConfig) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException | Socket.SocketError, Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path>;
     // (undocumented)
     protected static readonly WindowsInterfaceNameRegExp: RegExp;

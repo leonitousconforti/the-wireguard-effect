@@ -12,6 +12,7 @@ import * as Function from "effect/Function";
 import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Schedule from "effect/Schedule";
 import * as Tuple from "effect/Tuple";
+import * as execa from "execa";
 import * as dgram from "node:dgram";
 import * as stun from "stun";
 import * as uuid from "uuid";
@@ -67,7 +68,9 @@ const processConnectionRequest = (
         const aliceData = Tuple.make(myLocation, "10.0.0.1");
         const bobData = Tuple.make(`${clientIp}:${Number.parseInt(natPort)}` as const, "10.0.0.2");
         const [aliceConfig, bobConfig] = yield* λ(Wireguard.WireguardConfig.generateP2PConfigs(aliceData, bobData));
-        yield* λ(aliceConfig.up());
+        // yield* λ(aliceConfig.up());
+        yield* λ(aliceConfig.writeToFile("/etc/wireguard/wg0.conf"));
+        yield* λ(Effect.sync(() => execa.execaCommandSync("wg-quick up wg0")));
         const g = yield* λ(Schema.encode(Schema.parseJson(Wireguard.WireguardConfig))(bobConfig));
         yield* λ(helpers.uploadSingleFileArtifact(`${service_identifier}_connection-response_${client_identifier}`, g));
     })

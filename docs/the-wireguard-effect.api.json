@@ -2713,72 +2713,6 @@
             },
             {
               "kind": "Property",
-              "canonicalReference": "the-wireguard-effect!WireguardInterface#setAddress:member",
-              "docComment": "/**\n * 1.0.0 API\n *\n * @since @category\n */\n",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "setAddress: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "(address: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "Address",
-                  "canonicalReference": "the-wireguard-effect!Address:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": ", address2: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "Address",
-                  "canonicalReference": "the-wireguard-effect!Address:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": ") => "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "Effect.Effect",
-                  "canonicalReference": "effect!Effect:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": "<void, "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "WireguardError",
-                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
-                },
-                {
-                  "kind": "Content",
-                  "text": ", never>"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Alpha",
-              "name": "setAddress",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 10
-              },
-              "isStatic": false,
-              "isProtected": false,
-              "isAbstract": false
-            },
-            {
-              "kind": "Property",
               "canonicalReference": "the-wireguard-effect!WireguardInterface#socketLocation:member",
               "docComment": "/**\n * 1.0.0 Constructors\n *\n * @since @category\n */\n",
               "excerptTokens": [
@@ -2818,7 +2752,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "(config: "
+                  "text": "(_config: "
                 },
                 {
                   "kind": "Reference",
