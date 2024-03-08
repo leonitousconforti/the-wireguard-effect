@@ -559,6 +559,83 @@
         },
         {
           "kind": "TypeAlias",
+          "canonicalReference": "the-wireguard-effect!Errno:type",
+          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type Errno = "
+            },
+            {
+              "kind": "Reference",
+              "text": "Schema.Schema.To",
+              "canonicalReference": "@effect/schema!Schema.To:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<typeof "
+            },
+            {
+              "kind": "Reference",
+              "text": "Errno",
+              "canonicalReference": "the-wireguard-effect!Errno:var"
+            },
+            {
+              "kind": "Content",
+              "text": ">"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "src/index.ts",
+          "releaseTag": "Alpha",
+          "name": "Errno",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 5
+          }
+        },
+        {
+          "kind": "Variable",
+          "canonicalReference": "the-wireguard-effect!Errno:var",
+          "docComment": "/**\n * A wireguard Errno return message.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "Errno: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Schema.BrandSchema",
+              "canonicalReference": "@effect/schema!BrandSchema:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<\"errno=0\" & import(\"effect/Brand\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Brand",
+              "canonicalReference": "effect!Brand:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<\"Errno\">, \"errno=0\", never>"
+            }
+          ],
+          "fileUrlPath": "src/index.ts",
+          "isReadonly": true,
+          "releaseTag": "Alpha",
+          "name": "Errno",
+          "variableTypeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 5
+          }
+        },
+        {
+          "kind": "TypeAlias",
           "canonicalReference": "the-wireguard-effect!IPv4:type",
           "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
           "excerptTokens": [

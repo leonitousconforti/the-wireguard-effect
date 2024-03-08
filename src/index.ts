@@ -4,7 +4,6 @@ import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
-import * as Console from "effect/Console";
 import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -378,6 +377,27 @@ export type SetupDataTo = Schema.Schema.To<typeof SetupData>;
 export type SetupDataFrom = Schema.Schema.From<typeof SetupData>;
 
 /**
+ * A wireguard Errno return message.
+ *
+ * @since 1.0.0
+ * @category Datatypes
+ * @alpha
+ */
+export const Errno = Function.pipe(
+    Schema.templateLiteral(Schema.literal("errno="), Schema.literal(0)),
+    Schema.identifier("Errno"),
+    Schema.description("An errno"),
+    Schema.brand("Errno")
+);
+
+/**
+ * @since 1.0.0
+ * @category Brands
+ * @alpha
+ */
+export type Errno = Schema.Schema.To<typeof Errno>;
+
+/**
  * A wireguard key, which is a 44 character base64 string.
  *
  * @since 1.0.0
@@ -551,19 +571,17 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      * @category API
      * @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101
      */
-    public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError, never> => {
-        const self = this;
-        return Effect.gen(function* (λ) {
-            yield* λ(Console.log(config.PrivateKey));
-            const stream = Stream.make(
-                `set=1\nprivate_key=${config.PrivateKey}\nlisten_port=${config.ListenPort}\n`
-            ).pipe(Stream.encodeText);
-            const socket = Socket.makeNetChannel({ path: self.socketLocation() });
-            const a = Stream.pipeThroughChannelOrFail(stream, socket);
-            const b = yield* λ(Stream.run(a, Sink.last()));
-            yield* λ(Console.log(Option.getOrThrow(b).toString()));
-        }).pipe(Effect.mapError((error) => new WireguardError({ message: `${error}` })));
-    };
+    public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError, never> =>
+        Function.pipe(
+            Stream.make(`set=1\nlisten_port=${config.ListenPort}\n`),
+            Stream.encodeText,
+            Stream.pipeThroughChannelOrFail(Socket.makeNetChannel({ path: this.socketLocation() })),
+            Stream.decodeText(),
+            Stream.run(Sink.last()),
+            Effect.map(Option.getOrThrow),
+            Effect.flatMap(Schema.decodeUnknown(Errno)),
+            Effect.catchAll((error) => Effect.fail(new WireguardError({ message: error.message })))
+        );
 
     /**
      * Starts a wireguard tunnel in the foreground (child mode). This tunnel

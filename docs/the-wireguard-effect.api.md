@@ -66,6 +66,12 @@ export type EndpointFrom = Schema.Schema.From<typeof Endpoint>;
 export type EndpointTo = Schema.Schema.To<typeof Endpoint>;
 
 // @alpha
+export const Errno: Schema.BrandSchema<"errno=0" & Brand<"Errno">, "errno=0", never>;
+
+// @alpha
+export type Errno = Schema.Schema.To<typeof Errno>;
+
+// @alpha
 export const IPv4: Schema.BrandSchema<string & Brand<"IPv4">, string, never>;
 
 // @alpha
