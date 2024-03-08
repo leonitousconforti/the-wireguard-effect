@@ -986,6 +986,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
             type Writable<T> = { -readonly [P in keyof T]: T[P] };
             const interfaceData = { ...data } as Writable<Partial<Schema.Schema.From<WireguardConfig>>>;
             delete interfaceData["Peers"];
+            delete interfaceData["ReplacePeers"];
 
             const interfaceConfig = ini.stringify(interfaceData, { section: "Interface", whitespace: true });
             const peersConfig = yield* λ(
