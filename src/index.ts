@@ -972,9 +972,14 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
      */
     public writeToFile = (
         file: string
-    ): Effect.Effect<void, ParseResult.ParseError | Platform.Error.PlatformError, Platform.FileSystem.FileSystem> => {
+    ): Effect.Effect<
+        void,
+        ParseResult.ParseError | Platform.Error.PlatformError,
+        Platform.FileSystem.FileSystem | Platform.Path.Path
+    > => {
         const self = this;
         return Effect.gen(function* (λ) {
+            const path = yield* λ(Platform.Path.Path);
             const fs = yield* λ(Platform.FileSystem.FileSystem);
             const data = yield* λ(Schema.encode(WireguardConfig)(self));
 
@@ -1001,6 +1006,8 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
                     )
                 ).pipe(Effect.map(ReadonlyArray.join("\n\n")))
             );
+
+            yield* λ(fs.makeDirectory(path.dirname(file), { recursive: true }));
             return yield* λ(fs.writeFileString(file, interfaceConfig + "\n" + peersConfig));
         });
     };

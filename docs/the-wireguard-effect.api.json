@@ -2192,6 +2192,15 @@
                 },
                 {
                   "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.Path.Path",
+                  "canonicalReference": "@effect/platform!Path:interface"
+                },
+                {
+                  "kind": "Content",
                   "text": ">"
                 },
                 {
@@ -2205,7 +2214,7 @@
               "name": "writeToFile",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 10
+                "endIndex": 12
               },
               "isStatic": false,
               "isProtected": false,

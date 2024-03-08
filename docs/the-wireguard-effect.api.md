@@ -190,7 +190,7 @@ export class WireguardConfig extends WireguardConfig_base {
     };
     up: (interfaceName?: Option.Option<WireguardInterface> | undefined) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Platform.FileSystem.FileSystem | Platform.Path.Path>;
     upScoped: (interfaceName?: Option.Option<WireguardInterface>) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path>;
-    writeToFile: (file: string) => Effect.Effect<void, ParseResult.ParseError | Platform.Error.PlatformError, Platform.FileSystem.FileSystem>;
+    writeToFile: (file: string) => Effect.Effect<void, ParseResult.ParseError | Platform.Error.PlatformError, Platform.FileSystem.FileSystem | Platform.Path.Path>;
 }
 
 // Warning: (ae-forgotten-export) The symbol "WireguardError_base" needs to be exported by the entry point index.d.ts
