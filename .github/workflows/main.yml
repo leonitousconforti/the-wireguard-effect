@@ -80,6 +80,7 @@ jobs:
         with:
           service-identifier: ${{ env.linux-service-identifier1 }}
       - id: test1
+        if: ${{ always()}}
         run: curl http://${{steps.connect1.outputs.service-address}}:8000
       # - id: connect2
       #   uses: ./.github/actions/workflow-level-service/connect
