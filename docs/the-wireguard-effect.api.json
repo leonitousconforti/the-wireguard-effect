@@ -2493,54 +2493,6 @@
             },
             {
               "kind": "Property",
-              "canonicalReference": "the-wireguard-effect!WireguardInterface#getConfig:member",
-              "docComment": "/**\n * 1.0.0 API\n *\n * @see\n *\n * https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101\n *\n * @since @category\n */\n",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "getConfig: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "() => "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "Effect.Effect",
-                  "canonicalReference": "effect!Effect:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": "<void, "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "WireguardError",
-                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
-                },
-                {
-                  "kind": "Content",
-                  "text": ", never>"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Alpha",
-              "name": "getConfig",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 6
-              },
-              "isStatic": false,
-              "isProtected": false,
-              "isAbstract": false
-            },
-            {
-              "kind": "Property",
               "canonicalReference": "the-wireguard-effect!WireguardInterface.getNextAvailableInterface:member",
               "docComment": "/**\n * 1.0.0 Constructors\n *\n * @since @category\n */\n",
               "excerptTokens": [
@@ -2682,6 +2634,54 @@
             },
             {
               "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface#logConfig:member",
+              "docComment": "/**\n * 1.0.0 API\n *\n * @see\n *\n * https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "logConfig: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "() => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<void, "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardError",
+                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", never>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "logConfig",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 6
+              },
+              "isStatic": false,
+              "isProtected": false,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
               "canonicalReference": "the-wireguard-effect!WireguardInterface.OpenBSDInterfaceNameRegExp:member",
               "docComment": "",
               "excerptTokens": [
@@ -2709,6 +2709,63 @@
               },
               "isStatic": true,
               "isProtected": true,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface#setAddress:member",
+              "docComment": "/**\n * 1.0.0 API\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "setAddress: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "(address: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Address",
+                  "canonicalReference": "the-wireguard-effect!Address:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ") => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<void, "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardError",
+                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", never>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "setAddress",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 8
+              },
+              "isStatic": false,
+              "isProtected": false,
               "isAbstract": false
             },
             {

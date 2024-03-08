@@ -602,9 +602,16 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
     /**
      * @since 1.0.0
      * @category API
+     */
+    public setAddress = (address: Address): Effect.Effect<void, WireguardError, never> =>
+        Effect.sync(() => execa.execaCommandSync(`sudo ip address add ${address} dev ${this.Name}`));
+
+    /**
+     * @since 1.0.0
+     * @category API
      * @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101
      */
-    public getConfig = (): Effect.Effect<void, WireguardError, never> =>
+    public logConfig = (): Effect.Effect<void, WireguardError, never> =>
         Function.pipe(
             Stream.make("get=1\n\n"),
             Stream.encodeText,
@@ -671,7 +678,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
             );
 
             yield* λ(self.applyConfig(config));
-            yield* λ(self.getConfig());
+            yield* λ(self.logConfig());
+            yield* λ(self.setAddress(config.Address));
             return self;
         });
     };
