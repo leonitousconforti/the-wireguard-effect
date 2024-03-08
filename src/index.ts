@@ -579,6 +579,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
             Stream.decodeText(),
             Stream.run(Sink.last()),
             Effect.map(Option.getOrThrow),
+            Effect.map(String.trimEnd),
             Effect.flatMap(Schema.decodeUnknown(Errno)),
             Effect.catchAll((error) => Effect.fail(new WireguardError({ message: error.message })))
         );
