@@ -2240,7 +2240,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "(_config: "
+                  "text": "(config: "
                 },
                 {
                   "kind": "Reference",

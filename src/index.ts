@@ -15,6 +15,7 @@ import * as Predicate from "effect/Predicate";
 import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as ReadonlyRecord from "effect/ReadonlyRecord";
 import * as Scope from "effect/Scope";
+import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
@@ -550,65 +551,35 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      * @category API
      * @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101
      */
-    public applyConfig = (_config: WireguardConfig): Effect.Effect<void, WireguardError, never> => {
+    public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError, never> => {
         const self = this;
         return Effect.gen(function* (λ) {
-            // const peers = config.Peers.flatMap((peer) => [
-            //     `public-key=${peer.PublicKey}\n`,
-            //     `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.port}\n`,
-            //     `replace-allowed-ips=true\n`,
-            //     Predicate.isNotUndefined(peer.PresharedKey) ? `preshared-key=${peer.PresharedKey}\n` : "",
-            //     Predicate.isNotUndefined(peer.PersistentKeepaliveInterval)
-            //         ? `persistent-keepalive-interval=${peer.PersistentKeepaliveInterval}\n`
-            //         : "",
-            //     `allowed-ips=${peer.AllowedIPs.map((allowedIP) => `${allowedIP.ip}/${allowedIP.mask}\n`).join(", ")}\n`,
-            // ]);
+            const peers = config.Peers.flatMap((peer) => [
+                `public_key=${peer.PublicKey}\n`,
+                `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.port}\n`,
+                `replace_allowed_ips=true\n`,
+                Predicate.isNotUndefined(peer.PresharedKey) ? `preshared-key=${peer.PresharedKey}\n` : "",
+                Predicate.isNotUndefined(peer.PersistentKeepaliveInterval)
+                    ? `persistent_keepalive_interval=${peer.PersistentKeepaliveInterval}\n`
+                    : "",
+                `allowed_ip=${peer.AllowedIPs.map((allowedIP) => `${allowedIP.ip}/${allowedIP.mask}\n`).join(", ")}\n`,
+            ]);
 
-            // const stream = Stream.fromIterable([
-            //     "set=1\n",
-            //     `private-key=${config.PrivateKey}\n`,
-            //     `listen-port=${config.ListenPort}\n`,
-            //     `replace-peers=${config.ReplacePeers}\n`,
-            //     Predicate.isNotUndefined(config.FirewallMark) ? `fwmark=${config.FirewallMark}\n` : "",
-            //     ...peers,
-            //     "\n\n",
-            // ]).pipe(Stream.encodeText);
+            const stream = Stream.fromIterable([
+                "set=1\n",
+                `private_key=${config.PrivateKey}\n`,
+                `listen_port=${config.ListenPort}\n`,
+                `replace_peers=${config.ReplacePeers}\n`,
+                Predicate.isNotUndefined(config.FirewallMark) ? `fwmark=${config.FirewallMark}\n` : "",
+                ...peers,
+                "\n\n",
+            ]).pipe(Stream.encodeText);
 
-            // const socket = net.createConnection({ path: self.socketLocation() });
-            // const data = yield* λ(Stream.runCollect(stream).pipe(Effect.map(Chunk.join(""))));
-            // yield* λ(Console.log(`${data}\n\n`));
-
-            // yield* λ(
-            //     Effect.promise(
-            //         () =>
-            //             new Promise<void>((resolve, reject) => {
-            //                 socket.on("connect", () => {
-            //                     console.log("here1");
-            //                     socket.write(`${data}\n\n`);
-            //                     socket.end();
-            //                 });
-            //                 socket.on("error", (error) => {
-            //                     reject(new WireguardError({ message: `${error}` }));
-            //                 });
-            //                 socket.on("end", () => {
-            //                     resolve();
-            //                 });
-            //                 socket.on("data", (data) => {
-            //                     console.log(data.toString());
-            //                 });
-            //                 console.log("here0");
-            //             })
-            //     )
-            // );
-
-            const stream = Stream.make("get=1\n\n").pipe(Stream.encodeText);
             const socket = Socket.makeNetChannel({ path: self.socketLocation() });
             const a = Stream.pipeThroughChannelOrFail(stream, socket);
-            const b = yield* λ(Stream.runLast(a));
+            const b = yield* λ(Stream.run(a, Sink.last()));
             yield* λ(Console.log(Option.getOrThrow(b).toString()));
-        })
-            .pipe(Effect.tapError(Console.log))
-            .pipe(Effect.mapError((error) => new WireguardError({ message: `${error}` })));
+        }).pipe(Effect.mapError((error) => new WireguardError({ message: `${error}` })));
     };
 
     /**
@@ -1017,7 +988,6 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
                 : interfaceName.value;
 
             yield* λ(interfaceObject.up(self));
-            yield* λ(interfaceObject.applyConfig(self));
             return interfaceObject;
         });
     };
