@@ -604,11 +604,11 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      * @category API
      */
     public setAddress = (address: Address, address2: Address): Effect.Effect<void, WireguardError, never> =>
-        Effect.sync(() => execa.execaCommandSync(`sudo ip address add ${address} dev ${this.Name}`))
+        Effect.sync(() => execa.execaCommandSync(`sudo ip address add ${address2} dev ${this.Name}`))
             .pipe(Effect.andThen(Effect.sync(() => execa.execaCommandSync(`sudo ip link set up dev ${this.Name}`))))
             .pipe(
                 Effect.andThen(
-                    Effect.sync(() => execa.execaCommandSync(`sudo ip route add ${address2} dev ${this.Name}`))
+                    Effect.sync(() => execa.execaCommandSync(`sudo ip route add ${address} dev ${this.Name}`))
                 )
             )
             .pipe(Effect.tap(Console.log(address)))
