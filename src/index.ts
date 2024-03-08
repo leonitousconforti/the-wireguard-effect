@@ -554,20 +554,9 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
     public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError, never> => {
         const self = this;
         return Effect.gen(function* (λ) {
-            const peers = config.Peers.flatMap((peer) => [
-                `public_key=${peer.PublicKey}\n`,
-                `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.port}\n`,
-                // `allowed_ip=${peer.AllowedIPs.map((allowedIP) => `${allowedIP.ip}/${allowedIP.mask}\n`).join(", ")}\n`,
-            ]);
-
-            const stream = Stream.fromIterable([
-                "set=1\n",
-                `private_key=${config.PrivateKey}\n`,
-                `listen_port=${config.ListenPort}\n`,
-                `replace_peers=${config.ReplacePeers}\n`,
-                ...peers,
-            ]).pipe(Stream.encodeText);
-
+            const stream = Stream.make(
+                `set=1\nprivate_key=${config.PrivateKey}\nlisten_port=${config.ListenPort}\nreplace_peers=${config.ReplacePeers}\n`
+            ).pipe(Stream.encodeText);
             const socket = Socket.makeNetChannel({ path: self.socketLocation() });
             const a = Stream.pipeThroughChannelOrFail(stream, socket);
             const b = yield* λ(Stream.run(a, Sink.last()));
