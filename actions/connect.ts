@@ -87,7 +87,7 @@ const waitForResponse = Effect.gen(function* (λ) {
         b();
         yield* λ(config.up());
         yield* λ(Console.log("Connection established"));
-        yield* λ(Effect.sync(() => execa.execaCommandSync("ifconfig", { stdio: "inherit" })));
+        yield* λ(Effect.sync(() => execa.execaCommandSync("ip link show", { stdio: "inherit" })));
         return yield* λ(Effect.unit);
     }
 

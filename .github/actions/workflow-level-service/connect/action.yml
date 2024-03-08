@@ -25,7 +25,7 @@ runs:
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN'])
 
     - shell: bash
-      run: ifconfig
+      run: ip link show
 
     # FIXME: can we get rid of this sudo -E?
     - name: "Connect to service (Unix)"
@@ -44,7 +44,7 @@ runs:
         SERVICE_IDENTIFIER: ${{ inputs.service-identifier }}
 
     - shell: bash
-      run: ifconfig
+      run: ip link show
 
     - name: "Test connection"
       shell: bash
