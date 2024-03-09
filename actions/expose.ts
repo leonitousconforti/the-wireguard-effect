@@ -75,7 +75,7 @@ const processConnectionRequest = (
         yield* λ(aliceConfig.writeToFile("/etc/wireguard/wg0.conf"));
         yield* λ(Console.log("Config written"));
         // FIXME: remove once done debugging
-        yield* λ(Effect.sync(() => execa.execaCommandSync("wg-quick up wg0", { stdio: "inherit" })));
+        yield* λ(Effect.sync(() => execa.execaCommandSync("sudo wg-quick up wg0", { stdio: "inherit" })));
         const g = yield* λ(Schema.encode(Schema.parseJson(Wireguard.WireguardConfig))(bobConfig));
         yield* λ(helpers.uploadSingleFileArtifact(`${service_identifier}_connection-response_${client_identifier}`, g));
     })
