@@ -77,11 +77,13 @@ const processConnectionRequest = (
         // FIXME: remove once done debugging
         yield* λ(Effect.sync(() => execa.execaCommandSync("sudo wg-quick up wg0", { stdio: "inherit" })));
         yield* λ(
+            Effect.sync(() => execa.execaCommandSync("sudo iptables -A FORWARD -i wg0 -j ACCEPT", { stdio: "inherit" }))
+        );
+        yield* λ(
             Effect.sync(() =>
-                execa.execaCommandSync(
-                    "sudo iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE",
-                    { stdio: "inherit" }
-                )
+                execa.execaCommandSync("sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE", {
+                    stdio: "inherit",
+                })
             )
         );
         const g = yield* λ(Schema.encode(Schema.parseJson(Wireguard.WireguardConfig))(bobConfig));
