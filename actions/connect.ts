@@ -87,7 +87,7 @@ const waitForResponse = Effect.gen(function* (λ) {
         b();
         // yield* λ(config.up());
         yield* λ(config.writeToFile("/etc/wireguard/wg0.conf"));
-        yield* λ(Effect.sync(() => execa.execaCommandSync("wg-quick up wg0")));
+        yield* λ(Effect.sync(() => execa.execaCommandSync("wg-quick up wg0", { stdio: "inherit" })));
         yield* λ(Console.log("Connection established"));
         return yield* λ(Effect.unit);
     }
