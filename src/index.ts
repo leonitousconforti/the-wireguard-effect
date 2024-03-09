@@ -745,6 +745,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>()({
             const allowedIps = yield* λ(
                 Effect.all(ReadonlyArray.map(self.AllowedIPs, (ap) => Schema.encode(CidrBlock)(ap)))
             );
+            // FIXME: Revert once done debugging
             return String.concat(
                 ini.encode(peerData, { bracketedArray: false, section: "Peer", whitespace: true }),
                 `AllowedIPs = 0.0.0.0/0`
