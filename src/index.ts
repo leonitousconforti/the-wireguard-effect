@@ -748,7 +748,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>()({
             // FIXME: Revert once done debugging
             return String.concat(
                 ini.encode(peerData, { bracketedArray: false, section: "Peer", whitespace: true }),
-                `AllowedIPs = 0.0.0.0/0`
+                `AllowedIPs = 192.168.0.0/24`
             );
         });
     };
