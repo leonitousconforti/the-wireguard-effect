@@ -37,6 +37,8 @@ jobs:
       - uses: actions/checkout@v4
       - run: sudo apt install wireguard
       - run: python3 -m http.server &
+      - run: ip link show
+      - run: ifconfig
       - uses: ./.github/actions/workflow-level-service/expose
         with:
           service-identifier: ${{ env.linux-service-identifier1 }}
