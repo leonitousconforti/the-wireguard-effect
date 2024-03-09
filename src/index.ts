@@ -868,6 +868,7 @@ class WireguardIniConfig extends Schema.Class<WireguardIniConfig>()({
                 )
             );
 
+            yield* λ(Console.log(`writing: ${interfaceConfig}\n${peersConfig}`));
             yield* λ(fs.makeDirectory(path.dirname(file), { recursive: true }));
             return yield* λ(fs.writeFileString(file, `${interfaceConfig}\n${peersConfig}`));
         });

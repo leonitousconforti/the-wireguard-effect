@@ -302,14 +302,14 @@ export class WireguardPeer extends WireguardPeer_base {
 
 // Warnings were encountered during analysis:
 //
-// src/index.ts:885:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "SetupDataFrom" which is marked as @internal
-// src/index.ts:894:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "EndpointFrom" which is marked as @internal
-// src/index.ts:894:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "CidrBlockFrom" which is marked as @internal
-// src/index.ts:937:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "SetupDataFrom" which is marked as @internal
-// src/index.ts:946:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "EndpointFrom" which is marked as @internal
-// src/index.ts:946:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "CidrBlockFrom" which is marked as @internal
-// src/index.ts:1024:43 - (ae-incompatible-release-tags) The symbol "privateKey" is marked as @alpha, but its signature references "WireguardKey" which is marked as @internal
-// src/index.ts:1024:69 - (ae-incompatible-release-tags) The symbol "publicKey" is marked as @alpha, but its signature references "WireguardKey" which is marked as @internal
+// src/index.ts:886:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "SetupDataFrom" which is marked as @internal
+// src/index.ts:895:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "EndpointFrom" which is marked as @internal
+// src/index.ts:895:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "CidrBlockFrom" which is marked as @internal
+// src/index.ts:938:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "SetupDataFrom" which is marked as @internal
+// src/index.ts:947:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "EndpointFrom" which is marked as @internal
+// src/index.ts:947:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "CidrBlockFrom" which is marked as @internal
+// src/index.ts:1025:43 - (ae-incompatible-release-tags) The symbol "privateKey" is marked as @alpha, but its signature references "WireguardKey" which is marked as @internal
+// src/index.ts:1025:69 - (ae-incompatible-release-tags) The symbol "publicKey" is marked as @alpha, but its signature references "WireguardKey" which is marked as @internal
 
 // (No @packageDocumentation comment for this package)
 
