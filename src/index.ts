@@ -996,7 +996,7 @@ class WireguardIniConfig extends Schema.Class<WireguardIniConfig>()({
             // The hub interface config will have all the spoke peer configs
             const hubConfig = new WireguardIniConfig({
                 PrivateKey: hubKeys.privateKey,
-                Address: Tuple.getSecond(hubsData),
+                Address: CidrBlock({ ipv4: IPv4(Tuple.getSecond(hubsData)), mask: IPv4CidrMask(24) }),
                 ListenPort: Tuple.getFirst(hubsData).port,
                 Peers: ReadonlyArray.map(spokePeerConfigs, Tuple.getSecond),
             });
@@ -1006,7 +1006,7 @@ class WireguardIniConfig extends Schema.Class<WireguardIniConfig>()({
                 return new WireguardIniConfig({
                     PrivateKey: privateKey,
                     Peers: [hubPeerConfig],
-                    Address: Tuple.getSecond(spoke),
+                    Address: CidrBlock({ ipv4: IPv4(Tuple.getSecond(spoke)), mask: IPv4CidrMask(24) }),
                     ListenPort: Tuple.getFirst(spoke).port,
                 });
             });
