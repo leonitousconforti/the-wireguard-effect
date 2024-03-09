@@ -747,7 +747,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>()({
             );
             return String.concat(
                 ini.encode(peerData, { bracketedArray: false, section: "Peer", whitespace: true }),
-                `AllowedIPs=${allowedIps.join(", ")}`
+                `AllowedIPs = ${allowedIps.join(", ")}`
             );
         });
     };
