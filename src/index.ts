@@ -36,7 +36,7 @@ type Split<S extends string, D extends string> = string extends S | ""
  *
  * @since 1.0.0
  * @category Datatypes
- * @alpha
+ * @internal
  */
 export const Port = Function.pipe(
     Schema.Int,
@@ -49,7 +49,7 @@ export const Port = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type Port = Schema.Schema.To<typeof Port>;
 
@@ -62,7 +62,7 @@ const IPv4AddressRegExp = new RegExp(`^${IPv4AddressFormat}$`);
  *
  * @since 1.0.0
  * @category Datatypes
- * @alpha
+ * @internal
  */
 export const IPv4 = Function.pipe(
     Schema.string,
@@ -75,7 +75,7 @@ export const IPv4 = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type IPv4 = Schema.Schema.To<typeof IPv4>;
 
@@ -98,7 +98,7 @@ const IPv6AddressRegExp = new RegExp(
  *
  * @since 1.0.0
  * @category Datatypes
- * @alpha
+ * @internal
  */
 export const IPv6 = Function.pipe(
     Schema.string,
@@ -111,7 +111,7 @@ export const IPv6 = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type IPv6 = Schema.Schema.To<typeof IPv6>;
 
@@ -120,7 +120,7 @@ export type IPv6 = Schema.Schema.To<typeof IPv6>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @alpha
+ * @internal
  */
 export const Address = Function.pipe(
     Schema.union(IPv4, IPv6),
@@ -132,7 +132,7 @@ export const Address = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type Address = Schema.Schema.To<typeof Address>;
 
@@ -141,7 +141,7 @@ export type Address = Schema.Schema.To<typeof Address>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @alpha
+ * @internal
  */
 export const IPv4CidrMask = Function.pipe(
     Schema.Int,
@@ -154,7 +154,7 @@ export const IPv4CidrMask = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type IPv4CidrMask = Schema.Schema.To<typeof IPv4CidrMask>;
 
@@ -163,7 +163,7 @@ export type IPv4CidrMask = Schema.Schema.To<typeof IPv4CidrMask>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @alpha
+ * @internal
  */
 export const IPv6CidrMask = Function.pipe(
     Schema.Int,
@@ -176,7 +176,7 @@ export const IPv6CidrMask = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type IPv6CidrMask = Schema.Schema.To<typeof IPv6CidrMask>;
 
@@ -186,27 +186,35 @@ export type IPv6CidrMask = Schema.Schema.To<typeof IPv6CidrMask>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @alpha
+ * @internal
  */
 export const CidrBlock = Function.pipe(
     Schema.transformOrFail(
         Schema.union(
-            Schema.struct({ ip: IPv4, mask: IPv4CidrMask }),
-            Schema.struct({ ip: IPv6, mask: IPv6CidrMask }),
+            Schema.struct({ ipv4: IPv4, mask: IPv4CidrMask }),
+            Schema.struct({ ipv6: IPv6, mask: IPv6CidrMask }),
             Schema.templateLiteral(Schema.string, Schema.literal("/"), Schema.number)
         ),
-        Schema.union(Schema.struct({ ip: IPv4, mask: IPv4CidrMask }), Schema.struct({ ip: IPv6, mask: IPv6CidrMask })),
+        Schema.union(
+            Schema.struct({ ipv4: IPv4, mask: IPv4CidrMask }),
+            Schema.struct({ ipv6: IPv6, mask: IPv6CidrMask })
+        ),
         (data, _options, ast) =>
             Effect.gen(function* (λ) {
                 if (typeof data === "object") return data;
                 const [ip, mask] = data.split("/") as Split<typeof data, "/">;
                 const ipParsed = yield* λ(Schema.decode(Schema.union(IPv4, IPv6))(ip));
-                const maskParsed = String.includes(".")(ipParsed)
+                const isV4 = String.includes(".")(ipParsed);
+                const maskParsed = isV4
                     ? yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, IPv4CidrMask))(mask))
                     : yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, IPv6CidrMask))(mask));
-                return { ip: ipParsed, mask: maskParsed };
+                return isV4 ? { ipv4: ipParsed, mask: maskParsed } : { ipv6: ipParsed, mask: maskParsed };
             }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
-        ({ ip, mask }) => Effect.succeed(`${ip}/${mask}` as const)
+        (data) => {
+            if ("ipv4" in data) return Effect.succeed(`${data.ipv4}/${data.mask}` as const);
+            if ("ipv6" in data) return Effect.succeed(`${data.ipv6}/${data.mask}` as const);
+            return Effect.succeed(Function.absurd<`${string}/${number}`>(data));
+        }
     ),
     Schema.identifier("CidrBlock"),
     Schema.description("A cidr block"),
@@ -216,14 +224,14 @@ export const CidrBlock = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type CidrBlockTo = Schema.Schema.To<typeof CidrBlock>;
 
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type CidrBlockFrom = Schema.Schema.From<typeof CidrBlock>;
 
@@ -233,7 +241,7 @@ export type CidrBlockFrom = Schema.Schema.From<typeof CidrBlock>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @alpha
+ * @internal
  */
 export const IPv4Endpoint = Function.pipe(
     Schema.transformOrFail(
@@ -260,14 +268,14 @@ export const IPv4Endpoint = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type IPv4EndpointTo = Schema.Schema.To<typeof IPv4Endpoint>;
 
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type IPv4EndpointFrom = Schema.Schema.From<typeof IPv4Endpoint>;
 
@@ -277,7 +285,7 @@ export type IPv4EndpointFrom = Schema.Schema.From<typeof IPv4Endpoint>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @alpha
+ * @internal
  */
 export const IPv6Endpoint = Function.pipe(
     Schema.transformOrFail(
@@ -310,14 +318,14 @@ export const IPv6Endpoint = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type IPv6EndpointTo = Schema.Schema.To<typeof IPv6Endpoint>;
 
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type IPv6EndpointFrom = Schema.Schema.From<typeof IPv6Endpoint>;
 
@@ -326,7 +334,7 @@ export type IPv6EndpointFrom = Schema.Schema.From<typeof IPv6Endpoint>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @alpha
+ * @internal
  */
 export const Endpoint = Function.pipe(
     Schema.union(IPv4Endpoint, IPv6Endpoint),
@@ -338,14 +346,14 @@ export const Endpoint = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type EndpointTo = Schema.Schema.To<typeof Endpoint>;
 
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type EndpointFrom = Schema.Schema.From<typeof Endpoint>;
 
@@ -354,7 +362,7 @@ export type EndpointFrom = Schema.Schema.From<typeof Endpoint>;
  *
  * @since 1.0.0
  * @category Datatypes
- * @alpha
+ * @internal
  */
 export const SetupData = Function.pipe(
     Schema.tuple(Endpoint, Address),
@@ -366,44 +374,23 @@ export const SetupData = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type SetupDataTo = Schema.Schema.To<typeof SetupData>;
 
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type SetupDataFrom = Schema.Schema.From<typeof SetupData>;
-
-/**
- * A wireguard Errno return message.
- *
- * @since 1.0.0
- * @category Datatypes
- * @alpha
- */
-export const Errno = Function.pipe(
-    Schema.templateLiteral(Schema.literal("errno="), Schema.literal(0)),
-    Schema.identifier("Errno"),
-    Schema.description("An errno"),
-    Schema.brand("Errno")
-);
-
-/**
- * @since 1.0.0
- * @category Brands
- * @alpha
- */
-export type Errno = Schema.Schema.To<typeof Errno>;
 
 /**
  * A wireguard key, which is a 44 character base64 string.
  *
  * @since 1.0.0
  * @category Datatypes
- * @alpha
+ * @internal
  * @see https://lists.zx2c4.com/pipermail/wireguard/2020-December/006222.html
  */
 export const WireguardKey = Function.pipe(
@@ -417,35 +404,37 @@ export const WireguardKey = Function.pipe(
 /**
  * @since 1.0.0
  * @category Brands
- * @alpha
+ * @internal
  */
 export type WireguardKey = Schema.Schema.To<typeof WireguardKey>;
 
 /**
+ * A wireguard Errno return message.
+ *
  * @since 1.0.0
- * @category Errors
- * @alpha
+ * @category Datatypes
+ * @internal
  */
-export class WireguardError extends Data.TaggedError("WireguardError")<{ message: string }> {}
+export const Errno = Function.pipe(
+    Schema.templateLiteral(Schema.literal("errno="), Schema.literal(0)),
+    Schema.identifier("Errno"),
+    Schema.description("An errno"),
+    Schema.brand("Errno")
+);
 
 /**
  * @since 1.0.0
- * @category Constructors
+ * @category Brands
+ * @internal
  */
-const wireguardGoExecutablePath = (): Effect.Effect<
-    string,
-    Platform.Error.PlatformError,
-    Platform.FileSystem.FileSystem | Platform.Path.Path
-> =>
-    Effect.gen(function* (λ) {
-        const path = yield* λ(Platform.Path.Path);
-        const fs = yield* λ(Platform.FileSystem.FileSystem);
-        const arch = process.arch === "x64" ? "amd64" : process.arch;
-        const url = new URL(`../build/${process.platform}-${arch}-wireguard-go`, import.meta.url);
-        const pathString = yield* λ(path.fromFileUrl(url));
-        yield* λ(fs.access(pathString, { ok: true }));
-        return pathString;
-    });
+export type Errno = Schema.Schema.To<typeof Errno>;
+
+/**
+ * @since 1.0.0
+ * @category Errors
+ * @internal
+ */
+export class WireguardError extends Data.TaggedError("WireguardError")<{ message: string }> {}
 
 /**
  * A wireguard interface name.
@@ -480,10 +469,20 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
     protected static readonly WindowsInterfaceNameRegExp: RegExp = /^eth\d+$/;
     protected static readonly FreeBSDInterfaceNameRegExp: RegExp = /^eth\d+$/;
 
-    /**
-     * @since 1.0.0
-     * @category Constructors
-     */
+    protected static WireguardGoExecutablePath: Effect.Effect<
+        string,
+        Platform.Error.PlatformError,
+        Platform.FileSystem.FileSystem | Platform.Path.Path
+    > = Effect.gen(function* (λ) {
+        const path = yield* λ(Platform.Path.Path);
+        const fs = yield* λ(Platform.FileSystem.FileSystem);
+        const arch = process.arch === "x64" ? "amd64" : process.arch;
+        const url = new URL(`../build/${process.platform}-${arch}-wireguard-go`, import.meta.url);
+        const pathString = yield* λ(path.fromFileUrl(url));
+        yield* λ(fs.access(pathString, { ok: true }));
+        return pathString;
+    });
+
     protected static InterfaceRegExpForPlatform: Effect.Effect<RegExp, WireguardError, never> = Function.pipe(
         Match.value(`${process.arch}:${process.platform}`),
         Match.not(
@@ -553,8 +552,11 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
         });
 
     /**
+     * TODO: finish freebsd and openbsd implementations
+     *
      * @since 1.0.0
-     * @category Constructors
+     * @category Helpers
+     * @internal
      */
     public socketLocation = (): string =>
         Function.pipe(
@@ -572,20 +574,28 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
      * @category API
      * @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101
      */
-    public applyConfig = (config: WireguardConfig): Effect.Effect<void, WireguardError, never> =>
+    public setConfig = (
+        config: WireguardIniConfig,
+        options?: { replacePeers: boolean; replaceAllowedIPs: boolean } | undefined
+    ): Effect.Effect<void, WireguardError, never> =>
         Function.pipe(
+            // TODO: Could this be extracted to a schema transformation?
             Stream.fromIterable([
                 "set=1",
                 `private_key=${Buffer.from(config.PrivateKey, "base64").toString("hex")}`,
                 `listen_port=${config.ListenPort}`,
                 `fwmark=${Predicate.isNotUndefined(config.FirewallMark) ? config.FirewallMark : 0}`,
-                `replace_peers=${config.ReplacePeers}`,
+                `replace_peers=${options?.replacePeers}`,
                 ...config.Peers.flatMap((peer) => [
                     `public_key=${Buffer.from(peer.PublicKey, "base64").toString("hex")}`,
                     `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.port}`,
                     `persistent_keepalive_interval=20`,
-                    `replace_allowed_ips=${peer.ReplaceAllowedIPs}`,
-                    ...peer.AllowedIPs.map((allowedIP) => `allowed_ip=${allowedIP.ip}/${allowedIP.mask}`),
+                    `replace_allowed_ips=${options?.replaceAllowedIPs}`,
+                    ...peer.AllowedIPs.map((allowedIP) =>
+                        "ipv4" in allowedIP
+                            ? `allowed_ip=${allowedIP.ipv4}/${allowedIP.mask}`
+                            : `allowed_ip=${allowedIP.ipv6}/${allowedIP.mask}`
+                    ),
                 ]),
             ]),
             Stream.map(String.concat("\n")),
@@ -600,26 +610,12 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
         );
 
     /**
+     * FIXME: What does this return?
+     *
      * @since 1.0.0
      * @category API
      */
-    // public setAddress = (address: Address, address2: Address): Effect.Effect<void, WireguardError, never> =>
-    //     Effect.sync(() => execa.execaCommandSync(`sudo ip address add ${address} dev ${this.Name}`))
-    //         .pipe(Effect.andThen(Effect.sync(() => execa.execaCommandSync(`sudo ip link set up dev ${this.Name}`))))
-    //         .pipe(
-    //             Effect.andThen(
-    //                 Effect.sync(() => execa.execaCommandSync(`sudo ip route add ${address2} dev ${this.Name}`))
-    //             )
-    //         )
-    //         .pipe(Effect.tap(Console.log(address)))
-    //         .pipe(Effect.tap(Console.log(address2)));
-
-    /**
-     * @since 1.0.0
-     * @category API
-     * @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101
-     */
-    public logConfig = (): Effect.Effect<void, WireguardError, never> =>
+    public getConfig = (): Effect.Effect<void, WireguardError, never> =>
         Function.pipe(
             Stream.make("get=1\n\n"),
             Stream.encodeText,
@@ -630,35 +626,37 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
             Stream.filter(String.isNonEmpty),
             Stream.run(Sink.collectAll()),
             Effect.tap(Function.flow(Chunk.last, Option.getOrThrow, Schema.decodeUnknown(Errno))),
-            Effect.tap((x) => Console.log(Chunk.join(x, "\n"))),
+            Effect.map(Chunk.join("\n")),
+            Effect.tap(Console.log),
             Effect.catchAll((error) => Effect.fail(new WireguardError({ message: error.message })))
         );
 
     /**
-     * Starts a wireguard tunnel in the foreground (child mode). This tunnel
-     * will be gracefully shutdown once the scope is closed.
+     * Starts a wireguard tunnel that will be gracefully shutdown once the scope
+     * is closed.
      *
      * @since 1.0.0
      * @category Wireguard
      */
     public upScoped = (
-        config: WireguardConfig
+        config: WireguardIniConfig,
+        options?: { replacePeers: boolean; replaceAllowedIPs: boolean } | undefined
     ): Effect.Effect<
         WireguardInterface,
-        WireguardError | Cause.TimeoutException | Socket.SocketError,
+        WireguardError | Cause.TimeoutException,
         Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
-    > => Effect.acquireRelease(this.up(config), Function.flow(this.down, Effect.orDie));
+    > => Effect.acquireRelease(this.up(config, options), Function.flow(this.down, Effect.orDie));
 
     /**
-     * Starts a wireguard tunnel in the background (daemon mode). This tunnel
-     * will continue to run and serve traffic even after the nodejs process
-     * exits.
+     * Starts a wireguard tunnel that will continue to run and serve traffic
+     * even after the nodejs process exits.
      *
      * @since 1.0.0
      * @category Wireguard
      */
     public up = (
-        _config: WireguardConfig
+        config: WireguardIniConfig,
+        options?: { replacePeers: boolean; replaceAllowedIPs: boolean } | undefined
     ): Effect.Effect<
         WireguardInterface,
         WireguardError | Cause.TimeoutException,
@@ -666,10 +664,9 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
     > => {
         const self = this;
         return Effect.gen(function* (λ) {
-            // TODO: this should be a recoverable error
-            const executablePath = yield* λ(wireguardGoExecutablePath().pipe(Effect.orDie));
+            const executablePath = yield* λ(WireguardInterface.WireguardGoExecutablePath.pipe(Effect.orDie));
 
-            // FIXME: fix this command
+            // TODO: Can we get rid of sudo here somehow?
             yield* λ(
                 Effect.tryPromise({
                     try: () => {
@@ -685,34 +682,19 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
                 })
             );
 
-            // yield* λ(self.applyConfig(config));
-            // yield* λ(self.logConfig());
-            // yield* λ(self.setAddress(config.Address, Address(config.Peers[0].AllowedIPs[0]?.ip || "")));
+            yield* λ(self.setConfig(config, options));
             return self;
         });
     };
 
     /**
-     * Stops a wireguard tunnel that was started in the background (daemon
-     * mode). This can stop tunnels that are started in the foreground (child
-     * mode), but that is not the intended use case. Instead you should use
-     * `upScoped`.
+     * Stops a previously started wireguard tunnel.
      *
      * @since 1.0.0
      * @category Wireguard
      */
-    public down = (): Effect.Effect<
-        void,
-        Platform.Error.PlatformError | WireguardError,
-        Platform.FileSystem.FileSystem
-    > => {
-        const self = this;
-        return Effect.gen(function* (λ) {
-            const fs = yield* λ(Platform.FileSystem.FileSystem);
-            const path = self.socketLocation();
-            yield* λ(fs.remove(path));
-        });
-    };
+    public down = (): Effect.Effect<void, Platform.Error.PlatformError, Platform.FileSystem.FileSystem> =>
+        Effect.map(Platform.FileSystem.FileSystem, (fs) => fs.remove(this.socketLocation()));
 }
 
 /**
@@ -749,8 +731,27 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>()({
     PublicKey: WireguardKey,
 
     PresharedKey: Schema.optional(Schema.string),
-    ReplaceAllowedIPs: Schema.optional(Schema.boolean, { default: () => true }),
-}) {}
+}) {
+    /**
+     * @since 1.0.0
+     * @category Transformations
+     */
+    public encodeIni = (): Effect.Effect<string, ParseResult.ParseError, never> => {
+        const self = this;
+        return Effect.gen(function* (λ) {
+            const iniConfig = yield* λ(Schema.encode(WireguardPeer)(self));
+            const peerData = { ...iniConfig };
+            delete peerData["AllowedIPs"];
+            const allowedIps = yield* λ(
+                Effect.all(ReadonlyArray.map(self.AllowedIPs, (ap) => Schema.encode(CidrBlock)(ap)))
+            );
+            return String.concat(
+                ini.encode(peerData, { bracketedArray: false, section: "Peer", whitespace: true }),
+                `AllowedIPs=${allowedIps.join(", ")}`
+            );
+        });
+    };
+}
 
 /**
  * A wireguard interface configuration.
@@ -759,7 +760,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>()({
  * @category Datatypes
  * @alpha
  */
-export class WireguardConfig extends Schema.Class<WireguardConfig>()({
+class WireguardIniConfig extends Schema.Class<WireguardIniConfig>()({
     /** @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/wgtypes/types.go#L207-L232 */
 
     Address: Schema.union(Address, CidrBlock, Schema.nonEmptyArray(Address)),
@@ -785,46 +786,20 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
      */
     PrivateKey: WireguardKey,
 
-    /**
-     * Indicates that the subsequent peers (perhaps an empty list) should
-     * replace any existing peers, rather than append to the existing peer
-     * list.
-     */
-    ReplacePeers: Schema.optional(Schema.boolean, { default: () => true }),
-
     /** List of peers to add. */
     Peers: Schema.nonEmptyArray(WireguardPeer),
 }) {
     /**
-     * Loads a wireguard interface configuration from a JSON file.
-     *
-     * @since 1.0.0
-     * @category Constructors
-     */
-    public static fromJsonConfigFile = (
-        file: string
-    ): Effect.Effect<
-        WireguardConfig,
-        ParseResult.ParseError | Platform.Error.PlatformError,
-        Platform.FileSystem.FileSystem
-    > =>
-        Effect.gen(function* (λ) {
-            const fs = yield* λ(Platform.FileSystem.FileSystem);
-            const config = yield* λ(fs.readFileString(file));
-            return yield* λ(Schema.decode(Schema.parseJson(WireguardConfig))(config));
-        });
-
-    /**
      * Loads a wireguard interface configuration from an INI file.
      *
      * @since 1.0.0
-     * @category Constructors
+     * @category Transformations
      */
-    public static fromIniConfigFile = (
+    public static fromConfigFile = (
         file: string
     ): Effect.Effect<
-        WireguardConfig,
-        ParseResult.ParseError | Platform.Error.PlatformError,
+        WireguardIniConfig,
+        WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
         Platform.FileSystem.FileSystem
     > =>
         Effect.gen(function* (λ) {
@@ -848,85 +823,178 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
                 Option.getOrThrowWith(() => new WireguardError({ message: "No [Interface] section found" })),
                 ini.parse,
                 (jsonConfig) => ({ ...jsonConfig["Interface"], peers }),
-                Schema.decodeUnknown(Schema.parseJson(WireguardConfig))
+                Schema.decodeUnknown(Schema.parseJson(WireguardIniConfig))
             );
 
             return yield* λ(makeConfig);
         });
 
     /**
-     * Generates a two wireguard configurations, each with the other as a single
-     * peer, and shares their keys appropriately.
+     * Writes a wireguard interface configuration to an INI file.
+     *
+     * @since 1.0.0
+     * @category Transformations
+     */
+    public writeToFile = (
+        file: string
+    ): Effect.Effect<
+        void,
+        ParseResult.ParseError | Platform.Error.PlatformError,
+        Platform.FileSystem.FileSystem | Platform.Path.Path
+    > => {
+        const self = this;
+        return Effect.gen(function* (λ) {
+            const path = yield* λ(Platform.Path.Path);
+            const fs = yield* λ(Platform.FileSystem.FileSystem);
+            const data = yield* λ(Schema.encode(WireguardIniConfig)(self));
+
+            type Writable<T> = { -readonly [P in keyof T]: T[P] };
+            const interfaceData = { ...data } as Writable<Partial<Schema.Schema.From<typeof WireguardIniConfig>>>;
+            delete interfaceData["Peers"];
+
+            const interfaceConfig = Function.pipe(
+                ini.stringify(interfaceData, { section: "Interface", whitespace: true }),
+                String.replaceAll('"', "")
+            );
+
+            const peersConfig = yield* λ(
+                Function.pipe(
+                    self.Peers,
+                    ReadonlyArray.map((peer) => peer.encodeIni()),
+                    Effect.allWith({ concurrency: "unbounded", batching: "inherit" }),
+                    Effect.map(ReadonlyArray.join("\n\n")),
+                    Effect.map(String.replaceAll('"', ""))
+                )
+            );
+
+            yield* λ(fs.makeDirectory(path.dirname(file), { recursive: true }));
+            return yield* λ(fs.writeFileString(file, `${interfaceConfig}\n${peersConfig}`));
+        });
+    };
+
+    /**
+     * Generates two wireguard configurations, each with the other as a single
+     * peer and shares their keys appropriately.
      *
      * @since 1.0.0
      * @category Constructors
      */
     public static generateP2PConfigs: {
+        // Overload for when cidrBlock is not provided
         (
             aliceData: SetupDataFrom,
-            bobEndpoint: SetupDataFrom
-        ): Effect.Effect<[aliceConfig: WireguardConfig, bobConfig: WireguardConfig], ParseResult.ParseError, never>;
-        (
-            aliceData: SetupDataFrom
-        ): (
             bobData: SetupDataFrom
-        ) => Effect.Effect<[aliceConfig: WireguardConfig, bobConfig: WireguardConfig], ParseResult.ParseError, never>;
-    } = Function.dual(2, (aliceData: SetupDataFrom, bobData: SetupDataFrom) =>
+        ): Effect.Effect<
+            [aliceConfig: WireguardIniConfig, bobConfig: WireguardIniConfig],
+            ParseResult.ParseError,
+            never
+        >;
+        // Overload for when cidrBlock is provided
+        (
+            aliceEndpoint: EndpointFrom,
+            bobEndpoint: EndpointFrom,
+            cidrBlock: CidrBlockFrom
+        ): Effect.Effect<
+            [aliceConfig: WireguardIniConfig, bobConfig: WireguardIniConfig],
+            ParseResult.ParseError,
+            never
+        >;
+    } = <T extends SetupDataFrom | EndpointFrom>(
+        aliceData: T,
+        bobData: T,
+        cidrBlock?: CidrBlockFrom | undefined
+    ): Effect.Effect<[aliceConfig: WireguardIniConfig, bobConfig: WireguardIniConfig], ParseResult.ParseError, never> =>
         Effect.gen(function* (λ) {
             const hubEndpoint = aliceData;
             const spokeEndpoints = ReadonlyArray.make(bobData);
-            const [aliceConfig, [bobConfig]] = yield* λ(
-                WireguardConfig.generateHubSpokeConfigs(hubEndpoint, spokeEndpoints)
-            );
+            const [aliceConfig, [bobConfig]] = Predicate.isUndefined(cidrBlock)
+                ? yield* λ(
+                      WireguardIniConfig.generateHubSpokeConfigs(
+                          hubEndpoint as SetupDataFrom,
+                          spokeEndpoints as ReadonlyArray.NonEmptyReadonlyArray<SetupDataFrom>
+                      )
+                  )
+                : yield* λ(
+                      WireguardIniConfig.generateHubSpokeConfigs(
+                          hubEndpoint as EndpointFrom,
+                          spokeEndpoints as ReadonlyArray.NonEmptyReadonlyArray<EndpointFrom>,
+                          cidrBlock
+                      )
+                  );
             return Tuple.make(aliceConfig, bobConfig);
-        })
-    );
+        });
 
     /**
      * Generates a collection of wireguard configurations for a star network
-     * with a single central node and many peers all connected it.
+     * with a single central hub node and many peers all connected to it.
      *
      * @since 1.0.0
      * @category Constructors
      */
-    public static generateHubSpokeConfigs = (
-        hubData: SetupDataFrom,
-        spokeData: ReadonlyArray.NonEmptyReadonlyArray<SetupDataFrom>
+    public static generateHubSpokeConfigs: {
+        // Overload for when cidrBlock is not provided
+        (
+            hubData: SetupDataFrom,
+            spokeData: ReadonlyArray.NonEmptyReadonlyArray<SetupDataFrom>
+        ): Effect.Effect<
+            [hubConfig: WireguardIniConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardIniConfig>],
+            ParseResult.ParseError,
+            never
+        >;
+        // Overload for when cidrBlock is provided
+        (
+            hubData: EndpointFrom,
+            spokeData: ReadonlyArray.NonEmptyReadonlyArray<EndpointFrom>,
+            cidrBlock: CidrBlockFrom
+        ): Effect.Effect<
+            [hubConfig: WireguardIniConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardIniConfig>],
+            ParseResult.ParseError,
+            never
+        >;
+    } = <T extends SetupDataFrom | EndpointFrom>(
+        hubData: T,
+        spokeData: ReadonlyArray.NonEmptyReadonlyArray<T>,
+        cidrBlock?: CidrBlockFrom | undefined
     ): Effect.Effect<
-        [hubConfig: WireguardConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig>],
+        [hubConfig: WireguardIniConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardIniConfig>],
         ParseResult.ParseError,
         never
     > =>
         Effect.gen(function* (λ) {
-            const hubKeys = WireguardConfig.generateKeyPair();
-            const hubsData = yield* λ(Schema.decode(SetupData)(hubData));
+            // Convert the setup data to the correct format if needed
+            const isSetupData = Predicate.isUndefined(cidrBlock);
+            const hubSetupData = isSetupData ? (hubData as SetupDataFrom) : Tuple.make(hubData as EndpointFrom, "");
+            const spokeSetupData = isSetupData
+                ? (spokeData as ReadonlyArray.NonEmptyReadonlyArray<SetupDataFrom>)
+                : ReadonlyArray.map(spokeData, (spoke) => Tuple.make(spoke as EndpointFrom, ""));
+
+            // Generate the keys and parse the setup data
+            const hubKeys = WireguardIniConfig.generateKeyPair();
+            const hubsData = yield* λ(Schema.decode(SetupData)(hubSetupData));
             const spokesData = yield* λ(
-                Effect.all(ReadonlyArray.map(spokeData, (spoke) => Schema.decode(SetupData)(spoke)))
+                Effect.all(ReadonlyArray.map(spokeSetupData, (spoke) => Schema.decode(SetupData)(spoke)))
             );
 
             // This hub peer config will be added to all the spoke interface configs
             const hubPeerConfig = new WireguardPeer({
-                ReplaceAllowedIPs: true,
                 PublicKey: hubKeys.publicKey,
                 Endpoint: Tuple.getFirst(hubsData),
-                AllowedIPs: [CidrBlock({ ip: IPv4(Tuple.getSecond(hubsData)), mask: IPv4CidrMask(32) })],
+                AllowedIPs: [CidrBlock({ ipv4: IPv4(Tuple.getSecond(hubsData)), mask: IPv4CidrMask(32) })],
             });
 
             // All these spoke peer configs will be added to the hub interface config
             const spokePeerConfigs = ReadonlyArray.map(spokesData, (spoke) => {
-                const keys = WireguardConfig.generateKeyPair();
+                const keys = WireguardIniConfig.generateKeyPair();
                 const peerConfig = new WireguardPeer({
                     Endpoint: Tuple.getFirst(spoke),
-                    ReplaceAllowedIPs: true,
                     PublicKey: keys.publicKey,
-                    AllowedIPs: [CidrBlock({ ip: IPv4(Tuple.getSecond(spoke)), mask: IPv4CidrMask(32) })],
+                    AllowedIPs: [CidrBlock({ ipv4: IPv4(Tuple.getSecond(spoke)), mask: IPv4CidrMask(32) })],
                 });
                 return Tuple.make(Tuple.make(keys.privateKey, spoke), peerConfig);
             });
 
             // The hub interface config will have all the spoke peer configs
-            const hubConfig = new WireguardConfig({
-                ReplacePeers: true,
+            const hubConfig = new WireguardIniConfig({
                 PrivateKey: hubKeys.privateKey,
                 Address: Tuple.getSecond(hubsData),
                 ListenPort: Tuple.getFirst(hubsData).port,
@@ -935,8 +1003,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
 
             // Each spoke interface config will have the hub peer config
             const spokeConfigs = ReadonlyArray.map(spokePeerConfigs, ([[privateKey, spoke]]) => {
-                return new WireguardConfig({
-                    ReplacePeers: true,
+                return new WireguardIniConfig({
                     PrivateKey: privateKey,
                     Peers: [hubPeerConfig],
                     Address: Tuple.getSecond(spoke),
@@ -965,60 +1032,8 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
     };
 
     /**
-     * Writes a wireguard interface configuration to an INI file.
-     *
-     * @since 1.0.0
-     * @category Constructors
-     */
-    public writeToFile = (
-        file: string
-    ): Effect.Effect<
-        void,
-        ParseResult.ParseError | Platform.Error.PlatformError,
-        Platform.FileSystem.FileSystem | Platform.Path.Path
-    > => {
-        const self = this;
-        return Effect.gen(function* (λ) {
-            const path = yield* λ(Platform.Path.Path);
-            const fs = yield* λ(Platform.FileSystem.FileSystem);
-            const data = yield* λ(Schema.encode(WireguardConfig)(self));
-
-            type Writable<T> = { -readonly [P in keyof T]: T[P] };
-            const interfaceData = { ...data } as Writable<Partial<Schema.Schema.From<WireguardConfig>>>;
-            delete interfaceData["Peers"];
-            delete interfaceData["ReplacePeers"];
-
-            const interfaceConfig = ini.stringify(interfaceData, { section: "Interface", whitespace: true });
-            const peersConfig = yield* λ(
-                Effect.all(
-                    ReadonlyArray.map(self.Peers, (peer) =>
-                        Effect.gen(function* (λ) {
-                            const data2 = yield* λ(Schema.encode(WireguardPeer)(peer));
-                            const peerData = { ...data2 } as Writable<Partial<Schema.Schema.From<WireguardPeer>>>;
-                            delete peerData["AllowedIPs"];
-                            delete peerData["ReplaceAllowedIPs"];
-                            const allowedIps = yield* λ(
-                                Effect.all(ReadonlyArray.map(peer.AllowedIPs, (x) => Schema.encode(CidrBlock)(x)))
-                            );
-                            return (
-                                ini.encode(peerData, { bracketedArray: false, section: "Peer", whitespace: true }) +
-                                `AllowedIPs=${allowedIps.join(", ")}`
-                            );
-                        })
-                    )
-                ).pipe(Effect.map(ReadonlyArray.join("\n\n")))
-            );
-
-            yield* λ(fs.makeDirectory(path.dirname(file), { recursive: true }));
-            return yield* λ(
-                fs.writeFileString(file, interfaceConfig.replaceAll('"', "") + "\n" + peersConfig.replaceAll('"', ""))
-            );
-        });
-    };
-
-    /**
-     * Starts a wireguard tunnel in the foreground (child mode). This tunnel
-     * will be gracefully shutdown once the scope is closed.
+     * Starts a wireguard tunnel that will be gracefully shutdown once the scope
+     * is closed.
      *
      * @since 1.0.0
      * @category Wireguard
@@ -1026,34 +1041,31 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>()({
     public upScoped = (
         interfaceName: Option.Option<WireguardInterface> = Option.none()
     ): Effect.Effect<
-        WireguardInterface,
+        void,
         WireguardError | Cause.TimeoutException,
         Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
     > => Effect.acquireRelease(this.up(interfaceName), (io) => Function.flow(io.down, Effect.orDie)());
 
     /**
-     * Starts a wireguard tunnel in the background (daemon mode). This tunnel
-     * will continue to run and serve traffic even after the nodejs process
-     * exits.
+     * Starts a wireguard tunnel that will continue to run and serve traffic
+     * even after the nodejs process exits.
      *
      * @since 1.0.0
      * @category Wireguard
      */
     public up = (
-        interfaceName: Option.Option<WireguardInterface> | undefined = Option.none()
+        interfaceObject: Option.Option<WireguardInterface> | undefined = Option.none()
     ): Effect.Effect<
         WireguardInterface,
         WireguardError | Cause.TimeoutException,
         Platform.FileSystem.FileSystem | Platform.Path.Path
-    > => {
-        const self = this;
-        return Effect.gen(function* (λ) {
-            const interfaceObject = Option.isNone(interfaceName)
-                ? yield* λ(WireguardInterface.getNextAvailableInterface())
-                : interfaceName.value;
-
-            yield* λ(interfaceObject.up(self));
-            return interfaceObject;
-        });
-    };
+    > =>
+        Function.pipe(
+            interfaceObject,
+            Option.map(Effect.succeed),
+            Option.getOrElse(WireguardInterface.getNextAvailableInterface),
+            Effect.flatMap((io) => io.up(this))
+        );
 }
+
+export { WireguardIniConfig as WireguardConfig };

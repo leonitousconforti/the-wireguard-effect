@@ -139,1376 +139,18 @@
       "preserveMemberOrder": false,
       "members": [
         {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!Address:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type Address = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.To",
-              "canonicalReference": "@effect/schema!Schema.To:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "Address",
-              "canonicalReference": "the-wireguard-effect!Address:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "Address",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "the-wireguard-effect!Address:var",
-          "docComment": "/**\n * An IP address, which is either an IPv4 or IPv6 address.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "Address: "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.BrandSchema",
-              "canonicalReference": "@effect/schema!BrandSchema:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<((string & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv4\">) | (string & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv6\">)) & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"Address\">, string, never>"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "isReadonly": true,
-          "releaseTag": "Alpha",
-          "name": "Address",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 9
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "the-wireguard-effect!CidrBlock:var",
-          "docComment": "/**\n * A cidr block, which is an IP address followed by a slash and a number between 0 and 32.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "CidrBlock: "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.BrandSchema",
-              "canonicalReference": "@effect/schema!BrandSchema:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<({\n    readonly ip: string & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv4\">;\n    readonly mask: number & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv4CidrMask\">;\n} | {\n    readonly ip: string & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv6\">;\n    readonly mask: number & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv6CidrMask\">;\n}) & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"CidrBlock\">, {\n    readonly ip: string;\n    readonly mask: number;\n} | {\n    readonly ip: string;\n    readonly mask: number;\n} | `${string}/${number}`, never>"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "isReadonly": true,
-          "releaseTag": "Alpha",
-          "name": "CidrBlock",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 13
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!CidrBlockFrom:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type CidrBlockFrom = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.From",
-              "canonicalReference": "@effect/schema!Schema.From:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "CidrBlock",
-              "canonicalReference": "the-wireguard-effect!CidrBlock:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "CidrBlockFrom",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!CidrBlockTo:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type CidrBlockTo = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.To",
-              "canonicalReference": "@effect/schema!Schema.To:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "CidrBlock",
-              "canonicalReference": "the-wireguard-effect!CidrBlock:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "CidrBlockTo",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "the-wireguard-effect!Endpoint:var",
-          "docComment": "/**\n * A wireguard endpoint, which is either an IPv4 or IPv6 endpoint.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "Endpoint: "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.BrandSchema",
-              "canonicalReference": "@effect/schema!BrandSchema:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<(({\n    readonly ip: string & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv4\">;\n    readonly port: number & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"Port\">;\n} & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv4Endpoint\">) | ({\n    readonly ip: string & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv6\">;\n    readonly port: number & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"Port\">;\n} & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv6Endpoint\">)) & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"Endpoint\">, {\n    readonly ip: string;\n    readonly port: number;\n} | `${string}:${number}` | {\n    readonly ip: string;\n    readonly port: number;\n} | `[${string}]:${number}`, never>"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "isReadonly": true,
-          "releaseTag": "Alpha",
-          "name": "Endpoint",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 17
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!EndpointFrom:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type EndpointFrom = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.From",
-              "canonicalReference": "@effect/schema!Schema.From:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "Endpoint",
-              "canonicalReference": "the-wireguard-effect!Endpoint:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "EndpointFrom",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!EndpointTo:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type EndpointTo = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.To",
-              "canonicalReference": "@effect/schema!Schema.To:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "Endpoint",
-              "canonicalReference": "the-wireguard-effect!Endpoint:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "EndpointTo",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!Errno:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type Errno = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.To",
-              "canonicalReference": "@effect/schema!Schema.To:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "Errno",
-              "canonicalReference": "the-wireguard-effect!Errno:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "Errno",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "the-wireguard-effect!Errno:var",
-          "docComment": "/**\n * A wireguard Errno return message.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "Errno: "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.BrandSchema",
-              "canonicalReference": "@effect/schema!BrandSchema:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"errno=0\" & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"Errno\">, \"errno=0\", never>"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "isReadonly": true,
-          "releaseTag": "Alpha",
-          "name": "Errno",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!IPv4:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type IPv4 = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.To",
-              "canonicalReference": "@effect/schema!Schema.To:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "IPv4",
-              "canonicalReference": "the-wireguard-effect!IPv4:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "IPv4",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "the-wireguard-effect!IPv4:var",
-          "docComment": "/**\n * An IPv4 address.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "IPv4: "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.BrandSchema",
-              "canonicalReference": "@effect/schema!BrandSchema:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<string & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv4\">, string, never>"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "isReadonly": true,
-          "releaseTag": "Alpha",
-          "name": "IPv4",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!IPv4CidrMask:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type IPv4CidrMask = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.To",
-              "canonicalReference": "@effect/schema!Schema.To:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "IPv4CidrMask",
-              "canonicalReference": "the-wireguard-effect!IPv4CidrMask:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "IPv4CidrMask",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "the-wireguard-effect!IPv4CidrMask:var",
-          "docComment": "/**\n * An ipv4 cidr mask, which is a number between 0 and 32.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "IPv4CidrMask: "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.BrandSchema",
-              "canonicalReference": "@effect/schema!BrandSchema:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<number & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv4CidrMask\">, number, never>"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "isReadonly": true,
-          "releaseTag": "Alpha",
-          "name": "IPv4CidrMask",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "the-wireguard-effect!IPv4Endpoint:var",
-          "docComment": "/**\n * An IPv4 wireguard endpoint, which consists of an IPv4 address followed by a port.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "IPv4Endpoint: "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.BrandSchema",
-              "canonicalReference": "@effect/schema!BrandSchema:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<{\n    readonly ip: string & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv4\">;\n    readonly port: number & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"Port\">;\n} & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv4Endpoint\">, {\n    readonly ip: string;\n    readonly port: number;\n} | `${string}:${number}`, never>"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "isReadonly": true,
-          "releaseTag": "Alpha",
-          "name": "IPv4Endpoint",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 9
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!IPv4EndpointFrom:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type IPv4EndpointFrom = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.From",
-              "canonicalReference": "@effect/schema!Schema.From:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "IPv4Endpoint",
-              "canonicalReference": "the-wireguard-effect!IPv4Endpoint:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "IPv4EndpointFrom",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!IPv4EndpointTo:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type IPv4EndpointTo = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.To",
-              "canonicalReference": "@effect/schema!Schema.To:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "IPv4Endpoint",
-              "canonicalReference": "the-wireguard-effect!IPv4Endpoint:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "IPv4EndpointTo",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!IPv6:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type IPv6 = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.To",
-              "canonicalReference": "@effect/schema!Schema.To:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "IPv6",
-              "canonicalReference": "the-wireguard-effect!IPv6:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "IPv6",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "the-wireguard-effect!IPv6:var",
-          "docComment": "/**\n * An IPv6 address.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "IPv6: "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.BrandSchema",
-              "canonicalReference": "@effect/schema!BrandSchema:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<string & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv6\">, string, never>"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "isReadonly": true,
-          "releaseTag": "Alpha",
-          "name": "IPv6",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!IPv6CidrMask:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type IPv6CidrMask = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.To",
-              "canonicalReference": "@effect/schema!Schema.To:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "IPv6CidrMask",
-              "canonicalReference": "the-wireguard-effect!IPv6CidrMask:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "IPv6CidrMask",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "the-wireguard-effect!IPv6CidrMask:var",
-          "docComment": "/**\n * An ipv6 cidr mask, which is a number between 0 and 128.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "IPv6CidrMask: "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.BrandSchema",
-              "canonicalReference": "@effect/schema!BrandSchema:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<number & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv6CidrMask\">, number, never>"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "isReadonly": true,
-          "releaseTag": "Alpha",
-          "name": "IPv6CidrMask",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "the-wireguard-effect!IPv6Endpoint:var",
-          "docComment": "/**\n * An IPv6 wireguard endpoint, which consists of an IPv6 address in square brackets followed by a port.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "IPv6Endpoint: "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.BrandSchema",
-              "canonicalReference": "@effect/schema!BrandSchema:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<{\n    readonly ip: string & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv6\">;\n    readonly port: number & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"Port\">;\n} & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv6Endpoint\">, {\n    readonly ip: string;\n    readonly port: number;\n} | `[${string}]:${number}`, never>"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "isReadonly": true,
-          "releaseTag": "Alpha",
-          "name": "IPv6Endpoint",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 9
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!IPv6EndpointFrom:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type IPv6EndpointFrom = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.From",
-              "canonicalReference": "@effect/schema!Schema.From:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "IPv6Endpoint",
-              "canonicalReference": "the-wireguard-effect!IPv6Endpoint:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "IPv6EndpointFrom",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!IPv6EndpointTo:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type IPv6EndpointTo = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.To",
-              "canonicalReference": "@effect/schema!Schema.To:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "IPv6Endpoint",
-              "canonicalReference": "the-wireguard-effect!IPv6Endpoint:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "IPv6EndpointTo",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!Port:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type Port = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.To",
-              "canonicalReference": "@effect/schema!Schema.To:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "Port",
-              "canonicalReference": "the-wireguard-effect!Port:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "Port",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "the-wireguard-effect!Port:var",
-          "docComment": "/**\n * An operating system port number.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "Port: "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.BrandSchema",
-              "canonicalReference": "@effect/schema!BrandSchema:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<number & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"Port\">, number, never>"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "isReadonly": true,
-          "releaseTag": "Alpha",
-          "name": "Port",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "the-wireguard-effect!SetupData:var",
-          "docComment": "/**\n * A wireguard setup data, which consists of an endpoint followed by an address.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "SetupData: "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.BrandSchema",
-              "canonicalReference": "@effect/schema!BrandSchema:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<readonly [(({\n    readonly ip: string & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv4\">;\n    readonly port: number & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"Port\">;\n} & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv4Endpoint\">) | ({\n    readonly ip: string & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv6\">;\n    readonly port: number & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"Port\">;\n} & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv6Endpoint\">)) & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"Endpoint\">, ((string & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv4\">) | (string & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"IPv6\">)) & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"Address\">] & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"SetupData\">, readonly [{\n    readonly ip: string;\n    readonly port: number;\n} | `${string}:${number}` | {\n    readonly ip: string;\n    readonly port: number;\n} | `[${string}]:${number}`, string], never>"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "isReadonly": true,
-          "releaseTag": "Alpha",
-          "name": "SetupData",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 25
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!SetupDataFrom:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type SetupDataFrom = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.From",
-              "canonicalReference": "@effect/schema!Schema.From:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "SetupData",
-              "canonicalReference": "the-wireguard-effect!SetupData:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "SetupDataFrom",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!SetupDataTo:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type SetupDataTo = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.To",
-              "canonicalReference": "@effect/schema!Schema.To:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "SetupData",
-              "canonicalReference": "the-wireguard-effect!SetupData:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "SetupDataTo",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
           "kind": "Class",
           "canonicalReference": "the-wireguard-effect!WireguardConfig:class",
           "docComment": "/**\n * A wireguard interface configuration.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
-              "text": "export declare class WireguardConfig extends "
+              "text": "declare class WireguardIniConfig extends "
             },
             {
               "kind": "Reference",
-              "text": "WireguardConfig_base",
-              "canonicalReference": "the-wireguard-effect!~WireguardConfig_base"
+              "text": "WireguardIniConfig_base",
+              "canonicalReference": "the-wireguard-effect!~WireguardIniConfig_base"
             },
             {
               "kind": "Content",
@@ -1523,12 +165,12 @@
           "members": [
             {
               "kind": "Property",
-              "canonicalReference": "the-wireguard-effect!WireguardConfig.fromIniConfigFile:member",
-              "docComment": "/**\n * Loads a wireguard interface configuration from an INI file.\n *\n * 1.0.0 Constructors\n *\n * @since @category\n */\n",
+              "canonicalReference": "the-wireguard-effect!WireguardConfig.fromConfigFile:member",
+              "docComment": "/**\n * Loads a wireguard interface configuration from an INI file.\n *\n * 1.0.0 Transformations\n *\n * @since @category\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "static fromIniConfigFile: "
+                  "text": "static fromConfigFile: "
                 },
                 {
                   "kind": "Content",
@@ -1545,12 +187,21 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "WireguardConfig",
+                  "text": "WireguardIniConfig",
                   "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
                 },
                 {
                   "kind": "Content",
                   "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardError",
+                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
                 },
                 {
                   "kind": "Reference",
@@ -1587,85 +238,10 @@
               "isReadonly": false,
               "isOptional": false,
               "releaseTag": "Alpha",
-              "name": "fromIniConfigFile",
+              "name": "fromConfigFile",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 12
-              },
-              "isStatic": true,
-              "isProtected": false,
-              "isAbstract": false
-            },
-            {
-              "kind": "Property",
-              "canonicalReference": "the-wireguard-effect!WireguardConfig.fromJsonConfigFile:member",
-              "docComment": "/**\n * Loads a wireguard interface configuration from a JSON file.\n *\n * 1.0.0 Constructors\n *\n * @since @category\n */\n",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "static fromJsonConfigFile: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "(file: string) => "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "Effect.Effect",
-                  "canonicalReference": "effect!Effect:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": "<"
-                },
-                {
-                  "kind": "Reference",
-                  "text": "WireguardConfig",
-                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
-                },
-                {
-                  "kind": "Content",
-                  "text": ", "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "ParseResult.ParseError",
-                  "canonicalReference": "@effect/schema!ParseError:class"
-                },
-                {
-                  "kind": "Content",
-                  "text": " | "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "Platform.Error.PlatformError",
-                  "canonicalReference": "@effect/platform!PlatformError:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": ", "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "Platform.FileSystem.FileSystem",
-                  "canonicalReference": "@effect/platform!FileSystem:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": ">"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Alpha",
-              "name": "fromJsonConfigFile",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 12
+                "endIndex": 14
               },
               "isStatic": true,
               "isProtected": false,
@@ -1674,7 +250,7 @@
             {
               "kind": "Property",
               "canonicalReference": "the-wireguard-effect!WireguardConfig.generateHubSpokeConfigs:member",
-              "docComment": "/**\n * Generates a collection of wireguard configurations for a star network with a single central node and many peers all connected it.\n *\n * 1.0.0 Constructors\n *\n * @since @category\n */\n",
+              "docComment": "/**\n * Generates a collection of wireguard configurations for a star network with a single central hub node and many peers all connected to it.\n *\n * 1.0.0 Constructors\n *\n * @since @category\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1682,25 +258,16 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "(hubData: readonly [{\n        readonly ip: string;\n        readonly port: number;\n    } | `${string}:${number}` | {\n        readonly ip: string;\n        readonly port: number;\n    } | `[${string}]:${number}`, string], spokeData: readonly [readonly [{\n        readonly ip: string;\n        readonly port: number;\n    } | `${string}:${number}` | {\n        readonly ip: string;\n        readonly port: number;\n    } | `[${string}]:${number}`, string], ...(readonly [{\n        readonly ip: string;\n        readonly port: number;\n    } | `${string}:${number}` | {\n        readonly ip: string;\n        readonly port: number;\n    } | `[${string}]:${number}`, string])[]]) => "
+                  "text": "{\n        (hubData: "
                 },
                 {
                   "kind": "Reference",
-                  "text": "Effect.Effect",
-                  "canonicalReference": "effect!Effect:interface"
+                  "text": "SetupDataFrom",
+                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
                 },
                 {
                   "kind": "Content",
-                  "text": "<[\n        hubConfig: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "WireguardConfig",
-                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
-                },
-                {
-                  "kind": "Content",
-                  "text": ",\n        spokeConfigs: "
+                  "text": ", spokeData: "
                 },
                 {
                   "kind": "Reference",
@@ -1713,12 +280,48 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "WireguardConfig",
+                  "text": "SetupDataFrom",
+                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<[\n            hubConfig: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
                   "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
                 },
                 {
                   "kind": "Content",
-                  "text": ">\n    ], "
+                  "text": ",\n            spokeConfigs: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ReadonlyArray.NonEmptyReadonlyArray",
+                  "canonicalReference": "effect!NonEmptyReadonlyArray:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">\n        ], "
                 },
                 {
                   "kind": "Reference",
@@ -1727,7 +330,88 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ", never>"
+                  "text": ", never>;\n        (hubData: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "EndpointFrom",
+                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", spokeData: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ReadonlyArray.NonEmptyReadonlyArray",
+                  "canonicalReference": "effect!NonEmptyReadonlyArray:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "EndpointFrom",
+                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">, cidrBlock: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "CidrBlockFrom",
+                  "canonicalReference": "the-wireguard-effect!CidrBlockFrom:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<[\n            hubConfig: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ",\n            spokeConfigs: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ReadonlyArray.NonEmptyReadonlyArray",
+                  "canonicalReference": "effect!NonEmptyReadonlyArray:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">\n        ], "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ParseResult.ParseError",
+                  "canonicalReference": "@effect/schema!ParseError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", never>;\n    }"
                 },
                 {
                   "kind": "Content",
@@ -1740,7 +424,7 @@
               "name": "generateHubSpokeConfigs",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 12
+                "endIndex": 36
               },
               "isStatic": true,
               "isProtected": false,
@@ -1797,7 +481,7 @@
             {
               "kind": "Property",
               "canonicalReference": "the-wireguard-effect!WireguardConfig.generateP2PConfigs:member",
-              "docComment": "/**\n * Generates a two wireguard configurations, each with the other as a single peer, and shares their keys appropriately.\n *\n * 1.0.0 Constructors\n *\n * @since @category\n */\n",
+              "docComment": "/**\n * Generates two wireguard configurations, each with the other as a single peer and shares their keys appropriately.\n *\n * 1.0.0 Constructors\n *\n * @since @category\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1814,7 +498,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ", bobEndpoint: "
+                  "text": ", bobData: "
                 },
                 {
                   "kind": "Reference",
@@ -1832,25 +516,25 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<[aliceConfig: "
+                  "text": "<[\n            aliceConfig: "
                 },
                 {
                   "kind": "Reference",
-                  "text": "WireguardConfig",
+                  "text": "WireguardIniConfig",
                   "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
                 },
                 {
                   "kind": "Content",
-                  "text": ", bobConfig: "
+                  "text": ",\n            bobConfig: "
                 },
                 {
                   "kind": "Reference",
-                  "text": "WireguardConfig",
+                  "text": "WireguardIniConfig",
                   "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
                 },
                 {
                   "kind": "Content",
-                  "text": "], "
+                  "text": "\n        ], "
                 },
                 {
                   "kind": "Reference",
@@ -1859,25 +543,34 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ", never>;\n        (aliceData: "
+                  "text": ", never>;\n        (aliceEndpoint: "
                 },
                 {
                   "kind": "Reference",
-                  "text": "SetupDataFrom",
-                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
+                  "text": "EndpointFrom",
+                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
                 },
                 {
                   "kind": "Content",
-                  "text": "): (bobData: "
+                  "text": ", bobEndpoint: "
                 },
                 {
                   "kind": "Reference",
-                  "text": "SetupDataFrom",
-                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
+                  "text": "EndpointFrom",
+                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
                 },
                 {
                   "kind": "Content",
-                  "text": ") => "
+                  "text": ", cidrBlock: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "CidrBlockFrom",
+                  "canonicalReference": "the-wireguard-effect!CidrBlockFrom:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
                 },
                 {
                   "kind": "Reference",
@@ -1886,25 +579,25 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<[aliceConfig: "
+                  "text": "<[\n            aliceConfig: "
                 },
                 {
                   "kind": "Reference",
-                  "text": "WireguardConfig",
+                  "text": "WireguardIniConfig",
                   "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
                 },
                 {
                   "kind": "Content",
-                  "text": ", bobConfig: "
+                  "text": ",\n            bobConfig: "
                 },
                 {
                   "kind": "Reference",
-                  "text": "WireguardConfig",
+                  "text": "WireguardIniConfig",
                   "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
                 },
                 {
                   "kind": "Content",
-                  "text": "], "
+                  "text": "\n        ], "
                 },
                 {
                   "kind": "Reference",
@@ -1926,7 +619,7 @@
               "name": "generateP2PConfigs",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 26
+                "endIndex": 28
               },
               "isStatic": true,
               "isProtected": false,
@@ -1935,7 +628,7 @@
             {
               "kind": "Property",
               "canonicalReference": "the-wireguard-effect!WireguardConfig#up:member",
-              "docComment": "/**\n * Starts a wireguard tunnel in the background (daemon mode). This tunnel will continue to run and serve traffic even after the nodejs process exits.\n *\n * 1.0.0 Wireguard\n *\n * @since @category\n */\n",
+              "docComment": "/**\n * Starts a wireguard tunnel that will continue to run and serve traffic even after the nodejs process exits.\n *\n * 1.0.0 Wireguard\n *\n * @since @category\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1943,7 +636,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "(interfaceName?: "
+                  "text": "(interfaceObject?: "
                 },
                 {
                   "kind": "Reference",
@@ -2037,7 +730,7 @@
             {
               "kind": "Property",
               "canonicalReference": "the-wireguard-effect!WireguardConfig#upScoped:member",
-              "docComment": "/**\n * Starts a wireguard tunnel in the foreground (child mode). This tunnel will be gracefully shutdown once the scope is closed.\n *\n * 1.0.0 Wireguard\n *\n * @since @category\n */\n",
+              "docComment": "/**\n * Starts a wireguard tunnel that will be gracefully shutdown once the scope is closed.\n *\n * 1.0.0 Wireguard\n *\n * @since @category\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2072,16 +765,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "<"
-                },
-                {
-                  "kind": "Reference",
-                  "text": "WireguardInterface",
-                  "canonicalReference": "the-wireguard-effect!WireguardInterface:class"
-                },
-                {
-                  "kind": "Content",
-                  "text": ", "
+                  "text": "<void, "
                 },
                 {
                   "kind": "Reference",
@@ -2139,7 +823,7 @@
               "name": "upScoped",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 20
+                "endIndex": 18
               },
               "isStatic": false,
               "isProtected": false,
@@ -2148,7 +832,7 @@
             {
               "kind": "Property",
               "canonicalReference": "the-wireguard-effect!WireguardConfig#writeToFile:member",
-              "docComment": "/**\n * Writes a wireguard interface configuration to an INI file.\n *\n * 1.0.0 Constructors\n *\n * @since @category\n */\n",
+              "docComment": "/**\n * Writes a wireguard interface configuration to an INI file.\n *\n * 1.0.0 Transformations\n *\n * @since @category\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2229,69 +913,6 @@
         },
         {
           "kind": "Class",
-          "canonicalReference": "the-wireguard-effect!WireguardError:class",
-          "docComment": "/**\n * 1.0.0 Errors\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export declare class WireguardError extends "
-            },
-            {
-              "kind": "Reference",
-              "text": "WireguardError_base",
-              "canonicalReference": "the-wireguard-effect!~WireguardError_base"
-            },
-            {
-              "kind": "Content",
-              "text": "<{\n    message: string;\n}>"
-            },
-            {
-              "kind": "Content",
-              "text": " "
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "isAbstract": false,
-          "name": "WireguardError",
-          "preserveMemberOrder": false,
-          "members": [
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "the-wireguard-effect!WireguardError#message:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "message: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "string"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Alpha",
-              "name": "message",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            }
-          ],
-          "extendsTokenRange": {
-            "startIndex": 1,
-            "endIndex": 3
-          },
-          "implementsTokenRanges": []
-        },
-        {
-          "kind": "Class",
           "canonicalReference": "the-wireguard-effect!WireguardInterface:class",
           "docComment": "/**\n * A wireguard interface name.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
           "excerptTokens": [
@@ -2315,63 +936,6 @@
           "name": "WireguardInterface",
           "preserveMemberOrder": false,
           "members": [
-            {
-              "kind": "Property",
-              "canonicalReference": "the-wireguard-effect!WireguardInterface#applyConfig:member",
-              "docComment": "/**\n * 1.0.0 API\n *\n * @see\n *\n * https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101\n *\n * @since @category\n */\n",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "applyConfig: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "(config: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "WireguardConfig",
-                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
-                },
-                {
-                  "kind": "Content",
-                  "text": ") => "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "Effect.Effect",
-                  "canonicalReference": "effect!Effect:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": "<void, "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "WireguardError",
-                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
-                },
-                {
-                  "kind": "Content",
-                  "text": ", never>"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Alpha",
-              "name": "applyConfig",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 8
-              },
-              "isStatic": false,
-              "isProtected": false,
-              "isAbstract": false
-            },
             {
               "kind": "Property",
               "canonicalReference": "the-wireguard-effect!WireguardInterface.DarwinInterfaceNameRegExp:member",
@@ -2406,7 +970,7 @@
             {
               "kind": "Property",
               "canonicalReference": "the-wireguard-effect!WireguardInterface#down:member",
-              "docComment": "/**\n * Stops a wireguard tunnel that was started in the background (daemon mode). This can stop tunnels that are started in the foreground (child mode), but that is not the intended use case. Instead you should use `upScoped`.\n *\n * 1.0.0 Wireguard\n *\n * @since @category\n */\n",
+              "docComment": "/**\n * Stops a previously started wireguard tunnel.\n *\n * 1.0.0 Wireguard\n *\n * @since @category\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2432,15 +996,6 @@
                 },
                 {
                   "kind": "Content",
-                  "text": " | "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "WireguardError",
-                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
-                },
-                {
-                  "kind": "Content",
                   "text": ", "
                 },
                 {
@@ -2463,7 +1018,7 @@
               "name": "down",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 10
+                "endIndex": 8
               },
               "isStatic": false,
               "isProtected": false,
@@ -2498,6 +1053,54 @@
               },
               "isStatic": true,
               "isProtected": true,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface#getConfig:member",
+              "docComment": "/**\n * FIXME: What does this return?\n *\n * 1.0.0 API\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "getConfig: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "() => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<void, "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardError",
+                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", never>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "getConfig",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 6
+              },
+              "isStatic": false,
+              "isProtected": false,
               "isAbstract": false
             },
             {
@@ -2560,7 +1163,7 @@
             {
               "kind": "Property",
               "canonicalReference": "the-wireguard-effect!WireguardInterface.InterfaceRegExpForPlatform:member",
-              "docComment": "/**\n * 1.0.0 Constructors\n *\n * @since @category\n */\n",
+              "docComment": "",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2643,54 +1246,6 @@
             },
             {
               "kind": "Property",
-              "canonicalReference": "the-wireguard-effect!WireguardInterface#logConfig:member",
-              "docComment": "/**\n * 1.0.0 API\n *\n * @see\n *\n * https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101\n *\n * @since @category\n */\n",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "logConfig: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "() => "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "Effect.Effect",
-                  "canonicalReference": "effect!Effect:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": "<void, "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "WireguardError",
-                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
-                },
-                {
-                  "kind": "Content",
-                  "text": ", never>"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Alpha",
-              "name": "logConfig",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 6
-              },
-              "isStatic": false,
-              "isProtected": false,
-              "isAbstract": false
-            },
-            {
-              "kind": "Property",
               "canonicalReference": "the-wireguard-effect!WireguardInterface.OpenBSDInterfaceNameRegExp:member",
               "docComment": "",
               "excerptTokens": [
@@ -2722,16 +1277,43 @@
             },
             {
               "kind": "Property",
-              "canonicalReference": "the-wireguard-effect!WireguardInterface#socketLocation:member",
-              "docComment": "/**\n * 1.0.0 Constructors\n *\n * @since @category\n */\n",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface#setConfig:member",
+              "docComment": "/**\n * 1.0.0 API\n *\n * @see\n *\n * https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101\n *\n * @since @category\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "socketLocation: "
+                  "text": "setConfig: "
                 },
                 {
                   "kind": "Content",
-                  "text": "() => string"
+                  "text": "(config: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", options?: {\n        replacePeers: boolean;\n        replaceAllowedIPs: boolean;\n    } | undefined) => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<void, "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardError",
+                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", never>"
                 },
                 {
                   "kind": "Content",
@@ -2741,10 +1323,10 @@
               "isReadonly": false,
               "isOptional": false,
               "releaseTag": "Alpha",
-              "name": "socketLocation",
+              "name": "setConfig",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 2
+                "endIndex": 8
               },
               "isStatic": false,
               "isProtected": false,
@@ -2753,7 +1335,7 @@
             {
               "kind": "Property",
               "canonicalReference": "the-wireguard-effect!WireguardInterface#up:member",
-              "docComment": "/**\n * Starts a wireguard tunnel in the background (daemon mode). This tunnel will continue to run and serve traffic even after the nodejs process exits.\n *\n * 1.0.0 Wireguard\n *\n * @since @category\n */\n",
+              "docComment": "/**\n * Starts a wireguard tunnel that will continue to run and serve traffic even after the nodejs process exits.\n *\n * 1.0.0 Wireguard\n *\n * @since @category\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2761,16 +1343,16 @@
                 },
                 {
                   "kind": "Content",
-                  "text": "(_config: "
+                  "text": "(config: "
                 },
                 {
                   "kind": "Reference",
-                  "text": "WireguardConfig",
+                  "text": "WireguardIniConfig",
                   "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
                 },
                 {
                   "kind": "Content",
-                  "text": ") => "
+                  "text": ", options?: {\n        replacePeers: boolean;\n        replaceAllowedIPs: boolean;\n    } | undefined) => "
                 },
                 {
                   "kind": "Reference",
@@ -2846,7 +1428,7 @@
             {
               "kind": "Property",
               "canonicalReference": "the-wireguard-effect!WireguardInterface#upScoped:member",
-              "docComment": "/**\n * Starts a wireguard tunnel in the foreground (child mode). This tunnel will be gracefully shutdown once the scope is closed.\n *\n * 1.0.0 Wireguard\n *\n * @since @category\n */\n",
+              "docComment": "/**\n * Starts a wireguard tunnel that will be gracefully shutdown once the scope is closed.\n *\n * 1.0.0 Wireguard\n *\n * @since @category\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2858,12 +1440,12 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "WireguardConfig",
+                  "text": "WireguardIniConfig",
                   "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
                 },
                 {
                   "kind": "Content",
-                  "text": ") => "
+                  "text": ", options?: {\n        replacePeers: boolean;\n        replaceAllowedIPs: boolean;\n    } | undefined) => "
                 },
                 {
                   "kind": "Reference",
@@ -2896,15 +1478,6 @@
                   "kind": "Reference",
                   "text": "Cause.TimeoutException",
                   "canonicalReference": "effect!TimeoutException:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": " | "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "Socket.SocketError",
-                  "canonicalReference": "@effect/experimental!SocketError:class"
                 },
                 {
                   "kind": "Content",
@@ -2948,7 +1521,7 @@
               "name": "upScoped",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 20
+                "endIndex": 18
               },
               "isStatic": false,
               "isProtected": false,
@@ -2984,6 +1557,68 @@
               "isStatic": true,
               "isProtected": true,
               "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface.WireguardGoExecutablePath:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "protected static WireguardGoExecutablePath: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.Error.PlatformError",
+                  "canonicalReference": "@effect/platform!PlatformError:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.FileSystem.FileSystem",
+                  "canonicalReference": "@effect/platform!FileSystem:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.Path.Path",
+                  "canonicalReference": "@effect/platform!Path:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "WireguardGoExecutablePath",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 9
+              },
+              "isStatic": true,
+              "isProtected": true,
+              "isAbstract": false
             }
           ],
           "extendsTokenRange": {
@@ -2991,83 +1626,6 @@
             "endIndex": 2
           },
           "implementsTokenRanges": []
-        },
-        {
-          "kind": "TypeAlias",
-          "canonicalReference": "the-wireguard-effect!WireguardKey:type",
-          "docComment": "/**\n * 1.0.0 Brands\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "export type WireguardKey = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.Schema.To",
-              "canonicalReference": "@effect/schema!Schema.To:type"
-            },
-            {
-              "kind": "Content",
-              "text": "<typeof "
-            },
-            {
-              "kind": "Reference",
-              "text": "WireguardKey",
-              "canonicalReference": "the-wireguard-effect!WireguardKey:var"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "releaseTag": "Alpha",
-          "name": "WireguardKey",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
-        },
-        {
-          "kind": "Variable",
-          "canonicalReference": "the-wireguard-effect!WireguardKey:var",
-          "docComment": "/**\n * A wireguard key, which is a 44 character base64 string.\n *\n * 1.0.0 Datatypes\n *\n * @see\n *\n * https://lists.zx2c4.com/pipermail/wireguard/2020-December/006222.html\n *\n * @since @category @alpha\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "WireguardKey: "
-            },
-            {
-              "kind": "Reference",
-              "text": "Schema.BrandSchema",
-              "canonicalReference": "@effect/schema!BrandSchema:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<string & import(\"effect/Brand\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Brand",
-              "canonicalReference": "effect!Brand:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<\"WireguardKey\">, string, never>"
-            }
-          ],
-          "fileUrlPath": "src/index.ts",
-          "isReadonly": true,
-          "releaseTag": "Alpha",
-          "name": "WireguardKey",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 5
-          }
         },
         {
           "kind": "Class",
@@ -3093,7 +1651,56 @@
           "isAbstract": false,
           "name": "WireguardPeer",
           "preserveMemberOrder": false,
-          "members": [],
+          "members": [
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardPeer#encodeIni:member",
+              "docComment": "/**\n * 1.0.0 Transformations\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "encodeIni: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "() => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ParseResult.ParseError",
+                  "canonicalReference": "@effect/schema!ParseError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", never>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "encodeIni",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 6
+              },
+              "isStatic": false,
+              "isProtected": false,
+              "isAbstract": false
+            }
+          ],
           "extendsTokenRange": {
             "startIndex": 1,
             "endIndex": 2

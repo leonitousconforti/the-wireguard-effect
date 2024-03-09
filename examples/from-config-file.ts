@@ -31,7 +31,7 @@ export const main: Effect.Effect<
     | Socket.SocketError,
     Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
-    const config = yield* λ(Wireguard.WireguardConfig.fromIniConfigFile("examples/wireguard-config.conf"));
+    const config = yield* λ(Wireguard.WireguardConfig.fromConfigFile("examples/wireguard-config.conf"));
     yield* λ(config.upScoped());
     const peer1Endpoint = config.Peers[0].Endpoint;
     yield* λ(Console.log(peer1Endpoint));

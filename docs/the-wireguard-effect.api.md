@@ -15,36 +15,45 @@ import * as Platform from '@effect/platform';
 import * as ReadonlyArray_2 from 'effect/ReadonlyArray';
 import * as Schema from '@effect/schema/Schema';
 import * as Scope from 'effect/Scope';
-import * as Socket from '@effect/experimental/Socket/Node';
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "Address" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export const Address: Schema.BrandSchema<((string & Brand<"IPv4">) | (string & Brand<"IPv6">)) & Brand<"Address">, string, never>;
 
-// @alpha
+// @internal
 export type Address = Schema.Schema.To<typeof Address>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "CidrBlock" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export const CidrBlock: Schema.BrandSchema<({
-    readonly ip: string & Brand<"IPv4">;
+    readonly ipv4: string & Brand<"IPv4">;
     readonly mask: number & Brand<"IPv4CidrMask">;
 } | {
-    readonly ip: string & Brand<"IPv6">;
     readonly mask: number & Brand<"IPv6CidrMask">;
+    readonly ipv6: string & Brand<"IPv6">;
 }) & Brand<"CidrBlock">, {
-    readonly ip: string;
+    readonly ipv4: string;
     readonly mask: number;
 } | {
-    readonly ip: string;
     readonly mask: number;
+    readonly ipv6: string;
 } | `${string}/${number}`, never>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "CidrBlockFrom" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export type CidrBlockFrom = Schema.Schema.From<typeof CidrBlock>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "CidrBlockTo" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export type CidrBlockTo = Schema.Schema.To<typeof CidrBlock>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "Endpoint" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export const Endpoint: Schema.BrandSchema<(({
     readonly ip: string & Brand<"IPv4">;
     readonly port: number & Brand<"Port">;
@@ -59,31 +68,43 @@ export const Endpoint: Schema.BrandSchema<(({
     readonly port: number;
 } | `[${string}]:${number}`, never>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "EndpointFrom" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export type EndpointFrom = Schema.Schema.From<typeof Endpoint>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "EndpointTo" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export type EndpointTo = Schema.Schema.To<typeof Endpoint>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "Errno" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export const Errno: Schema.BrandSchema<"errno=0" & Brand<"Errno">, "errno=0", never>;
 
-// @alpha
+// @internal
 export type Errno = Schema.Schema.To<typeof Errno>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "IPv4" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export const IPv4: Schema.BrandSchema<string & Brand<"IPv4">, string, never>;
 
-// @alpha
+// @internal
 export type IPv4 = Schema.Schema.To<typeof IPv4>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "IPv4CidrMask" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export const IPv4CidrMask: Schema.BrandSchema<number & Brand<"IPv4CidrMask">, number, never>;
 
-// @alpha
+// @internal
 export type IPv4CidrMask = Schema.Schema.To<typeof IPv4CidrMask>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "IPv4Endpoint" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export const IPv4Endpoint: Schema.BrandSchema<{
     readonly ip: string & Brand<"IPv4">;
     readonly port: number & Brand<"Port">;
@@ -92,25 +113,35 @@ export const IPv4Endpoint: Schema.BrandSchema<{
     readonly port: number;
 } | `${string}:${number}`, never>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "IPv4EndpointFrom" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export type IPv4EndpointFrom = Schema.Schema.From<typeof IPv4Endpoint>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "IPv4EndpointTo" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export type IPv4EndpointTo = Schema.Schema.To<typeof IPv4Endpoint>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "IPv6" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export const IPv6: Schema.BrandSchema<string & Brand<"IPv6">, string, never>;
 
-// @alpha
+// @internal
 export type IPv6 = Schema.Schema.To<typeof IPv6>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "IPv6CidrMask" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export const IPv6CidrMask: Schema.BrandSchema<number & Brand<"IPv6CidrMask">, number, never>;
 
-// @alpha
+// @internal
 export type IPv6CidrMask = Schema.Schema.To<typeof IPv6CidrMask>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "IPv6Endpoint" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export const IPv6Endpoint: Schema.BrandSchema<{
     readonly ip: string & Brand<"IPv6">;
     readonly port: number & Brand<"Port">;
@@ -119,19 +150,27 @@ export const IPv6Endpoint: Schema.BrandSchema<{
     readonly port: number;
 } | `[${string}]:${number}`, never>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "IPv6EndpointFrom" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export type IPv6EndpointFrom = Schema.Schema.From<typeof IPv6Endpoint>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "IPv6EndpointTo" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export type IPv6EndpointTo = Schema.Schema.To<typeof IPv6Endpoint>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "Port" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export const Port: Schema.BrandSchema<number & Brand<"Port">, number, never>;
 
-// @alpha
+// @internal
 export type Port = Schema.Schema.To<typeof Port>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "SetupData" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export const SetupData: Schema.BrandSchema<readonly [(({
     readonly ip: string & Brand<"IPv4">;
     readonly port: number & Brand<"Port">;
@@ -146,56 +185,57 @@ export const SetupData: Schema.BrandSchema<readonly [(({
     readonly port: number;
 } | `[${string}]:${number}`, string], never>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "SetupDataFrom" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export type SetupDataFrom = Schema.Schema.From<typeof SetupData>;
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "SetupDataTo" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export type SetupDataTo = Schema.Schema.To<typeof SetupData>;
 
-// Warning: (ae-forgotten-export) The symbol "WireguardConfig_base" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "WireguardIniConfig_base" needs to be exported by the entry point index.d.ts
 //
 // @alpha
-export class WireguardConfig extends WireguardConfig_base {
-    static fromIniConfigFile: (file: string) => Effect.Effect<WireguardConfig, ParseResult.ParseError | Platform.Error.PlatformError, Platform.FileSystem.FileSystem>;
-    static fromJsonConfigFile: (file: string) => Effect.Effect<WireguardConfig, ParseResult.ParseError | Platform.Error.PlatformError, Platform.FileSystem.FileSystem>;
-    static generateHubSpokeConfigs: (hubData: readonly [{
-        readonly ip: string;
-        readonly port: number;
-    } | `${string}:${number}` | {
-        readonly ip: string;
-        readonly port: number;
-    } | `[${string}]:${number}`, string], spokeData: readonly [readonly [{
-        readonly ip: string;
-        readonly port: number;
-    } | `${string}:${number}` | {
-        readonly ip: string;
-        readonly port: number;
-    } | `[${string}]:${number}`, string], ...(readonly [{
-        readonly ip: string;
-        readonly port: number;
-    } | `${string}:${number}` | {
-        readonly ip: string;
-        readonly port: number;
-    } | `[${string}]:${number}`, string])[]]) => Effect.Effect<[
-    hubConfig: WireguardConfig,
-    spokeConfigs: ReadonlyArray_2.NonEmptyReadonlyArray<WireguardConfig>
-    ], ParseResult.ParseError, never>;
+export class WireguardConfig extends WireguardIniConfig_base {
+    // Warning: (ae-incompatible-release-tags) The symbol "fromConfigFile" is marked as @alpha, but its signature references "WireguardError" which is marked as @internal
+    static fromConfigFile: (file: string) => Effect.Effect<WireguardConfig, WireguardError | ParseResult.ParseError | Platform.Error.PlatformError, Platform.FileSystem.FileSystem>;
+    static generateHubSpokeConfigs: {
+        (hubData: SetupDataFrom, spokeData: ReadonlyArray_2.NonEmptyReadonlyArray<SetupDataFrom>): Effect.Effect<[
+        hubConfig: WireguardConfig,
+        spokeConfigs: ReadonlyArray_2.NonEmptyReadonlyArray<WireguardConfig>
+        ], ParseResult.ParseError, never>;
+        (hubData: EndpointFrom, spokeData: ReadonlyArray_2.NonEmptyReadonlyArray<EndpointFrom>, cidrBlock: CidrBlockFrom): Effect.Effect<[
+        hubConfig: WireguardConfig,
+        spokeConfigs: ReadonlyArray_2.NonEmptyReadonlyArray<WireguardConfig>
+        ], ParseResult.ParseError, never>;
+    };
     static generateKeyPair: () => {
         privateKey: WireguardKey;
         publicKey: WireguardKey;
     };
     static generateP2PConfigs: {
-        (aliceData: SetupDataFrom, bobEndpoint: SetupDataFrom): Effect.Effect<[aliceConfig: WireguardConfig, bobConfig: WireguardConfig], ParseResult.ParseError, never>;
-        (aliceData: SetupDataFrom): (bobData: SetupDataFrom) => Effect.Effect<[aliceConfig: WireguardConfig, bobConfig: WireguardConfig], ParseResult.ParseError, never>;
+        (aliceData: SetupDataFrom, bobData: SetupDataFrom): Effect.Effect<[
+        aliceConfig: WireguardConfig,
+        bobConfig: WireguardConfig
+        ], ParseResult.ParseError, never>;
+        (aliceEndpoint: EndpointFrom, bobEndpoint: EndpointFrom, cidrBlock: CidrBlockFrom): Effect.Effect<[
+        aliceConfig: WireguardConfig,
+        bobConfig: WireguardConfig
+        ], ParseResult.ParseError, never>;
     };
-    up: (interfaceName?: Option.Option<WireguardInterface> | undefined) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Platform.FileSystem.FileSystem | Platform.Path.Path>;
-    upScoped: (interfaceName?: Option.Option<WireguardInterface>) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path>;
+    // Warning: (ae-incompatible-release-tags) The symbol "up" is marked as @alpha, but its signature references "WireguardError" which is marked as @internal
+    up: (interfaceObject?: Option.Option<WireguardInterface> | undefined) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Platform.FileSystem.FileSystem | Platform.Path.Path>;
+    // Warning: (ae-incompatible-release-tags) The symbol "upScoped" is marked as @alpha, but its signature references "WireguardError" which is marked as @internal
+    upScoped: (interfaceName?: Option.Option<WireguardInterface>) => Effect.Effect<void, WireguardError | Cause.TimeoutException, Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path>;
     writeToFile: (file: string) => Effect.Effect<void, ParseResult.ParseError | Platform.Error.PlatformError, Platform.FileSystem.FileSystem | Platform.Path.Path>;
 }
 
 // Warning: (ae-forgotten-export) The symbol "WireguardError_base" needs to be exported by the entry point index.d.ts
+// Warning: (ae-internal-missing-underscore) The name "WireguardError" should be prefixed with an underscore because the declaration is marked as @internal
 //
-// @alpha
+// @internal
 export class WireguardError extends WireguardError_base<{
     message: string;
 }> {
@@ -205,37 +245,71 @@ export class WireguardError extends WireguardError_base<{
 //
 // @alpha
 export class WireguardInterface extends WireguardInterface_base {
-    applyConfig: (config: WireguardConfig) => Effect.Effect<void, WireguardError, never>;
     // (undocumented)
     protected static readonly DarwinInterfaceNameRegExp: RegExp;
-    down: () => Effect.Effect<void, Platform.Error.PlatformError | WireguardError, Platform.FileSystem.FileSystem>;
+    down: () => Effect.Effect<void, Platform.Error.PlatformError, Platform.FileSystem.FileSystem>;
     // (undocumented)
     protected static readonly FreeBSDInterfaceNameRegExp: RegExp;
+    // Warning: (ae-incompatible-release-tags) The symbol "getConfig" is marked as @alpha, but its signature references "WireguardError" which is marked as @internal
+    getConfig: () => Effect.Effect<void, WireguardError, never>;
+    // Warning: (ae-incompatible-release-tags) The symbol "getNextAvailableInterface" is marked as @alpha, but its signature references "WireguardError" which is marked as @internal
     static getNextAvailableInterface: () => Effect.Effect<WireguardInterface, WireguardError, never>;
+    // Warning: (ae-incompatible-release-tags) The symbol "InterfaceRegExpForPlatform" is marked as @alpha, but its signature references "WireguardError" which is marked as @internal
+    //
+    // (undocumented)
     protected static InterfaceRegExpForPlatform: Effect.Effect<RegExp, WireguardError, never>;
     // (undocumented)
     protected static readonly LinuxInterfaceNameRegExp: RegExp;
-    logConfig: () => Effect.Effect<void, WireguardError, never>;
     // (undocumented)
     protected static readonly OpenBSDInterfaceNameRegExp: RegExp;
+    // Warning: (ae-incompatible-release-tags) The symbol "setConfig" is marked as @alpha, but its signature references "WireguardError" which is marked as @internal
+    setConfig: (config: WireguardConfig, options?: {
+        replacePeers: boolean;
+        replaceAllowedIPs: boolean;
+    } | undefined) => Effect.Effect<void, WireguardError, never>;
+    // @internal
     socketLocation: () => string;
-    up: (_config: WireguardConfig) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Platform.FileSystem.FileSystem | Platform.Path.Path>;
-    upScoped: (config: WireguardConfig) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException | Socket.SocketError, Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path>;
+    // Warning: (ae-incompatible-release-tags) The symbol "up" is marked as @alpha, but its signature references "WireguardError" which is marked as @internal
+    up: (config: WireguardConfig, options?: {
+        replacePeers: boolean;
+        replaceAllowedIPs: boolean;
+    } | undefined) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Platform.FileSystem.FileSystem | Platform.Path.Path>;
+    // Warning: (ae-incompatible-release-tags) The symbol "upScoped" is marked as @alpha, but its signature references "WireguardError" which is marked as @internal
+    upScoped: (config: WireguardConfig, options?: {
+        replacePeers: boolean;
+        replaceAllowedIPs: boolean;
+    } | undefined) => Effect.Effect<WireguardInterface, WireguardError | Cause.TimeoutException, Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path>;
     // (undocumented)
     protected static readonly WindowsInterfaceNameRegExp: RegExp;
+    // (undocumented)
+    protected static WireguardGoExecutablePath: Effect.Effect<string, Platform.Error.PlatformError, Platform.FileSystem.FileSystem | Platform.Path.Path>;
 }
 
-// @alpha
+// Warning: (ae-internal-missing-underscore) The name "WireguardKey" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export const WireguardKey: Schema.BrandSchema<string & Brand<"WireguardKey">, string, never>;
 
-// @alpha
+// @internal
 export type WireguardKey = Schema.Schema.To<typeof WireguardKey>;
 
 // Warning: (ae-forgotten-export) The symbol "WireguardPeer_base" needs to be exported by the entry point index.d.ts
 //
 // @alpha
 export class WireguardPeer extends WireguardPeer_base {
+    encodeIni: () => Effect.Effect<string, ParseResult.ParseError, never>;
 }
+
+// Warnings were encountered during analysis:
+//
+// src/index.ts:884:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "SetupDataFrom" which is marked as @internal
+// src/index.ts:893:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "EndpointFrom" which is marked as @internal
+// src/index.ts:893:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "CidrBlockFrom" which is marked as @internal
+// src/index.ts:936:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "SetupDataFrom" which is marked as @internal
+// src/index.ts:945:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "EndpointFrom" which is marked as @internal
+// src/index.ts:945:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "CidrBlockFrom" which is marked as @internal
+// src/index.ts:1023:43 - (ae-incompatible-release-tags) The symbol "privateKey" is marked as @alpha, but its signature references "WireguardKey" which is marked as @internal
+// src/index.ts:1023:69 - (ae-incompatible-release-tags) The symbol "publicKey" is marked as @alpha, but its signature references "WireguardKey" which is marked as @internal
 
 // (No @packageDocumentation comment for this package)
 

@@ -12,14 +12,12 @@ import * as Wireguard from "../src/index.js";
 const config = new Wireguard.WireguardConfig({
     Address: Wireguard.Address("3.3.3.3"),
     ListenPort: Wireguard.Port(51_820),
-    ReplacePeers: false,
     PrivateKey: Wireguard.WireguardKey(""),
     Peers: [
         new Wireguard.WireguardPeer({
             PublicKey: Wireguard.WireguardKey(""),
             AllowedIPs: [],
             Endpoint: Wireguard.Endpoint({ ip: Wireguard.IPv4("3.3.3.3"), port: Wireguard.Port(51_820) }),
-            ReplaceAllowedIPs: true,
         }),
     ],
 });
