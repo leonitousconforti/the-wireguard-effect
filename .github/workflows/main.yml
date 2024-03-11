@@ -30,6 +30,18 @@ jobs:
             submodules/wireguard-go/go.sum
       - run: pnpm build
 
+  test1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mxschmitt/action-tmate@v3
+
+  test2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mxschmitt/action-tmate@v3
+
   linux-service1:
     needs: [build]
     runs-on: ubuntu-latest
