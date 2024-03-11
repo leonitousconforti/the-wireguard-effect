@@ -89,16 +89,6 @@ const waitForResponse = Effect.gen(function* (λ) {
         yield* λ(config.writeToFile("/etc/wireguard/wg0.conf"));
         // TODO: Remove stdio: "inherit" when done debugging
         yield* λ(Effect.sync(() => execa.execaCommandSync("wg-quick up wg0", { stdio: "inherit" })));
-        yield* λ(
-            Effect.sync(() => execa.execaCommandSync("sudo iptables -A FORWARD -i wg0 -j ACCEPT", { stdio: "inherit" }))
-        );
-        yield* λ(
-            Effect.sync(() =>
-                execa.execaCommandSync("sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE", {
-                    stdio: "inherit",
-                })
-            )
-        );
         yield* λ(Console.log("Connection established"));
         return yield* λ(Effect.unit);
     }
