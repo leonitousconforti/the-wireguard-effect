@@ -1,5 +1,5 @@
-import * as Socket from "@effect/experimental/Socket/Node";
 import * as Platform from "@effect/platform";
+import * as Socket from "@effect/platform-node/NodeSocket";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
@@ -52,7 +52,7 @@ export const Port = Function.pipe(
  * @category Brands
  * @internal
  */
-export type Port = Schema.Schema.To<typeof Port>;
+export type Port = Schema.Schema.Type<typeof Port>;
 
 /**
  * An IPv4 address.
@@ -64,7 +64,7 @@ export type Port = Schema.Schema.To<typeof Port>;
 export const IPv4 = Function.pipe(
     Schema.string,
     Schema.filter((s, _options, ast) =>
-        net.isIPv4(s) ? Option.none() : Option.some(ParseResult.forbidden(ast, s, "Expected an ipv4 address"))
+        net.isIPv4(s) ? Option.none() : Option.some(new ParseResult.Refinement(ast, s, "Expected an ipv4 address"))
     ),
     Schema.identifier("IPv4"),
     Schema.description("An ipv4 address"),
@@ -76,7 +76,7 @@ export const IPv4 = Function.pipe(
  * @category Brands
  * @internal
  */
-export type IPv4 = Schema.Schema.To<typeof IPv4>;
+export type IPv4 = Schema.Schema.Type<typeof IPv4>;
 
 /**
  * An IPv6 address.
@@ -88,7 +88,7 @@ export type IPv4 = Schema.Schema.To<typeof IPv4>;
 export const IPv6 = Function.pipe(
     Schema.string,
     Schema.filter((s, _options, ast) =>
-        net.isIPv6(s) ? Option.none() : Option.some(ParseResult.forbidden(ast, s, "Expected an ipv6 address"))
+        net.isIPv6(s) ? Option.none() : Option.some(new ParseResult.Refinement(ast, s, "Expected an ipv6 address"))
     ),
     Schema.identifier("IPv6"),
     Schema.description("An ipv6 address"),
@@ -100,7 +100,7 @@ export const IPv6 = Function.pipe(
  * @category Brands
  * @internal
  */
-export type IPv6 = Schema.Schema.To<typeof IPv6>;
+export type IPv6 = Schema.Schema.Type<typeof IPv6>;
 
 /**
  * An IP address, which is either an IPv4 or IPv6 address.
@@ -121,7 +121,7 @@ export const Address = Function.pipe(
  * @category Brands
  * @internal
  */
-export type Address = Schema.Schema.To<typeof Address>;
+export type Address = Schema.Schema.Type<typeof Address>;
 
 /**
  * An ipv4 cidr mask, which is a number between 0 and 32.
@@ -143,7 +143,7 @@ export const IPv4CidrMask = Function.pipe(
  * @category Brands
  * @internal
  */
-export type IPv4CidrMask = Schema.Schema.To<typeof IPv4CidrMask>;
+export type IPv4CidrMask = Schema.Schema.Type<typeof IPv4CidrMask>;
 
 /**
  * An ipv6 cidr mask, which is a number between 0 and 128.
@@ -165,7 +165,7 @@ export const IPv6CidrMask = Function.pipe(
  * @category Brands
  * @internal
  */
-export type IPv6CidrMask = Schema.Schema.To<typeof IPv6CidrMask>;
+export type IPv6CidrMask = Schema.Schema.Type<typeof IPv6CidrMask>;
 
 /**
  * A cidr block, which is an IP address followed by a slash and a number between
@@ -196,7 +196,7 @@ export const CidrBlock = Function.pipe(
                     ? yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, IPv4CidrMask))(mask))
                     : yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, IPv6CidrMask))(mask));
                 return isV4 ? { ipv4: ipParsed, mask: maskParsed } : { ipv6: ipParsed, mask: maskParsed };
-            }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
+            }).pipe(Effect.mapError((error) => new ParseResult.Transformation(ast, data, error.message))),
         (data) => {
             if ("ipv4" in data) return Effect.succeed(`${data.ipv4}/${data.mask}` as const);
             if ("ipv6" in data) return Effect.succeed(`${data.ipv6}/${data.mask}` as const);
@@ -213,14 +213,14 @@ export const CidrBlock = Function.pipe(
  * @category Brands
  * @internal
  */
-export type CidrBlockTo = Schema.Schema.To<typeof CidrBlock>;
+export type CidrBlockTo = Schema.Schema.Type<typeof CidrBlock>;
 
 /**
  * @since 1.0.0
  * @category Brands
  * @internal
  */
-export type CidrBlockFrom = Schema.Schema.From<typeof CidrBlock>;
+export type CidrBlockFrom = Schema.Schema.Encoded<typeof CidrBlock>;
 
 /**
  * An IPv4 wireguard endpoint, which consists of an IPv4 address followed by a
@@ -263,7 +263,7 @@ export const IPv4Endpoint = Function.pipe(
                     : natPortParsed;
 
                 return { ip: ipParsed, natPort: natPortParsed, listenPort: listenPortParsed };
-            }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
+            }).pipe(Effect.mapError((error) => new ParseResult.Transformation(ast, data, error.message))),
         ({ ip, natPort }) => Effect.succeed(`${ip}:${natPort}` as const)
     ),
     Schema.identifier("IPv4Endpoint"),
@@ -276,14 +276,14 @@ export const IPv4Endpoint = Function.pipe(
  * @category Brands
  * @internal
  */
-export type IPv4EndpointTo = Schema.Schema.To<typeof IPv4Endpoint>;
+export type IPv4EndpointTo = Schema.Schema.Type<typeof IPv4Endpoint>;
 
 /**
  * @since 1.0.0
  * @category Brands
  * @internal
  */
-export type IPv4EndpointFrom = Schema.Schema.From<typeof IPv4Endpoint>;
+export type IPv4EndpointFrom = Schema.Schema.Encoded<typeof IPv4Endpoint>;
 
 /**
  * An IPv6 wireguard endpoint, which consists of an IPv6 address in square
@@ -334,7 +334,7 @@ export const IPv6Endpoint = Function.pipe(
                     : natPortParsed;
 
                 return { ip: ipParsed, natPort: natPortParsed, listenPort: listenPortParsed };
-            }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
+            }).pipe(Effect.mapError((error) => new ParseResult.Transformation(ast, data, error.message))),
         ({ ip, natPort }) => Effect.succeed(`[${ip}]:${natPort}` as const)
     ),
     Schema.identifier("IPv6Endpoint"),
@@ -347,14 +347,14 @@ export const IPv6Endpoint = Function.pipe(
  * @category Brands
  * @internal
  */
-export type IPv6EndpointTo = Schema.Schema.To<typeof IPv6Endpoint>;
+export type IPv6EndpointTo = Schema.Schema.Type<typeof IPv6Endpoint>;
 
 /**
  * @since 1.0.0
  * @category Brands
  * @internal
  */
-export type IPv6EndpointFrom = Schema.Schema.From<typeof IPv6Endpoint>;
+export type IPv6EndpointFrom = Schema.Schema.Encoded<typeof IPv6Endpoint>;
 
 /**
  * A wireguard endpoint, which is either an IPv4 or IPv6 endpoint.
@@ -375,14 +375,14 @@ export const Endpoint = Function.pipe(
  * @category Brands
  * @internal
  */
-export type EndpointTo = Schema.Schema.To<typeof Endpoint>;
+export type EndpointTo = Schema.Schema.Type<typeof Endpoint>;
 
 /**
  * @since 1.0.0
  * @category Brands
  * @internal
  */
-export type EndpointFrom = Schema.Schema.From<typeof Endpoint>;
+export type EndpointFrom = Schema.Schema.Encoded<typeof Endpoint>;
 
 /**
  * A wireguard setup data, which consists of an endpoint followed by an address.
@@ -403,14 +403,14 @@ export const SetupData = Function.pipe(
  * @category Brands
  * @internal
  */
-export type SetupDataTo = Schema.Schema.To<typeof SetupData>;
+export type SetupDataTo = Schema.Schema.Type<typeof SetupData>;
 
 /**
  * @since 1.0.0
  * @category Brands
  * @internal
  */
-export type SetupDataFrom = Schema.Schema.From<typeof SetupData>;
+export type SetupDataFrom = Schema.Schema.Encoded<typeof SetupData>;
 
 /**
  * A wireguard key, which is a 44 character base64 string.
@@ -433,7 +433,7 @@ export const WireguardKey = Function.pipe(
  * @category Brands
  * @internal
  */
-export type WireguardKey = Schema.Schema.To<typeof WireguardKey>;
+export type WireguardKey = Schema.Schema.Type<typeof WireguardKey>;
 
 /**
  * A wireguard Errno return message.
@@ -454,7 +454,7 @@ export const Errno = Function.pipe(
  * @category Brands
  * @internal
  */
-export type Errno = Schema.Schema.To<typeof Errno>;
+export type Errno = Schema.Schema.Type<typeof Errno>;
 
 /**
  * @since 1.0.0
@@ -470,18 +470,18 @@ export class WireguardError extends Data.TaggedError("WireguardError")<{ message
  * @category Datatypes
  * @alpha
  */
-export class WireguardInterface extends Schema.Class<WireguardInterface>()({
+export class WireguardInterface extends Schema.Class<WireguardInterface>("WireguardInterface")({
     Name: Schema.transformOrFail(
         Schema.string,
         Schema.string,
         (s, _options, ast): Effect.Effect<string, ParseResult.Forbidden, never> =>
             Function.pipe(
                 WireguardInterface.InterfaceRegExpForPlatform,
-                Effect.mapError((error) => ParseResult.forbidden(ast, s, error.message)),
+                Effect.mapError((error) => new ParseResult.Transformation(ast, s, error.message)),
                 Effect.flatMap((x) =>
                     x.test(s)
                         ? Effect.succeed(s)
-                        : Effect.fail(ParseResult.forbidden(ast, s, `Expected interface name to match ${x}`))
+                        : Effect.fail(new ParseResult.Transformation(ast, s, `Expected interface name to match ${x}`))
                 )
             ),
         (s) => Effect.succeed(s)
@@ -731,7 +731,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
  * @category Datatypes
  * @alpha
  */
-export class WireguardPeer extends Schema.Class<WireguardPeer>()({
+export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")({
     /** @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/wgtypes/types.go#L236-L276 */
 
     /** The persistent keepalive interval in seconds, 0 disables it. */
@@ -788,7 +788,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>()({
  * @category Datatypes
  * @alpha
  */
-class WireguardIniConfig extends Schema.Class<WireguardIniConfig>()({
+class WireguardIniConfig extends Schema.Class<WireguardIniConfig>("WireguardIniConfig")({
     /** @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/wgtypes/types.go#L207-L232 */
 
     Address: Schema.union(Address, CidrBlock, Schema.nonEmptyArray(Address)),
@@ -877,7 +877,7 @@ class WireguardIniConfig extends Schema.Class<WireguardIniConfig>()({
             const data = yield* λ(Schema.encode(WireguardIniConfig)(self));
 
             type Writable<T> = { -readonly [P in keyof T]: T[P] };
-            const interfaceData = { ...data } as Writable<Partial<Schema.Schema.From<typeof WireguardIniConfig>>>;
+            const interfaceData = { ...data } as Writable<Partial<Schema.Schema.Encoded<typeof WireguardIniConfig>>>;
             delete interfaceData["Peers"];
 
             const interfaceConfig = Function.pipe(

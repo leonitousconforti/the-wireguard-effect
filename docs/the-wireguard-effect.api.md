@@ -19,211 +19,211 @@ import * as Scope from 'effect/Scope';
 // Warning: (ae-internal-missing-underscore) The name "Address" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const Address: Schema.BrandSchema<((string & Brand<"IPv4">) | (string & Brand<"IPv6">)) & Brand<"Address">, string, never>;
+export const Address: Schema.brand<Schema.union<[Schema.brand<Schema.Schema<string, string, never>, "IPv4">, Schema.brand<Schema.Schema<string, string, never>, "IPv6">]>, "Address">;
 
 // @internal
-export type Address = Schema.Schema.To<typeof Address>;
+export type Address = Schema.Schema.Type<typeof Address>;
 
 // Warning: (ae-internal-missing-underscore) The name "CidrBlock" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const CidrBlock: Schema.BrandSchema<({
-    readonly ipv4: string & Brand<"IPv4">;
-    readonly mask: number & Brand<"IPv4CidrMask">;
-} | {
-    readonly mask: number & Brand<"IPv6CidrMask">;
-    readonly ipv6: string & Brand<"IPv6">;
-}) & Brand<"CidrBlock">, {
-    readonly ipv4: string;
-    readonly mask: number;
-} | {
-    readonly mask: number;
-    readonly ipv6: string;
-} | `${string}/${number}`, never>;
+export const CidrBlock: Schema.brand<Schema.transformOrFail<Schema.union<[Schema.struct<{
+    ipv4: Schema.brand<Schema.Schema<string, string, never>, "IPv4">;
+    mask: Schema.brand<Schema.Schema<number, number, never>, "IPv4CidrMask">;
+}>, Schema.struct<{
+    ipv6: Schema.brand<Schema.Schema<string, string, never>, "IPv6">;
+    mask: Schema.brand<Schema.Schema<number, number, never>, "IPv6CidrMask">;
+}>, Schema.Schema<`${string}/${number}`, `${string}/${number}`, never>]>, Schema.union<[Schema.struct<{
+    ipv4: Schema.brand<Schema.Schema<string, string, never>, "IPv4">;
+    mask: Schema.brand<Schema.Schema<number, number, never>, "IPv4CidrMask">;
+}>, Schema.struct<{
+    ipv6: Schema.brand<Schema.Schema<string, string, never>, "IPv6">;
+    mask: Schema.brand<Schema.Schema<number, number, never>, "IPv6CidrMask">;
+}>]>, never>, "CidrBlock">;
 
 // Warning: (ae-internal-missing-underscore) The name "CidrBlockFrom" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export type CidrBlockFrom = Schema.Schema.From<typeof CidrBlock>;
+export type CidrBlockFrom = Schema.Schema.Encoded<typeof CidrBlock>;
 
 // Warning: (ae-internal-missing-underscore) The name "CidrBlockTo" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export type CidrBlockTo = Schema.Schema.To<typeof CidrBlock>;
+export type CidrBlockTo = Schema.Schema.Type<typeof CidrBlock>;
 
 // Warning: (ae-internal-missing-underscore) The name "Endpoint" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const Endpoint: Schema.BrandSchema<(({
-    readonly ip: string & Brand<"IPv4">;
-    readonly natPort: number & Brand<"Port">;
-    readonly listenPort: number & Brand<"Port">;
-} & Brand<"IPv4Endpoint">) | ({
-    readonly ip: string & Brand<"IPv6">;
-    readonly natPort: number & Brand<"Port">;
-    readonly listenPort: number & Brand<"Port">;
-} & Brand<"IPv6Endpoint">)) & Brand<"Endpoint">, {
-    readonly ip: string;
-    readonly port: number;
-} | {
-    readonly ip: string;
-    readonly natPort: number;
-    readonly listenPort: number;
-} | `${string}:${number}` | `${string}:${number}:${number}` | {
-    readonly ip: string;
-    readonly port: number;
-} | {
-    readonly ip: string;
-    readonly natPort: number;
-    readonly listenPort: number;
-} | `[${string}]:${number}` | `[${string}]:${number}:${number}`, never>;
+export const Endpoint: Schema.brand<Schema.union<[Schema.brand<Schema.transformOrFail<Schema.union<[Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">;
+    port: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">;
+    natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+    listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, Schema.Schema<`${string}:${number}`, `${string}:${number}`, never>, Schema.Schema<`${string}:${number}:${number}`, `${string}:${number}:${number}`, never>]>, Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">;
+    natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+    listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, never>, "IPv4Endpoint">, Schema.brand<Schema.transformOrFail<Schema.union<[Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">;
+    port: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">;
+    natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+    listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, Schema.Schema<`[${string}]:${number}`, `[${string}]:${number}`, never>, Schema.Schema<`[${string}]:${number}:${number}`, `[${string}]:${number}:${number}`, never>]>, Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">;
+    natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+    listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, never>, "IPv6Endpoint">]>, "Endpoint">;
 
 // Warning: (ae-internal-missing-underscore) The name "EndpointFrom" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export type EndpointFrom = Schema.Schema.From<typeof Endpoint>;
+export type EndpointFrom = Schema.Schema.Encoded<typeof Endpoint>;
 
 // Warning: (ae-internal-missing-underscore) The name "EndpointTo" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export type EndpointTo = Schema.Schema.To<typeof Endpoint>;
+export type EndpointTo = Schema.Schema.Type<typeof Endpoint>;
 
 // Warning: (ae-internal-missing-underscore) The name "Errno" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const Errno: Schema.BrandSchema<"errno=0" & Brand<"Errno">, "errno=0", never>;
+export const Errno: Schema.brand<Schema.Schema<"errno=0", "errno=0", never>, "Errno">;
 
 // @internal
-export type Errno = Schema.Schema.To<typeof Errno>;
+export type Errno = Schema.Schema.Type<typeof Errno>;
 
 // Warning: (ae-internal-missing-underscore) The name "IPv4" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const IPv4: Schema.BrandSchema<string & Brand<"IPv4">, string, never>;
+export const IPv4: Schema.brand<Schema.Schema<string, string, never>, "IPv4">;
 
 // @internal
-export type IPv4 = Schema.Schema.To<typeof IPv4>;
+export type IPv4 = Schema.Schema.Type<typeof IPv4>;
 
 // Warning: (ae-internal-missing-underscore) The name "IPv4CidrMask" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const IPv4CidrMask: Schema.BrandSchema<number & Brand<"IPv4CidrMask">, number, never>;
+export const IPv4CidrMask: Schema.brand<Schema.Schema<number, number, never>, "IPv4CidrMask">;
 
 // @internal
-export type IPv4CidrMask = Schema.Schema.To<typeof IPv4CidrMask>;
+export type IPv4CidrMask = Schema.Schema.Type<typeof IPv4CidrMask>;
 
 // Warning: (ae-internal-missing-underscore) The name "IPv4Endpoint" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const IPv4Endpoint: Schema.BrandSchema<{
-    readonly ip: string & Brand<"IPv4">;
-    readonly natPort: number & Brand<"Port">;
-    readonly listenPort: number & Brand<"Port">;
-} & Brand<"IPv4Endpoint">, {
-    readonly ip: string;
-    readonly port: number;
-} | {
-    readonly ip: string;
-    readonly natPort: number;
-    readonly listenPort: number;
-} | `${string}:${number}` | `${string}:${number}:${number}`, never>;
+export const IPv4Endpoint: Schema.brand<Schema.transformOrFail<Schema.union<[Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">;
+    port: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">;
+    natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+    listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, Schema.Schema<`${string}:${number}`, `${string}:${number}`, never>, Schema.Schema<`${string}:${number}:${number}`, `${string}:${number}:${number}`, never>]>, Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">;
+    natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+    listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, never>, "IPv4Endpoint">;
 
 // Warning: (ae-internal-missing-underscore) The name "IPv4EndpointFrom" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export type IPv4EndpointFrom = Schema.Schema.From<typeof IPv4Endpoint>;
+export type IPv4EndpointFrom = Schema.Schema.Encoded<typeof IPv4Endpoint>;
 
 // Warning: (ae-internal-missing-underscore) The name "IPv4EndpointTo" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export type IPv4EndpointTo = Schema.Schema.To<typeof IPv4Endpoint>;
+export type IPv4EndpointTo = Schema.Schema.Type<typeof IPv4Endpoint>;
 
 // Warning: (ae-internal-missing-underscore) The name "IPv6" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const IPv6: Schema.BrandSchema<string & Brand<"IPv6">, string, never>;
+export const IPv6: Schema.brand<Schema.Schema<string, string, never>, "IPv6">;
 
 // @internal
-export type IPv6 = Schema.Schema.To<typeof IPv6>;
+export type IPv6 = Schema.Schema.Type<typeof IPv6>;
 
 // Warning: (ae-internal-missing-underscore) The name "IPv6CidrMask" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const IPv6CidrMask: Schema.BrandSchema<number & Brand<"IPv6CidrMask">, number, never>;
+export const IPv6CidrMask: Schema.brand<Schema.Schema<number, number, never>, "IPv6CidrMask">;
 
 // @internal
-export type IPv6CidrMask = Schema.Schema.To<typeof IPv6CidrMask>;
+export type IPv6CidrMask = Schema.Schema.Type<typeof IPv6CidrMask>;
 
 // Warning: (ae-internal-missing-underscore) The name "IPv6Endpoint" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const IPv6Endpoint: Schema.BrandSchema<{
-    readonly ip: string & Brand<"IPv6">;
-    readonly natPort: number & Brand<"Port">;
-    readonly listenPort: number & Brand<"Port">;
-} & Brand<"IPv6Endpoint">, {
-    readonly ip: string;
-    readonly port: number;
-} | {
-    readonly ip: string;
-    readonly natPort: number;
-    readonly listenPort: number;
-} | `[${string}]:${number}` | `[${string}]:${number}:${number}`, never>;
+export const IPv6Endpoint: Schema.brand<Schema.transformOrFail<Schema.union<[Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">;
+    port: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">;
+    natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+    listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, Schema.Schema<`[${string}]:${number}`, `[${string}]:${number}`, never>, Schema.Schema<`[${string}]:${number}:${number}`, `[${string}]:${number}:${number}`, never>]>, Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">;
+    natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+    listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, never>, "IPv6Endpoint">;
 
 // Warning: (ae-internal-missing-underscore) The name "IPv6EndpointFrom" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export type IPv6EndpointFrom = Schema.Schema.From<typeof IPv6Endpoint>;
+export type IPv6EndpointFrom = Schema.Schema.Encoded<typeof IPv6Endpoint>;
 
 // Warning: (ae-internal-missing-underscore) The name "IPv6EndpointTo" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export type IPv6EndpointTo = Schema.Schema.To<typeof IPv6Endpoint>;
+export type IPv6EndpointTo = Schema.Schema.Type<typeof IPv6Endpoint>;
 
 // Warning: (ae-internal-missing-underscore) The name "Port" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const Port: Schema.BrandSchema<number & Brand<"Port">, number, never>;
+export const Port: Schema.brand<Schema.Schema<number, number, never>, "Port">;
 
 // @internal
-export type Port = Schema.Schema.To<typeof Port>;
+export type Port = Schema.Schema.Type<typeof Port>;
 
 // Warning: (ae-internal-missing-underscore) The name "SetupData" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const SetupData: Schema.BrandSchema<readonly [(({
-    readonly ip: string & Brand<"IPv4">;
-    readonly natPort: number & Brand<"Port">;
-    readonly listenPort: number & Brand<"Port">;
-} & Brand<"IPv4Endpoint">) | ({
-    readonly ip: string & Brand<"IPv6">;
-    readonly natPort: number & Brand<"Port">;
-    readonly listenPort: number & Brand<"Port">;
-} & Brand<"IPv6Endpoint">)) & Brand<"Endpoint">, ((string & Brand<"IPv4">) | (string & Brand<"IPv6">)) & Brand<"Address">] & Brand<"SetupData">, readonly [{
-    readonly ip: string;
-    readonly port: number;
-} | {
-    readonly ip: string;
-    readonly natPort: number;
-    readonly listenPort: number;
-} | `${string}:${number}` | `${string}:${number}:${number}` | {
-    readonly ip: string;
-    readonly port: number;
-} | {
-    readonly ip: string;
-    readonly natPort: number;
-    readonly listenPort: number;
-} | `[${string}]:${number}` | `[${string}]:${number}:${number}`, string], never>;
+export const SetupData: Schema.brand<Schema.tuple<[Schema.brand<Schema.union<[Schema.brand<Schema.transformOrFail<Schema.union<[Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">;
+    port: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">;
+    natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+    listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, Schema.Schema<`${string}:${number}`, `${string}:${number}`, never>, Schema.Schema<`${string}:${number}:${number}`, `${string}:${number}:${number}`, never>]>, Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">;
+    natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+    listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, never>, "IPv4Endpoint">, Schema.brand<Schema.transformOrFail<Schema.union<[Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">;
+    port: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">;
+    natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+    listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, Schema.Schema<`[${string}]:${number}`, `[${string}]:${number}`, never>, Schema.Schema<`[${string}]:${number}:${number}`, `[${string}]:${number}:${number}`, never>]>, Schema.struct<{
+    ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">;
+    natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+    listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
+}>, never>, "IPv6Endpoint">]>, "Endpoint">, Schema.brand<Schema.union<[Schema.brand<Schema.Schema<string, string, never>, "IPv4">, Schema.brand<Schema.Schema<string, string, never>, "IPv6">]>, "Address">]>, "SetupData">;
 
 // Warning: (ae-internal-missing-underscore) The name "SetupDataFrom" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export type SetupDataFrom = Schema.Schema.From<typeof SetupData>;
+export type SetupDataFrom = Schema.Schema.Encoded<typeof SetupData>;
 
 // Warning: (ae-internal-missing-underscore) The name "SetupDataTo" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export type SetupDataTo = Schema.Schema.To<typeof SetupData>;
+export type SetupDataTo = Schema.Schema.Type<typeof SetupData>;
 
 // Warning: (ae-forgotten-export) The symbol "WireguardIniConfig_base" needs to be exported by the entry point index.d.ts
 //
@@ -318,10 +318,10 @@ export class WireguardInterface extends WireguardInterface_base {
 // Warning: (ae-internal-missing-underscore) The name "WireguardKey" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const WireguardKey: Schema.BrandSchema<string & Brand<"WireguardKey">, string, never>;
+export const WireguardKey: Schema.brand<Schema.Schema<string, string, never>, "WireguardKey">;
 
 // @internal
-export type WireguardKey = Schema.Schema.To<typeof WireguardKey>;
+export type WireguardKey = Schema.Schema.Type<typeof WireguardKey>;
 
 // Warning: (ae-forgotten-export) The symbol "WireguardPeer_base" needs to be exported by the entry point index.d.ts
 //
