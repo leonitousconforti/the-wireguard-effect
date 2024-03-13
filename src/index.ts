@@ -264,7 +264,7 @@ export const IPv4Endpoint = Function.pipe(
 
                 return { ip: ipParsed, natPort: natPortParsed, listenPort: listenPortParsed };
             }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
-        ({ ip, natPort, listenPort }) => Effect.succeed(`${ip}:${natPort}:${listenPort}` as const)
+        ({ ip, natPort }) => Effect.succeed(`${ip}:${natPort}` as const)
     ),
     Schema.identifier("IPv4Endpoint"),
     Schema.description("An ipv4 wireguard endpoint"),
@@ -335,7 +335,7 @@ export const IPv6Endpoint = Function.pipe(
 
                 return { ip: ipParsed, natPort: natPortParsed, listenPort: listenPortParsed };
             }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
-        ({ ip, natPort, listenPort }) => Effect.succeed(`[${ip}]:${natPort}:${listenPort}` as const)
+        ({ ip, natPort }) => Effect.succeed(`[${ip}]:${natPort}` as const)
     ),
     Schema.identifier("IPv6Endpoint"),
     Schema.description("An ipv6 wireguard endpoint"),

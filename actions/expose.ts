@@ -54,7 +54,6 @@ const processConnectionRequest = (
         const mappedAddress = stunResponse.getAttribute(stun.constants.STUN_ATTR_XOR_MAPPED_ADDRESS).value;
         const myLocation = `${mappedAddress.address}:${mappedAddress.port}:${stunSocket.address().port}` as const;
         GithubCore.info(`Stun response received: ${JSON.stringify(myLocation)}`);
-        yield* λ(Console.log("here0"));
         yield* λ(
             Effect.loop(0, {
                 step: (count) => count + 1,
@@ -65,7 +64,6 @@ const processConnectionRequest = (
                     ),
             })
         );
-        yield* λ(Console.log("here1"));
 
         const aliceData = Tuple.make(myLocation, "192.168.0.1");
         const bobData = Tuple.make(
