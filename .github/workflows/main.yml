@@ -30,18 +30,6 @@ jobs:
             submodules/wireguard-go/go.sum
       - run: pnpm build
 
-  test1:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: mxschmitt/action-tmate@v3
-
-  test2:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: mxschmitt/action-tmate@v3
-
   linux-service1:
     needs: [build]
     runs-on: ubuntu-latest
@@ -49,9 +37,6 @@ jobs:
       - uses: actions/checkout@v4
       - run: sudo apt install wireguard
       - run: python3 -m http.server &
-      # FIXME: Remove once done debugging
-      - run: ip link show
-      - run: ifconfig
       - uses: ./.github/actions/workflow-level-service/expose
         with:
           service-identifier: ${{ env.linux-service-identifier1 }}

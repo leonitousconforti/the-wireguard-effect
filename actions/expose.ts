@@ -136,12 +136,14 @@ const program: Effect.Effect<
         )
     );
     yield* λ(new NoStopRequest({ message: "No stop request received" }));
-}).pipe(
-    Effect.retry({
-        schedule: Schedule.spaced("30 seconds"),
-        until: (error) => error._tag === "HasStopRequest",
-    })
-);
+})
+    .pipe(
+        Effect.retry({
+            schedule: Schedule.spaced("30 seconds"),
+            until: (error) => error._tag === "HasStopRequest",
+        })
+    )
+    .pipe(Effect.catchTag("NoStopRequest", () => Effect.unit));
 
 /**
  * Processes connection requests every 30 seconds until there is a stop request
