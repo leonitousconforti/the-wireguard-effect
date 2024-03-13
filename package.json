@@ -31,7 +31,6 @@
     "devDependencies": {
         "@actions/artifact": "2.1.4",
         "@actions/core": "1.10.1",
-        "@effect/experimental": "0.11.0",
         "@effect/platform": "0.48.0",
         "@effect/platform-node": "0.45.2",
         "@effect/printer": "0.31.13",
@@ -73,7 +72,6 @@
         "ws": "8.16.0"
     },
     "peerDependencies": {
-        "@effect/experimental": "0.9.19",
         "@effect/platform": "0.45.4",
         "@effect/platform-node": "0.44.5",
         "@effect/schema": "0.62.8",
