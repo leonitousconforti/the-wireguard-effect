@@ -143,7 +143,7 @@ const program: Effect.Effect<
             until: (error) => error._tag === "HasStopRequest",
         })
     )
-    .pipe(Effect.catchTag("NoStopRequest", () => Effect.unit));
+    .pipe(Effect.catchTag("HasStopRequest", () => Effect.unit));
 
 /**
  * Processes connection requests every 30 seconds until there is a stop request
