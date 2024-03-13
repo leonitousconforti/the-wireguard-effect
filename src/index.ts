@@ -1,10 +1,10 @@
 import * as Platform from "@effect/platform";
 import * as Socket from "@effect/platform-node/NodeSocket";
+import * as AST from "@effect/schema/AST";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
-import * as Console from "effect/Console";
 import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -213,14 +213,14 @@ export const CidrBlock = Function.pipe(
  * @category Brands
  * @internal
  */
-export type CidrBlockTo = Schema.Schema.Type<typeof CidrBlock>;
+export type CidrBlock = Schema.Schema.Type<typeof CidrBlock>;
 
 /**
  * @since 1.0.0
  * @category Brands
  * @internal
  */
-export type CidrBlockFrom = Schema.Schema.Encoded<typeof CidrBlock>;
+export type CidrBlockEncoded = Schema.Schema.Encoded<typeof CidrBlock>;
 
 /**
  * An IPv4 wireguard endpoint, which consists of an IPv4 address followed by a
@@ -276,14 +276,14 @@ export const IPv4Endpoint = Function.pipe(
  * @category Brands
  * @internal
  */
-export type IPv4EndpointTo = Schema.Schema.Type<typeof IPv4Endpoint>;
+export type IPv4Endpoint = Schema.Schema.Type<typeof IPv4Endpoint>;
 
 /**
  * @since 1.0.0
  * @category Brands
  * @internal
  */
-export type IPv4EndpointFrom = Schema.Schema.Encoded<typeof IPv4Endpoint>;
+export type IPv4EndpointEncoded = Schema.Schema.Encoded<typeof IPv4Endpoint>;
 
 /**
  * An IPv6 wireguard endpoint, which consists of an IPv6 address in square
@@ -347,14 +347,14 @@ export const IPv6Endpoint = Function.pipe(
  * @category Brands
  * @internal
  */
-export type IPv6EndpointTo = Schema.Schema.Type<typeof IPv6Endpoint>;
+export type IPv6Endpoint = Schema.Schema.Type<typeof IPv6Endpoint>;
 
 /**
  * @since 1.0.0
  * @category Brands
  * @internal
  */
-export type IPv6EndpointFrom = Schema.Schema.Encoded<typeof IPv6Endpoint>;
+export type IPv6EndpointEncoded = Schema.Schema.Encoded<typeof IPv6Endpoint>;
 
 /**
  * A wireguard endpoint, which is either an IPv4 or IPv6 endpoint.
@@ -375,14 +375,14 @@ export const Endpoint = Function.pipe(
  * @category Brands
  * @internal
  */
-export type EndpointTo = Schema.Schema.Type<typeof Endpoint>;
+export type Endpoint = Schema.Schema.Type<typeof Endpoint>;
 
 /**
  * @since 1.0.0
  * @category Brands
  * @internal
  */
-export type EndpointFrom = Schema.Schema.Encoded<typeof Endpoint>;
+export type EndpointEncoded = Schema.Schema.Encoded<typeof Endpoint>;
 
 /**
  * A wireguard setup data, which consists of an endpoint followed by an address.
@@ -403,14 +403,14 @@ export const SetupData = Function.pipe(
  * @category Brands
  * @internal
  */
-export type SetupDataTo = Schema.Schema.Type<typeof SetupData>;
+export type SetupData = Schema.Schema.Type<typeof SetupData>;
 
 /**
  * @since 1.0.0
  * @category Brands
  * @internal
  */
-export type SetupDataFrom = Schema.Schema.Encoded<typeof SetupData>;
+export type SetupDataEncoded = Schema.Schema.Encoded<typeof SetupData>;
 
 /**
  * A wireguard key, which is a 44 character base64 string.
@@ -474,7 +474,16 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
     Name: Schema.transformOrFail(
         Schema.string,
         Schema.string,
-        (s, _options, ast): Effect.Effect<string, ParseResult.Forbidden, never> =>
+        /*
+         * This needs to be fully typed because we are accessing a static
+         * property on the class and otherwise typescript complains about not
+         * being able to infer the types.
+         */
+        (
+            s: string,
+            _options: AST.ParseOptions,
+            ast: AST.Transformation
+        ): Effect.Effect<string, ParseResult.Forbidden, never> =>
             Function.pipe(
                 WireguardInterface.InterfaceRegExpForPlatform,
                 Effect.mapError((error) => new ParseResult.Transformation(ast, s, error.message)),
@@ -591,8 +600,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             Match.when("win32", () => `\\\\.\\pipe\\wireguard\\${this.Name}`),
             Match.when("linux", () => `/var/run/wireguard/${this.Name}.sock`),
             Match.when("darwin", () => `/var/run/wireguard/${this.Name}.sock`),
-            Match.when("freebsd", () => ""),
-            Match.when("openbsd", () => ""),
+            Match.when("freebsd", () => "/var/run/wireguard/${this.Name}.sock"),
+            Match.when("openbsd", () => "/var/run/wireguard/${this.Name}.sock"),
             Match.orElseAbsurd
         )(Function.unsafeCoerce(process.platform));
 
@@ -654,7 +663,6 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             Stream.run(Sink.collectAll()),
             Effect.tap(Function.flow(Chunk.last, Option.getOrThrow, Schema.decodeUnknown(Errno))),
             Effect.map(Chunk.join("\n")),
-            Effect.tap(Console.log),
             Effect.catchAll((error) => Effect.fail(new WireguardError({ message: error.message })))
         );
 
@@ -693,7 +701,6 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         return Effect.gen(function* (λ) {
             const executablePath = yield* λ(WireguardInterface.WireguardGoExecutablePath.pipe(Effect.orDie));
 
-            // TODO: Can we get rid of sudo here somehow?
             yield* λ(
                 Effect.tryPromise({
                     try: () => {
@@ -772,10 +779,9 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
             const allowedIps = yield* λ(
                 Effect.all(ReadonlyArray.map(self.AllowedIPs, (ap) => Schema.encode(CidrBlock)(ap)))
             );
-            // FIXME: Revert once done debugging
             return String.concat(
                 ini.encode(peerData, { bracketedArray: false, section: "Peer", whitespace: true }),
-                `AllowedIPs = 192.168.0.0/24`
+                `AllowedIPs = ${allowedIps}`
             );
         });
     };
@@ -895,7 +901,6 @@ class WireguardIniConfig extends Schema.Class<WireguardIniConfig>("WireguardIniC
                 )
             );
 
-            yield* λ(Console.log(`writing:\n${interfaceConfig}\n${peersConfig}`));
             yield* λ(fs.makeDirectory(path.dirname(file), { recursive: true }));
             return yield* λ(fs.writeFileString(file, `${interfaceConfig}\n${peersConfig}`));
         });
@@ -911,8 +916,8 @@ class WireguardIniConfig extends Schema.Class<WireguardIniConfig>("WireguardIniC
     public static generateP2PConfigs: {
         // Overload for when cidrBlock is not provided
         (
-            aliceData: SetupDataFrom,
-            bobData: SetupDataFrom
+            aliceData: SetupDataEncoded,
+            bobData: SetupDataEncoded
         ): Effect.Effect<
             [aliceConfig: WireguardIniConfig, bobConfig: WireguardIniConfig],
             ParseResult.ParseError,
@@ -920,18 +925,18 @@ class WireguardIniConfig extends Schema.Class<WireguardIniConfig>("WireguardIniC
         >;
         // Overload for when cidrBlock is provided
         (
-            aliceEndpoint: EndpointFrom,
-            bobEndpoint: EndpointFrom,
-            cidrBlock: CidrBlockFrom
+            aliceEndpoint: EndpointEncoded,
+            bobEndpoint: EndpointEncoded,
+            cidrBlock: CidrBlockEncoded
         ): Effect.Effect<
             [aliceConfig: WireguardIniConfig, bobConfig: WireguardIniConfig],
             ParseResult.ParseError,
             never
         >;
-    } = <T extends SetupDataFrom | EndpointFrom>(
+    } = <T extends SetupDataEncoded | EndpointEncoded>(
         aliceData: T,
         bobData: T,
-        cidrBlock?: CidrBlockFrom | undefined
+        cidrBlock?: CidrBlockEncoded | undefined
     ): Effect.Effect<[aliceConfig: WireguardIniConfig, bobConfig: WireguardIniConfig], ParseResult.ParseError, never> =>
         Effect.gen(function* (λ) {
             const hubEndpoint = aliceData;
@@ -939,14 +944,14 @@ class WireguardIniConfig extends Schema.Class<WireguardIniConfig>("WireguardIniC
             const [aliceConfig, [bobConfig]] = Predicate.isUndefined(cidrBlock)
                 ? yield* λ(
                       WireguardIniConfig.generateHubSpokeConfigs(
-                          hubEndpoint as SetupDataFrom,
-                          spokeEndpoints as ReadonlyArray.NonEmptyReadonlyArray<SetupDataFrom>
+                          hubEndpoint as SetupDataEncoded,
+                          spokeEndpoints as ReadonlyArray.NonEmptyReadonlyArray<SetupDataEncoded>
                       )
                   )
                 : yield* λ(
                       WireguardIniConfig.generateHubSpokeConfigs(
-                          hubEndpoint as EndpointFrom,
-                          spokeEndpoints as ReadonlyArray.NonEmptyReadonlyArray<EndpointFrom>,
+                          hubEndpoint as EndpointEncoded,
+                          spokeEndpoints as ReadonlyArray.NonEmptyReadonlyArray<EndpointEncoded>,
                           cidrBlock
                       )
                   );
@@ -963,8 +968,8 @@ class WireguardIniConfig extends Schema.Class<WireguardIniConfig>("WireguardIniC
     public static generateHubSpokeConfigs: {
         // Overload for when cidrBlock is not provided
         (
-            hubData: SetupDataFrom,
-            spokeData: ReadonlyArray.NonEmptyReadonlyArray<SetupDataFrom>
+            hubData: SetupDataEncoded,
+            spokeData: ReadonlyArray.NonEmptyReadonlyArray<SetupDataEncoded>
         ): Effect.Effect<
             [hubConfig: WireguardIniConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardIniConfig>],
             ParseResult.ParseError,
@@ -972,18 +977,18 @@ class WireguardIniConfig extends Schema.Class<WireguardIniConfig>("WireguardIniC
         >;
         // Overload for when cidrBlock is provided
         (
-            hubData: EndpointFrom,
-            spokeData: ReadonlyArray.NonEmptyReadonlyArray<EndpointFrom>,
-            cidrBlock: CidrBlockFrom
+            hubData: EndpointEncoded,
+            spokeData: ReadonlyArray.NonEmptyReadonlyArray<EndpointEncoded>,
+            cidrBlock: CidrBlockEncoded
         ): Effect.Effect<
             [hubConfig: WireguardIniConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardIniConfig>],
             ParseResult.ParseError,
             never
         >;
-    } = <T extends SetupDataFrom | EndpointFrom>(
+    } = <T extends SetupDataEncoded | EndpointEncoded>(
         hubData: T,
         spokeData: ReadonlyArray.NonEmptyReadonlyArray<T>,
-        cidrBlock?: CidrBlockFrom | undefined
+        cidrBlock?: CidrBlockEncoded | undefined
     ): Effect.Effect<
         [hubConfig: WireguardIniConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardIniConfig>],
         ParseResult.ParseError,
@@ -992,10 +997,12 @@ class WireguardIniConfig extends Schema.Class<WireguardIniConfig>("WireguardIniC
         Effect.gen(function* (λ) {
             // Convert the setup data to the correct format if needed
             const isSetupData = Predicate.isUndefined(cidrBlock);
-            const hubSetupData = isSetupData ? (hubData as SetupDataFrom) : Tuple.make(hubData as EndpointFrom, "");
+            const hubSetupData = isSetupData
+                ? (hubData as SetupDataEncoded)
+                : Tuple.make(hubData as EndpointEncoded, "");
             const spokeSetupData = isSetupData
-                ? (spokeData as ReadonlyArray.NonEmptyReadonlyArray<SetupDataFrom>)
-                : ReadonlyArray.map(spokeData, (spoke) => Tuple.make(spoke as EndpointFrom, ""));
+                ? (spokeData as ReadonlyArray.NonEmptyReadonlyArray<SetupDataEncoded>)
+                : ReadonlyArray.map(spokeData, (spoke) => Tuple.make(spoke as EndpointEncoded, ""));
 
             // Generate the keys and parse the setup data
             const hubKeys = WireguardIniConfig.generateKeyPair();

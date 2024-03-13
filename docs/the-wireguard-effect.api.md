@@ -41,15 +41,13 @@ export const CidrBlock: Schema.brand<Schema.transformOrFail<Schema.union<[Schema
     mask: Schema.brand<Schema.Schema<number, number, never>, "IPv6CidrMask">;
 }>]>, never>, "CidrBlock">;
 
-// Warning: (ae-internal-missing-underscore) The name "CidrBlockFrom" should be prefixed with an underscore because the declaration is marked as @internal
-//
 // @internal
-export type CidrBlockFrom = Schema.Schema.Encoded<typeof CidrBlock>;
+export type CidrBlock = Schema.Schema.Type<typeof CidrBlock>;
 
-// Warning: (ae-internal-missing-underscore) The name "CidrBlockTo" should be prefixed with an underscore because the declaration is marked as @internal
+// Warning: (ae-internal-missing-underscore) The name "CidrBlockEncoded" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export type CidrBlockTo = Schema.Schema.Type<typeof CidrBlock>;
+export type CidrBlockEncoded = Schema.Schema.Encoded<typeof CidrBlock>;
 
 // Warning: (ae-internal-missing-underscore) The name "Endpoint" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -78,15 +76,13 @@ export const Endpoint: Schema.brand<Schema.union<[Schema.brand<Schema.transformO
     listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
 }>, never>, "IPv6Endpoint">]>, "Endpoint">;
 
-// Warning: (ae-internal-missing-underscore) The name "EndpointFrom" should be prefixed with an underscore because the declaration is marked as @internal
-//
 // @internal
-export type EndpointFrom = Schema.Schema.Encoded<typeof Endpoint>;
+export type Endpoint = Schema.Schema.Type<typeof Endpoint>;
 
-// Warning: (ae-internal-missing-underscore) The name "EndpointTo" should be prefixed with an underscore because the declaration is marked as @internal
+// Warning: (ae-internal-missing-underscore) The name "EndpointEncoded" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export type EndpointTo = Schema.Schema.Type<typeof Endpoint>;
+export type EndpointEncoded = Schema.Schema.Encoded<typeof Endpoint>;
 
 // Warning: (ae-internal-missing-underscore) The name "Errno" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -128,15 +124,13 @@ export const IPv4Endpoint: Schema.brand<Schema.transformOrFail<Schema.union<[Sch
     listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
 }>, never>, "IPv4Endpoint">;
 
-// Warning: (ae-internal-missing-underscore) The name "IPv4EndpointFrom" should be prefixed with an underscore because the declaration is marked as @internal
-//
 // @internal
-export type IPv4EndpointFrom = Schema.Schema.Encoded<typeof IPv4Endpoint>;
+export type IPv4Endpoint = Schema.Schema.Type<typeof IPv4Endpoint>;
 
-// Warning: (ae-internal-missing-underscore) The name "IPv4EndpointTo" should be prefixed with an underscore because the declaration is marked as @internal
+// Warning: (ae-internal-missing-underscore) The name "IPv4EndpointEncoded" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export type IPv4EndpointTo = Schema.Schema.Type<typeof IPv4Endpoint>;
+export type IPv4EndpointEncoded = Schema.Schema.Encoded<typeof IPv4Endpoint>;
 
 // Warning: (ae-internal-missing-underscore) The name "IPv6" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -170,15 +164,13 @@ export const IPv6Endpoint: Schema.brand<Schema.transformOrFail<Schema.union<[Sch
     listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
 }>, never>, "IPv6Endpoint">;
 
-// Warning: (ae-internal-missing-underscore) The name "IPv6EndpointFrom" should be prefixed with an underscore because the declaration is marked as @internal
-//
 // @internal
-export type IPv6EndpointFrom = Schema.Schema.Encoded<typeof IPv6Endpoint>;
+export type IPv6Endpoint = Schema.Schema.Type<typeof IPv6Endpoint>;
 
-// Warning: (ae-internal-missing-underscore) The name "IPv6EndpointTo" should be prefixed with an underscore because the declaration is marked as @internal
+// Warning: (ae-internal-missing-underscore) The name "IPv6EndpointEncoded" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export type IPv6EndpointTo = Schema.Schema.Type<typeof IPv6Endpoint>;
+export type IPv6EndpointEncoded = Schema.Schema.Encoded<typeof IPv6Endpoint>;
 
 // Warning: (ae-internal-missing-underscore) The name "Port" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -215,15 +207,13 @@ export const SetupData: Schema.brand<Schema.tuple<[Schema.brand<Schema.union<[Sc
     listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">;
 }>, never>, "IPv6Endpoint">]>, "Endpoint">, Schema.brand<Schema.union<[Schema.brand<Schema.Schema<string, string, never>, "IPv4">, Schema.brand<Schema.Schema<string, string, never>, "IPv6">]>, "Address">]>, "SetupData">;
 
-// Warning: (ae-internal-missing-underscore) The name "SetupDataFrom" should be prefixed with an underscore because the declaration is marked as @internal
-//
 // @internal
-export type SetupDataFrom = Schema.Schema.Encoded<typeof SetupData>;
+export type SetupData = Schema.Schema.Type<typeof SetupData>;
 
-// Warning: (ae-internal-missing-underscore) The name "SetupDataTo" should be prefixed with an underscore because the declaration is marked as @internal
+// Warning: (ae-internal-missing-underscore) The name "SetupDataEncoded" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export type SetupDataTo = Schema.Schema.Type<typeof SetupData>;
+export type SetupDataEncoded = Schema.Schema.Encoded<typeof SetupData>;
 
 // Warning: (ae-forgotten-export) The symbol "WireguardIniConfig_base" needs to be exported by the entry point index.d.ts
 //
@@ -232,11 +222,11 @@ export class WireguardConfig extends WireguardIniConfig_base {
     // Warning: (ae-incompatible-release-tags) The symbol "fromConfigFile" is marked as @alpha, but its signature references "WireguardError" which is marked as @internal
     static fromConfigFile: (file: string) => Effect.Effect<WireguardConfig, WireguardError | ParseResult.ParseError | Platform.Error.PlatformError, Platform.FileSystem.FileSystem>;
     static generateHubSpokeConfigs: {
-        (hubData: SetupDataFrom, spokeData: ReadonlyArray_2.NonEmptyReadonlyArray<SetupDataFrom>): Effect.Effect<[
+        (hubData: SetupDataEncoded, spokeData: ReadonlyArray_2.NonEmptyReadonlyArray<SetupDataEncoded>): Effect.Effect<[
         hubConfig: WireguardConfig,
         spokeConfigs: ReadonlyArray_2.NonEmptyReadonlyArray<WireguardConfig>
         ], ParseResult.ParseError, never>;
-        (hubData: EndpointFrom, spokeData: ReadonlyArray_2.NonEmptyReadonlyArray<EndpointFrom>, cidrBlock: CidrBlockFrom): Effect.Effect<[
+        (hubData: EndpointEncoded, spokeData: ReadonlyArray_2.NonEmptyReadonlyArray<EndpointEncoded>, cidrBlock: CidrBlockEncoded): Effect.Effect<[
         hubConfig: WireguardConfig,
         spokeConfigs: ReadonlyArray_2.NonEmptyReadonlyArray<WireguardConfig>
         ], ParseResult.ParseError, never>;
@@ -246,11 +236,11 @@ export class WireguardConfig extends WireguardIniConfig_base {
         publicKey: WireguardKey;
     };
     static generateP2PConfigs: {
-        (aliceData: SetupDataFrom, bobData: SetupDataFrom): Effect.Effect<[
+        (aliceData: SetupDataEncoded, bobData: SetupDataEncoded): Effect.Effect<[
         aliceConfig: WireguardConfig,
         bobConfig: WireguardConfig
         ], ParseResult.ParseError, never>;
-        (aliceEndpoint: EndpointFrom, bobEndpoint: EndpointFrom, cidrBlock: CidrBlockFrom): Effect.Effect<[
+        (aliceEndpoint: EndpointEncoded, bobEndpoint: EndpointEncoded, cidrBlock: CidrBlockEncoded): Effect.Effect<[
         aliceConfig: WireguardConfig,
         bobConfig: WireguardConfig
         ], ParseResult.ParseError, never>;
@@ -332,14 +322,14 @@ export class WireguardPeer extends WireguardPeer_base {
 
 // Warnings were encountered during analysis:
 //
-// src/index.ts:913:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "SetupDataFrom" which is marked as @internal
-// src/index.ts:922:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "EndpointFrom" which is marked as @internal
-// src/index.ts:922:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "CidrBlockFrom" which is marked as @internal
-// src/index.ts:965:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "SetupDataFrom" which is marked as @internal
-// src/index.ts:974:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "EndpointFrom" which is marked as @internal
-// src/index.ts:974:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "CidrBlockFrom" which is marked as @internal
-// src/index.ts:1052:43 - (ae-incompatible-release-tags) The symbol "privateKey" is marked as @alpha, but its signature references "WireguardKey" which is marked as @internal
-// src/index.ts:1052:69 - (ae-incompatible-release-tags) The symbol "publicKey" is marked as @alpha, but its signature references "WireguardKey" which is marked as @internal
+// src/index.ts:918:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "SetupDataEncoded" which is marked as @internal
+// src/index.ts:927:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "EndpointEncoded" which is marked as @internal
+// src/index.ts:927:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "CidrBlockEncoded" which is marked as @internal
+// src/index.ts:970:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "SetupDataEncoded" which is marked as @internal
+// src/index.ts:979:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "EndpointEncoded" which is marked as @internal
+// src/index.ts:979:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "CidrBlockEncoded" which is marked as @internal
+// src/index.ts:1059:43 - (ae-incompatible-release-tags) The symbol "privateKey" is marked as @alpha, but its signature references "WireguardKey" which is marked as @internal
+// src/index.ts:1059:69 - (ae-incompatible-release-tags) The symbol "publicKey" is marked as @alpha, but its signature references "WireguardKey" which is marked as @internal
 
 // (No @packageDocumentation comment for this package)
 

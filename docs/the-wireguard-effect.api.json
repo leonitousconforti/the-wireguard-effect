@@ -262,8 +262,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "SetupDataFrom",
-                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
+                  "text": "SetupDataEncoded",
+                  "canonicalReference": "the-wireguard-effect!SetupDataEncoded:type"
                 },
                 {
                   "kind": "Content",
@@ -280,8 +280,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "SetupDataFrom",
-                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
+                  "text": "SetupDataEncoded",
+                  "canonicalReference": "the-wireguard-effect!SetupDataEncoded:type"
                 },
                 {
                   "kind": "Content",
@@ -334,8 +334,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "EndpointFrom",
-                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
+                  "text": "EndpointEncoded",
+                  "canonicalReference": "the-wireguard-effect!EndpointEncoded:type"
                 },
                 {
                   "kind": "Content",
@@ -352,8 +352,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "EndpointFrom",
-                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
+                  "text": "EndpointEncoded",
+                  "canonicalReference": "the-wireguard-effect!EndpointEncoded:type"
                 },
                 {
                   "kind": "Content",
@@ -361,8 +361,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "CidrBlockFrom",
-                  "canonicalReference": "the-wireguard-effect!CidrBlockFrom:type"
+                  "text": "CidrBlockEncoded",
+                  "canonicalReference": "the-wireguard-effect!CidrBlockEncoded:type"
                 },
                 {
                   "kind": "Content",
@@ -493,8 +493,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "SetupDataFrom",
-                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
+                  "text": "SetupDataEncoded",
+                  "canonicalReference": "the-wireguard-effect!SetupDataEncoded:type"
                 },
                 {
                   "kind": "Content",
@@ -502,8 +502,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "SetupDataFrom",
-                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
+                  "text": "SetupDataEncoded",
+                  "canonicalReference": "the-wireguard-effect!SetupDataEncoded:type"
                 },
                 {
                   "kind": "Content",
@@ -547,8 +547,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "EndpointFrom",
-                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
+                  "text": "EndpointEncoded",
+                  "canonicalReference": "the-wireguard-effect!EndpointEncoded:type"
                 },
                 {
                   "kind": "Content",
@@ -556,8 +556,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "EndpointFrom",
-                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
+                  "text": "EndpointEncoded",
+                  "canonicalReference": "the-wireguard-effect!EndpointEncoded:type"
                 },
                 {
                   "kind": "Content",
@@ -565,8 +565,8 @@
                 },
                 {
                   "kind": "Reference",
-                  "text": "CidrBlockFrom",
-                  "canonicalReference": "the-wireguard-effect!CidrBlockFrom:type"
+                  "text": "CidrBlockEncoded",
+                  "canonicalReference": "the-wireguard-effect!CidrBlockEncoded:type"
                 },
                 {
                   "kind": "Content",
