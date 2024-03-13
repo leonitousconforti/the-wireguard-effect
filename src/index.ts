@@ -22,6 +22,7 @@ import * as Tuple from "effect/Tuple";
 import * as execa from "execa";
 import * as ini from "ini";
 import * as crypto from "node:crypto";
+import * as net from "node:net";
 import * as os from "node:os";
 
 /** @see https://stackoverflow.com/questions/70831365/can-i-slice-literal-type-in-typescript */
@@ -53,10 +54,6 @@ export const Port = Function.pipe(
  */
 export type Port = Schema.Schema.To<typeof Port>;
 
-const IPv4SegmentFormat = "(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])";
-const IPv4AddressFormat = `(${IPv4SegmentFormat}[.]){3}${IPv4SegmentFormat}`;
-const IPv4AddressRegExp = new RegExp(`^${IPv4AddressFormat}$`);
-
 /**
  * An IPv4 address.
  *
@@ -66,7 +63,9 @@ const IPv4AddressRegExp = new RegExp(`^${IPv4AddressFormat}$`);
  */
 export const IPv4 = Function.pipe(
     Schema.string,
-    Schema.pattern(IPv4AddressRegExp),
+    Schema.filter((s, _options, ast) =>
+        net.isIPv4(s) ? Option.none() : Option.some(ParseResult.forbidden(ast, s, "Expected an ipv4 address"))
+    ),
     Schema.identifier("IPv4"),
     Schema.description("An ipv4 address"),
     Schema.brand("IPv4")
@@ -79,20 +78,6 @@ export const IPv4 = Function.pipe(
  */
 export type IPv4 = Schema.Schema.To<typeof IPv4>;
 
-const IPv6SegmentFormat = "(?:[0-9a-fA-F]{1,4})";
-const IPv6AddressRegExp = new RegExp(
-    "^(" +
-        `(?:${IPv6SegmentFormat}:){7}(?:${IPv6SegmentFormat}|:)|` +
-        `(?:${IPv6SegmentFormat}:){6}(?:${IPv4AddressFormat}|:${IPv6SegmentFormat}|:)|` +
-        `(?:${IPv6SegmentFormat}:){5}(?::${IPv4AddressFormat}|(:${IPv6SegmentFormat}){1,2}|:)|` +
-        `(?:${IPv6SegmentFormat}:){4}(?:(:${IPv6SegmentFormat}){0,1}:${IPv4AddressFormat}|(:${IPv6SegmentFormat}){1,3}|:)|` +
-        `(?:${IPv6SegmentFormat}:){3}(?:(:${IPv6SegmentFormat}){0,2}:${IPv4AddressFormat}|(:${IPv6SegmentFormat}){1,4}|:)|` +
-        `(?:${IPv6SegmentFormat}:){2}(?:(:${IPv6SegmentFormat}){0,3}:${IPv4AddressFormat}|(:${IPv6SegmentFormat}){1,5}|:)|` +
-        `(?:${IPv6SegmentFormat}:){1}(?:(:${IPv6SegmentFormat}){0,4}:${IPv4AddressFormat}|(:${IPv6SegmentFormat}){1,6}|:)|` +
-        `(?::((?::${IPv6SegmentFormat}){0,5}:${IPv4AddressFormat}|(?::${IPv6SegmentFormat}){1,7}|:))` +
-        ")(%[0-9a-zA-Z-.:]{1,})?$"
-);
-
 /**
  * An IPv6 address.
  *
@@ -102,7 +87,9 @@ const IPv6AddressRegExp = new RegExp(
  */
 export const IPv6 = Function.pipe(
     Schema.string,
-    Schema.pattern(IPv6AddressRegExp),
+    Schema.filter((s, _options, ast) =>
+        net.isIPv6(s) ? Option.none() : Option.some(ParseResult.forbidden(ast, s, "Expected an ipv6 address"))
+    ),
     Schema.identifier("IPv6"),
     Schema.description("An ipv6 address"),
     Schema.brand("IPv6")
@@ -247,18 +234,37 @@ export const IPv4Endpoint = Function.pipe(
     Schema.transformOrFail(
         Schema.union(
             Schema.struct({ ip: IPv4, port: Port }),
-            Schema.templateLiteral(Schema.string, Schema.literal(":"), Schema.number)
+            Schema.struct({ ip: IPv4, natPort: Port, listenPort: Port }),
+            Schema.templateLiteral(Schema.string, Schema.literal(":"), Schema.number),
+            Schema.templateLiteral(
+                Schema.string,
+                Schema.literal(":"),
+                Schema.number,
+                Schema.literal(":"),
+                Schema.number
+            )
         ),
-        Schema.struct({ ip: IPv4, port: Port }),
+        Schema.struct({ ip: IPv4, natPort: Port, listenPort: Port }),
         (data, _options, ast) =>
             Effect.gen(function* (λ) {
-                if (typeof data === "object") return data;
-                const [ip, port] = data.split(":") as Split<typeof data, ":">;
+                const isObjectInput = !Predicate.isString(data);
+
+                if (isObjectInput)
+                    return "port" in data
+                        ? { ip: data.ip, natPort: data.port, listenPort: data.port }
+                        : { ip: data.ip, natPort: data.natPort, listenPort: data.listenPort };
+
+                const decoder = Schema.decode(Schema.compose(Schema.NumberFromString, Port));
+                const [ip, natPort, listenPort] = data.split(":") as Split<typeof data, ":">;
                 const ipParsed = yield* λ(Schema.decode(IPv4)(ip));
-                const portParsed = yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, Port))(port));
-                return { ip: ipParsed, port: portParsed };
+                const natPortParsed = yield* λ(decoder(natPort));
+                const listenPortParsed = Predicate.isNotUndefined(listenPort)
+                    ? yield* λ(decoder(listenPort))
+                    : natPortParsed;
+
+                return { ip: ipParsed, natPort: natPortParsed, listenPort: listenPortParsed };
             }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
-        ({ ip, port }) => Effect.succeed(`${ip}:${port}` as const)
+        ({ ip, natPort, listenPort }) => Effect.succeed(`${ip}:${natPort}:${listenPort}` as const)
     ),
     Schema.identifier("IPv4Endpoint"),
     Schema.description("An ipv4 wireguard endpoint"),
@@ -291,24 +297,45 @@ export const IPv6Endpoint = Function.pipe(
     Schema.transformOrFail(
         Schema.union(
             Schema.struct({ ip: IPv6, port: Port }),
+            Schema.struct({ ip: IPv6, natPort: Port, listenPort: Port }),
             Schema.templateLiteral(
                 Schema.literal("["),
                 Schema.string,
                 Schema.literal("]"),
                 Schema.literal(":"),
                 Schema.number
+            ),
+            Schema.templateLiteral(
+                Schema.literal("["),
+                Schema.string,
+                Schema.literal("]"),
+                Schema.literal(":"),
+                Schema.number,
+                Schema.literal(":"),
+                Schema.number
             )
         ),
-        Schema.struct({ ip: IPv6, port: Port }),
+        Schema.struct({ ip: IPv6, natPort: Port, listenPort: Port }),
         (data, _options, ast) =>
             Effect.gen(function* (λ) {
-                if (typeof data === "object") return data;
-                const [ip, port] = data.split("]") as Split<typeof data, "]:">;
-                const ipParsed = yield* λ(Schema.decode(IPv6)(ip.slice(1)));
-                const portParsed = yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, Port))(port));
-                return { ip: ipParsed, port: portParsed };
+                const isObjectInput = !Predicate.isString(data);
+
+                if (isObjectInput)
+                    return "port" in data
+                        ? { ip: data.ip, natPort: data.port, listenPort: data.port }
+                        : { ip: data.ip, natPort: data.natPort, listenPort: data.listenPort };
+
+                const decoder = Schema.decode(Schema.compose(Schema.NumberFromString, Port));
+                const [ip, natPort, listenPort] = data.split(":") as Split<typeof data, ":">;
+                const ipParsed = yield* λ(Schema.decode(IPv4)(ip));
+                const natPortParsed = yield* λ(decoder(natPort));
+                const listenPortParsed = Predicate.isNotUndefined(listenPort)
+                    ? yield* λ(decoder(listenPort))
+                    : natPortParsed;
+
+                return { ip: ipParsed, natPort: natPortParsed, listenPort: listenPortParsed };
             }).pipe(Effect.mapError((error) => ParseResult.forbidden(ast, data, error.message))),
-        ({ ip, port }) => Effect.succeed(`[${ip}]:${port}` as const)
+        ({ ip, natPort, listenPort }) => Effect.succeed(`[${ip}]:${natPort}:${listenPort}` as const)
     ),
     Schema.identifier("IPv6Endpoint"),
     Schema.description("An ipv6 wireguard endpoint"),
@@ -588,7 +615,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>()({
                 `replace_peers=${options?.replacePeers}`,
                 ...config.Peers.flatMap((peer) => [
                     `public_key=${Buffer.from(peer.PublicKey, "base64").toString("hex")}`,
-                    `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.port}`,
+                    `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.natPort}`,
                     `persistent_keepalive_interval=20`,
                     `replace_allowed_ips=${options?.replaceAllowedIPs}`,
                     ...peer.AllowedIPs.map((allowedIP) =>
@@ -868,7 +895,7 @@ class WireguardIniConfig extends Schema.Class<WireguardIniConfig>()({
                 )
             );
 
-            yield* λ(Console.log(`writing: ${interfaceConfig}\n${peersConfig}`));
+            yield* λ(Console.log(`writing:\n${interfaceConfig}\n${peersConfig}`));
             yield* λ(fs.makeDirectory(path.dirname(file), { recursive: true }));
             return yield* λ(fs.writeFileString(file, `${interfaceConfig}\n${peersConfig}`));
         });
@@ -999,7 +1026,7 @@ class WireguardIniConfig extends Schema.Class<WireguardIniConfig>()({
             const hubConfig = new WireguardIniConfig({
                 PrivateKey: hubKeys.privateKey,
                 Address: CidrBlock({ ipv4: IPv4(Tuple.getSecond(hubsData)), mask: IPv4CidrMask(24) }),
-                ListenPort: Tuple.getFirst(hubsData).port,
+                ListenPort: Tuple.getFirst(hubsData).listenPort,
                 Peers: ReadonlyArray.map(spokePeerConfigs, Tuple.getSecond),
             });
 
@@ -1009,7 +1036,7 @@ class WireguardIniConfig extends Schema.Class<WireguardIniConfig>()({
                     PrivateKey: privateKey,
                     Peers: [hubPeerConfig],
                     Address: CidrBlock({ ipv4: IPv4(Tuple.getSecond(spoke)), mask: IPv4CidrMask(24) }),
-                    ListenPort: Tuple.getFirst(spoke).port,
+                    ListenPort: Tuple.getFirst(spoke).listenPort,
                 });
             });
 

@@ -31,7 +31,6 @@ module.exports = {
                 "unicorn/switch-case-braces": "off",
                 "unicorn/no-this-assignment": "off",
                 "unicorn/consistent-function-scoping": "off",
-                "@rushstack/security/no-unsafe-regexp": "off",
             },
         },
     ],

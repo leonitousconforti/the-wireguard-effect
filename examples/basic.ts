@@ -17,7 +17,11 @@ const config = new Wireguard.WireguardConfig({
         new Wireguard.WireguardPeer({
             PublicKey: Wireguard.WireguardKey(""),
             AllowedIPs: [],
-            Endpoint: Wireguard.Endpoint({ ip: Wireguard.IPv4("3.3.3.3"), port: Wireguard.Port(51_820) }),
+            Endpoint: Wireguard.Endpoint({
+                ip: Wireguard.IPv4("3.3.3.3"),
+                natPort: Wireguard.Port(51_820),
+                listenPort: Wireguard.Port(51_820),
+            }),
         }),
     ],
 });
@@ -42,7 +46,7 @@ export const main: Effect.Effect<
     yield* λ(config.upScoped());
     const peer1Endpoint = config.Peers[0].Endpoint;
     yield* λ(Console.log(peer1Endpoint));
-    yield* λ(ping(`${peer1Endpoint.ip}:${peer1Endpoint.port}`));
+    yield* λ(ping(`${peer1Endpoint.ip}:${peer1Endpoint.natPort}`));
 }).pipe(Effect.scoped);
 
 Effect.suspend(() => main).pipe(Effect.provide(PlatformNode.NodeContext.layer), PlatformNode.NodeRuntime.runMain);

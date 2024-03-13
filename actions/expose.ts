@@ -52,7 +52,7 @@ const processConnectionRequest = (
             Effect.promise(() => stun.request("stun.l.google.com:19302", { socket: stunSocket }))
         );
         const mappedAddress = stunResponse.getAttribute(stun.constants.STUN_ATTR_XOR_MAPPED_ADDRESS).value;
-        const myLocation = `${mappedAddress.address}:${mappedAddress.port}` as const;
+        const myLocation = `${mappedAddress.address}:${mappedAddress.port}:${stunSocket.address().port}` as const;
         GithubCore.info(`Stun response received: ${JSON.stringify(myLocation)}`);
         yield* λ(Console.log("here0"));
         yield* λ(
@@ -68,12 +68,14 @@ const processConnectionRequest = (
         yield* λ(Console.log("here1"));
 
         const aliceData = Tuple.make(myLocation, "192.168.0.1");
-        const bobData = Tuple.make(`${clientIp}:${Number.parseInt(natPort)}` as const, "192.168.0.2");
+        const bobData = Tuple.make(
+            `${clientIp}:${Number.parseInt(natPort)}:${Number.parseInt(hostPort)}` as const,
+            "192.168.0.2"
+        );
         const [aliceConfig, bobConfig] = yield* λ(Wireguard.WireguardConfig.generateP2PConfigs(aliceData, bobData));
-        yield* λ(Console.log("configs created"));
         // yield* λ(aliceConfig.up());
         yield* λ(aliceConfig.writeToFile("/etc/wireguard/wg0.conf"));
-        yield* λ(Console.log("Config written"));
+        stunSocket.close();
         // FIXME: remove once done debugging
         yield* λ(Effect.sync(() => execa.execaCommandSync("sudo wg-quick up wg0", { stdio: "inherit" })));
         const g = yield* λ(Schema.encode(Schema.parseJson(Wireguard.WireguardConfig))(bobConfig));

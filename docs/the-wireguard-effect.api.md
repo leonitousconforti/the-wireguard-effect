@@ -56,17 +56,27 @@ export type CidrBlockTo = Schema.Schema.To<typeof CidrBlock>;
 // @internal
 export const Endpoint: Schema.BrandSchema<(({
     readonly ip: string & Brand<"IPv4">;
-    readonly port: number & Brand<"Port">;
+    readonly natPort: number & Brand<"Port">;
+    readonly listenPort: number & Brand<"Port">;
 } & Brand<"IPv4Endpoint">) | ({
     readonly ip: string & Brand<"IPv6">;
-    readonly port: number & Brand<"Port">;
+    readonly natPort: number & Brand<"Port">;
+    readonly listenPort: number & Brand<"Port">;
 } & Brand<"IPv6Endpoint">)) & Brand<"Endpoint">, {
     readonly ip: string;
     readonly port: number;
-} | `${string}:${number}` | {
+} | {
+    readonly ip: string;
+    readonly natPort: number;
+    readonly listenPort: number;
+} | `${string}:${number}` | `${string}:${number}:${number}` | {
     readonly ip: string;
     readonly port: number;
-} | `[${string}]:${number}`, never>;
+} | {
+    readonly ip: string;
+    readonly natPort: number;
+    readonly listenPort: number;
+} | `[${string}]:${number}` | `[${string}]:${number}:${number}`, never>;
 
 // Warning: (ae-internal-missing-underscore) The name "EndpointFrom" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -107,11 +117,16 @@ export type IPv4CidrMask = Schema.Schema.To<typeof IPv4CidrMask>;
 // @internal
 export const IPv4Endpoint: Schema.BrandSchema<{
     readonly ip: string & Brand<"IPv4">;
-    readonly port: number & Brand<"Port">;
+    readonly natPort: number & Brand<"Port">;
+    readonly listenPort: number & Brand<"Port">;
 } & Brand<"IPv4Endpoint">, {
     readonly ip: string;
     readonly port: number;
-} | `${string}:${number}`, never>;
+} | {
+    readonly ip: string;
+    readonly natPort: number;
+    readonly listenPort: number;
+} | `${string}:${number}` | `${string}:${number}:${number}`, never>;
 
 // Warning: (ae-internal-missing-underscore) The name "IPv4EndpointFrom" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -144,11 +159,16 @@ export type IPv6CidrMask = Schema.Schema.To<typeof IPv6CidrMask>;
 // @internal
 export const IPv6Endpoint: Schema.BrandSchema<{
     readonly ip: string & Brand<"IPv6">;
-    readonly port: number & Brand<"Port">;
+    readonly natPort: number & Brand<"Port">;
+    readonly listenPort: number & Brand<"Port">;
 } & Brand<"IPv6Endpoint">, {
     readonly ip: string;
     readonly port: number;
-} | `[${string}]:${number}`, never>;
+} | {
+    readonly ip: string;
+    readonly natPort: number;
+    readonly listenPort: number;
+} | `[${string}]:${number}` | `[${string}]:${number}:${number}`, never>;
 
 // Warning: (ae-internal-missing-underscore) The name "IPv6EndpointFrom" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -173,17 +193,27 @@ export type Port = Schema.Schema.To<typeof Port>;
 // @internal
 export const SetupData: Schema.BrandSchema<readonly [(({
     readonly ip: string & Brand<"IPv4">;
-    readonly port: number & Brand<"Port">;
+    readonly natPort: number & Brand<"Port">;
+    readonly listenPort: number & Brand<"Port">;
 } & Brand<"IPv4Endpoint">) | ({
     readonly ip: string & Brand<"IPv6">;
-    readonly port: number & Brand<"Port">;
+    readonly natPort: number & Brand<"Port">;
+    readonly listenPort: number & Brand<"Port">;
 } & Brand<"IPv6Endpoint">)) & Brand<"Endpoint">, ((string & Brand<"IPv4">) | (string & Brand<"IPv6">)) & Brand<"Address">] & Brand<"SetupData">, readonly [{
     readonly ip: string;
     readonly port: number;
-} | `${string}:${number}` | {
+} | {
+    readonly ip: string;
+    readonly natPort: number;
+    readonly listenPort: number;
+} | `${string}:${number}` | `${string}:${number}:${number}` | {
     readonly ip: string;
     readonly port: number;
-} | `[${string}]:${number}`, string], never>;
+} | {
+    readonly ip: string;
+    readonly natPort: number;
+    readonly listenPort: number;
+} | `[${string}]:${number}` | `[${string}]:${number}:${number}`, string], never>;
 
 // Warning: (ae-internal-missing-underscore) The name "SetupDataFrom" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -302,14 +332,14 @@ export class WireguardPeer extends WireguardPeer_base {
 
 // Warnings were encountered during analysis:
 //
-// src/index.ts:886:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "SetupDataFrom" which is marked as @internal
-// src/index.ts:895:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "EndpointFrom" which is marked as @internal
-// src/index.ts:895:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "CidrBlockFrom" which is marked as @internal
-// src/index.ts:938:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "SetupDataFrom" which is marked as @internal
-// src/index.ts:947:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "EndpointFrom" which is marked as @internal
-// src/index.ts:947:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "CidrBlockFrom" which is marked as @internal
-// src/index.ts:1025:43 - (ae-incompatible-release-tags) The symbol "privateKey" is marked as @alpha, but its signature references "WireguardKey" which is marked as @internal
-// src/index.ts:1025:69 - (ae-incompatible-release-tags) The symbol "publicKey" is marked as @alpha, but its signature references "WireguardKey" which is marked as @internal
+// src/index.ts:913:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "SetupDataFrom" which is marked as @internal
+// src/index.ts:922:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "EndpointFrom" which is marked as @internal
+// src/index.ts:922:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "CidrBlockFrom" which is marked as @internal
+// src/index.ts:965:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "SetupDataFrom" which is marked as @internal
+// src/index.ts:974:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "EndpointFrom" which is marked as @internal
+// src/index.ts:974:9 - (ae-incompatible-release-tags) The symbol "__call" is marked as @alpha, but its signature references "CidrBlockFrom" which is marked as @internal
+// src/index.ts:1052:43 - (ae-incompatible-release-tags) The symbol "privateKey" is marked as @alpha, but its signature references "WireguardKey" which is marked as @internal
+// src/index.ts:1052:69 - (ae-incompatible-release-tags) The symbol "publicKey" is marked as @alpha, but its signature references "WireguardKey" which is marked as @internal
 
 // (No @packageDocumentation comment for this package)
 

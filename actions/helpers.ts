@@ -9,7 +9,7 @@ import * as Predicate from "effect/Predicate";
  * Retrieves the service identifier from the environment variable and validates
  * that it is a valid UUID.
  */
-export const SERVICE_IDENTIFIER: Config.Config<number> = Config.number("SERVICE_IDENTIFIER");
+export const SERVICE_IDENTIFIER: Config.Config<number> = Config.integer("SERVICE_IDENTIFIER");
 
 /** Predicate to check if an artifact is a stop artifact for the service. */
 export const stopArtifact = (
