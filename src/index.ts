@@ -64,7 +64,7 @@ export type Port = Schema.Schema.Type<typeof Port>;
 export const IPv4 = Function.pipe(
     Schema.string,
     Schema.filter((s, _options, ast) =>
-        net.isIPv4(s) ? Option.none() : Option.some(new ParseResult.Refinement(ast, s, "Expected an ipv4 address"))
+        net.isIPv4(s) ? Option.none() : Option.some(new ParseResult.Type(ast, s, "Expected an ipv4 address"))
     ),
     Schema.identifier("IPv4"),
     Schema.description("An ipv4 address"),
@@ -88,7 +88,7 @@ export type IPv4 = Schema.Schema.Type<typeof IPv4>;
 export const IPv6 = Function.pipe(
     Schema.string,
     Schema.filter((s, _options, ast) =>
-        net.isIPv6(s) ? Option.none() : Option.some(new ParseResult.Refinement(ast, s, "Expected an ipv6 address"))
+        net.isIPv6(s) ? Option.none() : Option.some(new ParseResult.Type(ast, s, "Expected an ipv6 address"))
     ),
     Schema.identifier("IPv6"),
     Schema.description("An ipv6 address"),
@@ -186,17 +186,20 @@ export const CidrBlock = Function.pipe(
             Schema.struct({ ipv4: IPv4, mask: IPv4CidrMask }),
             Schema.struct({ ipv6: IPv6, mask: IPv6CidrMask })
         ),
-        (data, _options, ast) =>
+        (data, _options, _ast) =>
             Effect.gen(function* (λ) {
-                if (typeof data === "object") return data;
+                const isObjectInput = !Predicate.isString(data);
+                if (isObjectInput) return data;
+
                 const [ip, mask] = data.split("/") as Split<typeof data, "/">;
                 const ipParsed = yield* λ(Schema.decode(Schema.union(IPv4, IPv6))(ip));
                 const isV4 = String.includes(".")(ipParsed);
                 const maskParsed = isV4
                     ? yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, IPv4CidrMask))(mask))
                     : yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, IPv6CidrMask))(mask));
+
                 return isV4 ? { ipv4: ipParsed, mask: maskParsed } : { ipv6: ipParsed, mask: maskParsed };
-            }).pipe(Effect.mapError((error) => new ParseResult.Transformation(ast, data, error.message))),
+            }).pipe(Effect.mapError(({ error }) => error)),
         (data) => {
             if ("ipv4" in data) return Effect.succeed(`${data.ipv4}/${data.mask}` as const);
             if ("ipv6" in data) return Effect.succeed(`${data.ipv6}/${data.mask}` as const);
@@ -245,7 +248,7 @@ export const IPv4Endpoint = Function.pipe(
             )
         ),
         Schema.struct({ ip: IPv4, natPort: Port, listenPort: Port }),
-        (data, _options, ast) =>
+        (data, _options, _ast) =>
             Effect.gen(function* (λ) {
                 const isObjectInput = !Predicate.isString(data);
 
@@ -254,16 +257,16 @@ export const IPv4Endpoint = Function.pipe(
                         ? { ip: data.ip, natPort: data.port, listenPort: data.port }
                         : { ip: data.ip, natPort: data.natPort, listenPort: data.listenPort };
 
-                const decoder = Schema.decode(Schema.compose(Schema.NumberFromString, Port));
+                const portDecoder = Schema.decode(Schema.compose(Schema.NumberFromString, Port));
                 const [ip, natPort, listenPort] = data.split(":") as Split<typeof data, ":">;
                 const ipParsed = yield* λ(Schema.decode(IPv4)(ip));
-                const natPortParsed = yield* λ(decoder(natPort));
+                const natPortParsed = yield* λ(portDecoder(natPort));
                 const listenPortParsed = Predicate.isNotUndefined(listenPort)
-                    ? yield* λ(decoder(listenPort))
+                    ? yield* λ(portDecoder(listenPort))
                     : natPortParsed;
 
                 return { ip: ipParsed, natPort: natPortParsed, listenPort: listenPortParsed };
-            }).pipe(Effect.mapError((error) => new ParseResult.Transformation(ast, data, error.message))),
+            }).pipe(Effect.mapError(({ error }) => error)),
         ({ ip, natPort }) => Effect.succeed(`${ip}:${natPort}` as const)
     ),
     Schema.identifier("IPv4Endpoint"),
@@ -316,7 +319,7 @@ export const IPv6Endpoint = Function.pipe(
             )
         ),
         Schema.struct({ ip: IPv6, natPort: Port, listenPort: Port }),
-        (data, _options, ast) =>
+        (data, _options, _ast) =>
             Effect.gen(function* (λ) {
                 const isObjectInput = !Predicate.isString(data);
 
@@ -325,16 +328,16 @@ export const IPv6Endpoint = Function.pipe(
                         ? { ip: data.ip, natPort: data.port, listenPort: data.port }
                         : { ip: data.ip, natPort: data.natPort, listenPort: data.listenPort };
 
-                const decoder = Schema.decode(Schema.compose(Schema.NumberFromString, Port));
+                const portDecoder = Schema.decode(Schema.compose(Schema.NumberFromString, Port));
                 const [ip, natPort, listenPort] = data.split(":") as Split<typeof data, ":">;
                 const ipParsed = yield* λ(Schema.decode(IPv4)(ip));
-                const natPortParsed = yield* λ(decoder(natPort));
+                const natPortParsed = yield* λ(portDecoder(natPort));
                 const listenPortParsed = Predicate.isNotUndefined(listenPort)
-                    ? yield* λ(decoder(listenPort))
+                    ? yield* λ(portDecoder(listenPort))
                     : natPortParsed;
 
                 return { ip: ipParsed, natPort: natPortParsed, listenPort: listenPortParsed };
-            }).pipe(Effect.mapError((error) => new ParseResult.Transformation(ast, data, error.message))),
+            }).pipe(Effect.mapError(({ error }) => error)),
         ({ ip, natPort }) => Effect.succeed(`[${ip}]:${natPort}` as const)
     ),
     Schema.identifier("IPv6Endpoint"),
@@ -483,14 +486,14 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             s: string,
             _options: AST.ParseOptions,
             ast: AST.Transformation
-        ): Effect.Effect<string, ParseResult.Forbidden, never> =>
+        ): Effect.Effect<string, ParseResult.Type, never> =>
             Function.pipe(
                 WireguardInterface.InterfaceRegExpForPlatform,
-                Effect.mapError((error) => new ParseResult.Transformation(ast, s, error.message)),
+                Effect.mapError((error) => new ParseResult.Type(ast, s, error.message)),
                 Effect.flatMap((x) =>
                     x.test(s)
                         ? Effect.succeed(s)
-                        : Effect.fail(new ParseResult.Transformation(ast, s, `Expected interface name to match ${x}`))
+                        : Effect.fail(new ParseResult.Type(ast, s, `Expected interface name to match ${x}`))
                 )
             ),
         (s) => Effect.succeed(s)
