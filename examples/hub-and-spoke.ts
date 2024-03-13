@@ -2,26 +2,27 @@ import * as PlatformNode from "@effect/platform-node";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
+import * as Tuple from "effect/Tuple";
 
 import * as Wireguard from "../src/index.js";
 
 // Alice will be the hub
-const aliceEndpoint = "10.0.1.1:51820";
+const aliceSetupData = Tuple.make("10.0.1.1:51820" as const, "");
 
 // Bob, Charlie, Dave, and Eve will be spokes
-const bobEndpoint = "10.0.2.1:51820";
-const charlieEndpoint = "10.0.3.1:51820";
-const daveEndpoint = "10.0.4.1:51820";
-const eveEndpoint = "10.0.5.1:51820";
+const bobSetupData = Tuple.make("10.0.2.1:51820" as const, "");
+const charlieSetupData = Tuple.make("10.0.3.1:51820" as const, "");
+const daveSetupData = Tuple.make("10.0.4.1:51820" as const, "");
+const eveSetupData = Tuple.make("10.0.5.1:51820" as const, "");
 
 const main: Effect.Effect<void, ParseResult.ParseError, never> = Effect.gen(function* (λ) {
     // Distribute these configs somehow
     const [hubConfig, spokeConfigs] = yield* λ(
-        Wireguard.WireguardInterfaceConfig.generateHubSpokeConfigs(aliceEndpoint, [
-            bobEndpoint,
-            charlieEndpoint,
-            daveEndpoint,
-            eveEndpoint,
+        Wireguard.WireguardConfig.generateHubSpokeConfigs(aliceSetupData, [
+            bobSetupData,
+            charlieSetupData,
+            daveSetupData,
+            eveSetupData,
         ])
     );
 

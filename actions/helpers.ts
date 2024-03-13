@@ -4,13 +4,12 @@ import * as Cause from "effect/Cause";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
 import * as Predicate from "effect/Predicate";
-import * as path from "node:path";
 
 /**
  * Retrieves the service identifier from the environment variable and validates
  * that it is a valid UUID.
  */
-export const SERVICE_IDENTIFIER: Config.Config<number> = Config.number("SERVICE_IDENTIFIER");
+export const SERVICE_IDENTIFIER: Config.Config<number> = Config.integer("SERVICE_IDENTIFIER");
 
 /** Predicate to check if an artifact is a stop artifact for the service. */
 export const stopArtifact = (
@@ -60,9 +59,10 @@ export const downloadSingleFileArtifact = (
 ): Effect.Effect<
     string,
     Cause.UnknownException | Error | Platform.Error.PlatformError,
-    Platform.FileSystem.FileSystem
+    Platform.FileSystem.FileSystem | Platform.Path.Path
 > =>
     Effect.gen(function* (λ) {
+        const path = yield* λ(Platform.Path.Path);
         const fs = yield* λ(Platform.FileSystem.FileSystem);
         const { downloadPath } = yield* λ(Effect.tryPromise(() => artifactClient.downloadArtifact(artifactId)));
         if (!downloadPath) {
@@ -75,8 +75,13 @@ export const downloadSingleFileArtifact = (
 export const uploadSingleFileArtifact = (
     artifactName: string,
     data: string
-): Effect.Effect<void, Cause.UnknownException | Platform.Error.PlatformError, Platform.FileSystem.FileSystem> =>
+): Effect.Effect<
+    void,
+    Cause.UnknownException | Platform.Error.PlatformError,
+    Platform.FileSystem.FileSystem | Platform.Path.Path
+> =>
     Effect.gen(function* (λ) {
+        const path = yield* λ(Platform.Path.Path);
         const fs = yield* λ(Platform.FileSystem.FileSystem);
         const temporaryDirectory = yield* λ(fs.makeTempDirectoryScoped());
         const artifactFile = path.join(temporaryDirectory, artifactName);

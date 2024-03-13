@@ -9,6 +9,7 @@ inputs:
 outputs:
   service-address:
     description: "IP Address of the service connected to"
+    value: ${{ steps.connect.outputs.service-address }}
 
 runs:
   using: "composite"
@@ -24,10 +25,19 @@ runs:
           core.exportVariable('ACTIONS_RESULTS_URL', process.env['ACTIONS_RESULTS_URL'])
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN'])
 
-    - name: "Connect to service"
+    # FIXME: can we get rid of this sudo -E?
+    - name: "Connect to service (Unix)"
       id: connect
       shell: bash
-      run: node .github/actions/workflow-level-service/connect/connect.cjs
+      if: runner.os != 'Windows'
+      run: sudo -E node .github/actions/workflow-level-service/connect/connect.bundle.mjs
+      env:
+        SERVICE_IDENTIFIER: ${{ inputs.service-identifier }}
+
+    - name: "Connect to service (Windows)"
+      shell: bash
+      if: runner.os == 'Windows'
+      run: node .github/actions/workflow-level-service/connect/connect.bundle.mjs
       env:
         SERVICE_IDENTIFIER: ${{ inputs.service-identifier }}
 

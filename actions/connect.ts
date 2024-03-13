@@ -4,9 +4,11 @@ import * as PlatformNode from "@effect/platform-node";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as ConfigError from "effect/ConfigError";
+import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Schedule from "effect/Schedule";
+import * as execa from "execa";
 import * as dgram from "node:dgram";
 import * as stun from "stun";
 import * as uuid from "uuid";
@@ -31,7 +33,7 @@ let b: () => void = () => {};
 const uploadConnectionRequestArtifact: Effect.Effect<
     void,
     ConfigError.ConfigError | Platform.Error.PlatformError | Cause.UnknownException,
-    Platform.FileSystem.FileSystem
+    Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
     const service_identifier: number = yield* λ(helpers.SERVICE_IDENTIFIER);
     const stunSocket: dgram.Socket = dgram.createSocket("udp4");
@@ -80,15 +82,22 @@ const waitForResponse = Effect.gen(function* (λ) {
         const data = yield* λ(helpers.downloadSingleFileArtifact(connectionResponse.id, connectionResponse.name));
         yield* λ(helpers.deleteArtifact(connectionResponse.name));
         GithubCore.info(data);
-        GithubCore.setOutput("service-address", data);
-        const config = yield* λ(Schema.decode(Schema.parseJson(Wireguard.WireguardInterfaceConfig))(data));
+        const config = yield* λ(Schema.decode(Schema.parseJson(Wireguard.WireguardConfig))(data));
+        GithubCore.setOutput("service-address", `192.168.0.1`);
         b();
-        yield* λ(Wireguard.up("wg0", config));
+        // yield* λ(config.up());
+        yield* λ(config.writeToFile("/etc/wireguard/wg0.conf"));
+        // TODO: Remove stdio: "inherit" when done debugging
+        yield* λ(Effect.sync(() => execa.execaCommandSync("wg-quick up wg0", { stdio: "inherit" })));
+        yield* λ(Console.log("Connection established"));
+        return yield* λ(Effect.unit);
     }
 
     // Still waiting for a connection response
     yield* λ(Effect.fail(new Error("Still waiting for a connection response")));
-});
+})
+    .pipe(Effect.tapError(Console.log))
+    .pipe(Effect.tapDefect(Console.log));
 
 Effect.suspend(() => uploadConnectionRequestArtifact).pipe(
     Effect.andThen(

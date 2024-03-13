@@ -1,5 +1,6 @@
 import * as net from "node:net";
 
+import * as Socket from "@effect/experimental/Socket";
 import * as Platform from "@effect/platform";
 import * as PlatformNode from "@effect/platform-node";
 import * as ParseResult from "@effect/schema/ParseResult";
@@ -23,14 +24,18 @@ const ping = (endpoint: string): Effect.Effect<void, Cause.TimeoutException, nev
 
 export const main: Effect.Effect<
     void,
-    ParseResult.ParseError | Platform.Error.PlatformError | Wireguard.WireguardError | Cause.TimeoutException,
-    Platform.FileSystem.FileSystem
+    | ParseResult.ParseError
+    | Platform.Error.PlatformError
+    | Wireguard.WireguardError
+    | Cause.TimeoutException
+    | Socket.SocketError,
+    Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
-    const config = yield* λ(Wireguard.WireguardInterfaceConfig.fromIniConfigFile("examples/wireguard-config.conf"));
-    yield* λ(Wireguard.upScoped("wg0", config));
+    const config = yield* λ(Wireguard.WireguardConfig.fromConfigFile("examples/wireguard-config.conf"));
+    yield* λ(config.upScoped());
     const peer1Endpoint = config.Peers[0].Endpoint;
     yield* λ(Console.log(peer1Endpoint));
-    yield* λ(ping(`${peer1Endpoint.ip}:${peer1Endpoint.port}`));
+    yield* λ(ping(`${peer1Endpoint.ip}:${peer1Endpoint.natPort}`));
 }).pipe(Effect.scoped);
 
 Effect.suspend(() => main).pipe(Effect.provide(PlatformNode.NodeContext.layer), PlatformNode.NodeRuntime.runMain);

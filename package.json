@@ -17,56 +17,63 @@
     "main": "dist/src/index.js",
     "files": [
         "dist/src",
-        "dist/package.json"
+        "dist/build"
     ],
     "scripts": {
+        "api-extractor": "api-extractor run --local --verbose",
         "build": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" heft test --clean --production",
         "dev": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" heft test-watch --clean"
     },
     "dependencies": {
         "execa": "^8.0.1",
-        "ini": "^4.1.1"
+        "ini": "^4.1.2"
     },
     "devDependencies": {
-        "@actions/artifact": "2.1.3",
+        "@actions/artifact": "2.1.4",
         "@actions/core": "1.10.1",
-        "@effect/platform": "0.46.1",
-        "@effect/platform-node": "0.44.9",
-        "@effect/printer": "0.31.9",
-        "@effect/printer-ansi": "0.32.9",
-        "@effect/schema": "0.63.0",
-        "@effect/typeclass": "0.23.0",
+        "@effect/experimental": "0.9.20",
+        "@effect/platform": "0.46.3",
+        "@effect/platform-node": "0.44.11",
+        "@effect/printer": "0.31.10",
+        "@effect/printer-ansi": "0.32.10",
+        "@effect/schema": "0.63.2",
+        "@effect/typeclass": "0.23.1",
+        "@microsoft/api-extractor": "7.42.3",
         "@protobuf-ts/runtime": "2.9.3",
         "@protobuf-ts/runtime-rpc": "2.9.3",
         "@rushstack/eslint-config": "3.6.4",
-        "@rushstack/heft": "0.65.5",
-        "@rushstack/heft-api-extractor-plugin": "0.3.14",
-        "@rushstack/heft-jest-plugin": "0.11.14",
-        "@rushstack/heft-lint-plugin": "0.3.14",
-        "@rushstack/heft-typescript-plugin": "0.3.14",
-        "@rushstack/heft-webpack5-plugin": "0.9.31",
+        "@rushstack/heft": "0.66.0",
+        "@rushstack/heft-api-extractor-plugin": "0.3.20",
+        "@rushstack/heft-jest-plugin": "0.11.21",
+        "@rushstack/heft-lint-plugin": "0.3.20",
+        "@rushstack/heft-typescript-plugin": "0.3.20",
+        "@rushstack/heft-webpack5-plugin": "0.9.37",
         "@types/heft-jest": "1.0.6",
         "@types/ini": "4.1.0",
-        "@types/node": "20.11.20",
+        "@types/node": "20.11.25",
         "@types/uuid": "9.0.8",
+        "bufferutil": "4.0.8",
+        "ci-info": "4.0.0",
         "cross-env": "7.0.3",
-        "effect": "2.4.0",
+        "effect": "2.4.1",
         "eslint": "8.57.0",
         "eslint-config-prettier": "9.1.0",
         "eslint-plugin-prettier": "5.1.3",
         "eslint-plugin-unicorn": "51.0.1",
-        "fast-check": "3.15.1",
+        "fast-check": "3.16.0",
         "prettier": "3.2.5",
         "prettier-plugin-jsdoc": "1.3.0",
         "prettier-plugin-packagejson": "2.4.12",
         "stun": "2.1.0",
         "supports-color": "9.4.0",
-        "terser-webpack-plugin": "5.3.10",
-        "typescript": "5.3.3",
+        "typescript": "5.4.2",
+        "utf-8-validate": "6.0.3",
         "uuid": "9.0.1",
-        "webpack": "5.82.1"
+        "webpack": "5.82.1",
+        "ws": "8.16.0"
     },
     "peerDependencies": {
+        "@effect/experimental": "0.9.19",
         "@effect/platform": "0.45.4",
         "@effect/platform-node": "0.44.5",
         "@effect/schema": "0.62.8",
@@ -77,8 +84,9 @@
     },
     "pnpm": {
         "patchedDependencies": {
-            "@rushstack/heft-jest-plugin@0.11.14": "patches/@rushstack__heft-jest-plugin@0.11.14.patch",
-            "@rushstack/heft@0.65.5": "patches/@rushstack__heft@0.65.5.patch"
+            "@rushstack/heft@0.66.0": "patches/@rushstack__heft@0.66.0.patch",
+            "@rushstack/heft-jest-plugin@0.11.21": "patches/@rushstack__heft-jest-plugin@0.11.21.patch",
+            "@rushstack/heft-api-extractor-plugin@0.3.20": "patches/@rushstack__heft-api-extractor-plugin@0.3.20.patch"
         }
     }
 }

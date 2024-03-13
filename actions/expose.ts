@@ -2,6 +2,7 @@ import * as GithubArtifacts from "@actions/artifact";
 import * as GithubCore from "@actions/core";
 import * as Platform from "@effect/platform";
 import * as PlatformNode from "@effect/platform-node";
+import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as ConfigError from "effect/ConfigError";
 import * as Console from "effect/Console";
@@ -10,9 +11,12 @@ import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Schedule from "effect/Schedule";
+import * as Tuple from "effect/Tuple";
+import * as execa from "execa";
 import * as dgram from "node:dgram";
 import * as stun from "stun";
 import * as uuid from "uuid";
+import * as Wireguard from "../src/index.js";
 import * as helpers from "./helpers.js";
 
 const processConnectionRequest = (
@@ -20,10 +24,9 @@ const processConnectionRequest = (
 ): Effect.Effect<
     void,
     Error | ConfigError.ConfigError | Cause.UnknownException | Platform.Error.PlatformError,
-    Platform.FileSystem.FileSystem
+    Platform.FileSystem.FileSystem | Platform.Path.Path
 > =>
     Effect.gen(function* (λ) {
-        const fs = yield* λ(Platform.FileSystem.FileSystem);
         const service_identifier: number = yield* λ(helpers.SERVICE_IDENTIFIER);
         const client_identifier: string | undefined = connectionRequest.name.split("_")[2];
 
@@ -49,7 +52,7 @@ const processConnectionRequest = (
             Effect.promise(() => stun.request("stun.l.google.com:19302", { socket: stunSocket }))
         );
         const mappedAddress = stunResponse.getAttribute(stun.constants.STUN_ATTR_XOR_MAPPED_ADDRESS).value;
-        const myLocation = `${mappedAddress.address}:${mappedAddress.port}`;
+        const myLocation = `${mappedAddress.address}:${mappedAddress.port}:${stunSocket.address().port}` as const;
         GithubCore.info(`Stun response received: ${JSON.stringify(myLocation)}`);
         yield* λ(
             Effect.loop(0, {
@@ -62,69 +65,22 @@ const processConnectionRequest = (
             })
         );
 
-        // const hostKeys = yield* _(Effect.promise(() => wireguard.generateKeyPair()));
-        // const peerKeys = yield* _(Effect.promise(() => wireguard.generateKeyPair()));
-
-        // const hostConfig = new wireguard.WgConfig({
-        //     wgInterface: {
-        //         name: `wg-${service_identifier}-${client_identifier}`,
-        //         address: [`192.168.${service_identifier}.1/30`],
-        //         privateKey: hostKeys.privateKey,
-        //         listenPort: stunSocket.address().port,
-        //     },
-        //     peers: [
-        //         {
-        //             persistentKeepalive: 25,
-        //             publicKey: peerKeys.publicKey,
-        //             endpoint: `${clientIp}:${natPort}`,
-        //             allowedIps: [`192.168.${service_identifier}.2/32`],
-        //         },
-        //     ],
-        // });
-
-        // const peerConfig = new wireguard.WgConfig({
-        //     wgInterface: {
-        //         name: `wg-${service_identifier}-${client_identifier}`,
-        //         address: [`192.168.${service_identifier}.2/30`],
-        //         privateKey: peerKeys.privateKey,
-        //         listenPort: Number.parseInt(hostPort),
-        //     },
-        //     peers: [
-        //         {
-        //             endpoint: myLocation,
-        //             persistentKeepalive: 25,
-        //             publicKey: hostKeys.publicKey,
-        //             allowedIps: [`192.168.${service_identifier}.1/32`],
-        //         },
-        //     ],
-        // });
-
-        // const exists = yield* _(fs.exists("./wg"));
-        // if (!exists) yield* _(fs.makeDirectory("./wg"));
-        // const files = yield* _(fs.readDirectory("./wg"));
-        // core.info(`Existing wireguard interfaces: ${JSON.stringify(files)}`);
-        // const maxInterface =
-        //     files.length > 0
-        //         ? Math.max(
-        //               ...files
-        //                   .filter((file) => file.startsWith("wg"))
-        //                   .map((file) => file.replace("wg", ""))
-        //                   .map(Number.parseInt)
-        //           )
-        //         : 0;
-        // yield* _(Effect.promise(() => hostConfig.writeToFile(`./wg/wg${maxInterface + 1}.conf`)));
-        // stunSocket.close();
-        // yield* _(Effect.promise(() => hostConfig.up(`./wg/wg${maxInterface + 1}.conf`)));
-
-        // yield* _(
-        //     helpers.uploadSingleFileArtifact(
-        //         `${service_identifier}_connection-response_${client_identifier}`,
-        //         peerConfig.toString()
-        //     )
-        // );
+        const aliceData = Tuple.make(myLocation, "192.168.0.1");
+        const bobData = Tuple.make(
+            `${clientIp}:${Number.parseInt(natPort)}:${Number.parseInt(hostPort)}` as const,
+            "192.168.0.2"
+        );
+        const [aliceConfig, bobConfig] = yield* λ(Wireguard.WireguardConfig.generateP2PConfigs(aliceData, bobData));
+        // yield* λ(aliceConfig.up());
+        yield* λ(aliceConfig.writeToFile("/etc/wireguard/wg0.conf"));
+        stunSocket.close();
+        // FIXME: remove once done debugging
+        yield* λ(Effect.sync(() => execa.execaCommandSync("sudo wg-quick up wg0", { stdio: "inherit" })));
+        const g = yield* λ(Schema.encode(Schema.parseJson(Wireguard.WireguardConfig))(bobConfig));
+        yield* λ(helpers.uploadSingleFileArtifact(`${service_identifier}_connection-response_${client_identifier}`, g));
     })
-        .pipe(Effect.tapError(Console.log))
-        .pipe(Effect.tapDefect(Console.log));
+        .pipe(Effect.catchAll(Console.log))
+        .pipe(Effect.catchAllDefect(Console.log));
 
 class NoStopRequest extends Data.TaggedError("NoStopRequest")<{ message: string }> {}
 class HasStopRequest extends Data.TaggedError("HasStopRequest")<{ message: string }> {}
@@ -132,7 +88,7 @@ class HasStopRequest extends Data.TaggedError("HasStopRequest")<{ message: strin
 const program: Effect.Effect<
     void,
     ConfigError.ConfigError | Cause.UnknownException | HasStopRequest | NoStopRequest,
-    Platform.FileSystem.FileSystem
+    Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
     const service_identifier: number = yield* λ(helpers.SERVICE_IDENTIFIER);
     const artifacts: ReadonlyArray<GithubArtifacts.Artifact> = yield* λ(helpers.listArtifacts);
@@ -180,12 +136,14 @@ const program: Effect.Effect<
         )
     );
     yield* λ(new NoStopRequest({ message: "No stop request received" }));
-}).pipe(
-    Effect.retry({
-        schedule: Schedule.spaced("30 seconds"),
-        until: (error) => error._tag === "HasStopRequest",
-    })
-);
+})
+    .pipe(
+        Effect.retry({
+            schedule: Schedule.spaced("30 seconds"),
+            until: (error) => error._tag === "HasStopRequest",
+        })
+    )
+    .pipe(Effect.catchTag("HasStopRequest", () => Effect.unit));
 
 /**
  * Processes connection requests every 30 seconds until there is a stop request

@@ -15,7 +15,6 @@ module.exports = {
     parserOptions: { ecmaVersion: 2022, sourceType: "module" },
     rules: {
         "no-console": "warn",
-        "tsdoc/syntax": "off",
         "@typescript-eslint/typedef": "off",
         "unicorn/no-array-callback-reference": "off",
         "unicorn/no-array-method-this-argument": "off",
@@ -26,18 +25,13 @@ module.exports = {
     },
     overrides: [
         {
-            files: ["src/schema.ts"],
+            files: ["src/index.ts"],
             rules: {
                 "dot-notation": "off",
+                "unicorn/switch-case-braces": "off",
                 "unicorn/no-this-assignment": "off",
-                "@typescript-eslint/member-ordering": "off",
                 "unicorn/consistent-function-scoping": "off",
-                "@rushstack/security/no-unsafe-regexp": "off",
             },
-        },
-        {
-            files: ["src/index.ts"],
-            rules: { "@typescript-eslint/explicit-function-return-type": "off" },
         },
     ],
     ignorePatterns: ["dist/", ".eslintrc.cjs"],

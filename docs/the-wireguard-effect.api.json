@@ -1,0 +1,1713 @@
+{
+  "metadata": {
+    "toolPackage": "@microsoft/api-extractor",
+    "toolVersion": "7.42.3",
+    "schemaVersion": 1011,
+    "oldestForwardsCompatibleVersion": 1001,
+    "tsdocConfig": {
+      "$schema": "https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json",
+      "noStandardTags": true,
+      "tagDefinitions": [
+        {
+          "tagName": "@alpha",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@beta",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@defaultValue",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@decorator",
+          "syntaxKind": "block",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@deprecated",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@eventProperty",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@example",
+          "syntaxKind": "block",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@experimental",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@inheritDoc",
+          "syntaxKind": "inline"
+        },
+        {
+          "tagName": "@internal",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@label",
+          "syntaxKind": "inline"
+        },
+        {
+          "tagName": "@link",
+          "syntaxKind": "inline",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@override",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@packageDocumentation",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@param",
+          "syntaxKind": "block",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@privateRemarks",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@public",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@readonly",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@remarks",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@returns",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@sealed",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@see",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@throws",
+          "syntaxKind": "block",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@typeParam",
+          "syntaxKind": "block",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@virtual",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@category",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@since",
+          "syntaxKind": "modifier"
+        }
+      ],
+      "reportUnsupportedHtmlElements": false
+    }
+  },
+  "kind": "Package",
+  "canonicalReference": "the-wireguard-effect!",
+  "docComment": "",
+  "name": "the-wireguard-effect",
+  "preserveMemberOrder": false,
+  "members": [
+    {
+      "kind": "EntryPoint",
+      "canonicalReference": "the-wireguard-effect!",
+      "name": "",
+      "preserveMemberOrder": false,
+      "members": [
+        {
+          "kind": "Class",
+          "canonicalReference": "the-wireguard-effect!WireguardConfig:class",
+          "docComment": "/**\n * A wireguard interface configuration.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "declare class WireguardIniConfig extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "WireguardIniConfig_base",
+              "canonicalReference": "the-wireguard-effect!~WireguardIniConfig_base"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "src/index.ts",
+          "releaseTag": "Alpha",
+          "isAbstract": false,
+          "name": "WireguardConfig",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardConfig.fromConfigFile:member",
+              "docComment": "/**\n * Loads a wireguard interface configuration from an INI file.\n *\n * 1.0.0 Transformations\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "static fromConfigFile: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "(file: string) => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardError",
+                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ParseResult.ParseError",
+                  "canonicalReference": "@effect/schema!ParseError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.Error.PlatformError",
+                  "canonicalReference": "@effect/platform!PlatformError:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.FileSystem.FileSystem",
+                  "canonicalReference": "@effect/platform!FileSystem:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "fromConfigFile",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 14
+              },
+              "isStatic": true,
+              "isProtected": false,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardConfig.generateHubSpokeConfigs:member",
+              "docComment": "/**\n * Generates a collection of wireguard configurations for a star network with a single central hub node and many peers all connected to it.\n *\n * 1.0.0 Constructors\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "static generateHubSpokeConfigs: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "{\n        (hubData: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "SetupDataFrom",
+                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", spokeData: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ReadonlyArray.NonEmptyReadonlyArray",
+                  "canonicalReference": "effect!NonEmptyReadonlyArray:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "SetupDataFrom",
+                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<[\n            hubConfig: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ",\n            spokeConfigs: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ReadonlyArray.NonEmptyReadonlyArray",
+                  "canonicalReference": "effect!NonEmptyReadonlyArray:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">\n        ], "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ParseResult.ParseError",
+                  "canonicalReference": "@effect/schema!ParseError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", never>;\n        (hubData: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "EndpointFrom",
+                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", spokeData: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ReadonlyArray.NonEmptyReadonlyArray",
+                  "canonicalReference": "effect!NonEmptyReadonlyArray:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "EndpointFrom",
+                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">, cidrBlock: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "CidrBlockFrom",
+                  "canonicalReference": "the-wireguard-effect!CidrBlockFrom:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<[\n            hubConfig: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ",\n            spokeConfigs: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ReadonlyArray.NonEmptyReadonlyArray",
+                  "canonicalReference": "effect!NonEmptyReadonlyArray:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">\n        ], "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ParseResult.ParseError",
+                  "canonicalReference": "@effect/schema!ParseError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", never>;\n    }"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "generateHubSpokeConfigs",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 36
+              },
+              "isStatic": true,
+              "isProtected": false,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardConfig.generateKeyPair:member",
+              "docComment": "/**\n * Generates a wireguard public private key pair.\n *\n * 1.0.0 Constructors\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "static generateKeyPair: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "() => {\n        privateKey: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardKey",
+                  "canonicalReference": "the-wireguard-effect!WireguardKey:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";\n        publicKey: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardKey",
+                  "canonicalReference": "the-wireguard-effect!WireguardKey:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";\n    }"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "generateKeyPair",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 6
+              },
+              "isStatic": true,
+              "isProtected": false,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardConfig.generateP2PConfigs:member",
+              "docComment": "/**\n * Generates two wireguard configurations, each with the other as a single peer and shares their keys appropriately.\n *\n * 1.0.0 Constructors\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "static generateP2PConfigs: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "{\n        (aliceData: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "SetupDataFrom",
+                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", bobData: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "SetupDataFrom",
+                  "canonicalReference": "the-wireguard-effect!SetupDataFrom:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<[\n            aliceConfig: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ",\n            bobConfig: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n        ], "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ParseResult.ParseError",
+                  "canonicalReference": "@effect/schema!ParseError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", never>;\n        (aliceEndpoint: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "EndpointFrom",
+                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", bobEndpoint: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "EndpointFrom",
+                  "canonicalReference": "the-wireguard-effect!EndpointFrom:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", cidrBlock: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "CidrBlockFrom",
+                  "canonicalReference": "the-wireguard-effect!CidrBlockFrom:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<[\n            aliceConfig: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ",\n            bobConfig: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n        ], "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ParseResult.ParseError",
+                  "canonicalReference": "@effect/schema!ParseError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", never>;\n    }"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "generateP2PConfigs",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 28
+              },
+              "isStatic": true,
+              "isProtected": false,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardConfig#up:member",
+              "docComment": "/**\n * Starts a wireguard tunnel that will continue to run and serve traffic even after the nodejs process exits.\n *\n * 1.0.0 Wireguard\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "up: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "(interfaceObject?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Option.Option",
+                  "canonicalReference": "effect!Option:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardInterface",
+                  "canonicalReference": "the-wireguard-effect!WireguardInterface:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": "> | undefined) => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardInterface",
+                  "canonicalReference": "the-wireguard-effect!WireguardInterface:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardError",
+                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Cause.TimeoutException",
+                  "canonicalReference": "effect!TimeoutException:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.FileSystem.FileSystem",
+                  "canonicalReference": "@effect/platform!FileSystem:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.Path.Path",
+                  "canonicalReference": "@effect/platform!Path:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "up",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 18
+              },
+              "isStatic": false,
+              "isProtected": false,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardConfig#upScoped:member",
+              "docComment": "/**\n * Starts a wireguard tunnel that will be gracefully shutdown once the scope is closed.\n *\n * 1.0.0 Wireguard\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "upScoped: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "(interfaceName?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Option.Option",
+                  "canonicalReference": "effect!Option:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardInterface",
+                  "canonicalReference": "the-wireguard-effect!WireguardInterface:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">) => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<void, "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardError",
+                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Cause.TimeoutException",
+                  "canonicalReference": "effect!TimeoutException:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Scope.Scope",
+                  "canonicalReference": "effect!Scope:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.FileSystem.FileSystem",
+                  "canonicalReference": "@effect/platform!FileSystem:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.Path.Path",
+                  "canonicalReference": "@effect/platform!Path:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "upScoped",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 18
+              },
+              "isStatic": false,
+              "isProtected": false,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardConfig#writeToFile:member",
+              "docComment": "/**\n * Writes a wireguard interface configuration to an INI file.\n *\n * 1.0.0 Transformations\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "writeToFile: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "(file: string) => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<void, "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ParseResult.ParseError",
+                  "canonicalReference": "@effect/schema!ParseError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.Error.PlatformError",
+                  "canonicalReference": "@effect/platform!PlatformError:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.FileSystem.FileSystem",
+                  "canonicalReference": "@effect/platform!FileSystem:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.Path.Path",
+                  "canonicalReference": "@effect/platform!Path:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "writeToFile",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 12
+              },
+              "isStatic": false,
+              "isProtected": false,
+              "isAbstract": false
+            }
+          ],
+          "extendsTokenRange": {
+            "startIndex": 1,
+            "endIndex": 2
+          },
+          "implementsTokenRanges": []
+        },
+        {
+          "kind": "Class",
+          "canonicalReference": "the-wireguard-effect!WireguardInterface:class",
+          "docComment": "/**\n * A wireguard interface name.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export declare class WireguardInterface extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "WireguardInterface_base",
+              "canonicalReference": "the-wireguard-effect!~WireguardInterface_base"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "src/index.ts",
+          "releaseTag": "Alpha",
+          "isAbstract": false,
+          "name": "WireguardInterface",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface.DarwinInterfaceNameRegExp:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "protected static readonly DarwinInterfaceNameRegExp: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "RegExp",
+                  "canonicalReference": "!RegExp:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": true,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "DarwinInterfaceNameRegExp",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": true,
+              "isProtected": true,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface#down:member",
+              "docComment": "/**\n * Stops a previously started wireguard tunnel.\n *\n * 1.0.0 Wireguard\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "down: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "() => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<void, "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.Error.PlatformError",
+                  "canonicalReference": "@effect/platform!PlatformError:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.FileSystem.FileSystem",
+                  "canonicalReference": "@effect/platform!FileSystem:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "down",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 8
+              },
+              "isStatic": false,
+              "isProtected": false,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface.FreeBSDInterfaceNameRegExp:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "protected static readonly FreeBSDInterfaceNameRegExp: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "RegExp",
+                  "canonicalReference": "!RegExp:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": true,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "FreeBSDInterfaceNameRegExp",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": true,
+              "isProtected": true,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface#getConfig:member",
+              "docComment": "/**\n * FIXME: What does this return?\n *\n * 1.0.0 API\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "getConfig: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "() => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<void, "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardError",
+                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", never>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "getConfig",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 6
+              },
+              "isStatic": false,
+              "isProtected": false,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface.getNextAvailableInterface:member",
+              "docComment": "/**\n * 1.0.0 Constructors\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "static getNextAvailableInterface: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "() => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardInterface",
+                  "canonicalReference": "the-wireguard-effect!WireguardInterface:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardError",
+                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", never>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "getNextAvailableInterface",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 8
+              },
+              "isStatic": true,
+              "isProtected": false,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface.InterfaceRegExpForPlatform:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "protected static InterfaceRegExpForPlatform: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "RegExp",
+                  "canonicalReference": "!RegExp:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardError",
+                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", never>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "InterfaceRegExpForPlatform",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 7
+              },
+              "isStatic": true,
+              "isProtected": true,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface.LinuxInterfaceNameRegExp:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "protected static readonly LinuxInterfaceNameRegExp: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "RegExp",
+                  "canonicalReference": "!RegExp:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": true,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "LinuxInterfaceNameRegExp",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": true,
+              "isProtected": true,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface.OpenBSDInterfaceNameRegExp:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "protected static readonly OpenBSDInterfaceNameRegExp: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "RegExp",
+                  "canonicalReference": "!RegExp:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": true,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "OpenBSDInterfaceNameRegExp",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": true,
+              "isProtected": true,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface#setConfig:member",
+              "docComment": "/**\n * 1.0.0 API\n *\n * @see\n *\n * https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/internal/wguser/configure.go#L52-L101\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "setConfig: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "(config: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", options?: {\n        replacePeers: boolean;\n        replaceAllowedIPs: boolean;\n    } | undefined) => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<void, "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardError",
+                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", never>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "setConfig",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 8
+              },
+              "isStatic": false,
+              "isProtected": false,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface#up:member",
+              "docComment": "/**\n * Starts a wireguard tunnel that will continue to run and serve traffic even after the nodejs process exits.\n *\n * 1.0.0 Wireguard\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "up: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "(config: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", options?: {\n        replacePeers: boolean;\n        replaceAllowedIPs: boolean;\n    } | undefined) => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardInterface",
+                  "canonicalReference": "the-wireguard-effect!WireguardInterface:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardError",
+                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Cause.TimeoutException",
+                  "canonicalReference": "effect!TimeoutException:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.FileSystem.FileSystem",
+                  "canonicalReference": "@effect/platform!FileSystem:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.Path.Path",
+                  "canonicalReference": "@effect/platform!Path:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "up",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 16
+              },
+              "isStatic": false,
+              "isProtected": false,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface#upScoped:member",
+              "docComment": "/**\n * Starts a wireguard tunnel that will be gracefully shutdown once the scope is closed.\n *\n * 1.0.0 Wireguard\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "upScoped: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "(config: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardIniConfig",
+                  "canonicalReference": "the-wireguard-effect!WireguardConfig:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", options?: {\n        replacePeers: boolean;\n        replaceAllowedIPs: boolean;\n    } | undefined) => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardInterface",
+                  "canonicalReference": "the-wireguard-effect!WireguardInterface:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "WireguardError",
+                  "canonicalReference": "the-wireguard-effect!WireguardError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Cause.TimeoutException",
+                  "canonicalReference": "effect!TimeoutException:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Scope.Scope",
+                  "canonicalReference": "effect!Scope:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.FileSystem.FileSystem",
+                  "canonicalReference": "@effect/platform!FileSystem:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.Path.Path",
+                  "canonicalReference": "@effect/platform!Path:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "upScoped",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 18
+              },
+              "isStatic": false,
+              "isProtected": false,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface.WindowsInterfaceNameRegExp:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "protected static readonly WindowsInterfaceNameRegExp: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "RegExp",
+                  "canonicalReference": "!RegExp:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": true,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "WindowsInterfaceNameRegExp",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": true,
+              "isProtected": true,
+              "isAbstract": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardInterface.WireguardGoExecutablePath:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "protected static WireguardGoExecutablePath: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.Error.PlatformError",
+                  "canonicalReference": "@effect/platform!PlatformError:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.FileSystem.FileSystem",
+                  "canonicalReference": "@effect/platform!FileSystem:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Platform.Path.Path",
+                  "canonicalReference": "@effect/platform!Path:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "WireguardGoExecutablePath",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 9
+              },
+              "isStatic": true,
+              "isProtected": true,
+              "isAbstract": false
+            }
+          ],
+          "extendsTokenRange": {
+            "startIndex": 1,
+            "endIndex": 2
+          },
+          "implementsTokenRanges": []
+        },
+        {
+          "kind": "Class",
+          "canonicalReference": "the-wireguard-effect!WireguardPeer:class",
+          "docComment": "/**\n * A wireguard peer configuration.\n *\n * 1.0.0 Datatypes\n *\n * @since @category @alpha\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export declare class WireguardPeer extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "WireguardPeer_base",
+              "canonicalReference": "the-wireguard-effect!~WireguardPeer_base"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "src/index.ts",
+          "releaseTag": "Alpha",
+          "isAbstract": false,
+          "name": "WireguardPeer",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "Property",
+              "canonicalReference": "the-wireguard-effect!WireguardPeer#encodeIni:member",
+              "docComment": "/**\n * 1.0.0 Transformations\n *\n * @since @category\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "encodeIni: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "() => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Effect.Effect",
+                  "canonicalReference": "effect!Effect:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<string, "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ParseResult.ParseError",
+                  "canonicalReference": "@effect/schema!ParseError:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", never>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Alpha",
+              "name": "encodeIni",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 6
+              },
+              "isStatic": false,
+              "isProtected": false,
+              "isAbstract": false
+            }
+          ],
+          "extendsTokenRange": {
+            "startIndex": 1,
+            "endIndex": 2
+          },
+          "implementsTokenRanges": []
+        }
+      ]
+    }
+  ]
+}
