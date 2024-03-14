@@ -47,6 +47,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: sudo apt install wireguard
+      - run: python3 -m http.server &
       - uses: ./.github/actions/workflow-level-service/expose
         with:
           service-identifier: ${{ env.linux-service2-identifier }}
@@ -57,6 +59,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - run: sudo apt install wireguard
+      - run: python3 -m http.server &
       - uses: ./.github/actions/workflow-level-service/expose
         with:
           service-identifier: ${{ env.windows-service-identifier }}
@@ -67,6 +71,8 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+      - run: sudo apt install wireguard
+      - run: python3 -m http.server &
       - uses: ./.github/actions/workflow-level-service/expose
         with:
           service-identifier: ${{ env.macos-service-identifier }}
@@ -86,20 +92,25 @@ jobs:
         with:
           service-identifier: ${{ env.linux-service1-identifier }}
       - id: test1
-        if: ${{ always()}}
         run: curl http://${{steps.connect1.outputs.service-address}}:8000
-      # - id: connect2
-      #   uses: ./.github/actions/workflow-level-service/connect
-      #   with:
-      #     service-identifier: ${{ env.linux-service-identifier2 }}
-      # - id: connect3
-      #   uses: ./.github/actions/workflow-level-service/connect
-      #   with:
-      #     service-identifier: ${{ env.windows-service-identifier }}
-      # - id: connect4
-      #   uses: ./.github/actions/workflow-level-service/connect
-      #   with:
-      #     service-identifier: ${{ env.macos-service-identifier }}
+      - id: connect2
+        uses: ./.github/actions/workflow-level-service/connect
+        with:
+          service-identifier: ${{ env.linux-service2-identifier }}
+      - id: test2
+        run: curl http://${{steps.connect2.outputs.service-address}}:8000
+      - id: connect3
+        uses: ./.github/actions/workflow-level-service/connect
+        with:
+          service-identifier: ${{ env.windows-service-identifier }}
+      - id: test3
+        run: curl http://${{steps.connect3.outputs.service-address}}:8000
+      - id: connect4
+        uses: ./.github/actions/workflow-level-service/connect
+        with:
+          service-identifier: ${{ env.macos-service-identifier }}
+      - id: test4
+        run: curl http://${{steps.connect4.outputs.service-address}}:8000
 
   stop-services:
     if: ${{ always() }}
