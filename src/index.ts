@@ -764,12 +764,12 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
                         const subprocess = execa.execaCommand(
                             `${process.platform === "win32" ? "" : "sudo "}${executablePath} ${self.Name}`,
                             {
-                                detached: true,
-                                stdio: "ignore",
-                                cleanup: false,
+                                detached: false,
+                                stdio: "inherit",
+                                cleanup: true,
                             }
                         );
-                        subprocess.unref();
+                        // subprocess.unref();
                         return subprocess;
                     },
                     catch: (error) => new WireguardError({ message: `${error}` }),

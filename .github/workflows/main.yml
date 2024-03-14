@@ -62,8 +62,6 @@ jobs:
         with:
           service-identifier: ${{ env.windows-service-identifier }}
           service-cidr: "192.168.${{ env.windows-service-identifier }}.0/24"
-      - if: ${{ always() }}
-        uses: mxschmitt/action-tmate@v3
 
   macos-service:
     needs: [build]
