@@ -669,6 +669,39 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             Effect.catchAll((error) => Effect.fail(new WireguardError({ message: error.message })))
         );
 
+    public setAddress = (config: WireguardIniConfig): Effect.Effect<void, WireguardError, never> => {
+        const address = "ipv4" in config.Address ? config.Address.ipv4 : config.Address.ipv6;
+        const subnet = `${address}/${config.Address.mask}`;
+
+        const commands = Function.pipe(
+            Match.type<(typeof WireguardInterface.SupportedPlatforms)[number]>(),
+            Match.when("win32", () => [
+                `netsh interface ip add address "${this.Name}" address=${"192.168.4.1"} mask=${"255.255.255.0"}`,
+            ]),
+            Match.when("linux", () => [
+                `ip -4 address add ${subnet} dev ${this.Name}`,
+                `ip link set mtu 1420 up dev ${this.Name}`,
+            ]),
+            Match.when("darwin", () => [
+                `ifconfig ${this.Name} inet 192.168.1.1/24 192.168.1.1 alias`,
+                `ifconfig ${this.Name} up`,
+                `route -q -n add -inet 192.168.1.2/32 -interface ${this.Name}`,
+            ]),
+            Match.when("freebsd", () => []),
+            Match.when("openbsd", () => []),
+            Match.orElseAbsurd
+        )(Function.unsafeCoerce(process.platform));
+
+        const effects = ReadonlyArray.map(commands, (command) =>
+            Effect.tryPromise({
+                try: () => execa.execaCommand(command, { shell: true }),
+                catch: (error) => new WireguardError({ message: `${error}` }),
+            })
+        );
+
+        return Effect.all(effects, { batching: false, concurrency: 1, discard: true });
+    };
+
     /**
      * Starts a wireguard tunnel that will be gracefully shutdown once the scope
      * is closed.
@@ -720,6 +753,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             );
 
             yield* λ(self.setConfig(config, options));
+            yield* λ(self.setAddress(config));
             return self;
         });
     };
