@@ -800,7 +800,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
 class WireguardIniConfig extends Schema.Class<WireguardIniConfig>("WireguardIniConfig")({
     /** @see https://github.com/WireGuard/wgctrl-go/blob/925a1e7659e675c94c1a659d39daa9141e450c7d/wgtypes/types.go#L207-L232 */
 
-    Address: Schema.union(Address, CidrBlock, Schema.nonEmptyArray(Address)),
+    Address: Schema.union(CidrBlock),
 
     /**
      * The value for this is a decimal-string integer corresponding to the

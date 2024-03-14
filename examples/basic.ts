@@ -10,7 +10,7 @@ import * as Effect from "effect/Effect";
 import * as Wireguard from "../src/index.js";
 
 const config = new Wireguard.WireguardConfig({
-    Address: Wireguard.Address("3.3.3.3"),
+    Address: Wireguard.CidrBlock({ ipv4: Wireguard.IPv4("3.3.3.3"), mask: Wireguard.IPv4CidrMask(32) }),
     ListenPort: Wireguard.Port(51_820),
     PrivateKey: Wireguard.WireguardKey(""),
     Peers: [
