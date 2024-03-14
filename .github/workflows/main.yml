@@ -71,7 +71,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sudo brew install wireguard
+      - run: brew install wireguard
       - run: python3 -m http.server &
       - uses: ./.github/actions/workflow-level-service/expose
         with:
