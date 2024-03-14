@@ -5,6 +5,9 @@ inputs:
   service-identifier:
     description: "Name of the service"
     required: true
+  service-cidr:
+    description: "CIDR for the service"
+    required: true
 
 runs:
   using: "composite"
@@ -31,4 +34,5 @@ runs:
       if: runner.os == 'Windows'
       run: node .github/actions/workflow-level-service/expose/expose.bundle.mjs
       env:
+        SERVICE_CIDR: ${{ inputs.service-cidr }}
         SERVICE_IDENTIFIER: ${{ inputs.service-identifier }}
