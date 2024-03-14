@@ -762,7 +762,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
                 Effect.tryPromise({
                     try: () => {
                         const subprocess = execa.execaCommand(
-                            `${process.platform === "win32" ? "./" : "sudo "}${executablePath} ${self.Name}`,
+                            `${process.platform === "win32" ? "" : "sudo "}${executablePath} ${self.Name}`,
                             {
                                 detached: true,
                                 stdio: "ignore",

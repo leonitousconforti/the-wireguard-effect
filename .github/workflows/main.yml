@@ -62,6 +62,8 @@ jobs:
         with:
           service-identifier: ${{ env.windows-service-identifier }}
           service-cidr: "192.168.${{ env.windows-service-identifier }}.0/24"
+      - if: ${{ always() }}
+        uses: mxschmitt/action-tmate@v3
 
   macos-service:
     needs: [build]
@@ -73,12 +75,6 @@ jobs:
         with:
           service-identifier: ${{ env.macos-service-identifier }}
           service-cidr: "192.168.${{ env.macos-service-identifier }}.0/24"
-
-  test:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: mxschmitt/action-tmate@v3
 
   clients:
     runs-on: ${{ matrix.os }}
