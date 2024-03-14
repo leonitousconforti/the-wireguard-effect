@@ -82,7 +82,8 @@ const program: Effect.Effect<
     GithubCore.info(data);
     const config = yield* λ(Schema.decode(Schema.parseJson(Wireguard.WireguardConfig))(data));
     const address = `${"ipv4" in config.Address ? config.Address.ipv4 : config.Address.ipv6}/${config.Address.mask}`;
-    yield* λ(config.writeToFile("/etc/wireguard/wg0.conf"));
+    const a = yield* λ(Wireguard.WireguardInterface.getNextAvailableInterface());
+    yield* λ(config.writeToFile(`/etc/wireguard/${a.Name}.conf`));
 
     // Set the service address
     const ips =
@@ -98,7 +99,7 @@ const program: Effect.Effect<
     stunSocket.close();
 
     // FIXME: remove once done debugging
-    yield* λ(Effect.sync(() => execa.execaCommandSync("wg-quick up wg0", { stdio: "inherit" })));
+    yield* λ(Effect.sync(() => execa.execaCommandSync(`wg-quick up ${a.Name}`, { stdio: "inherit" })));
     yield* λ(Console.log("Connection established"));
 })
     .pipe(Effect.tapError(Console.log))

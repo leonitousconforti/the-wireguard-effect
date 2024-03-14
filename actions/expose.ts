@@ -77,11 +77,12 @@ const processConnectionRequest = (
             ips[2] as string
         );
         const [aliceConfig, bobConfig] = yield* λ(Wireguard.WireguardConfig.generateP2PConfigs(aliceData, bobData));
-        yield* λ(aliceConfig.writeToFile("/etc/wireguard/wg0.conf"));
+        const a = yield* λ(Wireguard.WireguardInterface.getNextAvailableInterface());
+        yield* λ(aliceConfig.writeToFile(`/etc/wireguard/${a.Name}.conf`));
         stunSocket.close();
 
         // FIXME: remove once done debugging
-        yield* λ(Effect.sync(() => execa.execaCommandSync("sudo wg-quick up wg0", { stdio: "inherit" })));
+        yield* λ(Effect.sync(() => execa.execaCommandSync(`sudo wg-quick up ${a.Name}`, { stdio: "inherit" })));
         const g = yield* λ(Schema.encode(Schema.parseJson(Wireguard.WireguardConfig))(bobConfig));
         yield* λ(helpers.uploadSingleFileArtifact(`${service_identifier}_connection-response_${client_identifier}`, g));
     })
