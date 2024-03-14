@@ -76,7 +76,6 @@ jobs:
 
   test:
     runs-on: windows-latest
-    needs: [clients]
     steps:
       - uses: actions/checkout@v4
       - uses: mxschmitt/action-tmate@v3
