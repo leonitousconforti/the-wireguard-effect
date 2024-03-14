@@ -27,6 +27,7 @@ runs:
       if: runner.os != 'Windows'
       run: sudo -E node .github/actions/workflow-level-service/expose/expose.bundle.mjs
       env:
+        SERVICE_CIDR: ${{ inputs.service-cidr }}
         SERVICE_IDENTIFIER: ${{ inputs.service-identifier }}
 
     - name: "Expose service (Windows)"
