@@ -23,6 +23,7 @@
         "**/bower_components": true,
         "**/*.code-search": true,
         "submodules/wireguard-go/**": true,
+        "submodules/wireguard-tools/**": true,
         ".github/actions/workflow-level-service/expose/expose.bundle.mjs": true,
         ".github/actions/workflow-level-service/connect/connect.bundle.mjs": true
     }
