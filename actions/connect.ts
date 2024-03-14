@@ -85,11 +85,11 @@ const program: Effect.Effect<
     yield* λ(config.writeToFile("/etc/wireguard/wg0.conf"));
 
     // Set the service address
-    const ip =
+    const ips =
         "ipv4" in config.Address
             ? helpers.getRangeV4(new ipAddress.Address4(address))
             : helpers.getRangeV6(new ipAddress.Address6(address));
-    GithubCore.setOutput("service-address", ip[1]);
+    GithubCore.setOutput("service-address", ips[1]);
 
     // Stop the stun keepalive and close the socket so that wireguard can bind
     // to that port now. It needs to be the exact same port as the one we used
@@ -97,7 +97,7 @@ const program: Effect.Effect<
     clearInterval(timer);
     stunSocket.close();
 
-    // TODO: Remove when done debugging
+    // FIXME: remove once done debugging
     yield* λ(Effect.sync(() => execa.execaCommandSync("wg-quick up wg0", { stdio: "inherit" })));
     yield* λ(Console.log("Connection established"));
 })

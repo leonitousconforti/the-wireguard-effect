@@ -6,13 +6,13 @@ import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as ConfigError from "effect/ConfigError";
 import * as Console from "effect/Console";
-import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Schedule from "effect/Schedule";
 import * as Tuple from "effect/Tuple";
 import * as execa from "execa";
+import * as ipAddress from "ip-address";
 import * as dgram from "node:dgram";
 import * as stun from "stun";
 import * as uuid from "uuid";
@@ -28,6 +28,7 @@ const processConnectionRequest = (
 > =>
     Effect.gen(function* (λ) {
         const service_identifier: number = yield* λ(helpers.SERVICE_IDENTIFIER);
+        const service_cidr: Wireguard.CidrBlock = yield* λ(helpers.SERVICE_CIDR);
         const client_identifier: string | undefined = connectionRequest.name.split("_")[2];
 
         // Check that client_identifier is a valid UUID
@@ -65,15 +66,20 @@ const processConnectionRequest = (
             })
         );
 
-        const aliceData = Tuple.make(myLocation, "192.168.0.1");
+        const address = `${"ipv4" in service_cidr ? service_cidr.ipv4 : service_cidr.ipv6}/${service_cidr.mask}`;
+        const ips =
+            "ipv4" in service_cidr
+                ? helpers.getRangeV4(new ipAddress.Address4(address))
+                : helpers.getRangeV6(new ipAddress.Address6(address));
+        const aliceData = Tuple.make(myLocation, ips[1] as string);
         const bobData = Tuple.make(
             `${clientIp}:${Number.parseInt(natPort)}:${Number.parseInt(hostPort)}` as const,
-            "192.168.0.2"
+            ips[2] as string
         );
         const [aliceConfig, bobConfig] = yield* λ(Wireguard.WireguardConfig.generateP2PConfigs(aliceData, bobData));
-        // yield* λ(aliceConfig.up());
         yield* λ(aliceConfig.writeToFile("/etc/wireguard/wg0.conf"));
         stunSocket.close();
+
         // FIXME: remove once done debugging
         yield* λ(Effect.sync(() => execa.execaCommandSync("sudo wg-quick up wg0", { stdio: "inherit" })));
         const g = yield* λ(Schema.encode(Schema.parseJson(Wireguard.WireguardConfig))(bobConfig));
@@ -82,12 +88,9 @@ const processConnectionRequest = (
         .pipe(Effect.catchAll(Console.log))
         .pipe(Effect.catchAllDefect(Console.log));
 
-class NoStopRequest extends Data.TaggedError("NoStopRequest")<{ message: string }> {}
-class HasStopRequest extends Data.TaggedError("HasStopRequest")<{ message: string }> {}
-
 const program: Effect.Effect<
     void,
-    ConfigError.ConfigError | Cause.UnknownException | HasStopRequest | NoStopRequest,
+    ConfigError.ConfigError | Cause.UnknownException,
     Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
     const service_identifier: number = yield* λ(helpers.SERVICE_IDENTIFIER);
@@ -96,37 +99,12 @@ const program: Effect.Effect<
     const [stopRequestName, isStopRequest] = helpers.stopArtifact(service_identifier);
     const [, isConnectionRequest] = helpers.connectionRequestArtifact(service_identifier);
 
-    /**
-     * The service should continue to listen for connection requests and host
-     * the supplied service as long as there is not an artifact uploaded to the
-     * workflow run with a name in the format of "service-identifier_stop" where
-     * service_identifier is the UUID of the service to stop.
-     */
     if (ReadonlyArray.some(artifacts, isStopRequest)) {
         yield* λ(helpers.deleteArtifact(stopRequestName));
-        yield* λ(new HasStopRequest({ message: "Stop request received" }));
+        return true;
     }
 
-    /**
-     * Connection requests will show up as artifacts with a name in the format
-     * "service-identifier_connection-request_client-identifier" where
-     * service_identifier is the UUID of the service to connect to and
-     * client_identifier is the UUID of the client making the request. We use a
-     * client identifier on the connection requests to prevent github actions
-     * from merge artifacts with duplicate names, which could happen as multiple
-     * clients might try to connect to the same service. The contents of the
-     * artifact will be a string in the format "client-ip:nat-port:host-port".
-     */
     const connectionRequests = ReadonlyArray.filter(artifacts, isConnectionRequest);
-
-    /**
-     * Once we have a connection request, we will start blasting udp packets in
-     * the direction of the client and upload a response artifact with the name
-     * "service-identifier_connection-response_client-identifier" and the
-     * contents of the artifact will be a connection string. The client will
-     * then use the information in the response artifact to establish a
-     * connection with the service.
-     */
     yield* λ(
         Function.pipe(
             connectionRequests,
@@ -135,15 +113,14 @@ const program: Effect.Effect<
             Effect.all
         )
     );
-    yield* λ(new NoStopRequest({ message: "No stop request received" }));
-})
-    .pipe(
-        Effect.retry({
-            schedule: Schedule.spaced("30 seconds"),
-            until: (error) => error._tag === "HasStopRequest",
-        })
-    )
-    .pipe(Effect.catchTag("HasStopRequest", () => Effect.unit));
+
+    return false;
+}).pipe(
+    Effect.repeat({
+        until: Boolean,
+        schedule: Schedule.spaced("30 seconds"),
+    })
+);
 
 /**
  * Processes connection requests every 30 seconds until there is a stop request
