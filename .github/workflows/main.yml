@@ -74,6 +74,12 @@ jobs:
           service-identifier: ${{ env.macos-service-identifier }}
           service-cidr: "192.168.${{ env.macos-service-identifier }}.0/24"
 
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mxschmitt/action-tmate@v3
+
   clients:
     runs-on: ${{ matrix.os }}
     needs: [build]
