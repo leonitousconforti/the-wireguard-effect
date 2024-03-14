@@ -445,11 +445,11 @@ export type WireguardKey = Schema.Schema.Type<typeof WireguardKey>;
  * @category Datatypes
  * @internal
  */
-export const Errno = Function.pipe(
+export const SuccessErrno = Function.pipe(
     Schema.templateLiteral(Schema.literal("errno="), Schema.literal(0)),
-    Schema.identifier("Errno"),
-    Schema.description("An errno"),
-    Schema.brand("Errno")
+    Schema.identifier("SuccessErrno"),
+    Schema.description("A successful errno"),
+    Schema.brand("SuccessErrno")
 );
 
 /**
@@ -457,7 +457,7 @@ export const Errno = Function.pipe(
  * @category Brands
  * @internal
  */
-export type Errno = Schema.Schema.Type<typeof Errno>;
+export type SuccessErrno = Schema.Schema.Type<typeof SuccessErrno>;
 
 /**
  * @since 1.0.0
@@ -624,12 +624,12 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
                 `private_key=${Buffer.from(config.PrivateKey, "base64").toString("hex")}`,
                 `listen_port=${config.ListenPort}`,
                 `fwmark=${Predicate.isNotUndefined(config.FirewallMark) ? config.FirewallMark : 0}`,
-                `replace_peers=${options?.replacePeers}`,
+                // `replace_peers=${options?.replacePeers}`,
                 ...config.Peers.flatMap((peer) => [
                     `public_key=${Buffer.from(peer.PublicKey, "base64").toString("hex")}`,
                     `endpoint=${peer.Endpoint.ip}:${peer.Endpoint.natPort}`,
                     `persistent_keepalive_interval=20`,
-                    `replace_allowed_ips=${options?.replaceAllowedIPs}`,
+                    // `replace_allowed_ips=${options?.replaceAllowedIPs}`,
                     ...peer.AllowedIPs.map((allowedIP) =>
                         "ipv4" in allowedIP
                             ? `allowed_ip=${allowedIP.ipv4}/${allowedIP.mask}`
@@ -644,7 +644,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             Stream.run(Sink.last()),
             Effect.map(Option.getOrThrow),
             Effect.map(String.trimEnd),
-            Effect.flatMap(Schema.decodeUnknown(Errno)),
+            Effect.flatMap(Schema.decodeUnknown(SuccessErrno)),
             Effect.catchAll((error) => Effect.fail(new WireguardError({ message: error.message })))
         );
 
@@ -664,7 +664,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             Stream.map(String.trimEnd),
             Stream.filter(String.isNonEmpty),
             Stream.run(Sink.collectAll()),
-            Effect.tap(Function.flow(Chunk.last, Option.getOrThrow, Schema.decodeUnknown(Errno))),
+            Effect.tap(Function.flow(Chunk.last, Option.getOrThrow, Schema.decodeUnknown(SuccessErrno))),
             Effect.map(Chunk.join("\n")),
             Effect.catchAll((error) => Effect.fail(new WireguardError({ message: error.message })))
         );

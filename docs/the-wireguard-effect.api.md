@@ -84,14 +84,6 @@ export type Endpoint = Schema.Schema.Type<typeof Endpoint>;
 // @internal
 export type EndpointEncoded = Schema.Schema.Encoded<typeof Endpoint>;
 
-// Warning: (ae-internal-missing-underscore) The name "Errno" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export const Errno: Schema.brand<Schema.Schema<"errno=0", "errno=0", never>, "Errno">;
-
-// @internal
-export type Errno = Schema.Schema.Type<typeof Errno>;
-
 // Warning: (ae-internal-missing-underscore) The name "IPv4" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
@@ -214,6 +206,14 @@ export type SetupData = Schema.Schema.Type<typeof SetupData>;
 //
 // @internal
 export type SetupDataEncoded = Schema.Schema.Encoded<typeof SetupData>;
+
+// Warning: (ae-internal-missing-underscore) The name "SuccessErrno" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
+export const SuccessErrno: Schema.brand<Schema.Schema<"errno=0", "errno=0", never>, "SuccessErrno">;
+
+// @internal
+export type SuccessErrno = Schema.Schema.Type<typeof SuccessErrno>;
 
 // Warning: (ae-forgotten-export) The symbol "WireguardIniConfig_base" needs to be exported by the entry point index.d.ts
 //
