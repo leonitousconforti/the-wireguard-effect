@@ -1,15 +1,33 @@
 import * as artifacts from "@actions/artifact";
 import * as Platform from "@effect/platform";
+import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as Config from "effect/Config";
+import * as ConfigError from "effect/ConfigError";
 import * as Effect from "effect/Effect";
+import * as Either from "effect/Either";
 import * as Predicate from "effect/Predicate";
+import * as ip from "ip";
+import * as ipAddress from "ip-address";
+import * as Wireguard from "../src/index.js";
 
 /**
  * Retrieves the service identifier from the environment variable and validates
  * that it is a valid UUID.
  */
 export const SERVICE_IDENTIFIER: Config.Config<number> = Config.integer("SERVICE_IDENTIFIER");
+
+/**
+ * Retrieves the service CIDR from the environment variable and validates that
+ * it is a valid CIDR block.
+ */
+export const SERVICE_CIDR: Config.Config<Wireguard.CidrBlock> = Config.string("SERVICE_CIDR").pipe(
+    Config.mapOrFail((cidr) =>
+        Schema.decodeEither(Wireguard.CidrBlock)(cidr as `${string}/${number}`).pipe(
+            Either.mapLeft((error) => ConfigError.InvalidData(["/"], error.message))
+        )
+    )
+);
 
 /** Predicate to check if an artifact is a stop artifact for the service. */
 export const stopArtifact = (
@@ -92,3 +110,28 @@ export const uploadSingleFileArtifact = (
             )
         );
     }).pipe(Effect.scoped);
+
+export const getRangeV4 = (cidr: ipAddress.Address4): string[] => {
+    const ips = [];
+
+    let firstAddressLong = ip.toLong(cidr.startAddress().correctForm());
+    const lastAddressLong = ip.toLong(cidr.endAddress().correctForm());
+
+    for (firstAddressLong; firstAddressLong <= lastAddressLong; firstAddressLong++)
+        ips.push(ip.fromLong(firstAddressLong));
+
+    return ips;
+};
+
+export const getRangeV6 = (cidr: ipAddress.Address6): string[] => {
+    const ips = [];
+
+    const firstAddress = new ipAddress.Address6(cidr.startAddress().correctForm());
+    const lastAddress = new ipAddress.Address6(cidr.endAddress().correctForm());
+
+    for (let index = firstAddress.bigInteger(); index <= lastAddress.bigInteger(); index++) {
+        ips.push(ipAddress.Address6.fromBigInteger(index).correctForm());
+    }
+
+    return ips;
+};

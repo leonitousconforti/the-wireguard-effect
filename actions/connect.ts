@@ -87,9 +87,9 @@ const program: Effect.Effect<
     // Set the service address
     const ip =
         "ipv4" in config.Address
-            ? new ipAddress.Address4(address).startAddress().correctForm()
-            : new ipAddress.Address6(address).startAddress().correctForm();
-    GithubCore.setOutput("service-address", ip);
+            ? helpers.getRangeV4(new ipAddress.Address4(address))
+            : helpers.getRangeV6(new ipAddress.Address6(address));
+    GithubCore.setOutput("service-address", ip[1]);
 
     // Stop the stun keepalive and close the socket so that wireguard can bind
     // to that port now. It needs to be the exact same port as the one we used
