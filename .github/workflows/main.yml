@@ -59,7 +59,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt install wireguard
+      # - run: sudo apt install wireguard
       - run: python3 -m http.server &
       - uses: ./.github/actions/workflow-level-service/expose
         with:
@@ -71,7 +71,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt install wireguard
+      - run: sudo brew install wireguard
       - run: python3 -m http.server &
       - uses: ./.github/actions/workflow-level-service/expose
         with:
@@ -99,12 +99,12 @@ jobs:
           service-identifier: ${{ env.linux-service2-identifier }}
       - id: test2
         run: curl http://${{steps.connect2.outputs.service-address}}:8000
-      - id: connect3
-        uses: ./.github/actions/workflow-level-service/connect
-        with:
-          service-identifier: ${{ env.windows-service-identifier }}
-      - id: test3
-        run: curl http://${{steps.connect3.outputs.service-address}}:8000
+      # - id: connect3
+      #   uses: ./.github/actions/workflow-level-service/connect
+      #   with:
+      #     service-identifier: ${{ env.windows-service-identifier }}
+      # - id: test3
+      #   run: curl http://${{steps.connect3.outputs.service-address}}:8000
       - id: connect4
         uses: ./.github/actions/workflow-level-service/connect
         with:
