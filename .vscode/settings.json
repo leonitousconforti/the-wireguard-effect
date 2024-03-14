@@ -16,7 +16,8 @@
         "tsdoc",
         "typeclass",
         "Userspace",
-        "utun"
+        "utun",
+        "wintun"
     ],
     "search.exclude": {
         "**/node_modules": true,
