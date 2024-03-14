@@ -55,12 +55,10 @@
                         "options": {
                             "copyOperations": [
                                 {
-                                    "hardlink": false,
                                     "sourcePath": "build",
                                     "destinationFolders": ["dist/build"]
                                 },
                                 {
-                                    "hardlink": true,
                                     "sourcePath": "build",
                                     "destinationFolders": [".github/actions/workflow-level-service/build"]
                                 }
