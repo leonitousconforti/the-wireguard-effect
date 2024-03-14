@@ -615,7 +615,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
      */
     public setConfig = (
         config: WireguardIniConfig,
-        options?: { replacePeers: boolean; replaceAllowedIPs: boolean } | undefined
+        _options?: { replacePeers: boolean; replaceAllowedIPs: boolean } | undefined
     ): Effect.Effect<void, WireguardError, never> =>
         Function.pipe(
             // TODO: Could this be extracted to a schema transformation?
@@ -676,7 +676,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         const commands = Function.pipe(
             Match.type<(typeof WireguardInterface.SupportedPlatforms)[number]>(),
             Match.when("win32", () => [
-                `netsh interface ip add address "${this.Name}" address=${"192.168.4.1"} mask=${"255.255.255.0"}`,
+                `netsh interface ip add address "${this.Name}" address=${address} mask=${"255.255.255.0"}`,
             ]),
             Match.when("linux", () => [
                 `ip -4 address add ${subnet} dev ${this.Name}`,

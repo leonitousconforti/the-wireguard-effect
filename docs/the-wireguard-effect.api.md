@@ -287,7 +287,7 @@ export class WireguardInterface extends WireguardInterface_base {
     // (undocumented)
     setAddress: (config: WireguardConfig) => Effect.Effect<void, WireguardError, never>;
     // Warning: (ae-incompatible-release-tags) The symbol "setConfig" is marked as @alpha, but its signature references "WireguardError" which is marked as @internal
-    setConfig: (config: WireguardConfig, options?: {
+    setConfig: (config: WireguardConfig, _options?: {
         replacePeers: boolean;
         replaceAllowedIPs: boolean;
     } | undefined) => Effect.Effect<void, WireguardError, never>;

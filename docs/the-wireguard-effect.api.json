@@ -1352,7 +1352,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ", options?: {\n        replacePeers: boolean;\n        replaceAllowedIPs: boolean;\n    } | undefined) => "
+                  "text": ", _options?: {\n        replacePeers: boolean;\n        replaceAllowedIPs: boolean;\n    } | undefined) => "
                 },
                 {
                   "kind": "Reference",
