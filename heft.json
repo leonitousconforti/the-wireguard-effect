@@ -2,7 +2,11 @@
     "$schema": "https://developer.microsoft.com/json-schemas/heft/v0/heft.schema.json",
     "phasesByName": {
         "build": {
-            "cleanFiles": [{ "sourcePath": "dist" }, { "sourcePath": "build" }],
+            "cleanFiles": [
+                { "sourcePath": "dist" },
+                { "sourcePath": "build" },
+                { "sourcePath": ".github/actions/workflow-level-service/build" }
+            ],
             "tasksByName": {
                 "wireguard-go": {
                     "taskPlugin": {
