@@ -1,3 +1,6 @@
 [submodule "submodules/wireguard-go"]
 	path = submodules/wireguard-go
 	url = https://github.com/WireGuard/wireguard-go
+[submodule "submodules/wireguard-tools"]
+	path = submodules/wireguard-tools
+	url = https://github.com/WireGuard/wireguard-tools
