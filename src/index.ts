@@ -735,7 +735,25 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
     > => {
         const self = this;
         return Effect.gen(function* (λ) {
+            const path = yield* λ(Platform.Path.Path);
+            const fs = yield* λ(Platform.FileSystem.FileSystem);
             const executablePath = yield* λ(WireguardInterface.WireguardGoExecutablePath.pipe(Effect.orDie));
+
+            // Setup wintun if on windows
+            if (process.platform === "win32") {
+                const wireguardGoFolder = path.dirname(executablePath);
+                const wireguardGoDllLocation = path.join(wireguardGoFolder, "wintun.dll");
+                const wireguardGoDllExists = yield* λ(fs.exists(wireguardGoDllLocation).pipe(Effect.orDie));
+                if (!wireguardGoDllExists) {
+                    const arch = process.arch === "x64" ? "amd64" : process.arch;
+                    const wireguardGoDllPath = yield* λ(
+                        path
+                            .fromFileUrl(new URL(`../build/win32-${arch}-wintun.dll`, import.meta.url))
+                            .pipe(Effect.orDie)
+                    );
+                    yield* λ(fs.copyFile(wireguardGoDllPath, wireguardGoDllLocation).pipe(Effect.orDie));
+                }
+            }
 
             yield* λ(
                 Effect.tryPromise({
