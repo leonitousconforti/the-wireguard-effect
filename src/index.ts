@@ -550,7 +550,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
                 os.networkInterfaces(),
                 ReadonlyRecord.keys,
                 ReadonlyArray.filter((name) => regex.test(name)),
-                ReadonlyArray.map(String.replaceAll(/a-z/, "")),
+                ReadonlyArray.map(String.replaceAll(/\D/g, "")),
                 ReadonlyArray.map(Number.parse),
                 ReadonlyArray.filterMap(Function.identity)
             );
