@@ -5,6 +5,7 @@ import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
+import * as Console from "effect/Console";
 import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -751,6 +752,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
                             .fromFileUrl(new URL(`../build/win32-${arch}-wintun.dll`, import.meta.url))
                             .pipe(Effect.orDie)
                     );
+                    yield* λ(Console.log(wireguardGoDllPath));
+                    yield* λ(Console.log(wireguardGoDllLocation));
                     yield* λ(fs.copyFile(wireguardGoDllPath, wireguardGoDllLocation).pipe(Effect.orDie));
                 }
             }
