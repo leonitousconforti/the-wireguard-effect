@@ -50,7 +50,7 @@
         "@rushstack/heft-webpack5-plugin": "0.9.37",
         "@types/heft-jest": "1.0.6",
         "@types/ini": "4.1.0",
-        "@types/node": "20.11.27",
+        "@types/node": "20.11.28",
         "@types/uuid": "9.0.8",
         "bufferutil": "4.0.8",
         "ci-info": "4.0.0",
