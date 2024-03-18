@@ -1,5 +1,7 @@
-temp/
-dist/
+coverage/
+*.tsbuildinfo
 node_modules/
-**/playground.ts
-test/*.conf
+.DS_Store
+dist/
+build/
+docs/

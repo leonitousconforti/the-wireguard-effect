@@ -1,38 +1,82 @@
-// This is a workaround for https://github.com/eslint/eslint/issues/3458
-require("@rushstack/eslint-config/patch/modern-module-resolution");
-
+/* eslint-disable no-undef */
 module.exports = {
-    root: true,
-    extends: [
-        "@rushstack/eslint-config/profile/node",
-        "@rushstack/eslint-config/mixins/tsdoc",
-        "@rushstack/eslint-config/mixins/friendly-locals",
-        "plugin:unicorn/recommended",
-        "plugin:prettier/recommended",
-    ],
-    plugins: ["unicorn", "prettier"],
-    env: { node: true, es2022: true },
-    parserOptions: { ecmaVersion: 2022, sourceType: "module" },
-    rules: {
-        "no-console": "warn",
-        "@typescript-eslint/typedef": "off",
-        "unicorn/no-array-callback-reference": "off",
-        "unicorn/no-array-method-this-argument": "off",
-        "@typescript-eslint/naming-convention": [
-            "error",
-            { format: null, selector: "parameter", filter: { regex: "^_", match: false } },
-        ],
+    ignorePatterns: ["dist", "*.mjs", "docs", "*.md"],
+    parser: "@typescript-eslint/parser",
+    parserOptions: {
+        ecmaVersion: 2018,
+        sourceType: "module",
     },
-    overrides: [
-        {
-            files: ["src/index.ts"],
-            rules: {
-                "dot-notation": "off",
-                "unicorn/switch-case-braces": "off",
-                "unicorn/no-this-assignment": "off",
-                "unicorn/consistent-function-scoping": "off",
+    settings: {
+        "import/parsers": {
+            "@typescript-eslint/parser": [".ts", ".tsx"],
+        },
+        "import/resolver": {
+            typescript: {
+                alwaysTryTypes: true,
             },
         },
+    },
+    extends: [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@effect/recommended",
     ],
-    ignorePatterns: ["dist/", ".eslintrc.cjs"],
+    plugins: ["deprecation", "import", "sort-destructure-keys", "simple-import-sort", "codegen"],
+    rules: {
+        "codegen/codegen": "error",
+        "no-fallthrough": "off",
+        "no-irregular-whitespace": "off",
+        "object-shorthand": "error",
+        "prefer-destructuring": "off",
+        "sort-imports": "off",
+        "no-unused-vars": "off",
+        "prefer-rest-params": "off",
+        "prefer-spread": "off",
+        "import/first": "error",
+        "import/no-cycle": "error",
+        "import/newline-after-import": "error",
+        "import/no-duplicates": "error",
+        "import/no-unresolved": "off",
+        "import/order": "off",
+        "simple-import-sort/imports": "off",
+        "sort-destructure-keys/sort-destructure-keys": "error",
+        "deprecation/deprecation": "off",
+        "@typescript-eslint/array-type": ["warn", { default: "generic", readonly: "generic" }],
+        "@typescript-eslint/member-delimiter-style": 0,
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/ban-types": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-empty-interface": "off",
+        "@typescript-eslint/consistent-type-imports": "warn",
+        "@typescript-eslint/no-unused-vars": [
+            "error",
+            {
+                argsIgnorePattern: "^_",
+                varsIgnorePattern: "^_",
+            },
+        ],
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/camelcase": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/interface-name-prefix": "off",
+        "@typescript-eslint/no-array-constructor": "off",
+        "@typescript-eslint/no-use-before-define": "off",
+        "@typescript-eslint/no-namespace": "off",
+        "@effect/dprint": [
+            "error",
+            {
+                config: {
+                    indentWidth: 2,
+                    lineWidth: 100,
+                    semiColons: "asi",
+                    quoteStyle: "alwaysDouble",
+                    trailingCommas: "never",
+                    operatorPosition: "maintain",
+                    "arrowFunction.useParentheses": "force",
+                },
+            },
+        ],
+    },
 };

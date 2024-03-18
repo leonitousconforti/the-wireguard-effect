@@ -1,0 +1,10 @@
+{
+    "extends": "./tsconfig.base.json",
+    "include": ["actions"],
+    "references": [{ "path": "tsconfig.src.json" }],
+    "compilerOptions": {
+        "noEmit": true,
+        "rootDir": "actions",
+        "tsBuildInfoFile": ".tsbuildinfo/actions.tsbuildinfo"
+    }
+}
