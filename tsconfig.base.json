@@ -45,6 +45,5 @@
                 "name": "@effect/language-service"
             }
         ]
-    },
-    "include": []
+    }
 }

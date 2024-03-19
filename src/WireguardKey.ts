@@ -31,8 +31,8 @@ export type WireguardKey = Schema.Schema.Type<typeof WireguardKey>;
  * Generates a wireguard public private key pair.
  *
  * @example
- * import { generateKeyPair } from "the-wireguard-effect/WireguardKey";
- * const { privateKey, publicKey } = generateKeyPair();
+ * import { generateKeyPair } from "the-wireguard-effect/WireguardKey"
+ * const { privateKey, publicKey } = generateKeyPair()
  *
  * @since 1.0.0
  * @category Crypto

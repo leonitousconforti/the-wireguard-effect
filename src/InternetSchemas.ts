@@ -162,13 +162,14 @@ export type IPv6CidrMask = Schema.Schema.Type<typeof IPv6CidrMask>;
  *
  * @example
  * import * as Schema from "@effect/schema/Schema"
+ *
  * import {
  *      CidrBlock,
  *      IPv4,
  *      IPv4CidrMask,
  *      IPv6,
  *      IPv6CidrMask
- * } from "the-wireguard-effect/InternetSchemas";
+ * } from "the-wireguard-effect/InternetSchemas"
  *
  * const block1 = Schema.decode(CidrBlock)("192.168.1.1/24")
  * const block2 = Schema.decode(CidrBlock)("2001:0db8:85a3:0000:0000:8a2e:0370:7334/64")
@@ -234,18 +235,20 @@ export type CidrBlockEncoded = Schema.Schema.Encoded<typeof CidrBlock>;
  * assumed that the nat port and listen port are the same.
  *
  * @example
+ * import * as Schema from "@effect/schema/Schema"
+ *
  * import {
- *      IPv4,
  *      Port,
+ *      IPv4,
  *      IPv4Endpoint
  * } from "the-wireguard-effect/InternetSchemas"
  *
- * const endpoint1: IPv4Endpoint = IPv4Endpoint("1.2.3.4:51820")
- * const endpoint2: IPv4Endpoint = IPv4Endpoint("1.2.3.4:51820:41820")
+ * const endpoint1 = Schema.decode(IPv4Endpoint)("1.2.3.4:51820")
+ * const endpoint2 = Schema.decode(IPv4Endpoint)("1.2.3.4:51820:41820")
  *
- * const endpoint3: IPv4Endpoint = IPv4Endpoint({
- *      ip: IPv4("1.2.3.4"),
- *      port: Port(51820),
+ * const endpoint3 = Schema.decode(IPv4Endpoint)({
+ *      ip: "1.2.3.4",
+ *      port: 51820,
  * })
  *
  * const endpoint4: IPv4Endpoint = IPv4Endpoint({
@@ -311,18 +314,20 @@ export type IPv4EndpointEncoded = Schema.Schema.Encoded<typeof IPv4Endpoint>;
  * same.
  *
  * @example
+ * import * as Schema from "@effect/schema/Schema"
+ *
  * import {
- *      IPv6,
  *      Port,
+ *      IPv6,
  *      IPv6Endpoint
  * } from "the-wireguard-effect/InternetSchemas"
  *
- * const endpoint1: IPv6Endpoint = IPv6Endpoint("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820")
- * const endpoint2: IPv6Endpoint = IPv6Endpoint("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820:41820")
+ * const endpoint1 = Schema.decode(IPv6Endpoint)("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820")
+ * const endpoint2 = Schema.decode(IPv6Endpoint)("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820:41820")
  *
- * const endpoint3: IPv6Endpoint = IPv6Endpoint({
- *      ip: IPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334"),
- *      port: Port(51820),
+ * const endpoint3 = Schema.decode(IPv6Endpoint)({
+ *      ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+ *      port: 51820,
  * })
  *
  * const endpoint4: IPv6Endpoint = IPv6Endpoint({
@@ -396,41 +401,40 @@ export type IPv6EndpointEncoded = Schema.Schema.Encoded<typeof IPv6Endpoint>;
  * @see {@link IPv6Endpoint}
  *
  * @example
+ * import * as Schema from "@effect/schema/Schema"
  * import {
- *      Port,
+ *      Endpoint,
  *      IPv4,
  *      IPv6,
- *      IPv4Endpoint,
- *      IPv6Endpoint,
- *      Endpoint
+ *      Port
  * } from "the-wireguard-effect/InternetSchemas"
  *
- * const endpoint1: Endpoint = Endpoint("1.2.3.4:51820")
- * const endpoint2: Endpoint = Endpoint("1.2.3.4:51820:41820")
+ * const endpoint1 = Schema.decode(Endpoint)("1.2.3.4:51820")
+ * const endpoint2 = Schema.decode(Endpoint)("1.2.3.4:51820:41820")
  *
- * const endpoint3: Endpoint = Endpoint({
- *      ip: IPv4("1.2.3.4"),
- *      port: Port(51820),
+ * const endpoint3 = Schema.decode(Endpoint)({
+ *      ip: "1.2.3.4",
+ *      port: 51820,
  * })
  *
  * const endpoint4: Endpoint = Endpoint({
  *      ip: IPv4("1.2.3.4"),
  *      natPort: Port(51820),
- *      listenPort: Port(41820)
+ *      listenPort: Port(41820),
  * })
  *
- * const endpoint5: IPv6Endpoint = IPv6Endpoint("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820")
- * const endpoint6: IPv6Endpoint = IPv6Endpoint("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820:41820")
+ * const endpoint5 = Schema.decode(Endpoint)("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820")
+ * const endpoint6 = Schema.decode(Endpoint)("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820:41820")
  *
- * const endpoint7: IPv6Endpoint = IPv6Endpoint({
- *      ip: IPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334"),
- *      port: Port(51820),
+ * const endpoint7 = Schema.decode(Endpoint)({
+ *      ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+ *      port: 51820,
  * })
  *
- * const endpoint8: IPv6Endpoint = IPv6Endpoint({
+ * const endpoint8: Endpoint = Endpoint({
  *      ip: IPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334"),
  *      natPort: Port(51820),
- *      listenPort: Port(41820)
+ *      listenPort: Port(41820),
  * })
  *
  * @since 1.0.0
@@ -456,9 +460,19 @@ export type EndpointEncoded = Schema.Schema.Encoded<typeof Endpoint>;
  * @see {@link Address}
  *
  * @example
- * import { SetupData } from "the-wireguard-effect/InternetSchemas"
+ * import * as Schema from "@effect/schema/Schema"
  *
- * const setupData: SetupData = SetupData([Endpoint("1.1.1.1:51820"), Address("10.0.0.1")])
+ * import {
+ *      Address,
+ *      Endpoint,
+ *      SetupData
+ * } from "the-wireguard-effect/InternetSchemas"
+ *
+ * const setupData1 = Schema.decode(SetupData)(["1.1.1.1:51280", "10.0.0.1"])
+ *
+ * const address = Schema.decodeSync(Address)("10.0.0.1")
+ * const endpoint = Schema.decodeSync(Endpoint)("1.1.1.1:51820")
+ * const setupData2: SetupData = SetupData([endpoint, address])
  *
  * @since 1.0.0
  * @category Datatypes

@@ -18,11 +18,15 @@ import * as WireguardKey from "./WireguardKey.js";
  * A wireguard peer configuration.
  *
  * @example
- * import * as ParseResult from "@effect/schema/ParseResult";
+ * import * as Schema from "@effect/schema/Schema"
+ * import * as Duration from "effect/Duration"
+ * import * as Option from "effect/Option"
+ * import * as InternetSchemas from "the-wireguard-effect/InternetSchemas"
  * import * as WireguardKey from "the-wireguard-effect/WireguardKey"
- * import * as WireguardPeer from "the-wireguard-effect/WireguardPeer"
  *
- * const { publicKey, privateKey: _privateKey } = WireguardKey.generateKeyPair();
+ * import { WireguardPeer } from "the-wireguard-effect/WireguardPeer"
+ *
+ * const { publicKey, privateKey: _privateKey } = WireguardKey.generateKeyPair()
  *
  * // WireguardPeer
  * const peerDirectInstantiation = new WireguardPeer({
@@ -34,7 +38,7 @@ import * as WireguardKey from "./WireguardKey.js";
  *          }),
  *      ],
  *      Endpoint: InternetSchemas.Endpoint(
- *         InternetSchemas.IPv4Endpoint({
+ *          InternetSchemas.IPv4Endpoint({
  *              ip: InternetSchemas.IPv4("192.168.0.1"),
  *              natPort: InternetSchemas.Port(51820),
  *              listenPort: InternetSchemas.Port(51820),
@@ -42,7 +46,7 @@ import * as WireguardKey from "./WireguardKey.js";
  *      ),
  *      PersistentKeepaliveInterval: Duration.seconds(20),
  *      PresharedKey: Option.none(),
- * });
+ * })
  *
  * // Effect.Effect<WireguardPeer, ParseResult.ParseError, never>
  * const peerSchemaInstantiation = Schema.decode(WireguardPeer)({
@@ -50,7 +54,7 @@ import * as WireguardKey from "./WireguardKey.js";
  *      AllowedIPs: ["192.168.0.0/24"],
  *      Endpoint: "192.168.0.1:51820",
  *      PersistentKeepaliveInterval: Duration.seconds(20),
- * });
+ * })
  *
  * @since 1.0.0
  * @category Datatypes
@@ -93,16 +97,25 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
  * A wireguard peer configuration encoded in INI format.
  *
  * @example
- * import * as Effect from "effect/Effect";
- * import * as Function from "effect/Function";
- * import * as Schema from "@effect/schema/Schema";
+ * import * as Effect from "effect/Effect"
+ * import * as Duration from "effect/Duration"
+ * import * as Function from "effect/Function"
+ * import * as Schema from "@effect/schema/Schema"
+ * import * as WireguardKey from "the-wireguard-effect/WireguardKey"
  * import * as WireguardPeer from "the-wireguard-effect/WireguardPeer"
  *
- * const peer: WireguardPeer.WireguardPeer = ...
+ * const { publicKey, privateKey: _privateKey } = WireguardKey.generateKeyPair()
+ *
+ * const peer = Schema.decode(WireguardPeer.WireguardPeer)({
+ *      PublicKey: publicKey,
+ *      AllowedIPs: ["192.168.0.0/24"],
+ *      Endpoint: "192.168.0.1:51820",
+ *      PersistentKeepaliveInterval: Duration.seconds(20),
+ * })
  *
  * const iniPeer = Function.pipe(
  *      peer,
- *      Schema.encode(WireguardPeer.WireguardPeer),
+ *      Effect.flatMap(Schema.encode(WireguardPeer.WireguardPeer)),
  *      Effect.flatMap(Schema.decode(WireguardPeer.WireguardIniPeer)),
  * )
  *
@@ -143,16 +156,25 @@ export const WireguardIniPeer = Function.pipe(
  * A wireguard peer configuration encoded in the userspace api format.
  *
  * @example
- * import * as Effect from "effect/Effect";
- * import * as Function from "effect/Function";
- * import * as Schema from "@effect/schema/Schema";
+ * import * as Effect from "effect/Effect"
+ * import * as Duration from "effect/Duration"
+ * import * as Function from "effect/Function"
+ * import * as Schema from "@effect/schema/Schema"
+ * import * as WireguardKey from "the-wireguard-effect/WireguardKey"
  * import * as WireguardPeer from "the-wireguard-effect/WireguardPeer"
  *
- * const peer: WireguardPeer.WireguardPeer = ...
+ * const { publicKey, privateKey: _privateKey } = WireguardKey.generateKeyPair()
+ *
+ * const peer = Schema.decode(WireguardPeer.WireguardPeer)({
+ *      PublicKey: publicKey,
+ *      AllowedIPs: ["192.168.0.0/24"],
+ *      Endpoint: "192.168.0.1:51820",
+ *      PersistentKeepaliveInterval: Duration.seconds(20),
+ * })
  *
  * const uapiPeer = Function.pipe(
  *      peer,
- *      Schema.encode(WireguardPeer.WireguardPeer),
+ *      Effect.flatMap(Schema.encode(WireguardPeer.WireguardPeer)),
  *      Effect.flatMap(Schema.decode(WireguardPeer.WireguardUapiPeer)),
  * )
  *
