@@ -21,17 +21,17 @@ export const SERVICE_IDENTIFIER: Config.Config<number> = Config.integer("SERVICE
  * Retrieves the service CIDR from the environment variable and validates that
  * it is a valid CIDR block.
  */
-export const SERVICE_CIDR: Config.Config<Wireguard.CidrBlock> = Config.string("SERVICE_CIDR").pipe(
+export const SERVICE_CIDR: Config.Config<Wireguard.InternetSchemas.CidrBlock> = Config.string("SERVICE_CIDR").pipe(
     Config.mapOrFail((cidr) =>
-        Schema.decodeEither(Wireguard.CidrBlock)(cidr as `${string}/${number}`).pipe(
-            Either.mapLeft((error) => ConfigError.InvalidData(["/"], error.message))
-        )
-    )
+        Schema.decodeEither(Wireguard.InternetSchemas.CidrBlock)(cidr as `${string}/${number}`).pipe(
+            Either.mapLeft((error) => ConfigError.InvalidData(["/"], error.message)),
+        ),
+    ),
 );
 
 /** Predicate to check if an artifact is a stop artifact for the service. */
 export const stopArtifact = (
-    serviceIdentifier: number
+    serviceIdentifier: number,
 ): [stopArtifactName: string, isStopArtifact: Predicate.Predicate<artifacts.Artifact>] => [
     `${serviceIdentifier}_stop`,
     (artifact: artifacts.Artifact) => artifact.name === `${serviceIdentifier}_stop`,
@@ -39,7 +39,7 @@ export const stopArtifact = (
 
 /** Predicate to check if an artifact is a connection request for the service. */
 export const connectionRequestArtifact = (
-    serviceIdentifier: number
+    serviceIdentifier: number,
 ): [connectionRequestName: string, isConnectionRequest: Predicate.Predicate<artifacts.Artifact>] => [
     `${serviceIdentifier}_connection-request`,
     (artifact: artifacts.Artifact) => artifact.name.startsWith(`${serviceIdentifier}_connection-request`),
@@ -48,7 +48,7 @@ export const connectionRequestArtifact = (
 /** Predicate to check if an artifact is a connection response for the service. */
 export const connectionResponseArtifact = (
     serviceIdentifier: number,
-    clientIdentifier: string
+    clientIdentifier: string,
 ): [connectionResponseName: string, isConnectionResponse: Predicate.Predicate<artifacts.Artifact>] => [
     `${serviceIdentifier}_connection-response_${clientIdentifier}`,
     (artifact: artifacts.Artifact) => artifact.name === `${serviceIdentifier}_connection-response_${clientIdentifier}`,
@@ -66,14 +66,14 @@ export const listArtifacts: Effect.Effect<
 
 /** Delete an artifact by name. */
 export const deleteArtifact = (
-    artifactName: string
+    artifactName: string,
 ): Effect.Effect<artifacts.DeleteArtifactResponse, Cause.UnknownException, never> =>
     Effect.tryPromise(() => artifactClient.deleteArtifact(artifactName));
 
 /** Download a single file artifact by ID and extracts the desired file. */
 export const downloadSingleFileArtifact = (
     artifactId: number,
-    artifactFile: string
+    artifactFile: string,
 ): Effect.Effect<
     string,
     Cause.UnknownException | Error | Platform.Error.PlatformError,
@@ -92,7 +92,7 @@ export const downloadSingleFileArtifact = (
 /** Upload a single file artifact. */
 export const uploadSingleFileArtifact = (
     artifactName: string,
-    data: string
+    data: string,
 ): Effect.Effect<
     void,
     Cause.UnknownException | Platform.Error.PlatformError,
@@ -106,8 +106,8 @@ export const uploadSingleFileArtifact = (
         yield* λ(fs.writeFileString(artifactFile, data));
         yield* λ(
             Effect.tryPromise(() =>
-                artifactClient.uploadArtifact(artifactName, [artifactFile], temporaryDirectory, { retentionDays: 1 })
-            )
+                artifactClient.uploadArtifact(artifactName, [artifactFile], temporaryDirectory, { retentionDays: 1 }),
+            ),
         );
     }).pipe(Effect.scoped);
 

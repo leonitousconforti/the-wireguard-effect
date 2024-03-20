@@ -186,10 +186,10 @@ export const generateHubSpokeConfigs: {
             PublicKey: hubKeys.publicKey,
             Endpoint: Tuple.getFirst(hubsData),
             AllowedIPs: [
-                InternetSchemas.CidrBlock({
-                    ipv4: InternetSchemas.IPv4(Tuple.getSecond(hubsData)),
-                    mask: InternetSchemas.IPv4CidrMask(32),
-                }),
+                {
+                    ipv4: Tuple.getSecond(hubsData),
+                    mask: 32,
+                },
             ],
         };
 
@@ -200,10 +200,10 @@ export const generateHubSpokeConfigs: {
                 Endpoint: Tuple.getFirst(spoke),
                 PublicKey: keys.publicKey,
                 AllowedIPs: [
-                    InternetSchemas.CidrBlock({
+                    {
                         ipv4: InternetSchemas.IPv4(Tuple.getSecond(spoke)),
                         mask: InternetSchemas.IPv4CidrMask(32),
-                    }),
+                    },
                 ],
             };
             return Tuple.make(Tuple.make(keys.privateKey, spoke), peerConfig);
@@ -213,10 +213,10 @@ export const generateHubSpokeConfigs: {
         const hubConfig = yield* λ(
             Schema.decode(WireguardConfig.WireguardConfig)({
                 PrivateKey: hubKeys.privateKey,
-                Address: InternetSchemas.CidrBlock({
-                    ipv4: InternetSchemas.IPv4(Tuple.getSecond(hubsData)),
-                    mask: InternetSchemas.IPv4CidrMask(24),
-                }),
+                Address: {
+                    ipv4: Tuple.getSecond(hubsData),
+                    mask: 24,
+                },
                 ListenPort: Tuple.getFirst(hubsData).listenPort,
                 Peers: ReadonlyArray.map(spokePeerConfigs, Tuple.getSecond),
             }),
@@ -230,10 +230,10 @@ export const generateHubSpokeConfigs: {
                     Schema.decode(WireguardConfig.WireguardConfig)({
                         PrivateKey: privateKey,
                         Peers: [hubPeerConfig],
-                        Address: InternetSchemas.CidrBlock({
-                            ipv4: InternetSchemas.IPv4(Tuple.getSecond(spoke)),
-                            mask: InternetSchemas.IPv4CidrMask(24),
-                        }),
+                        Address: {
+                            ipv4: Tuple.getSecond(spoke),
+                            mask: 24,
+                        },
                         ListenPort: Tuple.getFirst(spoke).listenPort,
                     }),
                 ),

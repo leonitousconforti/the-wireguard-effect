@@ -61,6 +61,12 @@ devDependencies:
   '@effect/typeclass':
     specifier: 0.23.8
     version: 0.23.8(effect@2.4.8)
+  '@protobuf-ts/runtime':
+    specifier: 2.9.4
+    version: 2.9.4
+  '@protobuf-ts/runtime-rpc':
+    specifier: 2.9.4
+    version: 2.9.4
   '@tsconfig/node18':
     specifier: 18.2.2
     version: 18.2.2

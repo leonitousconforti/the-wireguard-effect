@@ -133,9 +133,7 @@ export const WireguardIniPeer = Function.pipe(
             const peerData = structuredClone(peer) as Writeable<Partial<WireguardPeer>>;
             delete peerData["AllowedIPs"];
             const basic = ini.encode(peerData, { bracketedArray: false, section: "Peer", whitespace: true });
-            const aps = ReadonlyArray.map(peer.AllowedIPs, (ap) =>
-                "ipv4" in ap ? `AllowedIPs = ${ap.ipv4}/${ap.mask}` : `AllowedIPs = ${ap.ipv6}/${ap.mask}`,
-            );
+            const aps = ReadonlyArray.map(peer.AllowedIPs, (ap) => `AllowedIPs = ${ap.ip}/${ap.mask}`);
             return Effect.succeed(String.concat(basic, aps.join("\n")));
         },
         // Decoding is likewise trivial using the ini library.
@@ -201,7 +199,7 @@ export const WireguardUapiPeer = Function.pipe(
 
             const allowedIps = Function.pipe(
                 peer.AllowedIPs,
-                ReadonlyArray.map((ap) => ("ipv4" in ap ? `${ap.ipv4}/${ap.mask}` : `${ap.ipv6}/${ap.mask}`)),
+                ReadonlyArray.map((ap) => `${ap.ip}/${ap.mask}`),
                 ReadonlyArray.map((ap) => `allowed_ip=${ap}`),
                 ReadonlyArray.join("\n"),
             );

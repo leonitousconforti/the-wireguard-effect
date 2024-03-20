@@ -150,7 +150,7 @@ export const setAddress = (
     interfaceObject: WireguardInterface.WireguardInterface,
     config: WireguardConfig.WireguardConfig,
 ): Effect.Effect<void, WireguardError.WireguardError, never> => {
-    const address = "ipv4" in config.Address ? config.Address.ipv4 : config.Address.ipv6;
+    const address = config.Address.ip;
     const subnet = `${address}/${config.Address.mask}`;
 
     const commands = Function.pipe(
