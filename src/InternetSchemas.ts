@@ -5,6 +5,7 @@
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Effect from "effect/Effect";
+import * as Either from "effect/Either";
 import * as Function from "effect/Function";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
@@ -27,9 +28,14 @@ type Split<Str extends string, Delimiter extends string> = string extends Str | 
  * An operating system port number.
  *
  * @example
+ * import * as Schema from "@effect/schema/Schema"
  * import { Port } from "the-wireguard-effect/InternetSchemas"
  *
  * const port: Port = Port(8080)
+ *
+ * const decodePort = Schema.decodeSync(Port)
+ * assert.throws(() => decodePort(65536))
+ * assert.doesNotThrow(() => decodePort(8080))
  *
  * @since 1.0.0
  * @category Datatypes
@@ -49,18 +55,21 @@ export type Port = Schema.Schema.Type<typeof Port>;
  * An IPv4 address.
  *
  * @example
+ * import * as Schema from "@effect/schema/Schema"
  * import { IPv4 } from "the-wireguard-effect/InternetSchemas"
  *
  * const ipv4: IPv4 = IPv4("1.1.1.1")
+ *
+ * const decodeIPv4 = Schema.decodeSync(IPv4)
+ * assert.throws(() => decodeIPv4("1.1.a.1"))
+ * assert.doesNotThrow(() => decodeIPv4("1.1.1.1"))
  *
  * @since 1.0.0
  * @category Datatypes
  */
 export const IPv4 = Function.pipe(
     Schema.string,
-    Schema.filter((s, _options, ast) =>
-        net.isIPv4(s) ? Option.none() : Option.some(new ParseResult.Type(ast, s, "Expected an ipv4 address")),
-    ),
+    Schema.filter((s, _options, ast) => (net.isIPv4(s) ? Option.none() : Option.some(new ParseResult.Type(ast, s)))),
     Schema.identifier("IPv4"),
     Schema.description("An ipv4 address"),
     Schema.brand("IPv4"),
@@ -73,18 +82,21 @@ export type IPv4 = Schema.Schema.Type<typeof IPv4>;
  * An IPv6 address.
  *
  * @example
+ * import * as Schema from "@effect/schema/Schema"
  * import { IPv6 } from "the-wireguard-effect/InternetSchemas"
  *
  * const ipv6: IPv6 = IPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
+ *
+ * const decodeIPv6 = Schema.decodeSync(IPv6)
+ * assert.throws(() => decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334:"))
+ * assert.doesNotThrow(() => decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
  *
  * @since 1.0.0
  * @category Datatypes
  */
 export const IPv6 = Function.pipe(
     Schema.string,
-    Schema.filter((s, _options, ast) =>
-        net.isIPv6(s) ? Option.none() : Option.some(new ParseResult.Type(ast, s, "Expected an ipv6 address")),
-    ),
+    Schema.filter((s, _options, ast) => (net.isIPv6(s) ? Option.none() : Option.some(new ParseResult.Type(ast, s)))),
     Schema.identifier("IPv6"),
     Schema.description("An ipv6 address"),
     Schema.brand("IPv6"),
@@ -100,10 +112,17 @@ export type IPv6 = Schema.Schema.Type<typeof IPv6>;
  * @see {@link IPv6}
  *
  * @example
+ * import * as Schema from "@effect/schema/Schema"
  * import { Address } from "the-wireguard-effect/InternetSchemas"
  *
  * const address1: Address = Address("1.1.1.1")
  * const address2: Address = Address("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
+ *
+ * const decodeAddress = Schema.decodeSync(Address)
+ * assert.throws(() => decodeAddress("1.1.b.1"))
+ * assert.throws(() => decodeAddress("2001:0db8:85a3:0000:0000:8a2e:0370:7334:"))
+ * assert.doesNotThrow(() => decodeAddress("1.1.1.2"))
+ * assert.doesNotThrow(() => decodeAddress("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
  *
  * @since 1.0.0
  * @category Datatypes
@@ -119,119 +138,144 @@ export const Address = Function.pipe(
 export type Address = Schema.Schema.Type<typeof Address>;
 
 /**
+ * An IPv4 address as a bigint, helpful for some cidr and subnet related calculations.
+ *
+ * @example
+ * import * as Schema from "@effect/schema/Schema"
+ * import { Address, IPv4Bigint } from "the-wireguard-effect/InternetSchemas"
+ *
+ * const address1 = Schema.decode(IPv4Bigint)(Address("1.1.1.1"))
+ *
+ * @since 1.0.0
+ * @category Datatypes
+ */
+export const IPv4Bigint = Schema.transformOrFail(
+    IPv4,
+    Schema.struct({
+        value: Schema.bigintFromSelf,
+        family: Schema.literal("ipv4"),
+    }),
+    (address, _options, _ast) =>
+        Function.pipe(
+            address,
+            String.split("."),
+            ReadonlyArray.map((s) => Number.parseInt(s, 10)),
+            ReadonlyArray.map((n) => n.toString(16)),
+            ReadonlyArray.map(String.padStart(2, "0")),
+            ReadonlyArray.join(""),
+            (hex) => BigInt(`0x${hex}`),
+            (bigint) => ({ value: bigint, family: "ipv4" as const }),
+            Effect.succeed,
+        ),
+    (data, _options, _ast) => {
+        const padded = data.value.toString(16).replace(/:/g, "").padStart(8, "0");
+        const groups: number[] = [];
+        for (let i = 0; i < 8; i += 2) {
+            const h = padded.slice(i, i + 2);
+            groups.push(parseInt(h, 16));
+        }
+        return Schema.decodeEither(IPv4)(groups.join(".")).pipe(Either.mapLeft(({ error }) => error));
+    },
+).annotations({ identifier: "IPv4Bigint", description: "An ipv4 address as a bigint" });
+
+/** @since 1.0.0 */
+export type IPv4Bigint = Schema.Schema.Type<typeof IPv4Bigint>;
+
+/**
+ * An IPv6 address as a bigint, helpful for some cidr and subnet related calculations.
+ *
+ * @example
+ * import * as Schema from "@effect/schema/Schema"
+ *
+ * import { Address, IPv6Bigint } from "the-wireguard-effect/InternetSchemas"
+ * const address1 = Schema.decode(IPv6Bigint)(Address("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
+ *
+ * @since 1.0.0
+ * @category Datatypes
+ */
+export const IPv6Bigint = Schema.transformOrFail(
+    IPv6,
+    Schema.struct({
+        value: Schema.bigintFromSelf,
+        family: Schema.literal("ipv6"),
+    }),
+    (address, _options, ast) => {
+        function paddedHex(octet: string): string {
+            return parseInt(octet, 16).toString(16).padStart(4, "0");
+        }
+
+        let groups: string[] = [];
+        const halves = address.split("::");
+
+        if (halves.length === 2) {
+            let first = halves[0].split(":");
+            let last = halves[1].split(":");
+
+            if (first.length === 1 && first[0] === "") {
+                first = [];
+            }
+            if (last.length === 1 && last[0] === "") {
+                last = [];
+            }
+
+            const remaining = 8 - (first.length + last.length);
+            if (!remaining) {
+                return Effect.fail(new ParseResult.Type(ast, "Error parsing groups"));
+            }
+
+            groups = groups.concat(first);
+            for (let i = 0; i < remaining; i++) {
+                groups.push("0");
+            }
+            groups = groups.concat(last);
+        } else if (halves.length === 1) {
+            groups = address.split(":");
+        } else {
+            return Effect.fail(new ParseResult.Type(ast, "Too many :: groups found"));
+        }
+
+        groups = groups.map((group: string) => parseInt(group, 16).toString(16));
+        if (groups.length !== 8) {
+            return Effect.fail(new ParseResult.Type(ast, "Invalid number of groups"));
+        }
+
+        const value = BigInt(`0x${groups.map(paddedHex).join("")}`);
+        return Effect.succeed({ value, family: "ipv6" as const });
+    },
+    (data, _options, _ast) => {
+        const hex = data.value.toString(16).padStart(32, "0");
+        const groups = [];
+        for (let i = 0; i < 8; i++) {
+            groups.push(hex.slice(i * 4, (i + 1) * 4));
+        }
+        return Schema.decodeEither(IPv6)(groups.join(":")).pipe(Either.mapLeft(({ error }) => error));
+    },
+).annotations({ identifier: "IPv6Bigint", description: "An ipv6 address as a bigint" });
+
+/** @since 1.0.0 */
+export type IPv6Bigint = Schema.Schema.Type<typeof IPv6Bigint>;
+
+/**
  * An IP address as a bigint, helpful for some cidr and subnet related calculations.
  *
  * @example
  * import * as Schema from "@effect/schema/Schema"
  *
- * import { Address, BigintAddress } from "the-wireguard-effect/InternetSchemas"
- *
- * const address1 = Schema.decode(BigintAddress)(Address("1.1.1.1"))
- * const address2 = Schema.decode(BigintAddress)(Address("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
+ * import { Address, BigintFromAddress } from "the-wireguard-effect/InternetSchemas"
+ * const address1 = Schema.decode(BigintFromAddress)(Address("1.1.1.1"))
+ * const address2 = Schema.decode(BigintFromAddress)(Address("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
  *
  * @since 1.0.0
  * @category Datatypes
  */
-export const BigintAddress = Function.pipe(
-    Schema.transformOrFail(
-        Address,
-        Schema.struct({
-            value: Schema.bigintFromSelf,
-            family: Schema.union(Schema.literal("ipv4"), Schema.literal("ipv6")),
-        }),
-        (address, _options, ast) => {
-            const isIPv4 = Schema.is(IPv4)(address);
-            const isIPv6 = Schema.is(IPv6)(address);
-
-            if (isIPv4) {
-                const value = Function.pipe(
-                    address,
-                    String.split("."),
-                    ReadonlyArray.map((s) => Number.parseInt(s, 10)),
-                    ReadonlyArray.map((n) => n.toString(16)),
-                    ReadonlyArray.map(String.padStart(2, "0")),
-                    ReadonlyArray.join(""),
-                    (hex) => BigInt(`0x${hex}`),
-                );
-                return Effect.succeed({ value, family: "ipv4" as const });
-            }
-
-            if (isIPv6) {
-                function paddedHex(octet: string): string {
-                    return parseInt(octet, 16).toString(16).padStart(4, "0");
-                }
-
-                let groups: string[] = [];
-                const halves = address.split("::");
-
-                if (halves.length === 2) {
-                    let first = halves[0].split(":");
-                    let last = halves[1].split(":");
-
-                    if (first.length === 1 && first[0] === "") {
-                        first = [];
-                    }
-                    if (last.length === 1 && last[0] === "") {
-                        last = [];
-                    }
-
-                    const remaining = 8 - (first.length + last.length);
-                    if (!remaining) {
-                        return Effect.fail(new ParseResult.Type(ast, "Error parsing groups"));
-                    }
-
-                    groups = groups.concat(first);
-                    for (let i = 0; i < remaining; i++) {
-                        groups.push("0");
-                    }
-                    groups = groups.concat(last);
-                } else if (halves.length === 1) {
-                    groups = address.split(":");
-                } else {
-                    return Effect.fail(new ParseResult.Type(ast, "Too many :: groups found"));
-                }
-
-                groups = groups.map((group: string) => parseInt(group, 16).toString(16));
-                if (groups.length !== 8) {
-                    return Effect.fail(new ParseResult.Type(ast, "Invalid number of groups"));
-                }
-
-                const value = BigInt(`0x${groups.map(paddedHex).join("")}`);
-                return Effect.succeed({ value, family: "ipv6" as const });
-            }
-
-            return Effect.succeed(Function.absurd<{ value: bigint; family: "ipv4" | "ipv6" }>(address));
-        },
-        ({ value, family }, _options, _ast) => {
-            if (family === "ipv6") {
-                const hex = value.toString(16).padStart(32, "0");
-                const groups = [];
-                for (let i = 0; i < 8; i++) {
-                    groups.push(hex.slice(i * 4, (i + 1) * 4));
-                }
-                return Effect.succeed(Schema.decodeSync(Address)(groups.join(":")));
-            }
-
-            if (family === "ipv4") {
-                const padded = value.toString(16).replace(/:/g, "").padStart(8, "0");
-                const groups = [];
-                for (let i = 0; i < 8; i += 2) {
-                    const h = padded.slice(i, i + 2);
-                    groups.push(parseInt(h, 16));
-                }
-                return Effect.succeed(Schema.decodeSync(Address)(groups.join(".")));
-            }
-
-            return Effect.succeed(Function.absurd<Address>(family));
-        },
-    ),
-    Schema.identifier("BigintAddress"),
+export const BigintFromAddress = Function.pipe(
+    Schema.union(IPv4Bigint, IPv6Bigint),
+    Schema.identifier("BigintFromAddress"),
     Schema.description("An ipv4 or ipv6 address as a bigint"),
-    Schema.brand("BigintAddress"),
 );
 
 /** @since 1.0.0 */
-export type BigintAddress = Schema.Schema.Type<typeof BigintAddress>;
+export type BigintFromAddress = Schema.Schema.Type<typeof BigintFromAddress>;
 
 /**
  * An ipv4 cidr mask, which is a number between 0 and 32.
@@ -308,14 +352,14 @@ export class IPv4CidrBlock extends Schema.Class<IPv4CidrBlock>("IPv4CidrBlock")(
     > => {
         const self = this;
         return Effect.gen(function* (λ) {
-            const { value: minValue } = yield* λ(Schema.decode(BigintAddress)(self.networkAddress));
-            const { value: maxValue } = yield* λ(Schema.decode(BigintAddress)(self.broadcastAddress));
+            const { value: minValue } = yield* λ(Schema.decode(BigintFromAddress)(self.networkAddress));
+            const { value: maxValue } = yield* λ(Schema.decode(BigintFromAddress)(self.broadcastAddress));
 
             const stream = Function.pipe(
                 Stream.iterate(minValue, (n) => n + 1n),
                 Stream.takeWhile((n) => n <= maxValue),
-                Stream.map((n) => BigintAddress({ value: n, family: self.family })),
-                Stream.mapEffect(Schema.encode(BigintAddress)),
+                Stream.map((n) => ({ value: n, family: self.family })),
+                Stream.mapEffect(Schema.encode(BigintFromAddress)),
                 Stream.mapEffect(Schema.decode(IPv4)),
             );
 
@@ -324,8 +368,8 @@ export class IPv4CidrBlock extends Schema.Class<IPv4CidrBlock>("IPv4CidrBlock")(
     };
 
     public get total() {
-        const { value: minValue } = Schema.decodeSync(BigintAddress)(this.networkAddress);
-        const { value: maxValue } = Schema.decodeSync(BigintAddress)(this.broadcastAddress);
+        const { value: minValue } = Schema.decodeSync(BigintFromAddress)(this.networkAddress);
+        const { value: maxValue } = Schema.decodeSync(BigintFromAddress)(this.broadcastAddress);
         return maxValue - minValue + 1n;
     }
 }
@@ -361,14 +405,14 @@ export class IPv6CidrBlock extends Schema.Class<IPv6CidrBlock>("IPv6CidrBlock")(
     > => {
         const self = this;
         return Effect.gen(function* (λ) {
-            const { value: minValue } = yield* λ(Schema.decode(BigintAddress)(self.networkAddress));
-            const { value: maxValue } = yield* λ(Schema.decode(BigintAddress)(self.broadcastAddress));
+            const { value: minValue } = yield* λ(Schema.decode(BigintFromAddress)(self.networkAddress));
+            const { value: maxValue } = yield* λ(Schema.decode(BigintFromAddress)(self.broadcastAddress));
 
             const stream = Function.pipe(
                 Stream.iterate(minValue, (n) => n + 1n),
                 Stream.takeWhile((n) => n <= maxValue),
-                Stream.map((n) => BigintAddress({ value: n, family: self.family })),
-                Stream.mapEffect(Schema.encode(BigintAddress)),
+                Stream.map((n) => ({ value: n, family: self.family })),
+                Stream.mapEffect(Schema.encode(BigintFromAddress)),
                 Stream.mapEffect(Schema.decode(IPv6)),
             );
 
@@ -377,8 +421,8 @@ export class IPv6CidrBlock extends Schema.Class<IPv6CidrBlock>("IPv6CidrBlock")(
     };
 
     public get total() {
-        const { value: minValue } = Schema.decodeSync(BigintAddress)(this.networkAddress);
-        const { value: maxValue } = Schema.decodeSync(BigintAddress)(this.broadcastAddress);
+        const { value: minValue } = Schema.decodeSync(BigintFromAddress)(this.networkAddress);
+        const { value: maxValue } = Schema.decodeSync(BigintFromAddress)(this.broadcastAddress);
         return maxValue - minValue + 1n;
     }
 }
@@ -427,7 +471,7 @@ export const CidrBlock = Function.pipe(
                         : yield* λ(Schema.decode(Schema.compose(Schema.NumberFromString, IPv6CidrMask))(mask));
 
                 const bits = family === "ipv4" ? 32 : 128;
-                const bigIntegerAddress = yield* λ(Schema.decode(BigintAddress)(ip));
+                const bigIntegerAddress = yield* λ(Schema.decode(BigintFromAddress)(ip));
 
                 const networkAddressString =
                     bigIntegerAddress.value.toString(2).padStart(bits, "0").slice(0, maskParsed) +
@@ -435,7 +479,7 @@ export const CidrBlock = Function.pipe(
 
                 const networkAddressBigInt = BigInt(`0b${networkAddressString}`);
                 const networkAddress = yield* λ(
-                    Schema.encode(BigintAddress)(BigintAddress({ value: networkAddressBigInt, family })),
+                    Schema.encode(BigintFromAddress)({ value: networkAddressBigInt, family }),
                 );
 
                 const broadcastAddressString =
@@ -444,7 +488,7 @@ export const CidrBlock = Function.pipe(
 
                 const broadcastAddressBigInt = BigInt(`0b${broadcastAddressString}`);
                 const broadcastAddress = yield* λ(
-                    Schema.encode(BigintAddress)(BigintAddress({ value: broadcastAddressBigInt, family })),
+                    Schema.encode(BigintFromAddress)({ value: broadcastAddressBigInt, family }),
                 );
 
                 return family === "ipv4"

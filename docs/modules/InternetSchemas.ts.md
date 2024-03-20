@@ -14,29 +14,33 @@ Added in v1.0.0
 
 - [Datatypes](#datatypes)
   - [Address](#address)
-  - [BigintAddress](#bigintaddress)
+  - [BigintFromAddress](#bigintfromaddress)
   - [CidrBlock](#cidrblock)
   - [Endpoint](#endpoint)
   - [IPv4](#ipv4)
+  - [IPv4Bigint](#ipv4bigint)
   - [IPv4CidrMask](#ipv4cidrmask)
   - [IPv4Endpoint](#ipv4endpoint)
   - [IPv6](#ipv6)
+  - [IPv6Bigint](#ipv6bigint)
   - [IPv6CidrMask](#ipv6cidrmask)
   - [IPv6Endpoint](#ipv6endpoint)
   - [Port](#port)
   - [SetupData](#setupdata)
 - [utils](#utils)
   - [Address (type alias)](#address-type-alias)
-  - [BigintAddress (type alias)](#bigintaddress-type-alias)
+  - [BigintFromAddress (type alias)](#bigintfromaddress-type-alias)
   - [CidrBlock (type alias)](#cidrblock-type-alias)
   - [CidrBlockEncoded (type alias)](#cidrblockencoded-type-alias)
   - [Endpoint (type alias)](#endpoint-type-alias)
   - [EndpointEncoded (type alias)](#endpointencoded-type-alias)
   - [IPv4 (type alias)](#ipv4-type-alias)
+  - [IPv4Bigint (type alias)](#ipv4bigint-type-alias)
   - [IPv4CidrMask (type alias)](#ipv4cidrmask-type-alias)
   - [IPv4Endpoint (type alias)](#ipv4endpoint-type-alias)
   - [IPv4EndpointEncoded (type alias)](#ipv4endpointencoded-type-alias)
   - [IPv6 (type alias)](#ipv6-type-alias)
+  - [IPv6Bigint (type alias)](#ipv6bigint-type-alias)
   - [IPv6CidrMask (type alias)](#ipv6cidrmask-type-alias)
   - [IPv6Endpoint (type alias)](#ipv6endpoint-type-alias)
   - [IPv6EndpointEncoded (type alias)](#ipv6endpointencoded-type-alias)
@@ -69,39 +73,41 @@ export declare const Address: Schema.brand<
 **Example**
 
 ```ts
+import * as Schema from "@effect/schema/Schema"
 import { Address } from "the-wireguard-effect/InternetSchemas"
 
 const address1: Address = Address("1.1.1.1")
 const address2: Address = Address("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
+
+const decodeAddress = Schema.decodeSync(Address)
+assert.throws(() => decodeAddress("1.1.b.1"))
+assert.throws(() => decodeAddress("2001:0db8:85a3:0000:0000:8a2e:0370:7334:"))
+assert.doesNotThrow(() => decodeAddress("1.1.1.2"))
+assert.doesNotThrow(() => decodeAddress("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
 ```
 
 Added in v1.0.0
 
-## BigintAddress
+## BigintFromAddress
 
 An IP address as a bigint, helpful for some cidr and subnet related calculations.
 
 **Signature**
 
 ```ts
-export declare const BigintAddress: Schema.brand<
-  Schema.transformOrFail<
-    Schema.brand<
-      Schema.union<
-        [
-          Schema.brand<Schema.Schema<string, string, never>, "IPv4">,
-          Schema.brand<Schema.Schema<string, string, never>, "IPv6">
-        ]
-      >,
-      "Address"
+export declare const BigintFromAddress: Schema.union<
+  [
+    Schema.transformOrFail<
+      Schema.brand<Schema.Schema<string, string, never>, "IPv4">,
+      Schema.struct<{ value: Schema.bigintFromSelf; family: Schema.literal<["ipv4"]> }>,
+      never
     >,
-    Schema.struct<{
-      value: Schema.bigintFromSelf
-      family: Schema.union<[Schema.literal<["ipv4"]>, Schema.literal<["ipv6"]>]>
-    }>,
-    never
-  >,
-  "BigintAddress"
+    Schema.transformOrFail<
+      Schema.brand<Schema.Schema<string, string, never>, "IPv6">,
+      Schema.struct<{ value: Schema.bigintFromSelf; family: Schema.literal<["ipv6"]> }>,
+      never
+    >
+  ]
 >
 ```
 
@@ -110,10 +116,9 @@ export declare const BigintAddress: Schema.brand<
 ```ts
 import * as Schema from "@effect/schema/Schema"
 
-import { Address, BigintAddress } from "the-wireguard-effect/InternetSchemas"
-
-const address1 = Schema.decode(BigintAddress)(Address("1.1.1.1"))
-const address2 = Schema.decode(BigintAddress)(Address("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
+import { Address, BigintFromAddress } from "the-wireguard-effect/InternetSchemas"
+const address1 = Schema.decode(BigintFromAddress)(Address("1.1.1.1"))
+const address2 = Schema.decode(BigintFromAddress)(Address("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
 ```
 
 Added in v1.0.0
@@ -278,9 +283,39 @@ export declare const IPv4: Schema.brand<Schema.Schema<string, string, never>, "I
 **Example**
 
 ```ts
+import * as Schema from "@effect/schema/Schema"
 import { IPv4 } from "the-wireguard-effect/InternetSchemas"
 
 const ipv4: IPv4 = IPv4("1.1.1.1")
+
+const decodeIPv4 = Schema.decodeSync(IPv4)
+assert.throws(() => decodeIPv4("1.1.a.1"))
+assert.doesNotThrow(() => decodeIPv4("1.1.1.1"))
+```
+
+Added in v1.0.0
+
+## IPv4Bigint
+
+An IPv4 address as a bigint, helpful for some cidr and subnet related calculations.
+
+**Signature**
+
+```ts
+export declare const IPv4Bigint: Schema.transformOrFail<
+  Schema.brand<Schema.Schema<string, string, never>, "IPv4">,
+  Schema.struct<{ value: Schema.bigintFromSelf; family: Schema.literal<["ipv4"]> }>,
+  never
+>
+```
+
+**Example**
+
+```ts
+import * as Schema from "@effect/schema/Schema"
+
+import { Address, IPv4Bigint } from "the-wireguard-effect/InternetSchemas"
+const address1 = Schema.decode(IPv4Bigint)(Address("1.1.1.1"))
 ```
 
 Added in v1.0.0
@@ -379,9 +414,39 @@ export declare const IPv6: Schema.brand<Schema.Schema<string, string, never>, "I
 **Example**
 
 ```ts
+import * as Schema from "@effect/schema/Schema"
 import { IPv6 } from "the-wireguard-effect/InternetSchemas"
 
 const ipv6: IPv6 = IPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
+
+const decodeIPv6 = Schema.decodeSync(IPv6)
+assert.throws(() => decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334:"))
+assert.doesNotThrow(() => decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
+```
+
+Added in v1.0.0
+
+## IPv6Bigint
+
+An IPv6 address as a bigint, helpful for some cidr and subnet related calculations.
+
+**Signature**
+
+```ts
+export declare const IPv6Bigint: Schema.transformOrFail<
+  Schema.brand<Schema.Schema<string, string, never>, "IPv6">,
+  Schema.struct<{ value: Schema.bigintFromSelf; family: Schema.literal<["ipv6"]> }>,
+  never
+>
+```
+
+**Example**
+
+```ts
+import * as Schema from "@effect/schema/Schema"
+
+import { Address, IPv6Bigint } from "the-wireguard-effect/InternetSchemas"
+const address1 = Schema.decode(IPv6Bigint)(Address("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
 ```
 
 Added in v1.0.0
@@ -481,9 +546,14 @@ export declare const Port: Schema.brand<Schema.Schema<number, number, never>, "P
 **Example**
 
 ```ts
+import * as Schema from "@effect/schema/Schema"
 import { Port } from "the-wireguard-effect/InternetSchemas"
 
 const port: Port = Port(8080)
+
+const decodePort = Schema.decodeSync(Port)
+assert.throws(() => decodePort(65536))
+assert.doesNotThrow(() => decodePort(8080))
 ```
 
 Added in v1.0.0
@@ -600,12 +670,12 @@ export type Address = Schema.Schema.Type<typeof Address>
 
 Added in v1.0.0
 
-## BigintAddress (type alias)
+## BigintFromAddress (type alias)
 
 **Signature**
 
 ```ts
-export type BigintAddress = Schema.Schema.Type<typeof BigintAddress>
+export type BigintFromAddress = Schema.Schema.Type<typeof BigintFromAddress>
 ```
 
 Added in v1.0.0
@@ -660,6 +730,16 @@ export type IPv4 = Schema.Schema.Type<typeof IPv4>
 
 Added in v1.0.0
 
+## IPv4Bigint (type alias)
+
+**Signature**
+
+```ts
+export type IPv4Bigint = Schema.Schema.Type<typeof IPv4Bigint>
+```
+
+Added in v1.0.0
+
 ## IPv4CidrMask (type alias)
 
 **Signature**
@@ -696,6 +776,16 @@ Added in v1.0.0
 
 ```ts
 export type IPv6 = Schema.Schema.Type<typeof IPv6>
+```
+
+Added in v1.0.0
+
+## IPv6Bigint (type alias)
+
+**Signature**
+
+```ts
+export type IPv6Bigint = Schema.Schema.Type<typeof IPv6Bigint>
 ```
 
 Added in v1.0.0

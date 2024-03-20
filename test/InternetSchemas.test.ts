@@ -21,29 +21,27 @@ describe("InternetSchemas", () => {
     });
 
     it("should parse addresses", () => {
-        InternetSchemas.Address("1.1.1.1");
-        InternetSchemas.Address("2001:0db8:85a3:0000:0000:8a2e:0370:7334");
-        assert.throws(() => InternetSchemas.Address("0.0.a.0"));
-        assert.throws(() => InternetSchemas.Address("2001:0db8:85a3:0000:0000:8a2e:0370:7334:"));
+        Schema.decodeSync(InternetSchemas.Address)("1.1.1.1");
+        Schema.decodeSync(InternetSchemas.Address)("2001:0db8:85a3:0000:0000:8a2e:0370:7334");
+        assert.throws(() => Schema.decodeSync(InternetSchemas.Address)("0.0.a.0"));
+        assert.throws(() => Schema.decodeSync(InternetSchemas.Address)("2001:0db8:85a3:0000:0000:8a2e:0370:7334:"));
     });
 
     it("should convert address to bigint and back", () =>
         Effect.gen(function* (λ) {
             // ipv4
-            const address = yield* λ(Schema.decode(InternetSchemas.Address)("1.1.1.1"));
-            const bigint = yield* λ(Schema.decode(InternetSchemas.BigintAddress)(address));
-            assert.strictEqual(bigint.family, "ipv4");
-            assert.strictEqual(bigint.value, 16843009n);
-            const address2 = yield* λ(Schema.encode(InternetSchemas.BigintAddress)(bigint));
-            assert.strictEqual(address2, "1.1.1.1");
+            const bigint1 = yield* λ(Schema.decode(InternetSchemas.BigintFromAddress)("1.1.1.1"));
+            assert.strictEqual(bigint1.family, "ipv4");
+            assert.strictEqual(bigint1.value, 16843009n);
+            const address1 = yield* λ(Schema.encode(InternetSchemas.BigintFromAddress)(bigint1));
+            assert.strictEqual(address1, "1.1.1.1");
 
             // ipv6
-            const address3 = yield* λ(Schema.decode(InternetSchemas.Address)("2001:db8:85a3::8a2e:370:7334"));
-            const bigint2 = yield* λ(Schema.decode(InternetSchemas.BigintAddress)(address3));
+            const bigint2 = yield* λ(Schema.decode(InternetSchemas.BigintFromAddress)("2001:db8:85a3::8a2e:370:7334"));
             assert.strictEqual(bigint2.family, "ipv6");
             assert.strictEqual(bigint2.value, 42540766452641154071740215577757643572n);
-            const address4 = yield* λ(Schema.encode(InternetSchemas.BigintAddress)(bigint2));
-            assert.strictEqual(address4, "2001:0db8:85a3:0000:0000:8a2e:0370:7334");
+            const address2 = yield* λ(Schema.encode(InternetSchemas.BigintFromAddress)(bigint2));
+            assert.strictEqual(address2, "2001:0db8:85a3:0000:0000:8a2e:0370:7334");
         }).pipe(Effect.runSync));
 
     it("should parse ipv4 cidr masks", () => {
