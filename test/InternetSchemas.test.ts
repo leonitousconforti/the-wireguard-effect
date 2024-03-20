@@ -90,8 +90,7 @@ describe("InternetSchemas", () => {
             yield* λ(Schema.decode(InternetSchemas.IPv4Endpoint)("1.1.1.1:51280:51280"));
 
             // ipv6
-            // Waiting on https://github.com/Effect-TS/effect/pull/2370
-            // yield * λ(Schema.decode(InternetSchemas.IPv6Endpoint)("[2001:db8:85a3::8a2e:370:7334]:51280"));
-            // yield * λ(Schema.decode(InternetSchemas.IPv6Endpoint)("[2001:db8:85a3::8a2e:370:7334]:51280:51280"));
+            yield* λ(Schema.decode(InternetSchemas.IPv6Endpoint)("[2001:db8:85a3::8a2e:370:7334]:51280"));
+            yield* λ(Schema.decode(InternetSchemas.IPv6Endpoint)("[2001:db8:85a3::8a2e:370:7334]:51280:51280"));
         }).pipe(Effect.runSync));
 });
