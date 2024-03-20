@@ -41,7 +41,7 @@
         "@microsoft/api-extractor": "7.42.3",
         "@protobuf-ts/runtime": "2.9.4",
         "@protobuf-ts/runtime-rpc": "2.9.4",
-        "@rushstack/eslint-config": "3.6.4",
+        "@rushstack/eslint-config": "3.6.5",
         "@rushstack/heft": "0.66.0",
         "@rushstack/heft-api-extractor-plugin": "0.3.20",
         "@rushstack/heft-jest-plugin": "0.11.21",
