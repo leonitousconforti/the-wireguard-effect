@@ -5354,5 +5354,3 @@ packages:
       repeat-string: 1.6.1
       strip-color: 0.1.0
     dev: true
-
-publishDirectory: dist
