@@ -85,10 +85,10 @@
         "ws": "8.16.0"
     },
     "peerDependencies": {
-        "@effect/platform": "0.48.8",
-        "@effect/platform-node": "0.45.10",
-        "@effect/schema": "0.64.5",
-        "effect": "2.4.7"
+        "@effect/platform": "0.48.13",
+        "@effect/platform-node": "0.45.15",
+        "@effect/schema": "0.64.9",
+        "effect": "2.4.9"
     },
     "engines": {
         "node": ">=18.0.0"
