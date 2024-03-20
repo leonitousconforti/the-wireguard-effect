@@ -38,7 +38,7 @@
         "@effect/printer-ansi": "0.32.13",
         "@effect/schema": "0.64.0",
         "@effect/typeclass": "0.23.4",
-        "@microsoft/api-extractor": "7.42.3",
+        "@microsoft/api-extractor": "7.43.0",
         "@protobuf-ts/runtime": "2.9.4",
         "@protobuf-ts/runtime-rpc": "2.9.4",
         "@rushstack/eslint-config": "3.6.4",

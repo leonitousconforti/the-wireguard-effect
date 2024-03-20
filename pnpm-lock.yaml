@@ -52,8 +52,8 @@ devDependencies:
     specifier: 0.23.4
     version: 0.23.4(effect@2.4.4)
   '@microsoft/api-extractor':
-    specifier: 7.42.3
-    version: 7.42.3(@types/node@20.11.27)
+    specifier: 7.43.0
+    version: 7.43.0(@types/node@20.11.27)
   '@protobuf-ts/runtime':
     specifier: 2.9.4
     version: 2.9.4
@@ -1117,8 +1117,8 @@ packages:
       - '@types/node'
     dev: true
 
-  /@microsoft/api-extractor@7.42.3(@types/node@20.11.27):
-    resolution: {integrity: sha512-JNLJFpGHz6ekjS6bvYXxUBeRGnSHeCMFNvRbCQ+7XXB/ZFrgLSMPwWtEq40AiWAy+oyG5a4RSNwdJTp0B2USvQ==}
+  /@microsoft/api-extractor@7.43.0(@types/node@20.11.27):
+    resolution: {integrity: sha512-GFhTcJpB+MI6FhvXEI9b2K0snulNLWHqC/BbcJtyNYcKUiw7l3Lgis5ApsYncJ0leALX7/of4XfmXk+maT111w==}
     hasBin: true
     dependencies:
       '@microsoft/api-extractor-model': 7.28.13(@types/node@20.11.27)
@@ -1133,7 +1133,7 @@ packages:
       resolve: 1.22.8
       semver: 7.5.4
       source-map: 0.6.1
-      typescript: 5.3.3
+      typescript: 5.4.2
     transitivePeerDependencies:
       - '@types/node'
     dev: true
@@ -7226,12 +7226,6 @@ packages:
   /typescript@3.9.10:
     resolution: {integrity: sha512-w6fIxVE/H1PkLKcCPsFqKE7Kv7QUwhU8qQY2MueZXWx5cPZdwFupLgKK3vntcK98BtNHZtAF4LA/yl2a7k8R6Q==}
     engines: {node: '>=4.2.0'}
-    hasBin: true
-    dev: true
-
-  /typescript@5.3.3:
-    resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
-    engines: {node: '>=14.17'}
     hasBin: true
     dev: true
 
