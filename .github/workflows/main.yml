@@ -8,8 +8,8 @@ on:
 
 env:
   macos-service-identifier: "1"
-  linux-service-identifier1: "2"
-  linux-service-identifier2: "3"
+  linux-service1-identifier: "2"
+  linux-service2-identifier: "3"
   windows-service-identifier: "4"
 
 concurrency:
@@ -35,38 +35,46 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt install wireguard
       - run: python3 -m http.server &
       - uses: ./.github/actions/workflow-level-service/expose
         with:
-          service-identifier: ${{ env.linux-service-identifier1 }}
+          service-identifier: ${{ env.linux-service1-identifier }}
+          service-cidr: "192.168.${{ env.linux-service1-identifier }}.0/24"
 
   linux-service2:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: python3 -m http.server &
       - uses: ./.github/actions/workflow-level-service/expose
         with:
-          service-identifier: ${{ env.linux-service-identifier2 }}
+          service-identifier: ${{ env.linux-service2-identifier }}
+          service-cidr: "192.168.${{ env.linux-service2-identifier }}.0/24"
 
   windows-service:
     needs: [build]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - run: python3 -m http.server &
       - uses: ./.github/actions/workflow-level-service/expose
         with:
           service-identifier: ${{ env.windows-service-identifier }}
+          service-cidr: "192.168.${{ env.windows-service-identifier }}.0/24"
+      - if: ${{ always() }}
+        uses: mxschmitt/action-tmate@v3
 
   macos-service:
     needs: [build]
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+      - run: python3 -m http.server &
       - uses: ./.github/actions/workflow-level-service/expose
         with:
           service-identifier: ${{ env.macos-service-identifier }}
+          service-cidr: "192.168.${{ env.macos-service-identifier }}.0/24"
 
   clients:
     runs-on: ${{ matrix.os }}
@@ -76,26 +84,30 @@ jobs:
         os: ["ubuntu-latest"]
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt install wireguard
       - id: connect1
         uses: ./.github/actions/workflow-level-service/connect
         with:
-          service-identifier: ${{ env.linux-service-identifier1 }}
+          service-identifier: ${{ env.linux-service1-identifier }}
       - id: test1
-        if: ${{ always()}}
         run: curl http://${{steps.connect1.outputs.service-address}}:8000
-      # - id: connect2
-      #   uses: ./.github/actions/workflow-level-service/connect
-      #   with:
-      #     service-identifier: ${{ env.linux-service-identifier2 }}
-      # - id: connect3
-      #   uses: ./.github/actions/workflow-level-service/connect
-      #   with:
-      #     service-identifier: ${{ env.windows-service-identifier }}
-      # - id: connect4
-      #   uses: ./.github/actions/workflow-level-service/connect
-      #   with:
-      #     service-identifier: ${{ env.macos-service-identifier }}
+      - id: connect2
+        uses: ./.github/actions/workflow-level-service/connect
+        with:
+          service-identifier: ${{ env.linux-service2-identifier }}
+      - id: test2
+        run: curl http://${{steps.connect2.outputs.service-address}}:8000
+      - id: connect3
+        uses: ./.github/actions/workflow-level-service/connect
+        with:
+          service-identifier: ${{ env.windows-service-identifier }}
+      - id: test3
+        run: curl http://${{steps.connect3.outputs.service-address}}:8000
+      - id: connect4
+        uses: ./.github/actions/workflow-level-service/connect
+        with:
+          service-identifier: ${{ env.macos-service-identifier }}
+      - id: test4
+        run: curl http://${{steps.connect4.outputs.service-address}}:8000
 
   stop-services:
     if: ${{ always() }}
@@ -105,10 +117,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/workflow-level-service/stop
         with:
-          service-identifier: ${{ env.linux-service-identifier1 }}
+          service-identifier: ${{ env.linux-service1-identifier }}
       - uses: ./.github/actions/workflow-level-service/stop
         with:
-          service-identifier: ${{ env.linux-service-identifier2 }}
+          service-identifier: ${{ env.linux-service2-identifier }}
       - uses: ./.github/actions/workflow-level-service/stop
         with:
           service-identifier: ${{ env.windows-service-identifier }}

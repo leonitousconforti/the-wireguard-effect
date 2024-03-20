@@ -9,18 +9,13 @@ The motivation for this project came from wanting to communicate between two Git
 ## Goals :white_check_mark:
 
 - [x] - don't need to have wireguard installed
-- [x] - cross platform (supports linux amd64, linux arm64, mac amd64, mac arm64, windows amd64, and windows arm64)
-- [x] - extensible, more platforms can be included by just compiling wireguard-go to target them. Only downside is it increases the distribution size
-- [x] - userspace (at least my code, the node.js part, operates entirely in userspace)
+- [x] - cross platform (supports linux amd64, linux arm64, mac amd64, mac arm64, windows amd64, and windows arm64, freebsd amd64, freebsd arm64, openbsd amd64, and openbsd arm64)
+- [x] - userspace (at least my code, the node.js part, operates entirely in userspace. When wireguard-go needs admin permissions you will be prompted)
 - [x] - Github actions to allow two runners in the same workflow to communicate
 
 ## Non-Goals :wastebasket:
 
-- Performance. I know I should be using the wireguard module when on a linux host, but for simplicity this uses wireguard-go on all platforms
-
-- Direct interface control. This only implements the userspace cross platform wireguard api and does not implement any of the ioctl methods of controlling a wireguard interface on any platforms. This means it can not control a tunnel brought up using wg / wg-quick.
-
-- CommonJS: I understand this might be a deal breaker to some, but this is a ESM only package
+- Performance. I know I should be using the wireguard kernel module when on a linux host, but for simplicity this uses wireguard-go on all platforms.
 
 ## Compatibility :closed_lock_with_key:
 

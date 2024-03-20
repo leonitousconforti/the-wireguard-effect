@@ -7,10 +7,10 @@ import * as Cause from "effect/Cause";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 
-import * as Wireguard from "../src/index.js";
+import * as Wireguard from "the-wireguard-effect";
 
 const config = new Wireguard.WireguardConfig({
-    Address: Wireguard.Address("3.3.3.3"),
+    Address: Wireguard.CidrBlock({ ipv4: Wireguard.IPv4("3.3.3.3"), mask: Wireguard.IPv4CidrMask(32) }),
     ListenPort: Wireguard.Port(51_820),
     PrivateKey: Wireguard.WireguardKey(""),
     Peers: [
@@ -33,7 +33,7 @@ const ping = (endpoint: string): Effect.Effect<void, Cause.TimeoutException, nev
                 const socket: net.Socket = net.createConnection(endpoint);
                 socket.on("connect", () => resolve(socket));
                 socket.on("error", (error) => reject(error));
-            })
+            }),
     )
         .pipe(Effect.timeout("5 seconds"))
         .pipe(Effect.retry({ times: 3 }));

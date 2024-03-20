@@ -8,22 +8,28 @@
         "fwmark",
         "gitsubmodule",
         "hardlink",
+        "inet",
         "leonitous",
+        "netsh",
         "packagejson",
         "preshared",
         "protobuf",
         "rushstack",
+        "treeshake",
         "tsdoc",
+        "tsup",
         "typeclass",
+        "Uapi",
         "Userspace",
-        "utun"
+        "utun",
+        "wintun"
     ],
     "search.exclude": {
         "**/node_modules": true,
         "**/bower_components": true,
         "**/*.code-search": true,
+        "submodules/wintun/**": true,
         "submodules/wireguard-go/**": true,
-        ".github/actions/workflow-level-service/expose/expose.bundle.mjs": true,
-        ".github/actions/workflow-level-service/connect/connect.bundle.mjs": true
+        "submodules/wireguard-tools/**": true
     }
 }
