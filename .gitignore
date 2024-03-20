@@ -1,6 +1,7 @@
-coverage/
 *.tsbuildinfo
-node_modules/
 .DS_Store
-dist/
-build/
+
+/dist/
+/build/
+/coverage/
+/node_modules/
