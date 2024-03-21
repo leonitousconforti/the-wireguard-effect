@@ -7,15 +7,19 @@ import * as Cause from "effect/Cause";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 
-import * as Wireguard from "the-wireguard-effect";
+import * as InternetSchemas from "the-wireguard-effect/InternetSchemas";
+import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
+import * as WireguardError from "the-wireguard-effect/WireguardError";
+import * as WireguardKey from "the-wireguard-effect/WireguardKey";
+import * as WireguardPeer from "the-wireguard-effect/WireguardPeer";
 
-const config = new Wireguard.WireguardConfig({
-    Address: Wireguard.CidrBlock({ ipv4: Wireguard.IPv4("3.3.3.3"), mask: Wireguard.IPv4CidrMask(32) }),
-    ListenPort: Wireguard.Port(51_820),
-    PrivateKey: Wireguard.WireguardKey(""),
+const config = new WireguardConfig.WireguardConfig({
+    Address: InternetSchemas.CidrBlock({ ipv4: Wireguard.IPv4("3.3.3.3"), mask: InternetSchemas.IPv4CidrMask(32) }),
+    ListenPort: InternetSchemas.Port(51_820),
+    PrivateKey: WireguardKey.WireguardKey(""),
     Peers: [
-        new Wireguard.WireguardPeer({
-            PublicKey: Wireguard.WireguardKey(""),
+        new WireguardPeer.WireguardPeer({
+            PublicKey: WireguardKey.WireguardKey(""),
             AllowedIPs: [],
             Endpoint: Wireguard.Endpoint({
                 ip: Wireguard.IPv4("3.3.3.3"),
@@ -40,10 +44,10 @@ const ping = (endpoint: string): Effect.Effect<void, Cause.TimeoutException, nev
 
 export const main: Effect.Effect<
     void,
-    Wireguard.WireguardError | Cause.TimeoutException | Socket.SocketError,
+    WireguardError.WireguardError | Cause.TimeoutException | Socket.SocketError,
     Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
-    yield* λ(config.upScoped());
+    yield* λ(config.upScoped(undefined));
     const peer1Endpoint = config.Peers[0].Endpoint;
     yield* λ(Console.log(peer1Endpoint));
     yield* λ(ping(`${peer1Endpoint.ip}:${peer1Endpoint.natPort}`));

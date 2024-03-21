@@ -2,7 +2,7 @@ import { defineConfig } from "tsup";
 
 export default defineConfig({
     entry: ["actions/connect.ts", "actions/expose.ts"],
-    format: "esm",
+    format: "cjs",
     clean: true,
     noExternal: [/^(?!.*@parcel\/watcher).*/],
     external: ["@parcel/watcher"],
