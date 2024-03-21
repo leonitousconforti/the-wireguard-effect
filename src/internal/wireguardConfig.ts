@@ -252,7 +252,7 @@ export const up = Function.dual<
         config: WireguardConfig.WireguardConfig,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException,
+        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
         Platform.FileSystem.FileSystem | Platform.Path.Path
     >,
     (
@@ -260,7 +260,7 @@ export const up = Function.dual<
         interfaceObject?: WireguardInterface.WireguardInterface | undefined,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException,
+        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
         Platform.FileSystem.FileSystem | Platform.Path.Path
     >
 >(2, (config: WireguardConfig.WireguardConfig, interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>
@@ -281,7 +281,7 @@ export const upScoped = Function.dual<
         config: WireguardConfig.WireguardConfig,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException,
+        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
         Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
     >,
     (
@@ -289,7 +289,7 @@ export const upScoped = Function.dual<
         interfaceObject?: WireguardInterface.WireguardInterface | undefined,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException,
+        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
         Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
     >
 >(2, (config: WireguardConfig.WireguardConfig, interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>

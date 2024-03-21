@@ -190,7 +190,7 @@ export const upScoped = Function.dual<
         interfaceObject: WireguardInterface.WireguardInterface,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException,
+        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
         Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
     >,
     (
@@ -199,7 +199,7 @@ export const upScoped = Function.dual<
         options?: { replacePeers?: boolean | undefined; replaceAllowedIPs?: boolean | undefined } | undefined,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException,
+        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
         Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
     >
 >(
@@ -220,7 +220,7 @@ export const up = Function.dual<
         interfaceObject: WireguardInterface.WireguardInterface,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException,
+        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
         Platform.FileSystem.FileSystem | Platform.Path.Path
     >,
     (
@@ -229,7 +229,7 @@ export const up = Function.dual<
         options?: { replacePeers?: boolean | undefined; replaceAllowedIPs?: boolean | undefined } | undefined,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException,
+        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
         Platform.FileSystem.FileSystem | Platform.Path.Path
     >
 >(
@@ -271,14 +271,14 @@ export const up = Function.dual<
                                 cleanup: true,
                             },
                         );
-                        // subprocess.unref();
+                        subprocess.unref();
                         return subprocess;
                     },
                     catch: (error) => new WireguardError.WireguardError({ message: `${error}` }),
                 }),
             );
 
-            // yield* λ(setConfig(config, options));
+            yield* λ(setConfig(config, interfaceObject));
             yield* λ(setAddress(interfaceObject, config));
             return interfaceObject;
         }),

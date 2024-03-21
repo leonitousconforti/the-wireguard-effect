@@ -63,7 +63,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             options?: { replacePeers?: boolean | undefined; replaceAllowedIPs?: boolean | undefined } | undefined,
         ): Effect.Effect<
             WireguardInterface,
-            WireguardErrors.WireguardError | Cause.TimeoutException,
+            WireguardErrors.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
             Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
         >;
     } = (config, options) => internal.upScoped(config, options)(this);
@@ -84,7 +84,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             options?: { replacePeers?: boolean | undefined; replaceAllowedIPs?: boolean | undefined } | undefined,
         ): Effect.Effect<
             WireguardInterface,
-            WireguardErrors.WireguardError | Cause.TimeoutException,
+            WireguardErrors.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
             Platform.FileSystem.FileSystem | Platform.Path.Path
         >;
     } = (config, options) => internal.up(config, options)(this);

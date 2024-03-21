@@ -65,7 +65,7 @@ even after the nodejs process exits.
 up: (interfaceObject: WireguardInterface.WireguardInterface | undefined) =>
   Effect.Effect<
     WireguardInterface.WireguardInterface,
-    WireguardError.WireguardError | Cause.TimeoutException,
+    WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
     Platform.FileSystem.FileSystem | Platform.Path.Path
   >
 ```
@@ -83,7 +83,7 @@ serving traffic once the scope is closed.
 upScoped: (interfaceObject: WireguardInterface.WireguardInterface | undefined) =>
   Effect.Effect<
     WireguardInterface.WireguardInterface,
-    WireguardError.WireguardError | Cause.TimeoutException,
+    WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
     Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
   >
 ```

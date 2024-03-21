@@ -160,7 +160,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             interfaceObject: WireguardInterface.WireguardInterface | undefined,
         ): Effect.Effect<
             WireguardInterface.WireguardInterface,
-            WireguardError.WireguardError | Cause.TimeoutException,
+            WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
             Platform.FileSystem.FileSystem | Platform.Path.Path
         >;
     } = (interfaceObject) => internal.up(this, interfaceObject);
@@ -179,7 +179,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             interfaceObject: WireguardInterface.WireguardInterface | undefined,
         ): Effect.Effect<
             WireguardInterface.WireguardInterface,
-            WireguardError.WireguardError | Cause.TimeoutException,
+            WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
             Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
         >;
     } = (interfaceObject) => internal.upScoped(this, interfaceObject);
