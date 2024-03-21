@@ -80,7 +80,7 @@ const program: Effect.Effect<
     yield* λ(helpers.deleteArtifact(connectionResponse.name));
     GithubCore.info(data);
     const config = yield* λ(Schema.decode(Schema.parseJson(Wireguard.WireguardConfig.WireguardConfig))(data));
-    GithubCore.setOutput("service-address", config.Address.networkAddress);
+    GithubCore.setOutput("service-address", config.Peers[0].AllowedIPs[0].ip);
 
     // Stop the stun keepalive and close the socket so that wireguard can bind
     // to that port now. It needs to be the exact same port as the one we used
