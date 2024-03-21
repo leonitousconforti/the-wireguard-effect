@@ -9,6 +9,6 @@ export default defineConfig({
     publicDir: "dist/dist/prebuilds",
     outDir: ".github/actions/workflow-level-service/build",
     sourcemap: true,
-    treeshake: "smallest",
+    treeshake: "safest",
     keepNames: true,
 });
