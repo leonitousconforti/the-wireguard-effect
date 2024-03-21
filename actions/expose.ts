@@ -68,11 +68,11 @@ const processConnectionRequest = (
             }),
         );
 
-        const a = yield* λ(service_cidr.range.pipe(Stream.run(Sink.collectAllN(2)), Effect.map(Chunk.toArray)));
-        const aliceData = Tuple.make(myLocation, a[0] as string);
+        const a = yield* λ(service_cidr.range.pipe(Stream.run(Sink.collectAllN(3)), Effect.map(Chunk.toArray)));
+        const aliceData = Tuple.make(myLocation, a[1] as string);
         const bobData = Tuple.make(
             `${clientIp}:${Number.parseInt(natPort)}:${Number.parseInt(hostPort)}` as const,
-            a[1] as string,
+            a[2] as string,
         );
         const [aliceConfig, bobConfig] = yield* λ(
             Wireguard.WireguardConfig.WireguardConfig.generateP2PConfigs(aliceData, bobData),
