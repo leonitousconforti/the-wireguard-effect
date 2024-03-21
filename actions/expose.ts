@@ -12,6 +12,7 @@ import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Schedule from "effect/Schedule";
+import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import * as Tuple from "effect/Tuple";
 import * as dgram from "node:dgram";
@@ -67,9 +68,7 @@ const processConnectionRequest = (
             }),
         );
 
-        const ipStream = yield* λ(service_cidr.range());
-        const a = yield* λ(Stream.take(2)(ipStream).pipe(Stream.runCollect).pipe(Effect.map(Chunk.toReadonlyArray)));
-
+        const a = yield* λ(service_cidr.range.pipe(Stream.run(Sink.collectAllN(2)), Effect.map(Chunk.toArray)));
         const aliceData = Tuple.make(myLocation, a[0] as string);
         const bobData = Tuple.make(
             `${clientIp}:${Number.parseInt(natPort)}:${Number.parseInt(hostPort)}` as const,

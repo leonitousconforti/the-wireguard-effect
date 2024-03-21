@@ -16,6 +16,7 @@ Added in v1.0.0
   - [Address](#address)
   - [BigintFromAddress](#bigintfromaddress)
   - [CidrBlock](#cidrblock)
+  - [CidrBlockInternal (class)](#cidrblockinternal-class)
   - [Endpoint](#endpoint)
   - [IPv4](#ipv4)
   - [IPv4Bigint](#ipv4bigint)
@@ -115,10 +116,10 @@ export declare const BigintFromAddress: Schema.union<
 
 ```ts
 import * as Schema from "@effect/schema/Schema"
+import { BigintFromAddress } from "the-wireguard-effect/InternetSchemas"
 
-import { Address, BigintFromAddress } from "the-wireguard-effect/InternetSchemas"
-const address1 = Schema.decode(BigintFromAddress)(Address("1.1.1.1"))
-const address2 = Schema.decode(BigintFromAddress)(Address("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
+const address1 = Schema.decodeSync(BigintFromAddress)("1.1.1.1")
+const address2 = Schema.decodeSync(BigintFromAddress)("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
 ```
 
 Added in v1.0.0
@@ -159,8 +160,35 @@ import * as Schema from "@effect/schema/Schema"
 
 import { CidrBlock, IPv4, IPv4CidrMask, IPv6, IPv6CidrMask } from "the-wireguard-effect/InternetSchemas"
 
-const block1 = Schema.decode(CidrBlock)("192.168.1.1/24")
-const block2 = Schema.decode(CidrBlock)("2001:0db8:85a3:0000:0000:8a2e:0370:7334/64")
+const block1 = Schema.decodeSync(CidrBlock)("192.168.1.1/24")
+assert.strictEqual(block1.mask, 24)
+assert.strictEqual(block1.total, 256n)
+assert.strictEqual(block1.family, "ipv4")
+assert.strictEqual(block1.ip, "192.168.1.1")
+assert.strictEqual(block1.networkAddress, "192.168.1.0")
+assert.strictEqual(block1.broadcastAddress, "192.168.1.255")
+
+const block2 = Schema.decodeSync(CidrBlock)("2001:db8:85a3::8a2e:370:7334/64")
+assert.strictEqual(block2.mask, 64)
+assert.strictEqual(block2.family, "ipv6")
+assert.strictEqual(block2.total, 18446744073709551616n)
+assert.strictEqual(block2.ip, "2001:db8:85a3::8a2e:370:7334")
+assert.strictEqual(block2.networkAddress, "2001:0db8:85a3:0000:0000:0000:0000:0000")
+assert.strictEqual(block2.broadcastAddress, "2001:0db8:85a3:0000:ffff:ffff:ffff:ffff")
+```
+
+Added in v1.0.0
+
+## CidrBlockInternal (class)
+
+Internal helper representation of a cidr range so that we can do
+transformations to and from it as we cannot represent a stream
+using @effect/schema.
+
+**Signature**
+
+```ts
+export declare class CidrBlockInternal
 ```
 
 Added in v1.0.0
@@ -237,12 +265,13 @@ export declare const Endpoint: Schema.brand<
 
 ```ts
 import * as Schema from "@effect/schema/Schema"
+
 import { Endpoint, IPv4, IPv6, Port } from "the-wireguard-effect/InternetSchemas"
 
-const endpoint1 = Schema.decode(Endpoint)("1.2.3.4:51820")
-const endpoint2 = Schema.decode(Endpoint)("1.2.3.4:51820:41820")
+const endpoint1 = Schema.decodeSync(Endpoint)("1.2.3.4:51820")
+const endpoint2 = Schema.decodeSync(Endpoint)("1.2.3.4:51820:41820")
 
-const endpoint3 = Schema.decode(Endpoint)({
+const endpoint3 = Schema.decodeSync(Endpoint)({
   ip: "1.2.3.4",
   port: 51820
 })
@@ -253,10 +282,10 @@ const endpoint4: Endpoint = Endpoint({
   listenPort: Port(41820)
 })
 
-const endpoint5 = Schema.decode(Endpoint)("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820")
-const endpoint6 = Schema.decode(Endpoint)("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820:41820")
+const endpoint5 = Schema.decodeSync(Endpoint)("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820")
+const endpoint6 = Schema.decodeSync(Endpoint)("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820:41820")
 
-const endpoint7 = Schema.decode(Endpoint)({
+const endpoint7 = Schema.decodeSync(Endpoint)({
   ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
   port: 51820
 })
@@ -287,8 +316,11 @@ import * as Schema from "@effect/schema/Schema"
 import { IPv4 } from "the-wireguard-effect/InternetSchemas"
 
 const ipv4: IPv4 = IPv4("1.1.1.1")
+assert.strictEqual(ipv4, "1.1.1.1")
 
 const decodeIPv4 = Schema.decodeSync(IPv4)
+assert.strictEqual(decodeIPv4("1.1.1.1"), "1.1.1.1")
+
 assert.throws(() => decodeIPv4("1.1.a.1"))
 assert.doesNotThrow(() => decodeIPv4("1.1.1.1"))
 ```
@@ -313,9 +345,16 @@ export declare const IPv4Bigint: Schema.transformOrFail<
 
 ```ts
 import * as Schema from "@effect/schema/Schema"
-import { Address, IPv4Bigint } from "the-wireguard-effect/InternetSchemas"
+import { IPv4Bigint } from "the-wireguard-effect/InternetSchemas"
 
-const address1 = Schema.decode(IPv4Bigint)(Address("1.1.1.1"))
+const decodeIPv4Bigint = Schema.decodeSync(IPv4Bigint)
+assert.deepStrictEqual(decodeIPv4Bigint("1.1.1.1"), { value: 16843009n, family: "ipv4" })
+
+const encodeIPv4Bigint = Schema.encodeSync(IPv4Bigint)
+assert.strictEqual(encodeIPv4Bigint({ value: 16843009n, family: "ipv4" }), "1.1.1.1")
+
+assert.throws(() => decodeIPv4Bigint("1.1.1.1000"))
+assert.doesNotThrow(() => decodeIPv4Bigint("2.2.2.2"))
 ```
 
 Added in v1.0.0
@@ -333,9 +372,18 @@ export declare const IPv4CidrMask: Schema.brand<Schema.Schema<number, number, ne
 **Example**
 
 ```ts
+import * as Schema from "@effect/schema/Schema"
 import { IPv4CidrMask } from "the-wireguard-effect/InternetSchemas"
 
 const mask: IPv4CidrMask = IPv4CidrMask(24)
+assert.strictEqual(mask, 24)
+
+const decodeMask = Schema.decodeSync(IPv4CidrMask)
+assert.strictEqual(decodeMask(24), 24)
+
+assert.throws(() => IPv4CidrMask(33))
+assert.doesNotThrow(() => IPv4CidrMask(0))
+assert.doesNotThrow(() => IPv4CidrMask(32))
 ```
 
 Added in v1.0.0
@@ -384,10 +432,10 @@ import * as Schema from "@effect/schema/Schema"
 
 import { Port, IPv4, IPv4Endpoint } from "the-wireguard-effect/InternetSchemas"
 
-const endpoint1 = Schema.decode(IPv4Endpoint)("1.2.3.4:51820")
-const endpoint2 = Schema.decode(IPv4Endpoint)("1.2.3.4:51820:41820")
+const endpoint1 = Schema.decodeSync(IPv4Endpoint)("1.2.3.4:51820")
+const endpoint2 = Schema.decodeSync(IPv4Endpoint)("1.2.3.4:51820:41820")
 
-const endpoint3 = Schema.decode(IPv4Endpoint)({
+const endpoint3 = Schema.decodeSync(IPv4Endpoint)({
   ip: "1.2.3.4",
   port: 51820
 })
@@ -418,9 +466,13 @@ import * as Schema from "@effect/schema/Schema"
 import { IPv6 } from "the-wireguard-effect/InternetSchemas"
 
 const ipv6: IPv6 = IPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
+assert.strictEqual(ipv6, "2001:0db8:85a3:0000:0000:8a2e:0370:7334")
 
 const decodeIPv6 = Schema.decodeSync(IPv6)
+assert.deepStrictEqual(decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334"), "2001:0db8:85a3:0000:0000:8a2e:0370:7334")
+
 assert.throws(() => decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334:"))
+assert.throws(() => decodeIPv6("2001::85a3::0000::0370:7334"))
 assert.doesNotThrow(() => decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
 ```
 
@@ -444,9 +496,22 @@ export declare const IPv6Bigint: Schema.transformOrFail<
 
 ```ts
 import * as Schema from "@effect/schema/Schema"
+import { IPv6Bigint } from "the-wireguard-effect/InternetSchemas"
 
-import { Address, IPv6Bigint } from "the-wireguard-effect/InternetSchemas"
-const address1 = Schema.decode(IPv6Bigint)(Address("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
+const decodeIPv6Bigint = Schema.decodeSync(IPv6Bigint)
+assert.deepStrictEqual(decodeIPv6Bigint("2001:db8:85a3::8a2e:370:7334"), {
+  value: 42540766452641154071740215577757643572n,
+  family: "ipv6"
+})
+
+const encodeIPv6Bigint = Schema.encodeSync(IPv6Bigint)
+assert.strictEqual(
+  encodeIPv6Bigint({ value: 42540766452641154071740215577757643572n, family: "ipv6" }),
+  "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+)
+
+assert.throws(() => decodeIPv6Bigint("2001:0db8:85a3:0000:0000:8a2e:0370:7334:"))
+assert.doesNotThrow(() => decodeIPv6Bigint("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
 ```
 
 Added in v1.0.0
@@ -464,9 +529,18 @@ export declare const IPv6CidrMask: Schema.brand<Schema.Schema<number, number, ne
 **Example**
 
 ```ts
+import * as Schema from "@effect/schema/Schema"
 import { IPv6CidrMask } from "the-wireguard-effect/InternetSchemas"
 
 const mask: IPv6CidrMask = IPv6CidrMask(64)
+assert.strictEqual(mask, 64)
+
+const decodeMask = Schema.decodeSync(IPv6CidrMask)
+assert.strictEqual(decodeMask(64), 64)
+
+assert.throws(() => IPv6CidrMask(129))
+assert.doesNotThrow(() => IPv6CidrMask(0))
+assert.doesNotThrow(() => IPv6CidrMask(128))
 ```
 
 Added in v1.0.0
@@ -516,10 +590,10 @@ import * as Schema from "@effect/schema/Schema"
 
 import { Port, IPv6, IPv6Endpoint } from "the-wireguard-effect/InternetSchemas"
 
-const endpoint1 = Schema.decode(IPv6Endpoint)("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820")
-const endpoint2 = Schema.decode(IPv6Endpoint)("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820:41820")
+const endpoint1 = Schema.decodeSync(IPv6Endpoint)("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820")
+const endpoint2 = Schema.decodeSync(IPv6Endpoint)("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820:41820")
 
-const endpoint3 = Schema.decode(IPv6Endpoint)({
+const endpoint3 = Schema.decodeSync(IPv6Endpoint)({
   ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
   port: 51820
 })
@@ -550,8 +624,11 @@ import * as Schema from "@effect/schema/Schema"
 import { Port } from "the-wireguard-effect/InternetSchemas"
 
 const port: Port = Port(8080)
+assert.strictEqual(port, 8080)
 
 const decodePort = Schema.decodeSync(Port)
+assert.strictEqual(decodePort(8080), 8080)
+
 assert.throws(() => decodePort(65536))
 assert.doesNotThrow(() => decodePort(8080))
 ```
@@ -649,7 +726,7 @@ import * as Schema from "@effect/schema/Schema"
 
 import { Address, Endpoint, SetupData } from "the-wireguard-effect/InternetSchemas"
 
-const setupData1 = Schema.decode(SetupData)(["1.1.1.1:51280", "10.0.0.1"])
+const setupData1 = Schema.decodeSync(SetupData)(["1.1.1.1:51280", "10.0.0.1"])
 
 const address = Schema.decodeSync(Address)("10.0.0.1")
 const endpoint = Schema.decodeSync(Endpoint)("1.1.1.1:51820")

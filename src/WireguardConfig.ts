@@ -199,8 +199,7 @@ export const WireguardIniConfig = Function.pipe(
         // Encoding is non-trivial, as we need to handle all the peers individually.
         (config, _options, _ast) =>
             Effect.gen(function* (λ) {
-                type Writable<T> = { -readonly [P in keyof T]: T[P] };
-                const interfaceData = structuredClone(config) as Writable<Partial<WireguardConfig>>;
+                const interfaceData: any = yield* λ(Schema.encode(WireguardConfig)(config));
                 delete interfaceData["Peers"];
 
                 const peersConfig = yield* λ(

@@ -1,5 +1,3 @@
-import * as net from "node:net";
-
 import * as Platform from "@effect/platform";
 import * as PlatformNode from "@effect/platform-node";
 import * as Socket from "@effect/platform/Socket";
@@ -8,6 +6,7 @@ import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
+import * as net from "node:net";
 
 import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
 import * as WireguardError from "the-wireguard-effect/WireguardErrors";
@@ -24,7 +23,7 @@ const ping = (endpoint: string): Effect.Effect<void, Cause.TimeoutException, nev
         .pipe(Effect.timeout("5 seconds"))
         .pipe(Effect.retry({ times: 3 }));
 
-export const main: Effect.Effect<
+export const program: Effect.Effect<
     void,
     WireguardError.WireguardError | Cause.TimeoutException | Socket.SocketError | ParseResult.ParseError,
     Platform.FileSystem.FileSystem | Platform.Path.Path
@@ -49,4 +48,4 @@ export const main: Effect.Effect<
     yield* λ(ping(`${peer1Endpoint.ip}:${peer1Endpoint.natPort}`));
 }).pipe(Effect.scoped);
 
-Effect.suspend(() => main).pipe(Effect.provide(PlatformNode.NodeContext.layer), PlatformNode.NodeRuntime.runMain);
+Effect.suspend(() => program).pipe(Effect.provide(PlatformNode.NodeContext.layer), PlatformNode.NodeRuntime.runMain);

@@ -4,7 +4,7 @@ import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as Tuple from "effect/Tuple";
 
-import * as Wireguard from "../src/index.js";
+import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
 
 // Alice will be the hub
 const aliceSetupData = Tuple.make("10.0.1.1:51820" as const, "");
@@ -15,19 +15,19 @@ const charlieSetupData = Tuple.make("10.0.3.1:51820" as const, "");
 const daveSetupData = Tuple.make("10.0.4.1:51820" as const, "");
 const eveSetupData = Tuple.make("10.0.5.1:51820" as const, "");
 
-const main: Effect.Effect<void, ParseResult.ParseError, never> = Effect.gen(function* (λ) {
+const program: Effect.Effect<void, ParseResult.ParseError, never> = Effect.gen(function* (λ) {
     // Distribute these configs somehow
     const [hubConfig, spokeConfigs] = yield* λ(
-        Wireguard.WireguardConfig.generateHubSpokeConfigs(aliceSetupData, [
+        WireguardConfig.WireguardConfig.generateHubSpokeConfigs(aliceSetupData, [
             bobSetupData,
             charlieSetupData,
             daveSetupData,
             eveSetupData,
-        ])
+        ]),
     );
 
     yield* λ(Console.log(hubConfig));
     yield* λ(Console.log(spokeConfigs));
 });
 
-Effect.suspend(() => main).pipe(Effect.provide(PlatformNode.NodeContext.layer), PlatformNode.NodeRuntime.runMain);
+Effect.suspend(() => program).pipe(Effect.provide(PlatformNode.NodeContext.layer), PlatformNode.NodeRuntime.runMain);

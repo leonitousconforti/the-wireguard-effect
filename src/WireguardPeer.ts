@@ -96,6 +96,8 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
 /**
  * A wireguard peer configuration encoded in INI format.
  *
+ * @see {@link WireguardPeer}
+ *
  * @example
  * import * as Effect from "effect/Effect"
  * import * as Duration from "effect/Duration"
@@ -119,7 +121,6 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
  *      Effect.flatMap(Schema.decode(WireguardPeer.WireguardIniPeer)),
  * )
  *
- * @see {@link WireguardPeer}
  * @since 1.0.0
  * @category Transformations
  */
@@ -153,6 +154,8 @@ export const WireguardIniPeer = Function.pipe(
 /**
  * A wireguard peer configuration encoded in the userspace api format.
  *
+ * @see {@link WireguardPeer}
+
  * @example
  * import * as Effect from "effect/Effect"
  * import * as Duration from "effect/Duration"
@@ -176,7 +179,6 @@ export const WireguardIniPeer = Function.pipe(
  *      Effect.flatMap(Schema.decode(WireguardPeer.WireguardUapiPeer)),
  * )
  *
- * @see {@link WireguardPeer}
  * @since 1.0.0
  * @category Transformations
  */
