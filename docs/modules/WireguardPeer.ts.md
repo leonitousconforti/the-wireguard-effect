@@ -95,7 +95,6 @@ export declare const WireguardIniPeer: Schema.brand<
 
 ```ts
 import * as Effect from "effect/Effect"
-import * as Duration from "effect/Duration"
 import * as Function from "effect/Function"
 import * as Schema from "@effect/schema/Schema"
 import * as WireguardKey from "the-wireguard-effect/WireguardKey"
@@ -107,7 +106,7 @@ const peer = Schema.decode(WireguardPeer.WireguardPeer)({
   PublicKey: publicKey,
   AllowedIPs: ["192.168.0.0/24"],
   Endpoint: "192.168.0.1:51820",
-  PersistentKeepaliveInterval: Duration.seconds(20)
+  PersistentKeepaliveInterval: 20_000
 })
 
 const iniPeer = Function.pipe(
@@ -136,7 +135,6 @@ export declare const WireguardUapiPeer: Schema.brand<
 
 ```ts
 import * as Effect from "effect/Effect"
-import * as Duration from "effect/Duration"
 import * as Function from "effect/Function"
 import * as Schema from "@effect/schema/Schema"
 import * as WireguardKey from "the-wireguard-effect/WireguardKey"
@@ -148,7 +146,7 @@ const peer = Schema.decode(WireguardPeer.WireguardPeer)({
   PublicKey: publicKey,
   AllowedIPs: ["192.168.0.0/24"],
   Endpoint: "192.168.0.1:51820",
-  PersistentKeepaliveInterval: Duration.seconds(20)
+  PersistentKeepaliveInterval: 20_000
 })
 
 const uapiPeer = Function.pipe(

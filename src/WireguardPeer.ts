@@ -61,7 +61,7 @@ import * as WireguardKey from "./WireguardKey.js";
  */
 export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")({
     /** The persistent keepalive interval in seconds, 0 disables it. */
-    PersistentKeepaliveInterval: Schema.optional(Schema.DurationFromSelf, {
+    PersistentKeepaliveInterval: Schema.optional(Schema.DurationFromMillis, {
         nullable: true,
         default: () => Duration.seconds(0),
     }),
@@ -100,7 +100,6 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
  *
  * @example
  * import * as Effect from "effect/Effect"
- * import * as Duration from "effect/Duration"
  * import * as Function from "effect/Function"
  * import * as Schema from "@effect/schema/Schema"
  * import * as WireguardKey from "the-wireguard-effect/WireguardKey"
@@ -112,7 +111,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
  *      PublicKey: publicKey,
  *      AllowedIPs: ["192.168.0.0/24"],
  *      Endpoint: "192.168.0.1:51820",
- *      PersistentKeepaliveInterval: Duration.seconds(20),
+ *      PersistentKeepaliveInterval: 20_000,
  * })
  *
  * const iniPeer = Function.pipe(
@@ -158,7 +157,6 @@ export const WireguardIniPeer = Function.pipe(
 
  * @example
  * import * as Effect from "effect/Effect"
- * import * as Duration from "effect/Duration"
  * import * as Function from "effect/Function"
  * import * as Schema from "@effect/schema/Schema"
  * import * as WireguardKey from "the-wireguard-effect/WireguardKey"
@@ -170,7 +168,7 @@ export const WireguardIniPeer = Function.pipe(
  *      PublicKey: publicKey,
  *      AllowedIPs: ["192.168.0.0/24"],
  *      Endpoint: "192.168.0.1:51820",
- *      PersistentKeepaliveInterval: Duration.seconds(20),
+ *      PersistentKeepaliveInterval: 20_000,
  * })
  *
  * const uapiPeer = Function.pipe(
