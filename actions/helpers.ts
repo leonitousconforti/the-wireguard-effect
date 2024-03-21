@@ -103,7 +103,7 @@ export const uploadSingleFileArtifact = (
         const artifactFile = path.join(temporaryDirectory, artifactName);
         yield* λ(fs.writeFileString(artifactFile, data));
         yield* λ(
-            Effect.tryPromise(() =>
+            Effect.tryPromise((_a) =>
                 artifactClient.uploadArtifact(artifactName, [artifactFile], temporaryDirectory, { retentionDays: 1 }),
             ),
         );

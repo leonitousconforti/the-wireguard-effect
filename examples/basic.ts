@@ -3,32 +3,14 @@ import * as net from "node:net";
 import * as Platform from "@effect/platform";
 import * as PlatformNode from "@effect/platform-node";
 import * as Socket from "@effect/platform/Socket";
+import * as ParseResult from "@effect/schema/ParseResult";
+import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 
-import * as InternetSchemas from "the-wireguard-effect/InternetSchemas";
 import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
-import * as WireguardError from "the-wireguard-effect/WireguardError";
-import * as WireguardKey from "the-wireguard-effect/WireguardKey";
-import * as WireguardPeer from "the-wireguard-effect/WireguardPeer";
-
-const config = new WireguardConfig.WireguardConfig({
-    Address: InternetSchemas.CidrBlock({ ipv4: Wireguard.IPv4("3.3.3.3"), mask: InternetSchemas.IPv4CidrMask(32) }),
-    ListenPort: InternetSchemas.Port(51_820),
-    PrivateKey: WireguardKey.WireguardKey(""),
-    Peers: [
-        new WireguardPeer.WireguardPeer({
-            PublicKey: WireguardKey.WireguardKey(""),
-            AllowedIPs: [],
-            Endpoint: Wireguard.Endpoint({
-                ip: Wireguard.IPv4("3.3.3.3"),
-                natPort: Wireguard.Port(51_820),
-                listenPort: Wireguard.Port(51_820),
-            }),
-        }),
-    ],
-});
+import * as WireguardError from "the-wireguard-effect/WireguardErrors";
 
 const ping = (endpoint: string): Effect.Effect<void, Cause.TimeoutException, never> =>
     Effect.promise(
@@ -44,9 +26,23 @@ const ping = (endpoint: string): Effect.Effect<void, Cause.TimeoutException, nev
 
 export const main: Effect.Effect<
     void,
-    WireguardError.WireguardError | Cause.TimeoutException | Socket.SocketError,
+    WireguardError.WireguardError | Cause.TimeoutException | Socket.SocketError | ParseResult.ParseError,
     Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
+    const config = yield* λ(
+        Schema.decode(WireguardConfig.WireguardConfig)({
+            Address: "3.3.3.3/32" as const,
+            ListenPort: 51820,
+            PrivateKey: "",
+            Peers: [
+                {
+                    PublicKey: "",
+                    AllowedIPs: [],
+                    Endpoint: "2.2.2.2:51820" as const,
+                },
+            ],
+        }),
+    );
     yield* λ(config.upScoped(undefined));
     const peer1Endpoint = config.Peers[0].Endpoint;
     yield* λ(Console.log(peer1Endpoint));
