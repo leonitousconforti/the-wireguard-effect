@@ -81,7 +81,11 @@ const processConnectionRequest = (
         stunSocket.close();
         yield* λ(aliceConfig.up(undefined));
         const g = yield* λ(Schema.encode(Schema.parseJson(Wireguard.WireguardConfig.WireguardConfig))(bobConfig));
+        const h = yield* λ(Schema.encode(Schema.parseJson(Wireguard.WireguardConfig.WireguardConfig))(aliceConfig));
         yield* λ(helpers.uploadSingleFileArtifact(`${service_identifier}_connection-response_${client_identifier}`, g));
+
+        GithubCore.info(g);
+        GithubCore.info(h);
     })
         .pipe(Effect.catchAll(Console.log))
         .pipe(Effect.catchAllDefect(Console.log));

@@ -171,6 +171,9 @@ export const setAddress = (
         Match.orElseAbsurd,
     )(Function.unsafeCoerce(process.platform));
 
+    // FIXME: remove this
+    console.log(commands);
+
     const effects = ReadonlyArray.map(commands, (command) =>
         Effect.tryPromise({
             try: () => execa.execaCommand(command, { shell: true }),
