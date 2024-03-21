@@ -4,7 +4,7 @@ export default defineConfig({
     entry: ["actions/connect.ts", "actions/expose.ts"],
     format: "esm",
     clean: true,
-    noExternal: [/(effect|@effect)/],
+    noExternal: [/^(?!.*@parcel\/watcher).*/],
     external: ["@parcel/watcher"],
     publicDir: "dist/dist/prebuilds",
     outDir: ".github/actions/workflow-level-service/build",
