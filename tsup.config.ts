@@ -10,4 +10,5 @@ export default defineConfig({
     outDir: ".github/actions/workflow-level-service/build",
     sourcemap: true,
     treeshake: "smallest",
+    keepNames: true,
 });
