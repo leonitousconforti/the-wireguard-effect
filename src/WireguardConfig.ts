@@ -157,13 +157,13 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
      */
     public up: {
         (
-            interfaceObject: Option.Option<WireguardInterface.WireguardInterface> | undefined,
+            interfaceObject: WireguardInterface.WireguardInterface | undefined,
         ): Effect.Effect<
             WireguardInterface.WireguardInterface,
             WireguardError.WireguardError | Cause.TimeoutException,
             Platform.FileSystem.FileSystem | Platform.Path.Path
         >;
-    } = internal.up(this);
+    } = (interfaceObject) => internal.up(this, interfaceObject);
 
     /**
      * Starts a wireguard tunnel that will be gracefully shutdown and stop
@@ -176,13 +176,13 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
      */
     public upScoped: {
         (
-            interfaceObject: Option.Option<WireguardInterface.WireguardInterface> | undefined,
+            interfaceObject: WireguardInterface.WireguardInterface | undefined,
         ): Effect.Effect<
             WireguardInterface.WireguardInterface,
             WireguardError.WireguardError | Cause.TimeoutException,
             Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
         >;
-    } = internal.upScoped(this);
+    } = (interfaceObject) => internal.upScoped(this, interfaceObject);
 }
 
 /**

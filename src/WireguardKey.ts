@@ -40,3 +40,5 @@ export type WireguardKey = Schema.Schema.Type<typeof WireguardKey>;
 export const generateKeyPair: {
     (): { privateKey: WireguardKey; publicKey: WireguardKey };
 } = internal.generateKeyPair;
+
+export default WireguardKey;

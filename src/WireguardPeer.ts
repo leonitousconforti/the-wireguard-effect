@@ -241,3 +241,5 @@ export const WireguardUapiPeer = Function.pipe(
     Schema.description("A wireguard userspace api peer configuration"),
     Schema.brand("WireguardUapiPeer"),
 );
+
+export default WireguardPeer;

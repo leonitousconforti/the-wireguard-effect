@@ -62,7 +62,7 @@ even after the nodejs process exits.
 **Signature**
 
 ```ts
-up: (interfaceObject: Option.Option<WireguardInterface.WireguardInterface> | undefined) =>
+up: (interfaceObject: WireguardInterface.WireguardInterface | undefined) =>
   Effect.Effect<
     WireguardInterface.WireguardInterface,
     WireguardError.WireguardError | Cause.TimeoutException,
@@ -80,7 +80,7 @@ serving traffic once the scope is closed.
 **Signature**
 
 ```ts
-upScoped: (interfaceObject: Option.Option<WireguardInterface.WireguardInterface> | undefined) =>
+upScoped: (interfaceObject: WireguardInterface.WireguardInterface | undefined) =>
   Effect.Effect<
     WireguardInterface.WireguardInterface,
     WireguardError.WireguardError | Cause.TimeoutException,

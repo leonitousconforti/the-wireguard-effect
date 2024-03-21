@@ -247,59 +247,51 @@ export const generateHubSpokeConfigs: {
 /** @internal */
 export const up = Function.dual<
     (
-        config: WireguardConfig.WireguardConfig,
+        interfaceObject?: WireguardInterface.WireguardInterface | undefined,
     ) => (
-        interfaceObject: Option.Option<WireguardInterface.WireguardInterface> | undefined,
+        config: WireguardConfig.WireguardConfig,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
         WireguardError.WireguardError | Cause.TimeoutException,
         Platform.FileSystem.FileSystem | Platform.Path.Path
     >,
     (
-        interfaceObject: Option.Option<WireguardInterface.WireguardInterface> | undefined,
         config: WireguardConfig.WireguardConfig,
+        interfaceObject?: WireguardInterface.WireguardInterface | undefined,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
         WireguardError.WireguardError | Cause.TimeoutException,
         Platform.FileSystem.FileSystem | Platform.Path.Path
     >
->(
-    2,
-    (
-        interfaceObject: Option.Option<WireguardInterface.WireguardInterface> | undefined = Option.none(),
-        config: WireguardConfig.WireguardConfig,
-    ) =>
-        Function.pipe(
-            interfaceObject,
-            Option.map(Effect.succeed),
-            Option.getOrElse(WireguardInterface.WireguardInterface.getNextAvailableInterface),
-            Effect.flatMap((io) => io.up(config)),
-        ),
+>(2, (config: WireguardConfig.WireguardConfig, interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>
+    Function.pipe(
+        interfaceObject,
+        Option.fromNullable,
+        Option.map(Effect.succeed),
+        Option.getOrElse(() => WireguardInterface.WireguardInterface.getNextAvailableInterface),
+        Effect.flatMap((io) => io.up(config)),
+    ),
 );
 
 /** @internal */
 export const upScoped = Function.dual<
     (
-        config: WireguardConfig.WireguardConfig,
+        interfaceObject?: WireguardInterface.WireguardInterface | undefined,
     ) => (
-        interfaceObject: Option.Option<WireguardInterface.WireguardInterface> | undefined,
+        config: WireguardConfig.WireguardConfig,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
         WireguardError.WireguardError | Cause.TimeoutException,
         Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
     >,
     (
-        interfaceObject: Option.Option<WireguardInterface.WireguardInterface> | undefined,
         config: WireguardConfig.WireguardConfig,
+        interfaceObject?: WireguardInterface.WireguardInterface | undefined,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
         WireguardError.WireguardError | Cause.TimeoutException,
         Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
     >
->(
-    2,
-    (
-        interfaceObject: Option.Option<WireguardInterface.WireguardInterface> | undefined = Option.none(),
-        config: WireguardConfig.WireguardConfig,
-    ) => Effect.acquireRelease(up(interfaceObject, config), (io) => Function.flow(io.down, Effect.orDie)()),
+>(2, (config: WireguardConfig.WireguardConfig, interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>
+    Effect.acquireRelease(up(config, interfaceObject), (io) => Function.flow(io.down, Effect.orDie)()),
 );

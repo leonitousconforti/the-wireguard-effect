@@ -83,55 +83,54 @@ export const InterfaceRegExpForPlatform: Effect.Effect<RegExp, WireguardError.Wi
 );
 
 /** @internal */
-export const getNextAvailableInterface = (): Effect.Effect<
+export const getNextAvailableInterface: Effect.Effect<
     WireguardInterface.WireguardInterface,
     WireguardError.WireguardError,
     never
-> =>
-    Effect.gen(function* (λ) {
-        // Determine all the used interface indexes
-        const regex = yield* λ(InterfaceRegExpForPlatform);
-        const usedInterfaceIndexes = Function.pipe(
-            os.networkInterfaces(),
-            ReadonlyRecord.keys,
-            ReadonlyArray.filter((name) => regex.test(name)),
-            ReadonlyArray.map(String.replaceAll(/\D/g, "")),
-            ReadonlyArray.map(Number.parse),
-            ReadonlyArray.filterMap(Function.identity),
-        );
+> = Effect.gen(function* (λ) {
+    // Determine all the used interface indexes
+    const regex = yield* λ(InterfaceRegExpForPlatform);
+    const usedInterfaceIndexes = Function.pipe(
+        os.networkInterfaces(),
+        ReadonlyRecord.keys,
+        ReadonlyArray.filter((name) => regex.test(name)),
+        ReadonlyArray.map(String.replaceAll(/\D/g, "")),
+        ReadonlyArray.map(Number.parse),
+        ReadonlyArray.filterMap(Function.identity),
+    );
 
-        // Find the next available interface index
-        const nextAvailableInterfaceIndex = yield* λ(
-            Function.pipe(
-                Stream.iterate(0, (x) => x + 1),
-                Stream.find((x) => !ReadonlyArray.contains(usedInterfaceIndexes, x)),
-                Stream.take(1),
-                Stream.runCollect,
-                Effect.map(Chunk.head),
-                Effect.map(Option.getOrThrow),
-            ),
-        );
+    // Find the next available interface index
+    const nextAvailableInterfaceIndex = yield* λ(
+        Function.pipe(
+            Stream.iterate(0, (x) => x + 1),
+            Stream.find((x) => !ReadonlyArray.contains(usedInterfaceIndexes, x)),
+            Stream.take(1),
+            Stream.runCollect,
+            Effect.map(Chunk.head),
+            Effect.map(Option.getOrThrow),
+        ),
+    );
 
-        // We know this will be a supported platform now because otherwise
-        // the WireguardInterface.InterfaceRegExpForPlatform would have failed
-        const platform: (typeof SupportedPlatforms)[number] = Function.unsafeCoerce(process.platform);
+    // We know this will be a supported platform now because otherwise
+    // the WireguardInterface.InterfaceRegExpForPlatform would have failed
+    const platform: (typeof SupportedPlatforms)[number] = Function.unsafeCoerce(process.platform);
 
-        // Construct the next available interface name
-        const fromString = Schema.decodeSync(WireguardInterface.WireguardInterface);
-        switch (platform) {
-            case "win32":
-            case "freebsd":
-                return fromString({ Name: `eth${nextAvailableInterfaceIndex}` });
-            case "linux":
-                return fromString({ Name: `wg${nextAvailableInterfaceIndex}` });
-            case "openbsd":
-                return fromString({ Name: `tun${nextAvailableInterfaceIndex}` });
-            case "darwin":
-                return fromString({ Name: `utun${nextAvailableInterfaceIndex}` });
-            default:
-                return Function.absurd<WireguardInterface.WireguardInterface>(platform);
-        }
-    });
+    // Construct the next available interface name
+    const fromString = Schema.decodeSync(WireguardInterface.WireguardInterface);
+    switch (platform) {
+        case "win32":
+        case "freebsd":
+            return fromString({ Name: `eth${nextAvailableInterfaceIndex}` });
+        case "linux":
+            return fromString({ Name: `wg${nextAvailableInterfaceIndex}` });
+        case "openbsd":
+            return fromString({ Name: `tun${nextAvailableInterfaceIndex}` });
+        case "darwin":
+            return fromString({ Name: `utun${nextAvailableInterfaceIndex}` });
+        default:
+            return Function.absurd<WireguardInterface.WireguardInterface>(platform);
+    }
+});
 
 /** @internal */
 export const socketLocation = (interfaceObject: WireguardInterface.WireguardInterface): string =>
@@ -204,7 +203,7 @@ export const upScoped = Function.dual<
         Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
     >
 >(
-    (args) => Schema.is(WireguardConfig.WireguardConfig)(args[0]),
+    (args) => Schema.is(WireguardInterface.WireguardInterface)(args[0]),
     (
         interfaceObject: WireguardInterface.WireguardInterface,
         config: WireguardConfig.WireguardConfig,
@@ -234,7 +233,7 @@ export const up = Function.dual<
         Platform.FileSystem.FileSystem | Platform.Path.Path
     >
 >(
-    (args) => Schema.is(WireguardConfig.WireguardConfig)(args[0]),
+    (args) => Schema.is(WireguardInterface.WireguardInterface)(args[0]),
     (
         interfaceObject: WireguardInterface.WireguardInterface,
         config: WireguardConfig.WireguardConfig,

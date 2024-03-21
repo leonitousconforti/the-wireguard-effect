@@ -44,9 +44,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
      * @since 1.0.0
      * @category Constructors
      */
-    public static getNextAvailableInterface: {
-        (): Effect.Effect<WireguardInterface, WireguardErrors.WireguardError, never>;
-    } = internal.getNextAvailableInterface;
+    public static getNextAvailableInterface: Effect.Effect<WireguardInterface, WireguardErrors.WireguardError, never> =
+        internal.getNextAvailableInterface;
 
     /**
      * Starts a wireguard tunnel that will be gracefully shutdown and stop serving
@@ -100,3 +99,5 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         (): Effect.Effect<void, Platform.Error.PlatformError, Platform.FileSystem.FileSystem>;
     } = Function.constant(internal.down(this));
 }
+
+export default WireguardInterface;
