@@ -7,8 +7,6 @@ import * as ConfigError from "effect/ConfigError";
 import * as Effect from "effect/Effect";
 import * as Either from "effect/Either";
 import * as Predicate from "effect/Predicate";
-import * as ip from "ip";
-import * as ipAddress from "ip-address";
 import * as Wireguard from "../src/index.js";
 
 /**
@@ -110,28 +108,3 @@ export const uploadSingleFileArtifact = (
             ),
         );
     }).pipe(Effect.scoped);
-
-export const getRangeV4 = (cidr: ipAddress.Address4): string[] => {
-    const ips = [];
-
-    let firstAddressLong = ip.toLong(cidr.startAddress().correctForm());
-    const lastAddressLong = ip.toLong(cidr.endAddress().correctForm());
-
-    for (firstAddressLong; firstAddressLong <= lastAddressLong; firstAddressLong++)
-        ips.push(ip.fromLong(firstAddressLong));
-
-    return ips;
-};
-
-export const getRangeV6 = (cidr: ipAddress.Address6): string[] => {
-    const ips = [];
-
-    const firstAddress = new ipAddress.Address6(cidr.startAddress().correctForm());
-    const lastAddress = new ipAddress.Address6(cidr.endAddress().correctForm());
-
-    for (let index = firstAddress.bigInteger(); index <= lastAddress.bigInteger(); index++) {
-        ips.push(ipAddress.Address6.fromBigInteger(index).correctForm());
-    }
-
-    return ips;
-};

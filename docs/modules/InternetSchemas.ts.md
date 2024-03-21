@@ -145,7 +145,7 @@ export declare const CidrBlock: Schema.brand<
         Schema.Schema<`${string}/${number}`, `${string}/${number}`, never>
       ]
     >,
-    Schema.union<[typeof IPv4CidrBlock, typeof IPv6CidrBlock]>,
+    typeof CidrBlockInternal,
     never
   >,
   "CidrBlock"

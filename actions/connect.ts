@@ -9,10 +9,10 @@ import * as ConfigError from "effect/ConfigError";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as ReadonlyArray from "effect/ReadonlyArray";
-import * as ipAddress from "ip-address";
 import * as dgram from "node:dgram";
 import * as stun from "stun";
 import * as uuid from "uuid";
+
 import * as Wireguard from "../src/index.js";
 import * as helpers from "./helpers.js";
 
@@ -36,9 +36,9 @@ const getConnectionResponse: Effect.Effect<
         yield* λ(
             Effect.die(
                 new Error(
-                    `Received more than one connection response artifact for client: ${client_identifier} from service: ${service_identifier}`
-                )
-            )
+                    `Received more than one connection response artifact for client: ${client_identifier} from service: ${service_identifier}`,
+                ),
+            ),
         );
     }
     if (!connectionResponses[0]) yield* λ(Effect.sleep("20 seconds"));
@@ -57,7 +57,7 @@ const program: Effect.Effect<
     const stunSocket: dgram.Socket = dgram.createSocket("udp4");
     stunSocket.bind(0);
     const stunResponse: stun.StunMessage = yield* λ(
-        Effect.promise(() => stun.request("stun.l.google.com:19302", { socket: stunSocket }))
+        Effect.promise(() => stun.request("stun.l.google.com:19302", { socket: stunSocket })),
     );
     const mappedAddress = stunResponse.getAttribute(stun.constants.STUN_ATTR_XOR_MAPPED_ADDRESS).value;
     const myLocation = `${mappedAddress.address}:${mappedAddress.port}:${stunSocket.address().port}` as const;
@@ -69,7 +69,7 @@ const program: Effect.Effect<
 
     // Upload the connection request artifact
     yield* λ(
-        helpers.uploadSingleFileArtifact(`${service_identifier}_connection-request_${client_identifier}`, myLocation)
+        helpers.uploadSingleFileArtifact(`${service_identifier}_connection-request_${client_identifier}`, myLocation),
     );
 
     // Wait for the service to send a connection response artifact
@@ -79,15 +79,8 @@ const program: Effect.Effect<
     const data = yield* λ(helpers.downloadSingleFileArtifact(connectionResponse.id, connectionResponse.name));
     yield* λ(helpers.deleteArtifact(connectionResponse.name));
     GithubCore.info(data);
-    const config = yield* λ(Schema.decode(Schema.parseJson(Wireguard.WireguardConfig))(data));
-    const address = `${"ipv4" in config.Address ? config.Address.ipv4 : config.Address.ipv6}/${config.Address.mask}`;
-
-    // Set the service address
-    const ips =
-        "ipv4" in config.Address
-            ? helpers.getRangeV4(new ipAddress.Address4(address))
-            : helpers.getRangeV6(new ipAddress.Address6(address));
-    GithubCore.setOutput("service-address", ips[1]);
+    const config = yield* λ(Schema.decode(Schema.parseJson(Wireguard.WireguardConfig.WireguardConfig))(data));
+    GithubCore.setOutput("service-address", config.Address.networkAddress);
 
     // Stop the stun keepalive and close the socket so that wireguard can bind
     // to that port now. It needs to be the exact same port as the one we used
@@ -95,7 +88,7 @@ const program: Effect.Effect<
     clearInterval(timer);
     stunSocket.close();
 
-    yield* λ(config.up());
+    yield* λ(config.up(undefined));
     yield* λ(Console.log("Connection established"));
 })
     .pipe(Effect.tapError(Console.log))

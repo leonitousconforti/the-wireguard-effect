@@ -1,9 +1,8 @@
-import { __toESM, require_core, require_ip_address, require_src, gen, SERVICE_IDENTIFIER, listArtifacts, stopArtifact, connectionRequestArtifact, some, deleteArtifact, filter, pipe, map, forkDaemon, all, repeat, spaced, suspend, provide, NodeContext_exports, NodeRuntime_exports, SERVICE_CIDR, validate_default, fail, downloadSingleFileArtifact, promise, loop, sync, andThen, sleep, getRangeV4, getRangeV6, make, WireguardConfig_exports, encode, parseJson, uploadSingleFileArtifact, catchAll, log, catchAllDefect } from './chunk-FF5O2VR2.js';
+import { __toESM, require_core, require_src, gen, SERVICE_IDENTIFIER, listArtifacts, stopArtifact, connectionRequestArtifact, some, deleteArtifact, filter, pipe, map, forkDaemon, all, repeat, spaced, suspend, provide, NodeContext_exports, NodeRuntime_exports, SERVICE_CIDR, validate_default, fail, downloadSingleFileArtifact, promise, loop, sync, andThen, sleep, take, runCollect, map2, toReadonlyArray, make, WireguardConfig_exports, encode, parseJson, uploadSingleFileArtifact, catchAll, log, catchAllDefect } from './chunk-ZRQ6PF2P.js';
 import * as dgram from 'dgram';
 
 // actions/expose.ts
 var GithubCore = __toESM(require_core(), 1);
-var ipAddress = __toESM(require_ip_address(), 1);
 var stun = __toESM(require_src(), 1);
 var processConnectionRequest = (connectionRequest) => gen(function* (\u03BB) {
   const service_identifier = yield* \u03BB(SERVICE_IDENTIFIER);
@@ -37,17 +36,19 @@ var processConnectionRequest = (connectionRequest) => gen(function* (\u03BB) {
       )
     })
   );
-  const address = `${"ipv4" in service_cidr ? service_cidr.ipv4 : service_cidr.ipv6}/${service_cidr.mask}`;
-  const ips = "ipv4" in service_cidr ? getRangeV4(new ipAddress.Address4(address)) : getRangeV6(new ipAddress.Address6(address));
-  const aliceData = make(myLocation, ips[1]);
+  const ipStream = yield* \u03BB(service_cidr.range());
+  const a = yield* \u03BB(take(2)(ipStream).pipe(runCollect).pipe(map2(toReadonlyArray)));
+  const aliceData = make(myLocation, a[0]);
   const bobData = make(
     `${clientIp}:${Number.parseInt(natPort)}:${Number.parseInt(hostPort)}`,
-    ips[2]
+    a[1]
   );
-  const [aliceConfig, bobConfig] = yield* \u03BB(WireguardConfig_exports.generateP2PConfigs(aliceData, bobData));
+  const [aliceConfig, bobConfig] = yield* \u03BB(
+    WireguardConfig_exports.WireguardConfig.generateP2PConfigs(aliceData, bobData)
+  );
   stunSocket.close();
-  yield* \u03BB(aliceConfig.up());
-  const g = yield* \u03BB(encode(parseJson(WireguardConfig_exports))(bobConfig));
+  yield* \u03BB(aliceConfig.up(void 0));
+  const g = yield* \u03BB(encode(parseJson(WireguardConfig_exports.WireguardConfig))(bobConfig));
   yield* \u03BB(uploadSingleFileArtifact(`${service_identifier}_connection-response_${client_identifier}`, g));
 }).pipe(catchAll(log)).pipe(catchAllDefect(log));
 var program = gen(function* (\u03BB) {

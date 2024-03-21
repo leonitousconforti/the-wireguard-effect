@@ -1,9 +1,8 @@
-import { __toESM, require_core, require_ip_address, require_src, v4_default, gen, listArtifacts, SERVICE_IDENTIFIER, connectionResponseArtifact, filter, die, sleep, repeat, promise, uploadSingleFileArtifact, downloadSingleFileArtifact, deleteArtifact, decode, parseJson, WireguardConfig_exports, getRangeV4, getRangeV6, log, tapError, tapDefect, suspend, provide, NodeContext_exports, NodeRuntime_exports } from './chunk-FF5O2VR2.js';
+import { __toESM, require_core, require_src, v4_default, gen, listArtifacts, SERVICE_IDENTIFIER, connectionResponseArtifact, filter, die, sleep, repeat, promise, uploadSingleFileArtifact, downloadSingleFileArtifact, deleteArtifact, decode, parseJson, WireguardConfig_exports, log, tapError, tapDefect, suspend, provide, NodeContext_exports, NodeRuntime_exports } from './chunk-ZRQ6PF2P.js';
 import * as dgram from 'dgram';
 
 // actions/connect.ts
 var GithubCore = __toESM(require_core(), 1);
-var ipAddress = __toESM(require_ip_address(), 1);
 var stun = __toESM(require_src(), 1);
 var client_identifier = v4_default();
 var getConnectionResponse = gen(function* (\u03BB) {
@@ -41,13 +40,11 @@ var program = gen(function* (\u03BB) {
   const data = yield* \u03BB(downloadSingleFileArtifact(connectionResponse.id, connectionResponse.name));
   yield* \u03BB(deleteArtifact(connectionResponse.name));
   GithubCore.info(data);
-  const config = yield* \u03BB(decode(parseJson(WireguardConfig_exports))(data));
-  const address = `${"ipv4" in config.Address ? config.Address.ipv4 : config.Address.ipv6}/${config.Address.mask}`;
-  const ips = "ipv4" in config.Address ? getRangeV4(new ipAddress.Address4(address)) : getRangeV6(new ipAddress.Address6(address));
-  GithubCore.setOutput("service-address", ips[1]);
+  const config = yield* \u03BB(decode(parseJson(WireguardConfig_exports.WireguardConfig))(data));
+  GithubCore.setOutput("service-address", config.Address.networkAddress);
   clearInterval(timer);
   stunSocket.close();
-  yield* \u03BB(config.up());
+  yield* \u03BB(config.up(void 0));
   yield* \u03BB(log("Connection established"));
 }).pipe(tapError(log)).pipe(tapDefect(log));
 suspend(() => program).pipe(provide(NodeContext_exports.layer), NodeRuntime_exports.runMain);

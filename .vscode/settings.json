@@ -4,6 +4,7 @@
         "bufferutil",
         "Conforti",
         "devcontainers",
+        "docgen",
         "execa",
         "fwmark",
         "gitsubmodule",

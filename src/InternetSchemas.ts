@@ -330,23 +330,23 @@ export type IPv6CidrMask = Schema.Schema.Type<typeof IPv6CidrMask>;
  * @since 1.0.0
  * @category Datatypes
  */
-export class IPv4CidrBlock extends Schema.Class<IPv4CidrBlock>("IPv4CidrBlock")({
-    ip: IPv4,
-    mask: IPv4CidrMask,
-    family: Schema.literal("ipv4"),
+export class CidrBlockInternal extends Schema.Class<CidrBlockInternal>("CidrBlockInternal")({
+    ip: Address,
+    mask: Schema.union(IPv4CidrMask, IPv6CidrMask),
+    family: Schema.union(Schema.literal("ipv4"), Schema.literal("ipv6")),
 
     /**
      * The first address in the range given by this address' subnet, often referred to as the Network Address.
      */
-    networkAddress: IPv4,
+    networkAddress: Address,
 
     /**
      * The last address in the range given by this address' subnet, often referred to as the Broadcast Address.
      */
-    broadcastAddress: IPv4,
+    broadcastAddress: Address,
 }) {
     public readonly range = (): Effect.Effect<
-        Stream.Stream<IPv4, ParseResult.ParseError, never>,
+        Stream.Stream<Address, ParseResult.ParseError, never>,
         ParseResult.ParseError,
         never
     > => {
@@ -360,60 +360,7 @@ export class IPv4CidrBlock extends Schema.Class<IPv4CidrBlock>("IPv4CidrBlock")(
                 Stream.takeWhile((n) => n <= maxValue),
                 Stream.map((n) => ({ value: n, family: self.family })),
                 Stream.mapEffect(Schema.encode(BigintFromAddress)),
-                Stream.mapEffect(Schema.decode(IPv4)),
-            );
-
-            return stream;
-        });
-    };
-
-    public get total() {
-        const { value: minValue } = Schema.decodeSync(BigintFromAddress)(this.networkAddress);
-        const { value: maxValue } = Schema.decodeSync(BigintFromAddress)(this.broadcastAddress);
-        return maxValue - minValue + 1n;
-    }
-}
-
-/**
- * Internal helper representation of a cidr range so that we can do
- * transformations to and from it as we cannot represent a stream
- * using @effect/schema.
- *
- * @internal
- * @since 1.0.0
- * @category Datatypes
- */
-export class IPv6CidrBlock extends Schema.Class<IPv6CidrBlock>("IPv6CidrBlock")({
-    ip: IPv6,
-    mask: IPv6CidrMask,
-    family: Schema.literal("ipv6"),
-
-    /**
-     * The first address in the range given by this address' subnet, often referred to as the Network Address.
-     */
-    networkAddress: IPv6,
-
-    /**
-     * The last address in the range given by this address' subnet, often referred to as the Broadcast Address.
-     */
-    broadcastAddress: IPv6,
-}) {
-    public readonly range = (): Effect.Effect<
-        Stream.Stream<IPv6, ParseResult.ParseError, never>,
-        ParseResult.ParseError,
-        never
-    > => {
-        const self = this;
-        return Effect.gen(function* (λ) {
-            const { value: minValue } = yield* λ(Schema.decode(BigintFromAddress)(self.networkAddress));
-            const { value: maxValue } = yield* λ(Schema.decode(BigintFromAddress)(self.broadcastAddress));
-
-            const stream = Function.pipe(
-                Stream.iterate(minValue, (n) => n + 1n),
-                Stream.takeWhile((n) => n <= maxValue),
-                Stream.map((n) => ({ value: n, family: self.family })),
-                Stream.mapEffect(Schema.encode(BigintFromAddress)),
-                Stream.mapEffect(Schema.decode(IPv6)),
+                Stream.mapEffect(Schema.decode(Address)),
             );
 
             return stream;
@@ -454,7 +401,7 @@ export const CidrBlock = Function.pipe(
             Schema.struct({ ipv6: IPv6, mask: IPv6CidrMask }),
             Schema.templateLiteral(Schema.string, Schema.literal("/"), Schema.number),
         ),
-        Schema.union(IPv4CidrBlock, IPv6CidrBlock),
+        CidrBlockInternal,
         (data, _options, _ast) =>
             Effect.gen(function* (λ) {
                 const [ip, mask] = Predicate.isString(data)
@@ -491,25 +438,15 @@ export const CidrBlock = Function.pipe(
                     Schema.encode(BigintFromAddress)({ value: broadcastAddressBigInt, family }),
                 );
 
-                return family === "ipv4"
-                    ? yield* λ(
-                          Schema.decode(IPv4CidrBlock)({
-                              family,
-                              ip: ipParsed,
-                              mask: maskParsed,
-                              networkAddress,
-                              broadcastAddress,
-                          }),
-                      )
-                    : yield* λ(
-                          Schema.decode(IPv6CidrBlock)({
-                              family,
-                              ip: ipParsed,
-                              mask: maskParsed,
-                              networkAddress,
-                              broadcastAddress,
-                          }),
-                      );
+                return yield* λ(
+                    Schema.decode(CidrBlockInternal)({
+                        family,
+                        ip: ipParsed,
+                        mask: maskParsed,
+                        networkAddress,
+                        broadcastAddress,
+                    }),
+                );
             }).pipe(Effect.mapError(({ error }) => error)),
         ({ ip, mask }) => Effect.succeed(`${ip}/${mask}` as const),
     ),

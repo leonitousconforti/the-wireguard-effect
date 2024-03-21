@@ -135,7 +135,7 @@ export declare const WireguardUapiConfig: Schema.brand<
                 Schema.Schema<`${string}/${number}`, `${string}/${number}`, never>
               ]
             >,
-            Schema.union<[typeof InternetSchemas.IPv4CidrBlock, typeof InternetSchemas.IPv6CidrBlock]>,
+            typeof InternetSchemas.CidrBlockInternal,
             never
           >,
           "CidrBlock"

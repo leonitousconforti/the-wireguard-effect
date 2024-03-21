@@ -30,14 +30,14 @@ runs:
       id: connect
       shell: bash
       if: runner.os != 'Windows'
-      run: sudo -E node .github/actions/workflow-level-service/connect/connect.bundle.mjs
+      run: sudo -E node .github/actions/workflow-level-service/build/connect.js
       env:
         SERVICE_IDENTIFIER: ${{ inputs.service-identifier }}
 
     - name: "Connect to service (Windows)"
       shell: bash
       if: runner.os == 'Windows'
-      run: node .github/actions/workflow-level-service/connect/connect.bundle.mjs
+      run: node .github/actions/workflow-level-service/build/connect.js
       env:
         SERVICE_IDENTIFIER: ${{ inputs.service-identifier }}
 

@@ -2,16 +2,18 @@ import * as GithubArtifacts from "@actions/artifact";
 import * as GithubCore from "@actions/core";
 import * as Platform from "@effect/platform";
 import * as PlatformNode from "@effect/platform-node";
+import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
+import * as Chunk from "effect/Chunk";
 import * as ConfigError from "effect/ConfigError";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Schedule from "effect/Schedule";
+import * as Stream from "effect/Stream";
 import * as Tuple from "effect/Tuple";
-import * as ipAddress from "ip-address";
 import * as dgram from "node:dgram";
 import * as stun from "stun";
 import * as uuid from "uuid";
@@ -19,15 +21,15 @@ import * as Wireguard from "../src/index.js";
 import * as helpers from "./helpers.js";
 
 const processConnectionRequest = (
-    connectionRequest: Readonly<GithubArtifacts.Artifact>
+    connectionRequest: Readonly<GithubArtifacts.Artifact>,
 ): Effect.Effect<
     void,
-    Error | ConfigError.ConfigError | Cause.UnknownException | Platform.Error.PlatformError,
+    Error | ConfigError.ConfigError | Cause.UnknownException | Platform.Error.PlatformError | ParseResult.ParseError,
     Platform.FileSystem.FileSystem | Platform.Path.Path
 > =>
     Effect.gen(function* (λ) {
         const service_identifier: number = yield* λ(helpers.SERVICE_IDENTIFIER);
-        const service_cidr: Wireguard.CidrBlock = yield* λ(helpers.SERVICE_CIDR);
+        const service_cidr: Wireguard.InternetSchemas.CidrBlock = yield* λ(helpers.SERVICE_CIDR);
         const client_identifier: string | undefined = connectionRequest.name.split("_")[2];
 
         // Check that client_identifier is a valid UUID
@@ -49,7 +51,7 @@ const processConnectionRequest = (
         const stunSocket = dgram.createSocket("udp4");
         stunSocket.bind(0);
         const stunResponse = yield* λ(
-            Effect.promise(() => stun.request("stun.l.google.com:19302", { socket: stunSocket }))
+            Effect.promise(() => stun.request("stun.l.google.com:19302", { socket: stunSocket })),
         );
         const mappedAddress = stunResponse.getAttribute(stun.constants.STUN_ATTR_XOR_MAPPED_ADDRESS).value;
         const myLocation = `${mappedAddress.address}:${mappedAddress.port}:${stunSocket.address().port}` as const;
@@ -60,26 +62,26 @@ const processConnectionRequest = (
                 while: (count) => count < 5,
                 body: () =>
                     Effect.sync(() => stunSocket.send(".", 0, 1, Number.parseInt(natPort), clientIp)).pipe(
-                        Effect.andThen(Effect.sleep(1000))
+                        Effect.andThen(Effect.sleep(1000)),
                     ),
-            })
+            }),
         );
 
-        const address = `${"ipv4" in service_cidr ? service_cidr.ipv4 : service_cidr.ipv6}/${service_cidr.mask}`;
-        const ips =
-            "ipv4" in service_cidr
-                ? helpers.getRangeV4(new ipAddress.Address4(address))
-                : helpers.getRangeV6(new ipAddress.Address6(address));
-        const aliceData = Tuple.make(myLocation, ips[1] as string);
+        const ipStream = yield* λ(service_cidr.range());
+        const a = yield* λ(Stream.take(2)(ipStream).pipe(Stream.runCollect).pipe(Effect.map(Chunk.toReadonlyArray)));
+
+        const aliceData = Tuple.make(myLocation, a[0] as string);
         const bobData = Tuple.make(
             `${clientIp}:${Number.parseInt(natPort)}:${Number.parseInt(hostPort)}` as const,
-            ips[2] as string
+            a[1] as string,
         );
-        const [aliceConfig, bobConfig] = yield* λ(Wireguard.WireguardConfig.generateP2PConfigs(aliceData, bobData));
+        const [aliceConfig, bobConfig] = yield* λ(
+            Wireguard.WireguardConfig.WireguardConfig.generateP2PConfigs(aliceData, bobData),
+        );
 
         stunSocket.close();
-        yield* λ(aliceConfig.up());
-        const g = yield* λ(Schema.encode(Schema.parseJson(Wireguard.WireguardConfig))(bobConfig));
+        yield* λ(aliceConfig.up(undefined));
+        const g = yield* λ(Schema.encode(Schema.parseJson(Wireguard.WireguardConfig.WireguardConfig))(bobConfig));
         yield* λ(helpers.uploadSingleFileArtifact(`${service_identifier}_connection-response_${client_identifier}`, g));
     })
         .pipe(Effect.catchAll(Console.log))
@@ -107,8 +109,8 @@ const program: Effect.Effect<
             connectionRequests,
             ReadonlyArray.map(processConnectionRequest),
             ReadonlyArray.map(Effect.forkDaemon),
-            Effect.all
-        )
+            Effect.all,
+        ),
     );
 
     return false;
@@ -116,7 +118,7 @@ const program: Effect.Effect<
     Effect.repeat({
         until: Boolean,
         schedule: Schedule.spaced("30 seconds"),
-    })
+    }),
 );
 
 /**
