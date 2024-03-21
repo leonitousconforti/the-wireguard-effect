@@ -313,8 +313,8 @@ export declare const IPv4Bigint: Schema.transformOrFail<
 
 ```ts
 import * as Schema from "@effect/schema/Schema"
-
 import { Address, IPv4Bigint } from "the-wireguard-effect/InternetSchemas"
+
 const address1 = Schema.decode(IPv4Bigint)(Address("1.1.1.1"))
 ```
 

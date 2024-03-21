@@ -6,6 +6,7 @@ export default defineConfig({
     clean: true,
     noExternal: [/(effect|@effect)/],
     external: ["@parcel/watcher"],
+    publicDir: "dist/dist/prebuilds",
     outDir: ".github/actions/workflow-level-service/build",
     sourcemap: true,
     treeshake: "smallest",

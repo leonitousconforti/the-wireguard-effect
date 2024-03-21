@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-mkdir -p ../dist/dist/prebuilds/
+set -euxo pipefail
+mkdir -p ../dist/dist/prebuilds
 
 # amd64 wireguard-go prebuilds
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=linux GOARCH=amd64 make && mv wireguard-go ../../dist/dist/prebuilds/linux-amd64-wireguard-go)
@@ -19,3 +20,6 @@ mkdir -p ../dist/dist/prebuilds/
 # wintun prebuilds
 (cd ./wintun && cp wintun-amd64.dll ../../dist/dist/prebuilds/win32-amd64-wintun.dll)
 (cd ./wintun && cp wintun-arm64.dll ../../dist/dist/prebuilds/win32-arm64-wintun.dll)
+
+(cp -r ../dist/dist/prebuilds/. ../dist/dist/cjs/internal/)
+(cp -r ../dist/dist/prebuilds/. ../dist/dist/esm/internal/)
