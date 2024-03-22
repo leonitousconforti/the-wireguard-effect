@@ -8,7 +8,6 @@ import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Option from "effect/Option";
 import * as ReadonlyArray from "effect/ReadonlyArray";
-import * as String from "effect/String";
 import * as ini from "ini";
 
 import * as InternetSchemas from "./InternetSchemas.js";
@@ -61,7 +60,7 @@ import * as WireguardKey from "./WireguardKey.js";
  */
 export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")({
     /** The persistent keepalive interval in seconds, 0 disables it. */
-    PersistentKeepaliveInterval: Schema.optional(Schema.DurationFromMillis, {
+    PersistentKeepaliveInterval: Schema.optional(Schema.DurationFromSelf, {
         nullable: true,
         default: () => Duration.seconds(0),
     }),
@@ -100,6 +99,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
  *
  * @example
  * import * as Effect from "effect/Effect"
+ * import * as Duration from "effect/Duration"
  * import * as Function from "effect/Function"
  * import * as Schema from "@effect/schema/Schema"
  * import * as WireguardKey from "the-wireguard-effect/WireguardKey"
@@ -111,7 +111,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
  *      PublicKey: publicKey,
  *      AllowedIPs: ["192.168.0.0/24"],
  *      Endpoint: "192.168.0.1:51820",
- *      PersistentKeepaliveInterval: 20_000,
+ *      PersistentKeepaliveInterval: Duration.seconds(20),
  * })
  *
  * const iniPeer = Function.pipe(
@@ -129,12 +129,18 @@ export const WireguardIniPeer = Function.pipe(
         Schema.string,
         // Encoding is trivial using the ini library.
         (peer, _options, _ast) => {
-            type Writeable<T> = { -readonly [P in keyof T]: T[P] };
-            const peerData = structuredClone(peer) as Writeable<Partial<WireguardPeer>>;
-            delete peerData["AllowedIPs"];
-            const basic = ini.encode(peerData, { bracketedArray: false, section: "Peer", whitespace: true });
-            const aps = ReadonlyArray.map(peer.AllowedIPs, (ap) => `AllowedIPs = ${ap.ip}/${ap.mask}`);
-            return Effect.succeed(String.concat(basic, aps.join("\n")));
+            const publicKey = `PublicKey = ${peer.PublicKey}\n`;
+            const endpoint = `Endpoint = ${peer.Endpoint.ip}:${peer.Endpoint.natPort}\n`;
+            const aps = ReadonlyArray.map(peer.AllowedIPs, (ap) => `AllowedIPs = ${ap.ip}/${ap.mask}\n`);
+            const keepAlive = `PersistentKeepaliveInterval = ${Duration.toSeconds(peer.PersistentKeepaliveInterval)}\n`;
+            const presharedKey = Function.pipe(
+                peer.PresharedKey,
+                Option.map((key) => `PresharedKey = ${key}\n`),
+                Option.getOrElse(() => ""),
+            );
+            return Effect.succeed(
+                `[Peer]\n${publicKey}${endpoint}${keepAlive}${presharedKey}${aps.join("\n")}\n` as const,
+            );
         },
         // Decoding is likewise trivial using the ini library.
         (iniPeer, _options, _ast) =>
@@ -157,6 +163,7 @@ export const WireguardIniPeer = Function.pipe(
 
  * @example
  * import * as Effect from "effect/Effect"
+ * import * as Duration from "effect/Duration"
  * import * as Function from "effect/Function"
  * import * as Schema from "@effect/schema/Schema"
  * import * as WireguardKey from "the-wireguard-effect/WireguardKey"
@@ -168,7 +175,7 @@ export const WireguardIniPeer = Function.pipe(
  *      PublicKey: publicKey,
  *      AllowedIPs: ["192.168.0.0/24"],
  *      Endpoint: "192.168.0.1:51820",
- *      PersistentKeepaliveInterval: 20_000,
+ *      PersistentKeepaliveInterval: Duration.seconds(20),
  * })
  *
  * const uapiPeer = Function.pipe(

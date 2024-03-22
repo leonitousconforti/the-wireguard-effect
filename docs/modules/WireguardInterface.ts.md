@@ -48,8 +48,8 @@ upScoped: (
 ) =>
   Effect.Effect<
     WireguardInterface,
-    WireguardErrors.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
-    Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
+    WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
+    Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
   >
 ```
 
@@ -69,7 +69,7 @@ up: (
 ) =>
   Effect.Effect<
     WireguardInterface,
-    WireguardErrors.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
+    WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
     Platform.FileSystem.FileSystem | Platform.Path.Path
   >
 ```

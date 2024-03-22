@@ -5,7 +5,6 @@
 import * as Platform from "@effect/platform";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
-import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Scope from "effect/Scope";
@@ -63,8 +62,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             options?: { replacePeers?: boolean | undefined; replaceAllowedIPs?: boolean | undefined } | undefined,
         ): Effect.Effect<
             WireguardInterface,
-            WireguardErrors.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
-            Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
+            WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
+            Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
         >;
     } = (config, options) => internal.upScoped(config, options)(this);
 
@@ -84,7 +83,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             options?: { replacePeers?: boolean | undefined; replaceAllowedIPs?: boolean | undefined } | undefined,
         ): Effect.Effect<
             WireguardInterface,
-            WireguardErrors.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
+            WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
             Platform.FileSystem.FileSystem | Platform.Path.Path
         >;
     } = (config, options) => internal.up(config, options)(this);

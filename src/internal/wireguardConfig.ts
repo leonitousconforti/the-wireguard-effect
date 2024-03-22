@@ -1,7 +1,6 @@
 import * as Platform from "@effect/platform";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
-import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Option from "effect/Option";
@@ -252,7 +251,7 @@ export const up = Function.dual<
         config: WireguardConfig.WireguardConfig,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
+        WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
         Platform.FileSystem.FileSystem | Platform.Path.Path
     >,
     (
@@ -260,7 +259,7 @@ export const up = Function.dual<
         interfaceObject?: WireguardInterface.WireguardInterface | undefined,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
+        WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
         Platform.FileSystem.FileSystem | Platform.Path.Path
     >
 >(2, (config: WireguardConfig.WireguardConfig, interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>
@@ -281,7 +280,7 @@ export const upScoped = Function.dual<
         config: WireguardConfig.WireguardConfig,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
+        WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
         Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
     >,
     (
@@ -289,7 +288,7 @@ export const upScoped = Function.dual<
         interfaceObject?: WireguardInterface.WireguardInterface | undefined,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
+        WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
         Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
     >
 >(2, (config: WireguardConfig.WireguardConfig, interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>

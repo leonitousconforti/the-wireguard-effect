@@ -5,7 +5,6 @@
 import * as Platform from "@effect/platform";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
-import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Option from "effect/Option";
@@ -52,7 +51,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
     PrivateKey: WireguardKey.WireguardKey,
 
     /** List of peers to add. */
-    Peers: Schema.array(WireguardPeer.WireguardPeer),
+    Peers: Schema.optional(Schema.array(WireguardPeer.WireguardPeer), { default: () => [], nullable: true }),
 }) {
     /**
      * Generates two wireguard configurations, each with the other as a single
@@ -160,7 +159,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             interfaceObject: WireguardInterface.WireguardInterface | undefined,
         ): Effect.Effect<
             WireguardInterface.WireguardInterface,
-            WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
+            WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
             Platform.FileSystem.FileSystem | Platform.Path.Path
         >;
     } = (interfaceObject) => internal.up(this, interfaceObject);
@@ -179,7 +178,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             interfaceObject: WireguardInterface.WireguardInterface | undefined,
         ): Effect.Effect<
             WireguardInterface.WireguardInterface,
-            WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
+            WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
             Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
         >;
     } = (interfaceObject) => internal.upScoped(this, interfaceObject);
@@ -199,9 +198,10 @@ export const WireguardIniConfig = Function.pipe(
         // Encoding is non-trivial, as we need to handle all the peers individually.
         (config, _options, _ast) =>
             Effect.gen(function* (λ) {
-                const interfaceData: any = yield* λ(Schema.encode(WireguardConfig)(config));
-                delete interfaceData["Peers"];
-
+                const listenPort = `ListenPort = ${config.ListenPort}\n`;
+                const fwmark = `FirewallMark = ${config.FirewallMark}\n`;
+                const privateKey = `PrivateKey = ${config.PrivateKey}\n`;
+                const address = `Address = ${yield* λ(Schema.encode(InternetSchemas.CidrBlock)(config.Address))}\n`;
                 const peersConfig = yield* λ(
                     Function.pipe(
                         config.Peers,
@@ -212,8 +212,7 @@ export const WireguardIniConfig = Function.pipe(
                     ),
                 );
 
-                const interfaceConfig = ini.stringify(interfaceData, { section: "Interface", whitespace: true });
-                return `${interfaceConfig}\n${peersConfig}`;
+                return `[Interface]\n${listenPort}${fwmark}${address}${privateKey}\n${peersConfig}`;
             }).pipe(Effect.mapError(({ error }) => error)),
         // Decoding is likewise non-trivial, as we need to parse all the peers from the ini config.
         (iniConfig, _options, _ast) =>

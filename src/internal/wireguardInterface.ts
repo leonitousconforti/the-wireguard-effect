@@ -2,7 +2,6 @@ import * as Platform from "@effect/platform";
 import * as Socket from "@effect/platform-node/NodeSocket";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
-import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -61,7 +60,21 @@ export const WireguardGoExecutablePath: Effect.Effect<
     const path = yield* λ(Platform.Path.Path);
     const fs = yield* λ(Platform.FileSystem.FileSystem);
     const arch = process.arch === "x64" ? "amd64" : process.arch;
-    const url = new URL(`../build/${process.platform}-${arch}-wireguard-go`, import.meta.url);
+    const url = new URL(`./${process.platform}-${arch}-wireguard-go`, import.meta.url);
+    const pathString = yield* λ(path.fromFileUrl(url));
+    yield* λ(fs.access(pathString, { ok: true }));
+    return pathString;
+});
+
+/** @internal */
+export const WgQuickExecutablePath: Effect.Effect<
+    string,
+    Platform.Error.PlatformError,
+    Platform.FileSystem.FileSystem | Platform.Path.Path
+> = Effect.gen(function* (λ) {
+    const path = yield* λ(Platform.Path.Path);
+    const fs = yield* λ(Platform.FileSystem.FileSystem);
+    const url = new URL(`./${process.platform}-wg-quick`, import.meta.url);
     const pathString = yield* λ(path.fromFileUrl(url));
     yield* λ(fs.access(pathString, { ok: true }));
     return pathString;
@@ -145,46 +158,6 @@ export const socketLocation = (interfaceObject: WireguardInterface.WireguardInte
     )(Function.unsafeCoerce(process.platform));
 
 /** @internal */
-export const setAddress = (
-    interfaceObject: WireguardInterface.WireguardInterface,
-    config: WireguardConfig.WireguardConfig,
-): Effect.Effect<void, WireguardError.WireguardError, never> => {
-    const address = config.Address.ip;
-    const subnet = `${address}/${config.Address.mask}`;
-
-    const commands = Function.pipe(
-        Match.type<(typeof SupportedPlatforms)[number]>(),
-        Match.when("win32", () => [
-            `netsh interface ip add address "${interfaceObject.Name}" address=${address} mask=${"255.255.255.0"}`,
-        ]),
-        Match.when("linux", () => [
-            `ip -4 address add ${subnet} dev ${interfaceObject.Name}`,
-            `ip link set mtu 1420 up dev ${interfaceObject.Name}`,
-        ]),
-        Match.when("darwin", () => [
-            `ifconfig ${interfaceObject.Name} inet 192.168.1.1/24 192.168.1.1 alias`,
-            `ifconfig ${interfaceObject.Name} up`,
-            `route -q -n add -inet 192.168.1.2/32 -interface ${interfaceObject.Name}`,
-        ]),
-        Match.when("freebsd", () => []),
-        Match.when("openbsd", () => []),
-        Match.orElseAbsurd,
-    )(Function.unsafeCoerce(process.platform));
-
-    // FIXME: remove this
-    console.log(commands);
-
-    const effects = ReadonlyArray.map(commands, (command) =>
-        Effect.tryPromise({
-            try: () => execa.execaCommand(command, { shell: true }),
-            catch: (error) => new WireguardError.WireguardError({ message: `${error}` }),
-        }),
-    );
-
-    return Effect.all(effects, { batching: false, concurrency: 1, discard: true });
-};
-
-/** @internal */
 export const upScoped = Function.dual<
     (
         config: WireguardConfig.WireguardConfig,
@@ -193,7 +166,7 @@ export const upScoped = Function.dual<
         interfaceObject: WireguardInterface.WireguardInterface,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
+        WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
         Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
     >,
     (
@@ -202,7 +175,7 @@ export const upScoped = Function.dual<
         options?: { replacePeers?: boolean | undefined; replaceAllowedIPs?: boolean | undefined } | undefined,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
+        WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
         Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
     >
 >(
@@ -223,7 +196,7 @@ export const up = Function.dual<
         interfaceObject: WireguardInterface.WireguardInterface,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
+        WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
         Platform.FileSystem.FileSystem | Platform.Path.Path
     >,
     (
@@ -232,7 +205,7 @@ export const up = Function.dual<
         options?: { replacePeers?: boolean | undefined; replaceAllowedIPs?: boolean | undefined } | undefined,
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError,
+        WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
         Platform.FileSystem.FileSystem | Platform.Path.Path
     >
 >(
@@ -245,44 +218,22 @@ export const up = Function.dual<
         Effect.gen(function* (λ) {
             const path = yield* λ(Platform.Path.Path);
             const fs = yield* λ(Platform.FileSystem.FileSystem);
-            const executablePath = yield* λ(WireguardGoExecutablePath.pipe(Effect.orDie));
+            const tempDirectory = yield* λ(fs.makeTempDirectory());
+            yield* λ(config.writeToFile(path.join(tempDirectory, `${interfaceObject.Name}.conf`)));
 
-            // Setup wintun if on windows
-            if (process.platform === "win32") {
-                const wireguardGoFolder = path.dirname(executablePath);
-                const wireguardGoDllLocation = path.join(wireguardGoFolder, "wintun.dll");
-                const wireguardGoDllExists = yield* λ(fs.exists(wireguardGoDllLocation).pipe(Effect.orDie));
-                if (!wireguardGoDllExists) {
-                    const arch = process.arch === "x64" ? "amd64" : process.arch;
-                    const wireguardGoDllPath = yield* λ(
-                        path
-                            .fromFileUrl(new URL(`../build/win32-${arch}-wintun.dll`, import.meta.url))
-                            .pipe(Effect.orDie),
-                    );
-                    yield* λ(fs.copyFile(wireguardGoDllPath, wireguardGoDllLocation).pipe(Effect.orDie));
-                }
-            }
+            const wgQuickExecutablePath = yield* λ(WgQuickExecutablePath);
+            const wireguardGoExecutablePath = yield* λ(WireguardGoExecutablePath);
+
+            const command = `sudo ${wgQuickExecutablePath} up ${interfaceObject.Name}.conf`;
+            const env = { WG_QUICK_USERSPACE_IMPLEMENTATION: wireguardGoExecutablePath };
 
             yield* λ(
                 Effect.tryPromise({
-                    try: () => {
-                        const subprocess = execa.execaCommand(
-                            `${process.platform === "win32" ? "" : "sudo "}${executablePath} ${interfaceObject.Name}`,
-                            {
-                                detached: false,
-                                stdio: "inherit",
-                                cleanup: true,
-                            },
-                        );
-                        subprocess.unref();
-                        return subprocess;
-                    },
+                    try: () => execa.execaCommand(command, { env }),
                     catch: (error) => new WireguardError.WireguardError({ message: `${error}` }),
                 }),
             );
 
-            yield* λ(setConfig(config, interfaceObject));
-            yield* λ(setAddress(interfaceObject, config));
             return interfaceObject;
         }),
 );
