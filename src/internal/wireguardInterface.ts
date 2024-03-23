@@ -219,12 +219,13 @@ export const up = Function.dual<
             const path = yield* λ(Platform.Path.Path);
             const fs = yield* λ(Platform.FileSystem.FileSystem);
             const tempDirectory = yield* λ(fs.makeTempDirectory());
-            yield* λ(config.writeToFile(path.join(tempDirectory, `${interfaceObject.Name}.conf`)));
+            const file = path.join(tempDirectory, `${interfaceObject.Name}.conf`);
+            yield* λ(config.writeToFile(file));
 
             const wgQuickExecutablePath = yield* λ(WgQuickExecutablePath);
             const wireguardGoExecutablePath = yield* λ(WireguardGoExecutablePath);
 
-            const command = `sudo ${wgQuickExecutablePath} up ${interfaceObject.Name}.conf`;
+            const command = `sudo ${wgQuickExecutablePath} up ${file}`;
             const env = { WG_QUICK_USERSPACE_IMPLEMENTATION: wireguardGoExecutablePath };
 
             yield* λ(
