@@ -57,7 +57,7 @@ devDependencies:
     version: 0.32.19(@effect/typeclass@0.23.10)(effect@2.4.10)
   '@effect/schema':
     specifier: 0.64.10
-    version: 0.64.10(effect@2.4.10)(fast-check@3.16.0)
+    version: 0.64.10(effect@2.4.10)(fast-check@3.17.0)
   '@effect/typeclass':
     specifier: 0.23.10
     version: 0.23.10(effect@2.4.10)
@@ -101,8 +101,8 @@ devDependencies:
     specifier: 8.0.1
     version: 8.0.1
   fast-check:
-    specifier: 3.16.0
-    version: 3.16.0
+    specifier: 3.17.0
+    version: 3.17.0
   prettier:
     specifier: 3.2.5
     version: 3.2.5
@@ -574,7 +574,7 @@ packages:
     dependencies:
       doctrine: 3.0.0
       glob: 10.3.10
-      markdown-toc: github.com/effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5
+      markdown-toc: git/github.com+effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5
       prettier: 3.2.5
       tsx: 4.7.1
       typescript: 5.4.3
@@ -626,7 +626,7 @@ packages:
       '@effect/schema': ^0.64.10
       effect: ^2.4.10
     dependencies:
-      '@effect/schema': 0.64.10(effect@2.4.10)(fast-check@3.16.0)
+      '@effect/schema': 0.64.10(effect@2.4.10)(fast-check@3.17.0)
       effect: 2.4.10
       find-my-way-ts: 0.1.1
       isomorphic-ws: 5.0.0(ws@8.16.0)
@@ -657,14 +657,14 @@ packages:
       effect: 2.4.10
     dev: true
 
-  /@effect/schema@0.64.10(effect@2.4.10)(fast-check@3.16.0):
+  /@effect/schema@0.64.10(effect@2.4.10)(fast-check@3.17.0):
     resolution: {integrity: sha512-V8eatG6dS30smzgmapR9EkyGUhXE7vVZFUiKDNSvp1AumNPjwIKjM8TW/Y/hA4HNm49RV+kgyyGcsI0Mu7owJA==}
     peerDependencies:
       effect: ^2.4.10
       fast-check: ^3.13.2
     dependencies:
       effect: 2.4.10
-      fast-check: 3.16.0
+      fast-check: 3.17.0
     dev: true
 
   /@effect/typeclass@0.23.10(effect@2.4.10):
@@ -2702,8 +2702,8 @@ packages:
       is-extendable: 0.1.1
     dev: true
 
-  /fast-check@3.16.0:
-    resolution: {integrity: sha512-k8GtQHi4pJoRQ1gVDFQno+/FVkowo/ehiz/aCj9O/D7HRWb1sSFzNrw+iPVU8QlWtH+jNwbuN+dDVg3QkS56DQ==}
+  /fast-check@3.17.0:
+    resolution: {integrity: sha512-9A7UiBENXxMBb40qY+xOcIcGdxF5CYbXJOU4b+omh773RIFcIQRejHEjjrzIHQFLIQXWgWQu3dl6FrWR9VpYRQ==}
     engines: {node: '>=8.0.0'}
     dependencies:
       pure-rand: 6.1.0
@@ -5285,8 +5285,8 @@ packages:
       readable-stream: 3.6.2
     dev: true
 
-  github.com/effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5:
-    resolution: {tarball: https://codeload.github.com/effect-ts/markdown-toc/tar.gz/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5}
+  git/github.com+effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5:
+    resolution: {commit: 4bfeb0f140105440ea0d12df2fa23199cc3ec1d5, repo: git@github.com:effect-ts/markdown-toc.git, type: git}
     name: markdown-toc
     version: 1.2.0
     engines: {node: '>=0.10.0'}
