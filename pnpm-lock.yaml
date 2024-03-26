@@ -45,22 +45,22 @@ devDependencies:
     version: 0.1.0
   '@effect/platform':
     specifier: 0.48.14
-    version: 0.48.14(@effect/schema@0.64.10)(effect@2.4.10)(ws@8.16.0)
+    version: 0.48.14(@effect/schema@0.64.10)(effect@2.4.14)(ws@8.16.0)
   '@effect/platform-node':
     specifier: 0.45.16
-    version: 0.45.16(@effect/platform@0.48.14)(effect@2.4.10)
+    version: 0.45.16(@effect/platform@0.48.14)(effect@2.4.14)
   '@effect/printer':
     specifier: 0.31.19
-    version: 0.31.19(@effect/typeclass@0.23.10)(effect@2.4.10)
+    version: 0.31.19(@effect/typeclass@0.23.10)(effect@2.4.14)
   '@effect/printer-ansi':
     specifier: 0.32.19
-    version: 0.32.19(@effect/typeclass@0.23.10)(effect@2.4.10)
+    version: 0.32.19(@effect/typeclass@0.23.10)(effect@2.4.14)
   '@effect/schema':
     specifier: 0.64.10
-    version: 0.64.10(effect@2.4.10)(fast-check@3.16.0)
+    version: 0.64.10(effect@2.4.14)(fast-check@3.16.0)
   '@effect/typeclass':
     specifier: 0.23.10
-    version: 0.23.10(effect@2.4.10)
+    version: 0.23.10(effect@2.4.14)
   '@protobuf-ts/runtime':
     specifier: 2.9.4
     version: 2.9.4
@@ -83,8 +83,8 @@ devDependencies:
     specifier: 0.4.0
     version: 0.4.0(@babel/core@7.24.3)
   effect:
-    specifier: 2.4.10
-    version: 2.4.10
+    specifier: 2.4.14
+    version: 2.4.14
   eslint:
     specifier: 8.57.0
     version: 8.57.0
@@ -574,7 +574,7 @@ packages:
     dependencies:
       doctrine: 3.0.0
       glob: 10.3.10
-      markdown-toc: github.com/effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5
+      markdown-toc: git/github.com+effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5
       prettier: 3.2.5
       tsx: 4.7.1
       typescript: 5.4.3
@@ -592,27 +592,27 @@ packages:
     resolution: {integrity: sha512-BnlM8LlaqCAYgdRfxlbR7gXGh/FD1scL1fPgNVJEPoOM08od1jtJz+iKhwfaud8TPnnhZR+TED2h5ynjanLeCQ==}
     dev: true
 
-  /@effect/platform-node-shared@0.3.14(@effect/platform@0.48.14)(effect@2.4.10):
+  /@effect/platform-node-shared@0.3.14(@effect/platform@0.48.14)(effect@2.4.14):
     resolution: {integrity: sha512-aDgneA5wo7d8g/JPuYerZV/DV/P1PD35nWZil7g/deUxNpTbL6BRtXA3V+hZ7Ce+ZEbrms4zPehHsYdd3yFftQ==}
     peerDependencies:
       '@effect/platform': ^0.48.14
       effect: ^2.4.10
     dependencies:
-      '@effect/platform': 0.48.14(@effect/schema@0.64.10)(effect@2.4.10)(ws@8.16.0)
+      '@effect/platform': 0.48.14(@effect/schema@0.64.10)(effect@2.4.14)(ws@8.16.0)
       '@parcel/watcher': 2.4.1
-      effect: 2.4.10
+      effect: 2.4.14
       multipasta: 0.1.21
     dev: true
 
-  /@effect/platform-node@0.45.16(@effect/platform@0.48.14)(effect@2.4.10):
+  /@effect/platform-node@0.45.16(@effect/platform@0.48.14)(effect@2.4.14):
     resolution: {integrity: sha512-MZyHCgQYCxKS0vhugbbsVF1eDh0RR38zg9CU6QjUnBwSjJjKm+Vc6YmJ5N0O68nohkUVKvYVobflz8MKiLL+1g==}
     peerDependencies:
       '@effect/platform': ^0.48.14
       effect: ^2.4.10
     dependencies:
-      '@effect/platform': 0.48.14(@effect/schema@0.64.10)(effect@2.4.10)(ws@8.16.0)
-      '@effect/platform-node-shared': 0.3.14(@effect/platform@0.48.14)(effect@2.4.10)
-      effect: 2.4.10
+      '@effect/platform': 0.48.14(@effect/schema@0.64.10)(effect@2.4.14)(ws@8.16.0)
+      '@effect/platform-node-shared': 0.3.14(@effect/platform@0.48.14)(effect@2.4.14)
+      effect: 2.4.14
       mime: 3.0.0
       ws: 8.16.0
     transitivePeerDependencies:
@@ -620,14 +620,14 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@effect/platform@0.48.14(@effect/schema@0.64.10)(effect@2.4.10)(ws@8.16.0):
+  /@effect/platform@0.48.14(@effect/schema@0.64.10)(effect@2.4.14)(ws@8.16.0):
     resolution: {integrity: sha512-/kzpGNpY6nhHc4NalYe/Xg6nJtf+7/gCEsc0ArMBmO8ztm4q0LmCjXkwKDt/R5n4h/LzK66hfw3Ht9d5u67a8Q==}
     peerDependencies:
       '@effect/schema': ^0.64.10
       effect: ^2.4.10
     dependencies:
-      '@effect/schema': 0.64.10(effect@2.4.10)(fast-check@3.16.0)
-      effect: 2.4.10
+      '@effect/schema': 0.64.10(effect@2.4.14)(fast-check@3.16.0)
+      effect: 2.4.14
       find-my-way-ts: 0.1.1
       isomorphic-ws: 5.0.0(ws@8.16.0)
       multipasta: 0.1.21
@@ -636,43 +636,43 @@ packages:
       - ws
     dev: true
 
-  /@effect/printer-ansi@0.32.19(@effect/typeclass@0.23.10)(effect@2.4.10):
+  /@effect/printer-ansi@0.32.19(@effect/typeclass@0.23.10)(effect@2.4.14):
     resolution: {integrity: sha512-x5neg6PZn8ddqQjwt/MKq7iTDZQSD/nYlMPXrCVBeN6J/+dlI7BM8Herm78Ku7jKyXbN8JhbNSgcU8OvJw5HGw==}
     peerDependencies:
       '@effect/typeclass': ^0.23.10
       effect: ^2.4.10
     dependencies:
-      '@effect/printer': 0.31.19(@effect/typeclass@0.23.10)(effect@2.4.10)
-      '@effect/typeclass': 0.23.10(effect@2.4.10)
-      effect: 2.4.10
+      '@effect/printer': 0.31.19(@effect/typeclass@0.23.10)(effect@2.4.14)
+      '@effect/typeclass': 0.23.10(effect@2.4.14)
+      effect: 2.4.14
     dev: true
 
-  /@effect/printer@0.31.19(@effect/typeclass@0.23.10)(effect@2.4.10):
+  /@effect/printer@0.31.19(@effect/typeclass@0.23.10)(effect@2.4.14):
     resolution: {integrity: sha512-FHRPn/iJWzzUUyZohbA5amcFKjOBRFCxWzF+FWhqZej09wlLNA84lq60+FcCi+iNZ5K7qFb01Ab1my2QPpc2IQ==}
     peerDependencies:
       '@effect/typeclass': ^0.23.10
       effect: ^2.4.10
     dependencies:
-      '@effect/typeclass': 0.23.10(effect@2.4.10)
-      effect: 2.4.10
+      '@effect/typeclass': 0.23.10(effect@2.4.14)
+      effect: 2.4.14
     dev: true
 
-  /@effect/schema@0.64.10(effect@2.4.10)(fast-check@3.16.0):
+  /@effect/schema@0.64.10(effect@2.4.14)(fast-check@3.16.0):
     resolution: {integrity: sha512-V8eatG6dS30smzgmapR9EkyGUhXE7vVZFUiKDNSvp1AumNPjwIKjM8TW/Y/hA4HNm49RV+kgyyGcsI0Mu7owJA==}
     peerDependencies:
       effect: ^2.4.10
       fast-check: ^3.13.2
     dependencies:
-      effect: 2.4.10
+      effect: 2.4.14
       fast-check: 3.16.0
     dev: true
 
-  /@effect/typeclass@0.23.10(effect@2.4.10):
+  /@effect/typeclass@0.23.10(effect@2.4.14):
     resolution: {integrity: sha512-Q2iRB+kBihkSHjYgDIhOESC5mmGmqWOnjeorep0nYVGmEvmdzvjhpII+EsTUV22/dm8hwIpl12+pAl7zwM2fzw==}
     peerDependencies:
       effect: ^2.4.10
     dependencies:
-      effect: 2.4.10
+      effect: 2.4.14
     dev: true
 
   /@esbuild/aix-ppc64@0.19.12:
@@ -2374,8 +2374,8 @@ packages:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
     dev: true
 
-  /effect@2.4.10:
-    resolution: {integrity: sha512-gWymyTJRCB1tZvwDkMhB3maHEMSddwl84yiB9kZfY+VEK0qL7B9lAUAij5rmBgGfeoZWpdEc5ycnf9VWXOtQRw==}
+  /effect@2.4.14:
+    resolution: {integrity: sha512-uEw/M4sMxE2qfkrY9TcUHtHI1P1ffxk6KA/siVajb83IxIttX1i1F7folF6/vrGHrSWKI4fBdTfMg8wgXp4eKw==}
     dev: true
 
   /electron-to-chromium@1.4.714:
@@ -5285,8 +5285,8 @@ packages:
       readable-stream: 3.6.2
     dev: true
 
-  github.com/effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5:
-    resolution: {tarball: https://codeload.github.com/effect-ts/markdown-toc/tar.gz/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5}
+  git/github.com+effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5:
+    resolution: {commit: 4bfeb0f140105440ea0d12df2fa23199cc3ec1d5, repo: git@github.com:effect-ts/markdown-toc.git, type: git}
     name: markdown-toc
     version: 1.2.0
     engines: {node: '>=0.10.0'}
