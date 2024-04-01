@@ -71,8 +71,8 @@ devDependencies:
     specifier: 4.1.0
     version: 4.1.0
   '@types/node':
-    specifier: 20.11.30
-    version: 20.11.30
+    specifier: 20.12.2
+    version: 20.12.2
   '@types/uuid':
     specifier: 9.0.8
     version: 9.0.8
@@ -126,10 +126,10 @@ devDependencies:
     version: 9.0.1
   vite:
     specifier: 5.2.2
-    version: 5.2.2(@types/node@20.11.30)
+    version: 5.2.2(@types/node@20.12.2)
   vitest:
     specifier: 1.4.0
-    version: 1.4.0(@types/node@20.11.30)
+    version: 1.4.0(@types/node@20.12.2)
   ws:
     specifier: 8.16.0
     version: 8.16.0
@@ -574,7 +574,7 @@ packages:
     dependencies:
       doctrine: 3.0.0
       glob: 10.3.10
-      markdown-toc: github.com/effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5
+      markdown-toc: git/github.com+effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5
       prettier: 3.2.5
       tsx: 4.7.1
       typescript: 5.4.3
@@ -1658,12 +1658,12 @@ packages:
   /@types/node-fetch@2.6.11:
     resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
     dependencies:
-      '@types/node': 20.11.30
+      '@types/node': 20.12.2
       form-data: 4.0.0
     dev: true
 
-  /@types/node@20.11.30:
-    resolution: {integrity: sha512-dHM6ZxwlmuZaRmUPfv1p+KrdD1Dci04FbdEm/9wEMouFqxYoFl5aMkt0VMAUtYRQDyYvD41WJLukhq/ha3YuTw==}
+  /@types/node@20.12.2:
+    resolution: {integrity: sha512-zQ0NYO87hyN6Xrclcqp7f8ZbXNbRfoGWNcMvHTPQp9UUrwI0mI7XBz+cu7/W6/VClYo2g63B0cjull/srU7LgQ==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -1675,7 +1675,7 @@ packages:
   /@types/tunnel@0.0.3:
     resolution: {integrity: sha512-sOUTGn6h1SfQ+gbgqC364jLFBw2lnFqkgF3q0WovEHRLMrVD1sd5aufqi/aJObLekJO+Aq5z646U4Oxy6shXMA==}
     dependencies:
-      '@types/node': 20.11.30
+      '@types/node': 20.12.2
     dev: true
 
   /@types/uuid@9.0.8:
@@ -1705,7 +1705,7 @@ packages:
       strip-literal: 2.0.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.2.0
-      vitest: 1.4.0(@types/node@20.11.30)
+      vitest: 1.4.0(@types/node@20.12.2)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5035,7 +5035,7 @@ packages:
       spdx-expression-parse: 3.0.1
     dev: true
 
-  /vite-node@1.4.0(@types/node@20.11.30):
+  /vite-node@1.4.0(@types/node@20.12.2):
     resolution: {integrity: sha512-VZDAseqjrHgNd4Kh8icYHWzTKSCZMhia7GyHfhtzLW33fZlG9SwsB6CEhgyVOWkJfJ2pFLrp/Gj1FSfAiqH9Lw==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -5044,7 +5044,7 @@ packages:
       debug: 4.3.4
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.2.2(@types/node@20.11.30)
+      vite: 5.2.2(@types/node@20.12.2)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -5056,7 +5056,7 @@ packages:
       - terser
     dev: true
 
-  /vite@5.2.2(@types/node@20.11.30):
+  /vite@5.2.2(@types/node@20.12.2):
     resolution: {integrity: sha512-FWZbz0oSdLq5snUI0b6sULbz58iXFXdvkZfZWR/F0ZJuKTSPO7v72QPXt6KqYeMFb0yytNp6kZosxJ96Nr/wDQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -5084,7 +5084,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 20.11.30
+      '@types/node': 20.12.2
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.13.0
@@ -5092,7 +5092,7 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vitest@1.4.0(@types/node@20.11.30):
+  /vitest@1.4.0(@types/node@20.12.2):
     resolution: {integrity: sha512-gujzn0g7fmwf83/WzrDTnncZt2UiXP41mHuFYFrdwaLRVQ6JYQEiME2IfEjU3vcFL3VKa75XhI3lFgn+hfVsQw==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -5117,7 +5117,7 @@ packages:
       jsdom:
         optional: true
     dependencies:
-      '@types/node': 20.11.30
+      '@types/node': 20.12.2
       '@vitest/expect': 1.4.0
       '@vitest/runner': 1.4.0
       '@vitest/snapshot': 1.4.0
@@ -5135,8 +5135,8 @@ packages:
       strip-literal: 2.0.0
       tinybench: 2.6.0
       tinypool: 0.8.2
-      vite: 5.2.2(@types/node@20.11.30)
-      vite-node: 1.4.0(@types/node@20.11.30)
+      vite: 5.2.2(@types/node@20.12.2)
+      vite-node: 1.4.0(@types/node@20.12.2)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
@@ -5285,8 +5285,8 @@ packages:
       readable-stream: 3.6.2
     dev: true
 
-  github.com/effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5:
-    resolution: {tarball: https://codeload.github.com/effect-ts/markdown-toc/tar.gz/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5}
+  git/github.com+effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5:
+    resolution: {commit: 4bfeb0f140105440ea0d12df2fa23199cc3ec1d5, repo: git@github.com:effect-ts/markdown-toc.git, type: git}
     name: markdown-toc
     version: 1.2.0
     engines: {node: '>=0.10.0'}
