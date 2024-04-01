@@ -149,6 +149,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
      * Starts a wireguard tunnel that will continue to run and serve traffic
      * even after the nodejs process exits.
      *
+     * @param options - The options for bringing the interface up.
      * @param interfaceObject - The wireguard interface to bring this config up on.
      *
      * @since 1.0.0
@@ -156,18 +157,31 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
      */
     public up: {
         (
+            options: {
+                how:
+                    | "bundled-wireguard-go+userspace-api"
+                    | "system-wireguard-go+userspace-api"
+                    | "system-wireguard+system-wg-quick"
+                    | "system-wireguard+bundled-wg-quick"
+                    | "system-wireguard-go+system-wg-quick"
+                    | "bundled-wireguard-go+system-wg-quick"
+                    | "system-wireguard-go+bundled-wg-quick"
+                    | "bundled-wireguard-go+bundled-wg-quick";
+                sudo?: boolean | "ask";
+            },
             interfaceObject: WireguardInterface.WireguardInterface | undefined,
         ): Effect.Effect<
             WireguardInterface.WireguardInterface,
             WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
             Platform.FileSystem.FileSystem | Platform.Path.Path
         >;
-    } = (interfaceObject) => internal.up(this, interfaceObject);
+    } = (options, interfaceObject) => internal.up(options, interfaceObject)(this);
 
     /**
      * Starts a wireguard tunnel that will be gracefully shutdown and stop
      * serving traffic once the scope is closed.
      *
+     * @param options - The options for bringing the interface up.
      * @param interfaceObject - The wireguard interface to bring this config up on.
      *
      * @since 1.0.0
@@ -175,13 +189,25 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
      */
     public upScoped: {
         (
+            options: {
+                how:
+                    | "bundled-wireguard-go+userspace-api"
+                    | "system-wireguard-go+userspace-api"
+                    | "system-wireguard+system-wg-quick"
+                    | "system-wireguard+bundled-wg-quick"
+                    | "system-wireguard-go+system-wg-quick"
+                    | "bundled-wireguard-go+system-wg-quick"
+                    | "system-wireguard-go+bundled-wg-quick"
+                    | "bundled-wireguard-go+bundled-wg-quick";
+                sudo?: boolean | "ask";
+            },
             interfaceObject: WireguardInterface.WireguardInterface | undefined,
         ): Effect.Effect<
             WireguardInterface.WireguardInterface,
             WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
             Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
         >;
-    } = (interfaceObject) => internal.upScoped(this, interfaceObject);
+    } = (options, interfaceObject) => internal.upScoped(options, interfaceObject)(this);
 }
 
 /**

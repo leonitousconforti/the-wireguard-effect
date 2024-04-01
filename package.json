@@ -23,12 +23,11 @@
     "scripts": {
         "clean": "rimraf .tsbuildinfo docs build dist coverage",
         "codegen": "build-utils prepare-v2",
-        "build": "pnpm clean && pnpm codegen && pnpm build-esm && pnpm build-cjs && pnpm build-annotate && build-utils pack-v2 && pnpm build-submodules && docgen && pnpm build-actions",
+        "build": "pnpm clean && pnpm codegen && pnpm build-esm && pnpm build-cjs && pnpm build-annotate && build-utils pack-v2 && pnpm build-submodules && docgen",
         "build-esm": "tsc -b tsconfig.build.json",
         "build-cjs": "babel build/esm --plugins @babel/transform-export-namespace-from --plugins @babel/transform-modules-commonjs --out-dir build/cjs --source-maps",
         "build-annotate": "babel build --plugins annotate-pure-calls --out-dir build --source-maps",
         "build-submodules": "./submodules/build.mjs",
-        "build-actions": "tsup",
         "check": "tsc -b tsconfig.json",
         "test": "vitest",
         "coverage": "vitest --coverage"
@@ -38,8 +37,6 @@
         "ini": "^4.1.2"
     },
     "devDependencies": {
-        "@actions/artifact": "2.1.4",
-        "@actions/core": "1.10.1",
         "@babel/cli": "7.24.1",
         "@babel/core": "7.24.3",
         "@babel/plugin-transform-export-namespace-from": "7.24.1",
@@ -54,11 +51,8 @@
         "@effect/printer-ansi": "0.32.19",
         "@effect/schema": "0.64.10",
         "@effect/typeclass": "0.23.10",
-        "@protobuf-ts/runtime": "2.9.4",
-        "@protobuf-ts/runtime-rpc": "2.9.4",
         "@types/ini": "4.1.0",
         "@types/node": "20.11.30",
-        "@types/uuid": "9.0.8",
         "@vitest/coverage-v8": "1.4.0",
         "babel-plugin-annotate-pure-calls": "0.4.0",
         "effect": "2.4.10",
@@ -70,11 +64,8 @@
         "fast-check": "3.16.0",
         "prettier": "3.2.5",
         "rimraf": "5.0.5",
-        "stun": "2.1.0",
-        "tsup": "8.0.2",
         "tsx": "4.7.1",
         "typescript": "5.4.3",
-        "uuid": "9.0.1",
         "vite": "5.2.2",
         "vitest": "1.4.0",
         "ws": "8.16.0"

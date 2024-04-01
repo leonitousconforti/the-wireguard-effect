@@ -37,14 +37,26 @@ Added in v1.0.0
 ### upScoped (property)
 
 Starts a wireguard tunnel that will be gracefully shutdown and stop serving
-traffic once the scope is closed.
+traffic once the scope is closed. If no how options is specified, then the
+interface will be brought up using the bundled-wireguard-go+userspace-api method.
 
 **Signature**
 
 ```ts
 upScoped: (
-  config: WireguardIniConfig.WireguardConfig,
-  options?: { replacePeers?: boolean | undefined; replaceAllowedIPs?: boolean | undefined } | undefined
+  config: WireguardConfig.WireguardConfig,
+  options: {
+    how:
+      | "bundled-wireguard-go+userspace-api"
+      | "system-wireguard-go+userspace-api"
+      | "system-wireguard+system-wg-quick"
+      | "system-wireguard+bundled-wg-quick"
+      | "system-wireguard-go+system-wg-quick"
+      | "bundled-wireguard-go+system-wg-quick"
+      | "system-wireguard-go+bundled-wg-quick"
+      | "bundled-wireguard-go+bundled-wg-quick"
+    sudo?: boolean | "ask"
+  }
 ) =>
   Effect.Effect<
     WireguardInterface,
@@ -58,14 +70,26 @@ Added in v1.0.0
 ### up (property)
 
 Starts a wireguard tunnel that will continue to run and serve traffic
-even after the nodejs process exits.
+even after the nodejs process exits. If no how options is specified, then the
+interface will be brought up using the bundled-wireguard-go+userspace-api method.
 
 **Signature**
 
 ```ts
 up: (
-  config: WireguardIniConfig.WireguardConfig,
-  options?: { replacePeers?: boolean | undefined; replaceAllowedIPs?: boolean | undefined } | undefined
+  config: WireguardConfig.WireguardConfig,
+  options: {
+    how:
+      | "bundled-wireguard-go+userspace-api"
+      | "system-wireguard-go+userspace-api"
+      | "system-wireguard+system-wg-quick"
+      | "system-wireguard+bundled-wg-quick"
+      | "system-wireguard-go+system-wg-quick"
+      | "bundled-wireguard-go+system-wg-quick"
+      | "system-wireguard-go+bundled-wg-quick"
+      | "bundled-wireguard-go+bundled-wg-quick"
+    sudo?: boolean | "ask"
+  }
 ) =>
   Effect.Effect<
     WireguardInterface,
@@ -83,7 +107,8 @@ Stops a previously started wireguard tunnel.
 **Signature**
 
 ```ts
-down: () => Effect.Effect<void, Platform.Error.PlatformError, Platform.FileSystem.FileSystem>
+down: (options: { sudo?: boolean | "ask"; how: "bundled-wg-quick" | "userspace-api" | "system-wg-quick" }) =>
+  Effect.Effect<void, Platform.Error.PlatformError, Platform.FileSystem.FileSystem>
 ```
 
 Added in v1.0.0

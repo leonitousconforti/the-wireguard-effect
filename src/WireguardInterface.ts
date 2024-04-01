@@ -9,7 +9,7 @@ import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Scope from "effect/Scope";
 
-import * as WireguardIniConfig from "./WireguardConfig.js";
+import * as WireguardConfig from "./WireguardConfig.js";
 import * as WireguardErrors from "./WireguardErrors.js";
 import * as internal from "./internal/wireguardInterface.js";
 
@@ -48,7 +48,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
 
     /**
      * Starts a wireguard tunnel that will be gracefully shutdown and stop serving
-     * traffic once the scope is closed.
+     * traffic once the scope is closed. If no how options is specified, then the
+     * interface will be brought up using the bundled-wireguard-go+userspace-api method.
      *
      * @param config - The wireguard configuration to use in INI format.
      * @param options - Options to control how the wireguard configuration is applied.
@@ -58,8 +59,19 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
      */
     public upScoped: {
         (
-            config: WireguardIniConfig.WireguardConfig,
-            options?: { replacePeers?: boolean | undefined; replaceAllowedIPs?: boolean | undefined } | undefined,
+            config: WireguardConfig.WireguardConfig,
+            options: {
+                how:
+                    | "bundled-wireguard-go+userspace-api"
+                    | "system-wireguard-go+userspace-api"
+                    | "system-wireguard+system-wg-quick"
+                    | "system-wireguard+bundled-wg-quick"
+                    | "system-wireguard-go+system-wg-quick"
+                    | "bundled-wireguard-go+system-wg-quick"
+                    | "system-wireguard-go+bundled-wg-quick"
+                    | "bundled-wireguard-go+bundled-wg-quick";
+                sudo?: boolean | "ask";
+            },
         ): Effect.Effect<
             WireguardInterface,
             WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
@@ -69,7 +81,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
 
     /**
      * Starts a wireguard tunnel that will continue to run and serve traffic
-     * even after the nodejs process exits.
+     * even after the nodejs process exits. If no how options is specified, then the
+     * interface will be brought up using the bundled-wireguard-go+userspace-api method.
      *
      * @param config - The wireguard configuration to use in INI format.
      * @param options - Options to control how the wireguard configuration is applied.
@@ -79,8 +92,19 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
      */
     public up: {
         (
-            config: WireguardIniConfig.WireguardConfig,
-            options?: { replacePeers?: boolean | undefined; replaceAllowedIPs?: boolean | undefined } | undefined,
+            config: WireguardConfig.WireguardConfig,
+            options: {
+                how:
+                    | "bundled-wireguard-go+userspace-api"
+                    | "system-wireguard-go+userspace-api"
+                    | "system-wireguard+system-wg-quick"
+                    | "system-wireguard+bundled-wg-quick"
+                    | "system-wireguard-go+system-wg-quick"
+                    | "bundled-wireguard-go+system-wg-quick"
+                    | "system-wireguard-go+bundled-wg-quick"
+                    | "bundled-wireguard-go+bundled-wg-quick";
+                sudo?: boolean | "ask";
+            },
         ): Effect.Effect<
             WireguardInterface,
             WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
@@ -95,8 +119,11 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
      * @category Wireguard
      */
     public down: {
-        (): Effect.Effect<void, Platform.Error.PlatformError, Platform.FileSystem.FileSystem>;
-    } = Function.constant(internal.down(this));
+        (options: {
+            sudo?: boolean | "ask";
+            how: "bundled-wg-quick" | "userspace-api" | "system-wg-quick";
+        }): Effect.Effect<void, Platform.Error.PlatformError, Platform.FileSystem.FileSystem>;
+    } = (options) => internal.down(this, options);
 }
 
 export default WireguardInterface;
