@@ -17,6 +17,7 @@
         "protobuf",
         "rushstack",
         "treeshake",
+        "tsbuildinfo",
         "tsdoc",
         "tsup",
         "typeclass",

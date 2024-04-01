@@ -62,7 +62,21 @@ even after the nodejs process exits.
 **Signature**
 
 ```ts
-up: (interfaceObject: WireguardInterface.WireguardInterface | undefined) =>
+up: (
+  options: {
+    how:
+      | "bundled-wireguard-go+userspace-api"
+      | "system-wireguard-go+userspace-api"
+      | "system-wireguard+system-wg-quick"
+      | "system-wireguard+bundled-wg-quick"
+      | "system-wireguard-go+system-wg-quick"
+      | "bundled-wireguard-go+system-wg-quick"
+      | "system-wireguard-go+bundled-wg-quick"
+      | "bundled-wireguard-go+bundled-wg-quick"
+    sudo?: boolean | "ask"
+  },
+  interfaceObject: WireguardInterface.WireguardInterface | undefined
+) =>
   Effect.Effect<
     WireguardInterface.WireguardInterface,
     WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
@@ -80,7 +94,21 @@ serving traffic once the scope is closed.
 **Signature**
 
 ```ts
-upScoped: (interfaceObject: WireguardInterface.WireguardInterface | undefined) =>
+upScoped: (
+  options: {
+    how:
+      | "bundled-wireguard-go+userspace-api"
+      | "system-wireguard-go+userspace-api"
+      | "system-wireguard+system-wg-quick"
+      | "system-wireguard+bundled-wg-quick"
+      | "system-wireguard-go+system-wg-quick"
+      | "bundled-wireguard-go+system-wg-quick"
+      | "system-wireguard-go+bundled-wg-quick"
+      | "bundled-wireguard-go+bundled-wg-quick"
+    sudo?: boolean | "ask"
+  },
+  interfaceObject: WireguardInterface.WireguardInterface | undefined
+) =>
   Effect.Effect<
     WireguardInterface.WireguardInterface,
     WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,

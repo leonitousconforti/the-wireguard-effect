@@ -41,16 +41,7 @@
                     "source.organizeImports": "always",
                     "source.addMissingImports": "always"
                 },
-                "files.associations": { "*.json": "jsonc" },
-                "files.exclude": {
-                    "**/.git": true,
-                    "**/.svn": true,
-                    "**/.hg": true,
-                    "**/CVS": true,
-                    "**/.DS_Store": true,
-                    "**/Thumbs.db": true,
-                    "**/temp": true
-                }
+                "files.associations": { "*.json": "jsonc" }
             }
         }
     },
