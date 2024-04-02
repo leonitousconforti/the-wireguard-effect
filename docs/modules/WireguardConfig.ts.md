@@ -75,7 +75,7 @@ up: (
       | "bundled-wireguard-go+bundled-wg-quick"
     sudo?: boolean | "ask"
   },
-  interfaceObject: WireguardInterface.WireguardInterface | undefined
+  interfaceObject?: WireguardInterface.WireguardInterface | undefined
 ) =>
   Effect.Effect<
     WireguardInterface.WireguardInterface,
@@ -107,7 +107,7 @@ upScoped: (
       | "bundled-wireguard-go+bundled-wg-quick"
     sudo?: boolean | "ask"
   },
-  interfaceObject: WireguardInterface.WireguardInterface | undefined
+  interfaceObject?: WireguardInterface.WireguardInterface | undefined
 ) =>
   Effect.Effect<
     WireguardInterface.WireguardInterface,
