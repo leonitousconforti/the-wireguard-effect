@@ -1,6 +1,6 @@
 {
     "name": "the-wireguard-effect",
-    "version": "0.0.1-alpha.9",
+    "version": "0.0.1-alpha.10",
     "description": "Cross platform userspace wireguard api client for nodejs built on wireguard-go with effect-ts",
     "keywords": [
         "wireguard",
@@ -11,11 +11,10 @@
         "type": "git",
         "url": "https://github.com/leonitousconforti/the-wireguard-effect.git"
     },
-    "license": "MIT",
+    "license": "GPL-3.0-only",
     "author": "Leo Conforti <leo@leoconforti.us> (https://leoconforti.us)",
     "type": "module",
     "packageManager": "pnpm@8.15.4",
-    "main": "dist/src/index.js",
     "files": [
         "dist/"
     ],
@@ -84,6 +83,9 @@
             "dist/prebuilds/darwin-wg-quick",
             "dist/prebuilds/freebsd-wg-quick",
             "dist/prebuilds/openbsd-wg-quick"
-        ]
+        ],
+        "access": "public",
+        "directory": "dist",
+        "provenance": false
     }
 }
