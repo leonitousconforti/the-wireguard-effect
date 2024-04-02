@@ -150,7 +150,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
      * even after the nodejs process exits.
      *
      * @param options - The options for bringing the interface up.
-     * @param interfaceObject - The wireguard interface to bring this config up on.
+     * @param interfaceObject - The wireguard interface to bring this config up on, it not specified it will use the next available interface on the system according to the required naming conventions.
      *
      * @since 1.0.0
      * @category Wireguard
@@ -169,7 +169,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
                     | "bundled-wireguard-go+bundled-wg-quick";
                 sudo?: boolean | "ask";
             },
-            interfaceObject: WireguardInterface.WireguardInterface | undefined,
+            interfaceObject?: WireguardInterface.WireguardInterface | undefined,
         ): Effect.Effect<
             WireguardInterface.WireguardInterface,
             WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
@@ -182,7 +182,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
      * serving traffic once the scope is closed.
      *
      * @param options - The options for bringing the interface up.
-     * @param interfaceObject - The wireguard interface to bring this config up on.
+     * @param interfaceObject - The wireguard interface to bring this config up on, if not specified it will use the next available interface on the system according to the required naming conventions.
      *
      * @since 1.0.0
      * @category Wireguard
@@ -201,7 +201,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
                     | "bundled-wireguard-go+bundled-wg-quick";
                 sudo?: boolean | "ask";
             },
-            interfaceObject: WireguardInterface.WireguardInterface | undefined,
+            interfaceObject?: WireguardInterface.WireguardInterface | undefined,
         ): Effect.Effect<
             WireguardInterface.WireguardInterface,
             WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
