@@ -56,8 +56,6 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
      *
      * @since 1.0.0
      * @category Wireguard
-     *
-     * FIXME: fix userspace up implementation to not use a wg-quick-userspace-platform shell script
      */
     public upScoped: {
         (
@@ -92,8 +90,6 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
      *
      * @since 1.0.0
      * @category Wireguard
-     *
-     * FIXME: fix userspace up implementations (will not be using a wg-quick-userspace-platform shell script, but instead we should )
      */
     public up: {
         (

@@ -82,20 +82,6 @@ export const WgQuickExecutablePath: Effect.Effect<
 });
 
 /** @internal */
-export const WgQuickUserspaceExecutablePath: Effect.Effect<
-    string,
-    Platform.Error.PlatformError,
-    Platform.FileSystem.FileSystem | Platform.Path.Path
-> = Effect.gen(function* (λ) {
-    const path = yield* λ(Platform.Path.Path);
-    const fs = yield* λ(Platform.FileSystem.FileSystem);
-    const url = new URL(`./${process.platform}-wg-quick-userspace`, import.meta.url);
-    const pathString = yield* λ(path.fromFileUrl(url));
-    yield* λ(fs.access(pathString, { ok: true }));
-    return pathString;
-});
-
-/** @internal */
 export const InterfaceRegExpForPlatform: Effect.Effect<RegExp, WireguardErrors.WireguardError, never> = Function.pipe(
     Match.value(`${process.arch}:${process.platform}`),
     Match.not(
@@ -335,17 +321,14 @@ export const up = Function.dual<
             // Find bundled executables and scripts
             const bundledWgQuickExecutablePath = yield* λ(WgQuickExecutablePath);
             const bundledWireguardGoExecutablePath = yield* λ(WireguardGoExecutablePath);
-            const bundledWgQuickUserspaceExecutablePath = yield* λ(WgQuickUserspaceExecutablePath);
 
             switch (options?.how) {
                 // Bring up the interface using the bundled wireguard-go and userspace API
                 case undefined:
                 case "bundled-wireguard-go+userspace-api":
                     const command2_1 = `${bundledWireguardGoExecutablePath} ${interfaceObject.Name}`;
-                    const command2_2 = `${bundledWgQuickUserspaceExecutablePath} up`;
                     yield* λ(execCommand(options?.sudo ?? "ask", command2_1));
                     yield* λ(setConfig(config, interfaceObject));
-                    yield* λ(execCommand(options?.sudo ?? "ask", command2_2));
                     return interfaceObject;
 
                 // Bring up the interface using the bundled wireguard-go and the bundled wg-quick script
@@ -365,10 +348,8 @@ export const up = Function.dual<
                 // Bring up the interface using the system wireguard-go and the userspace API
                 case "system-wireguard-go+userspace-api":
                     const command5_1 = `wireguard-go ${interfaceObject.Name}`;
-                    const command5_2 = `${bundledWgQuickUserspaceExecutablePath} up`;
                     yield* λ(execCommand(options.sudo ?? "ask", command5_1));
                     yield* λ(setConfig(config, interfaceObject));
-                    yield* λ(execCommand(options.sudo ?? "ask", command5_2));
                     return interfaceObject;
 
                 // Bring up the interface using the system wireguard-go and the bundled wg-quick script
