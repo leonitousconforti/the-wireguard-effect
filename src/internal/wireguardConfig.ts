@@ -286,7 +286,7 @@ export const up = Function.dual<
         WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
         Platform.FileSystem.FileSystem | Platform.Path.Path
     >
->(2, (config, options, interfaceObject) =>
+>(3, (config, options, interfaceObject) =>
     Function.pipe(
         interfaceObject,
         Option.fromNullable,
@@ -339,7 +339,7 @@ export const upScoped = Function.dual<
         WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
         Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
     >
->(2, (config, options, interfaceObject) =>
+>(3, (config, options, interfaceObject) =>
     Function.pipe(
         interfaceObject,
         Option.fromNullable,
