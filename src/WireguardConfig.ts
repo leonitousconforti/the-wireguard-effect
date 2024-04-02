@@ -8,6 +8,7 @@ import * as Schema from "@effect/schema/Schema";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Option from "effect/Option";
+import * as Predicate from "effect/Predicate";
 import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Scope from "effect/Scope";
 import * as Tuple from "effect/Tuple";
@@ -40,7 +41,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
      * fwmark of the interface. The value may 0 in the case of a set operation,
      * in which case it indicates that the fwmark should be removed.
      */
-    FirewallMark: Schema.optional(Schema.number, { default: () => 0, nullable: true }),
+    FirewallMark: Schema.optional(Schema.number),
 
     /**
      * The value for this key should be a lowercase hex-encoded private key of
@@ -227,9 +228,11 @@ export const WireguardIniConfig = Function.pipe(
         (config, _options, _ast) =>
             Effect.gen(function* (λ) {
                 const listenPort = `ListenPort = ${config.ListenPort}\n`;
-                const fwmark = `FirewallMark = ${config.FirewallMark}\n`;
                 const privateKey = `PrivateKey = ${config.PrivateKey}\n`;
                 const address = `Address = ${yield* λ(Schema.encode(InternetSchemas.CidrBlock)(config.Address))}\n`;
+                const fwmark = Predicate.isNotUndefined(config.FirewallMark)
+                    ? `FirewallMark = ${config.FirewallMark}\n`
+                    : "";
                 const peersConfig = yield* λ(
                     Function.pipe(
                         config.Peers,
