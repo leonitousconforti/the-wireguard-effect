@@ -158,7 +158,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
     public up: {
         (
             options: {
-                how:
+                how?:
                     | "bundled-wireguard-go+userspace-api"
                     | "system-wireguard-go+userspace-api"
                     | "system-wireguard+system-wg-quick"
@@ -166,7 +166,8 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
                     | "system-wireguard-go+system-wg-quick"
                     | "bundled-wireguard-go+system-wg-quick"
                     | "system-wireguard-go+bundled-wg-quick"
-                    | "bundled-wireguard-go+bundled-wg-quick";
+                    | "bundled-wireguard-go+bundled-wg-quick"
+                    | undefined;
                 sudo?: boolean | "ask";
             },
             interfaceObject?: WireguardInterface.WireguardInterface | undefined,
@@ -190,7 +191,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
     public upScoped: {
         (
             options: {
-                how:
+                how?:
                     | "bundled-wireguard-go+userspace-api"
                     | "system-wireguard-go+userspace-api"
                     | "system-wireguard+system-wg-quick"
@@ -198,7 +199,8 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
                     | "system-wireguard-go+system-wg-quick"
                     | "bundled-wireguard-go+system-wg-quick"
                     | "system-wireguard-go+bundled-wg-quick"
-                    | "bundled-wireguard-go+bundled-wg-quick";
+                    | "bundled-wireguard-go+bundled-wg-quick"
+                    | undefined;
                 sudo?: boolean | "ask";
             },
             interfaceObject?: WireguardInterface.WireguardInterface | undefined,

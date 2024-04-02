@@ -46,7 +46,7 @@ interface will be brought up using the bundled-wireguard-go+userspace-api method
 upScoped: (
   config: WireguardConfig.WireguardConfig,
   options: {
-    how:
+    how?:
       | "bundled-wireguard-go+userspace-api"
       | "system-wireguard-go+userspace-api"
       | "system-wireguard+system-wg-quick"
@@ -55,6 +55,7 @@ upScoped: (
       | "bundled-wireguard-go+system-wg-quick"
       | "system-wireguard-go+bundled-wg-quick"
       | "bundled-wireguard-go+bundled-wg-quick"
+      | undefined
     sudo?: boolean | "ask"
   }
 ) =>
@@ -79,7 +80,7 @@ interface will be brought up using the bundled-wireguard-go+userspace-api method
 up: (
   config: WireguardConfig.WireguardConfig,
   options: {
-    how:
+    how?:
       | "bundled-wireguard-go+userspace-api"
       | "system-wireguard-go+userspace-api"
       | "system-wireguard+system-wg-quick"
@@ -88,6 +89,7 @@ up: (
       | "bundled-wireguard-go+system-wg-quick"
       | "system-wireguard-go+bundled-wg-quick"
       | "bundled-wireguard-go+bundled-wg-quick"
+      | undefined
     sudo?: boolean | "ask"
   }
 ) =>

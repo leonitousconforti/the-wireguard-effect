@@ -64,7 +64,7 @@ even after the nodejs process exits.
 ```ts
 up: (
   options: {
-    how:
+    how?:
       | "bundled-wireguard-go+userspace-api"
       | "system-wireguard-go+userspace-api"
       | "system-wireguard+system-wg-quick"
@@ -73,6 +73,7 @@ up: (
       | "bundled-wireguard-go+system-wg-quick"
       | "system-wireguard-go+bundled-wg-quick"
       | "bundled-wireguard-go+bundled-wg-quick"
+      | undefined
     sudo?: boolean | "ask"
   },
   interfaceObject?: WireguardInterface.WireguardInterface | undefined
@@ -96,7 +97,7 @@ serving traffic once the scope is closed.
 ```ts
 upScoped: (
   options: {
-    how:
+    how?:
       | "bundled-wireguard-go+userspace-api"
       | "system-wireguard-go+userspace-api"
       | "system-wireguard+system-wg-quick"
@@ -105,6 +106,7 @@ upScoped: (
       | "bundled-wireguard-go+system-wg-quick"
       | "system-wireguard-go+bundled-wg-quick"
       | "bundled-wireguard-go+bundled-wg-quick"
+      | undefined
     sudo?: boolean | "ask"
   },
   interfaceObject?: WireguardInterface.WireguardInterface | undefined

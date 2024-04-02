@@ -247,7 +247,7 @@ export const generateHubSpokeConfigs: {
 export const up = Function.dual<
     (
         options: {
-            how:
+            how?:
                 | "bundled-wireguard-go+userspace-api"
                 | "system-wireguard-go+userspace-api"
                 | "system-wireguard+system-wg-quick"
@@ -255,7 +255,8 @@ export const up = Function.dual<
                 | "system-wireguard-go+system-wg-quick"
                 | "bundled-wireguard-go+system-wg-quick"
                 | "system-wireguard-go+bundled-wg-quick"
-                | "bundled-wireguard-go+bundled-wg-quick";
+                | "bundled-wireguard-go+bundled-wg-quick"
+                | undefined;
             sudo?: boolean | "ask";
         },
         interfaceObject?: WireguardInterface.WireguardInterface | undefined,
@@ -269,7 +270,7 @@ export const up = Function.dual<
     (
         config: WireguardConfig.WireguardConfig,
         options: {
-            how:
+            how?:
                 | "bundled-wireguard-go+userspace-api"
                 | "system-wireguard-go+userspace-api"
                 | "system-wireguard+system-wg-quick"
@@ -277,7 +278,8 @@ export const up = Function.dual<
                 | "system-wireguard-go+system-wg-quick"
                 | "bundled-wireguard-go+system-wg-quick"
                 | "system-wireguard-go+bundled-wg-quick"
-                | "bundled-wireguard-go+bundled-wg-quick";
+                | "bundled-wireguard-go+bundled-wg-quick"
+                | undefined;
             sudo?: boolean | "ask";
         },
         interfaceObject?: WireguardInterface.WireguardInterface | undefined,
@@ -300,7 +302,7 @@ export const up = Function.dual<
 export const upScoped = Function.dual<
     (
         options: {
-            how:
+            how?:
                 | "bundled-wireguard-go+userspace-api"
                 | "system-wireguard-go+userspace-api"
                 | "system-wireguard+system-wg-quick"
@@ -308,7 +310,8 @@ export const upScoped = Function.dual<
                 | "system-wireguard-go+system-wg-quick"
                 | "bundled-wireguard-go+system-wg-quick"
                 | "system-wireguard-go+bundled-wg-quick"
-                | "bundled-wireguard-go+bundled-wg-quick";
+                | "bundled-wireguard-go+bundled-wg-quick"
+                | undefined;
             sudo?: boolean | "ask";
         },
         interfaceObject?: WireguardInterface.WireguardInterface | undefined,
@@ -322,7 +325,7 @@ export const upScoped = Function.dual<
     (
         config: WireguardConfig.WireguardConfig,
         options: {
-            how:
+            how?:
                 | "bundled-wireguard-go+userspace-api"
                 | "system-wireguard-go+userspace-api"
                 | "system-wireguard+system-wg-quick"
@@ -330,7 +333,8 @@ export const upScoped = Function.dual<
                 | "system-wireguard-go+system-wg-quick"
                 | "bundled-wireguard-go+system-wg-quick"
                 | "system-wireguard-go+bundled-wg-quick"
-                | "bundled-wireguard-go+bundled-wg-quick";
+                | "bundled-wireguard-go+bundled-wg-quick"
+                | undefined;
             sudo?: boolean | "ask";
         },
         interfaceObject?: WireguardInterface.WireguardInterface | undefined,

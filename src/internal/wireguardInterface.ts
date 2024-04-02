@@ -202,7 +202,7 @@ export const upScoped = Function.dual<
     (
         config: WireguardConfig.WireguardConfig,
         options: {
-            how:
+            how?:
                 | "bundled-wireguard-go+userspace-api"
                 | "system-wireguard-go+userspace-api"
                 | "system-wireguard+system-wg-quick"
@@ -210,7 +210,8 @@ export const upScoped = Function.dual<
                 | "system-wireguard-go+system-wg-quick"
                 | "bundled-wireguard-go+system-wg-quick"
                 | "system-wireguard-go+bundled-wg-quick"
-                | "bundled-wireguard-go+bundled-wg-quick";
+                | "bundled-wireguard-go+bundled-wg-quick"
+                | undefined;
             sudo?: boolean | "ask";
         },
     ) => (
@@ -224,7 +225,7 @@ export const upScoped = Function.dual<
         interfaceObject: WireguardInterface.WireguardInterface,
         config: WireguardConfig.WireguardConfig,
         options: {
-            how:
+            how?:
                 | "bundled-wireguard-go+userspace-api"
                 | "system-wireguard-go+userspace-api"
                 | "system-wireguard+system-wg-quick"
@@ -232,7 +233,8 @@ export const upScoped = Function.dual<
                 | "system-wireguard-go+system-wg-quick"
                 | "bundled-wireguard-go+system-wg-quick"
                 | "system-wireguard-go+bundled-wg-quick"
-                | "bundled-wireguard-go+bundled-wg-quick";
+                | "bundled-wireguard-go+bundled-wg-quick"
+                | undefined;
             sudo?: boolean | "ask";
         },
     ) => Effect.Effect<
@@ -278,7 +280,7 @@ export const up = Function.dual<
     (
         config: WireguardConfig.WireguardConfig,
         options: {
-            how:
+            how?:
                 | "bundled-wireguard-go+userspace-api"
                 | "system-wireguard-go+userspace-api"
                 | "system-wireguard+system-wg-quick"
@@ -286,7 +288,8 @@ export const up = Function.dual<
                 | "system-wireguard-go+system-wg-quick"
                 | "bundled-wireguard-go+system-wg-quick"
                 | "system-wireguard-go+bundled-wg-quick"
-                | "bundled-wireguard-go+bundled-wg-quick";
+                | "bundled-wireguard-go+bundled-wg-quick"
+                | undefined;
             sudo?: boolean | "ask";
         },
     ) => (
@@ -300,7 +303,7 @@ export const up = Function.dual<
         interfaceObject: WireguardInterface.WireguardInterface,
         config: WireguardConfig.WireguardConfig,
         options: {
-            how:
+            how?:
                 | "bundled-wireguard-go+userspace-api"
                 | "system-wireguard-go+userspace-api"
                 | "system-wireguard+system-wg-quick"
@@ -308,7 +311,8 @@ export const up = Function.dual<
                 | "system-wireguard-go+system-wg-quick"
                 | "bundled-wireguard-go+system-wg-quick"
                 | "system-wireguard-go+bundled-wg-quick"
-                | "bundled-wireguard-go+bundled-wg-quick";
+                | "bundled-wireguard-go+bundled-wg-quick"
+                | undefined;
             sudo?: boolean | "ask";
         },
     ) => Effect.Effect<
@@ -333,18 +337,9 @@ export const up = Function.dual<
             const bundledWireguardGoExecutablePath = yield* λ(WireguardGoExecutablePath);
             const bundledWgQuickUserspaceExecutablePath = yield* λ(WgQuickUserspaceExecutablePath);
 
-            // Default, try to bring up the interface using the bundled wireguard-go and userspace API
-            if (!options.how) {
-                const command1_1 = `${bundledWireguardGoExecutablePath} ${interfaceObject.Name}`;
-                const command1_2 = `${bundledWgQuickUserspaceExecutablePath} up`;
-                yield* λ(execCommand(options?.sudo ?? "ask", command1_1));
-                yield* λ(setConfig(config, interfaceObject));
-                yield* λ(execCommand("ask", command1_2));
-                return interfaceObject;
-            }
-
             switch (options?.how) {
                 // Bring up the interface using the bundled wireguard-go and userspace API
+                case undefined:
                 case "bundled-wireguard-go+userspace-api":
                     const command2_1 = `${bundledWireguardGoExecutablePath} ${interfaceObject.Name}`;
                     const command2_2 = `${bundledWgQuickUserspaceExecutablePath} up`;
