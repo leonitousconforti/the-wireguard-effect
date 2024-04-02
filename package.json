@@ -79,10 +79,10 @@
         "directory": "dist",
         "provenance": false,
         "executableFiles": [
-            "dist/prebuilds/linux-wg-quick",
-            "dist/prebuilds/darwin-wg-quick",
-            "./prebuilds/freebsd-wg-quick",
-            "./dist/prebuilds/openbsd-wg-quick"
+            "prebuilds/linux-wg-quick",
+            "prebuilds/darwin-wg-quick",
+            "prebuilds/freebsd-wg-quick",
+            "prebuilds/openbsd-wg-quick"
         ]
     }
 }
