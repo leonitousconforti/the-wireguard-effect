@@ -33,6 +33,8 @@
         "**/*.code-search": true,
         "submodules/wintun/**": true,
         "submodules/wireguard-go/**": true,
-        "submodules/wireguard-tools/**": true
+        "submodules/wireguard-tools/**": true,
+        "submodules/wireguard-windows/**": true,
+        "submodules/wireguard-apple/**": true
     }
 }
