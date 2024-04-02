@@ -77,5 +77,13 @@
     },
     "engines": {
         "node": ">=18.0.0"
+    },
+    "publishConfig": {
+        "executableFiles": [
+            "dist/prebuilds/linux-wg-quick",
+            "dist/prebuilds/darwin-wg-quick",
+            "dist/prebuilds/freebsd-wg-quick",
+            "dist/prebuilds/openbsd-wg-quick"
+        ]
     }
 }
