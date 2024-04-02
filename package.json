@@ -17,8 +17,7 @@
     "packageManager": "pnpm@8.15.4",
     "main": "dist/src/index.js",
     "files": [
-        "dist/src",
-        "dist/build"
+        "dist/"
     ],
     "scripts": {
         "clean": "rimraf .tsbuildinfo docs build dist coverage",
