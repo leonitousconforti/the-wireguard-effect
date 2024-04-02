@@ -61,7 +61,7 @@ const peerDirectInstantiation = new WireguardPeer({
       listenPort: InternetSchemas.Port(51820)
     })
   ),
-  PersistentKeepaliveInterval: Duration.seconds(20),
+  PersistentKeepalive: Duration.seconds(20),
   PresharedKey: Option.none()
 })
 
@@ -70,7 +70,7 @@ const peerSchemaInstantiation = Schema.decode(WireguardPeer)({
   PublicKey: publicKey,
   AllowedIPs: ["192.168.0.0/24"],
   Endpoint: "192.168.0.1:51820",
-  PersistentKeepaliveInterval: Duration.seconds(20)
+  PersistentKeepalive: Duration.seconds(20)
 })
 ```
 
@@ -107,7 +107,7 @@ const peer = Schema.decode(WireguardPeer.WireguardPeer)({
   PublicKey: publicKey,
   AllowedIPs: ["192.168.0.0/24"],
   Endpoint: "192.168.0.1:51820",
-  PersistentKeepaliveInterval: Duration.seconds(20)
+  PersistentKeepalive: Duration.seconds(20)
 })
 
 const iniPeer = Function.pipe(
@@ -148,7 +148,7 @@ const peer = Schema.decode(WireguardPeer.WireguardPeer)({
   PublicKey: publicKey,
   AllowedIPs: ["192.168.0.0/24"],
   Endpoint: "192.168.0.1:51820",
-  PersistentKeepaliveInterval: Duration.seconds(20)
+  PersistentKeepalive: Duration.seconds(20)
 })
 
 const uapiPeer = Function.pipe(

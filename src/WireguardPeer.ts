@@ -43,7 +43,7 @@ import * as WireguardKey from "./WireguardKey.js";
  *              listenPort: InternetSchemas.Port(51820),
  *          }),
  *      ),
- *      PersistentKeepaliveInterval: Duration.seconds(20),
+ *      PersistentKeepalive: Duration.seconds(20),
  *      PresharedKey: Option.none(),
  * })
  *
@@ -52,7 +52,7 @@ import * as WireguardKey from "./WireguardKey.js";
  *      PublicKey: publicKey,
  *      AllowedIPs: ["192.168.0.0/24"],
  *      Endpoint: "192.168.0.1:51820",
- *      PersistentKeepaliveInterval: Duration.seconds(20),
+ *      PersistentKeepalive: Duration.seconds(20),
  * })
  *
  * @since 1.0.0
@@ -60,7 +60,7 @@ import * as WireguardKey from "./WireguardKey.js";
  */
 export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")({
     /** The persistent keepalive interval in seconds, 0 disables it. */
-    PersistentKeepaliveInterval: Schema.optional(Schema.DurationFromSelf, {
+    PersistentKeepalive: Schema.optional(Schema.DurationFromSelf, {
         nullable: true,
         default: () => Duration.seconds(0),
     }),
@@ -111,7 +111,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
  *      PublicKey: publicKey,
  *      AllowedIPs: ["192.168.0.0/24"],
  *      Endpoint: "192.168.0.1:51820",
- *      PersistentKeepaliveInterval: Duration.seconds(20),
+ *      PersistentKeepalive: Duration.seconds(20),
  * })
  *
  * const iniPeer = Function.pipe(
@@ -132,7 +132,7 @@ export const WireguardIniPeer = Function.pipe(
             const publicKey = `PublicKey = ${peer.PublicKey}\n`;
             const endpoint = `Endpoint = ${peer.Endpoint.ip}:${peer.Endpoint.natPort}\n`;
             const aps = ReadonlyArray.map(peer.AllowedIPs, (ap) => `AllowedIPs = ${ap.ip}/${ap.mask}\n`);
-            const keepAlive = `PersistentKeepaliveInterval = ${Duration.toSeconds(peer.PersistentKeepaliveInterval)}\n`;
+            const keepAlive = `PersistentKeepalive = ${Duration.toSeconds(peer.PersistentKeepalive)}\n`;
             const presharedKey = Function.pipe(
                 peer.PresharedKey,
                 Option.map((key) => `PresharedKey = ${key}\n`),
@@ -175,7 +175,7 @@ export const WireguardIniPeer = Function.pipe(
  *      PublicKey: publicKey,
  *      AllowedIPs: ["192.168.0.0/24"],
  *      Endpoint: "192.168.0.1:51820",
- *      PersistentKeepaliveInterval: Duration.seconds(20),
+ *      PersistentKeepalive: Duration.seconds(20),
  * })
  *
  * const uapiPeer = Function.pipe(
@@ -195,7 +195,7 @@ export const WireguardUapiPeer = Function.pipe(
         (peer, _options, _ast) => {
             const publicKeyHex = Buffer.from(peer.PublicKey, "base64").toString("hex");
             const endpointString = `${peer.Endpoint.ip}:${peer.Endpoint.natPort}`;
-            const durationSeconds = Duration.toSeconds(peer.PersistentKeepaliveInterval);
+            const durationSeconds = Duration.toSeconds(peer.PersistentKeepalive);
 
             const presharedKeyHex = Function.pipe(
                 peer.PresharedKey,
@@ -234,7 +234,7 @@ export const WireguardUapiPeer = Function.pipe(
                 PublicKey: public_key,
                 AllowedIPs: allowed_ip,
                 PresharedKey: presharedKey,
-                PersistentKeepaliveInterval: Duration.seconds(persistent_keepalive_interval),
+                PersistentKeepalive: Duration.seconds(persistent_keepalive_interval),
             };
 
             return Schema.decodeUnknown(Schema.parseJson(WireguardPeer))(data).pipe(
