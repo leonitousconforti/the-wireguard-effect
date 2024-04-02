@@ -147,7 +147,14 @@ export const WireguardIniPeer = Function.pipe(
             Function.pipe(
                 iniPeer,
                 ini.decode,
-                Schema.decodeUnknown(Schema.parseJson(WireguardPeer)),
+                ({ PersistentKeepalive, PublicKey, Endpoint, AllowedIPs, PresharedKey }) => ({
+                    Endpoint,
+                    PublicKey,
+                    PresharedKey,
+                    PersistentKeepalive: Duration.seconds(PersistentKeepalive),
+                    AllowedIPs: Array.isArray(AllowedIPs) ? AllowedIPs : [AllowedIPs],
+                }),
+                Schema.decodeUnknown(WireguardPeer),
                 Effect.mapError(({ error }) => error),
             ),
     ),

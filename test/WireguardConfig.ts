@@ -10,8 +10,8 @@ import * as InternetSchemas from "the-wireguard-effect/InternetSchemas";
 import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
 
 describe("WireguardConfig", () => {
-    it("should generate p2p configs", () =>
-        Effect.gen(function* (λ) {
+    it("should generate p2p configs", async () =>
+        await Effect.gen(function* (λ) {
             const alice = "1.1.1.1:51820" as const;
             const bob = "2.2.2.2:51820" as const;
             const network = "192.168.0.1/24" as const;
@@ -25,7 +25,10 @@ describe("WireguardConfig", () => {
 
             yield* λ(aliceConfig.writeToFile("alice.conf"));
             yield* λ(bobConfig.writeToFile("bob.conf"));
+
+            const aliceConfig2 = yield* λ(WireguardConfig.WireguardConfig.fromConfigFile("alice.conf"));
+            const bobConfig2 = yield* λ(WireguardConfig.WireguardConfig.fromConfigFile("bob.conf"));
         })
             .pipe(Effect.provide(PlatformNode.NodeContext.layer))
-            .pipe(PlatformNode.NodeRuntime.runMain));
+            .pipe(Effect.runPromise));
 });

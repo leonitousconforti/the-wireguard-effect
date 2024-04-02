@@ -7,6 +7,7 @@ import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
+import * as Number from "effect/Number";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
 import * as ReadonlyArray from "effect/ReadonlyArray";
@@ -34,14 +35,17 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
      * The value for this is a decimal-string integer corresponding to the
      * listening port of the interface.
      */
-    ListenPort: Schema.optional(InternetSchemas.Port, { default: () => InternetSchemas.Port(51820), nullable: true }),
+    ListenPort: Schema.optional(InternetSchemas.Port, {
+        default: () => InternetSchemas.Port(51820),
+        nullable: true,
+    }),
 
     /**
      * The value for this is a decimal-string integer corresponding to the
      * fwmark of the interface. The value may 0 in the case of a set operation,
      * in which case it indicates that the fwmark should be removed.
      */
-    FirewallMark: Schema.optional(Schema.number),
+    FirewallMark: Schema.optional(Schema.number, { nullable: true }),
 
     /**
      * The value for this key should be a lowercase hex-encoded private key of
@@ -248,30 +252,45 @@ export const WireguardIniConfig = Function.pipe(
         // Decoding is likewise non-trivial, as we need to parse all the peers from the ini config.
         (iniConfig, _options, _ast) =>
             Effect.gen(function* (λ) {
-                const sections = iniConfig.split("[Peer]");
+                const sections = iniConfig.split(/(?=\[Peer\])/g);
+                const maybeInterfaceSection = ReadonlyArray.findFirst(sections, (text) =>
+                    text.startsWith("[Interface]"),
+                );
+                const interfaceSection = Option.getOrThrowWith(
+                    maybeInterfaceSection,
+                    () => new WireguardError.WireguardError({ message: "No [Interface] section found" }),
+                );
+                const peerSections = Function.pipe(
+                    sections,
+                    ReadonlyArray.filter((text) => text.startsWith("[Peer]")),
+                    ReadonlyArray.map((text) => text.replace("[Peer]", "")),
+                    ReadonlyArray.map(WireguardPeer.WireguardIniPeer),
+                );
 
-                const peers = yield* λ(
+                const parsePeers = yield* λ(
                     Function.pipe(
-                        sections,
-                        ReadonlyArray.filter((text) => text.startsWith("[Peer]")),
-                        ReadonlyArray.map(WireguardPeer.WireguardIniPeer),
+                        peerSections,
                         ReadonlyArray.map((peer) => Schema.encode(WireguardPeer.WireguardIniPeer)(peer)),
                         Effect.allWith(),
                     ),
                 );
 
-                const makeConfig = Function.pipe(
-                    sections,
-                    ReadonlyArray.findFirst((text) => text.startsWith("[Interface]")),
-                    Option.getOrThrowWith(
-                        () => new WireguardError.WireguardError({ message: "No [Interface] section found" }),
-                    ),
+                const parseInterface = Function.pipe(
+                    interfaceSection,
                     ini.parse,
-                    (jsonConfig) => ({ ...jsonConfig["Interface"], peers }),
-                    Schema.decodeUnknown(Schema.parseJson(WireguardConfig)),
+                    (jsonConfig) => ({ ...jsonConfig["Interface"], Peers: parsePeers }),
+                    ({ ListenPort, FirewallMark, Address, PrivateKey, Peers }) =>
+                        ({
+                            Peers,
+                            Address,
+                            PrivateKey,
+                            ListenPort: Number.parse(ListenPort || "").pipe(Option.getOrUndefined),
+                            FirewallMark: Number.parse(FirewallMark || "").pipe(Option.getOrUndefined),
+                        }) as const,
+                    Schema.decode(WireguardConfig),
                 );
 
-                return yield* λ(makeConfig);
+                return yield* λ(parseInterface);
             }).pipe(Effect.mapError(({ error }) => error)),
     ),
     Schema.identifier("WireguardIniConfig"),
