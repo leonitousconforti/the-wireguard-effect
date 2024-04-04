@@ -52,7 +52,7 @@
         "@effect/schema": "0.64.17",
         "@effect/typeclass": "0.23.16",
         "@types/ini": "4.1.0",
-        "@types/node": "20.12.2",
+        "@types/node": "20.12.4",
         "@vitest/coverage-v8": "1.4.0",
         "babel-plugin-annotate-pure-calls": "0.4.0",
         "effect": "2.4.16",
