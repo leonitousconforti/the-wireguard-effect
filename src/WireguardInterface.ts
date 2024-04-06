@@ -1,4 +1,6 @@
 /**
+ * Wireguard interface helpers
+ *
  * @since 1.0.0
  */
 
@@ -20,9 +22,7 @@ import * as internal from "./internal/wireguardInterface.js";
  * @category Datatypes
  */
 export class WireguardInterface extends Schema.Class<WireguardInterface>("WireguardInterface")({
-    /**
-     * Ensures the interface name matches the platform's interface name regex.
-     */
+    /** Ensures the interface name matches the platform's interface name regex. */
     Name: Schema.transformOrFail(
         Schema.string,
         Schema.string,
@@ -33,10 +33,10 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
                 Effect.flatMap((x) =>
                     x.test(s)
                         ? Effect.succeed(s)
-                        : Effect.fail(new ParseResult.Type(ast, s, `Expected interface name to match ${x}`)),
-                ),
+                        : Effect.fail(new ParseResult.Type(ast, s, `Expected interface name to match ${x}`))
+                )
             ),
-        (s) => Effect.succeed(s),
+        (s) => Effect.succeed(s)
     ),
 }) {
     /**
@@ -47,15 +47,16 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         internal.getNextAvailableInterface;
 
     /**
-     * Starts a wireguard tunnel that will be gracefully shutdown and stop serving
-     * traffic once the scope is closed. If no how options is specified, then the
-     * interface will be brought up using the bundled-wireguard-go+userspace-api method.
-     *
-     * @param config - The wireguard configuration to use in INI format.
-     * @param options - Options to control how the wireguard configuration is applied.
+     * Starts a wireguard tunnel that will be gracefully shutdown and stop
+     * serving traffic once the scope is closed. If no how options is specified,
+     * then the interface will be brought up using the
+     * bundled-wireguard-go+userspace-api method.
      *
      * @since 1.0.0
      * @category Wireguard
+     * @param config - The wireguard configuration to use in INI format.
+     * @param options - Options to control how the wireguard configuration is
+     *   applied.
      */
     public upScoped: {
         (
@@ -72,7 +73,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
                     | "bundled-wireguard-go+bundled-wg-quick"
                     | undefined;
                 sudo?: boolean | "ask";
-            },
+            }
         ): Effect.Effect<
             WireguardInterface,
             WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
@@ -82,14 +83,15 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
 
     /**
      * Starts a wireguard tunnel that will continue to run and serve traffic
-     * even after the nodejs process exits. If no how options is specified, then the
-     * interface will be brought up using the bundled-wireguard-go+userspace-api method.
-     *
-     * @param config - The wireguard configuration to use in INI format.
-     * @param options - Options to control how the wireguard configuration is applied.
+     * even after the nodejs process exits. If no how options is specified, then
+     * the interface will be brought up using the
+     * bundled-wireguard-go+userspace-api method.
      *
      * @since 1.0.0
      * @category Wireguard
+     * @param config - The wireguard configuration to use in INI format.
+     * @param options - Options to control how the wireguard configuration is
+     *   applied.
      */
     public up: {
         (
@@ -106,7 +108,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
                     | "bundled-wireguard-go+bundled-wg-quick"
                     | undefined;
                 sudo?: boolean | "ask";
-            },
+            }
         ): Effect.Effect<
             WireguardInterface,
             WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
