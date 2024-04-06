@@ -18,6 +18,7 @@ runs:
       with:
         version: 8
         run_install: false
+        registry-url: https://registry.npmjs.org
 
     - name: "Get pnpm store"
       shell: bash
