@@ -26,6 +26,7 @@ jobs:
       - run: pnpm check
       - run: pnpm build
       - run: pnpm test
+      - run: git status
       # FIXME: get rid of --no-git-checks
       - run: pnpm publish --no-git-checks
         env:
