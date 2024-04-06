@@ -1,0 +1,32 @@
+diff --git a/main.js b/main.js
+index f478f2e32337e478c7cf92c78ad4e1e2a2881f11..a17b4a55b37ea5134530196335773ccd5b4fe5c2 100755
+--- a/main.js
++++ b/main.js
+@@ -29896,7 +29896,10 @@ var _PackageJson = class _PackageJson extends Class2()({
+   description: string5,
+   private: optional(boolean2, { default: () => false }),
+   publishConfig: optional(struct6({
+-    provenance: optional(boolean2, { default: () => false })
++    provenance: optional(boolean2, { default: () => false }),
++    executableFiles: optional(array6(string5), {
++      default: () => [],
++    }),
+   })),
+   license: string5,
+   author: optional(string5),
+@@ -30133,6 +30136,15 @@ var run11 = gen2(function* (_) {
+     if (ctx.packageJson.publishConfig?.provenance === true) {
+       out.publishConfig = { provenance: true };
+     }
++    if (
++      ctx.packageJson.publishConfig?.executableFiles !== undefined
++      && ctx.packageJson.publishConfig.executableFiles.length > 0
++    ) {
++      out.publishConfig = {
++        ...out.publishConfig,
++        executableFiles: ctx.packageJson.publishConfig.executableFiles,
++      }
++    }
+     if (ctx.hasMainCjs) {
+       out.main = "./dist/cjs/index.js";
+     }
