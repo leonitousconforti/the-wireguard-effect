@@ -13,7 +13,7 @@ import * as internal from "./internal/wireguardKey.js";
  * A wireguard key, which is a 44 character base64 string.
  *
  * @since 1.0.0
- * @category Datatypes
+ * @category Schemas
  * @see {@link generateKeyPair}
  *
  * @see https://lists.zx2c4.com/pipermail/wireguard/2020-December/006222.html
@@ -26,7 +26,10 @@ export const WireguardKey = Function.pipe(
     Schema.brand("WireguardKey")
 );
 
-/** @since 1.0.0 */
+/**
+ * @since 1.0.0
+ * @category Unbranded Types
+ */
 export type WireguardKey = Schema.Schema.Type<typeof WireguardKey>;
 
 /**
