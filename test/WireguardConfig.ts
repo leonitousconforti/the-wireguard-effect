@@ -3,6 +3,7 @@ import { describe, it } from "vitest";
 import * as PlatformNode from "@effect/platform-node";
 import * as Schema from "@effect/schema/Schema";
 import * as Chunk from "effect/Chunk";
+import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Sink from "effect/Sink";
@@ -42,8 +43,11 @@ describe("WireguardConfig", () => {
             yield* λ(aliceConfig.writeToFile("alice.conf"));
             yield* λ(bobConfig.writeToFile("bob.conf"));
 
-            // const aliceConfig2 = yield* λ(WireguardConfig.WireguardConfig.fromConfigFile("alice.conf"));
-            // const bobConfig2 = yield* λ(WireguardConfig.WireguardConfig.fromConfigFile("bob.conf"));
+            const aliceConfig2 = yield* λ(WireguardConfig.WireguardConfig.fromConfigFile("alice.conf"));
+            const bobConfig2 = yield* λ(WireguardConfig.WireguardConfig.fromConfigFile("bob.conf"));
+
+            yield* λ(Console.log(aliceConfig2));
+            yield* λ(Console.log(bobConfig2));
         })
             .pipe(Effect.provide(PlatformNode.NodeContext.layer))
             .pipe(Effect.runPromise));

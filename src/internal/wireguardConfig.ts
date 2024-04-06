@@ -327,7 +327,7 @@ export const generateHubSpokeConfigs: {
         const hubPeerConfig = {
             PublicKey: hubKeys.publicKey,
             Endpoint: Tuple.getFirst(hubSetupDataEncoded),
-            AllowedIPs: [{ ip: Tuple.getSecond(hubSetupDataEncoded), mask: 32 }],
+            AllowedIPs: [`${Tuple.getSecond(hubSetupDataEncoded)}/32`] as const,
         };
 
         // All these spoke peer configs will be added to the hub interface config
@@ -350,7 +350,7 @@ export const generateHubSpokeConfigs: {
                 peerConfig: {
                     PublicKey: keys.publicKey,
                     Endpoint: Tuple.getFirst(spokeEncoded),
-                    AllowedIPs: [{ ip: Tuple.getSecond(spokeEncoded), mask: 32 }],
+                    AllowedIPs: [`${Tuple.getSecond(spokeEncoded)}/32`] as const,
                 },
             };
         });
@@ -361,7 +361,7 @@ export const generateHubSpokeConfigs: {
                 PrivateKey: hubKeys.privateKey,
                 ListenPort: Tuple.getFirst(hubSetupData).listenPort,
                 Peers: ReadonlyArray.map(spokePeerConfigs, ({ peerConfig }) => peerConfig),
-                Address: { ip: Tuple.getSecond(hubSetupDataEncoded), mask: options.cidrBlock?.mask ?? 24 },
+                Address: `${Tuple.getSecond(hubSetupDataEncoded)}/${options.cidrBlock?.mask ?? 24}`,
             })
         );
 
@@ -373,8 +373,8 @@ export const generateHubSpokeConfigs: {
                     Schema.decode(WireguardConfig.WireguardConfig)({
                         PrivateKey: privateKey,
                         Peers: [hubPeerConfig],
-                        Address: { ip: Tuple.getSecond(setupDataEncoded), mask: options.cidrBlock?.mask ?? 24 },
                         ListenPort: Tuple.getFirst(setupDataDecoded).listenPort,
+                        Address: `${Tuple.getSecond(setupDataEncoded)}/${options.cidrBlock?.mask ?? 24}`,
                     })
                 ),
                 Effect.allWith()

@@ -33,7 +33,7 @@ import * as internal from "./internal/wireguardConfig.js";
  * @category Datatypes
  */
 export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIniConfig")({
-    Address: InternetSchemas.CidrBlock,
+    Address: InternetSchemas.CidrBlockFromString,
 
     /**
      * The value for this is a decimal-string integer corresponding to the
@@ -312,7 +312,7 @@ export const WireguardIniConfig = Schema.transformOrFail(
         Effect.gen(function* (λ) {
             const listenPort = `ListenPort = ${config.ListenPort}\n`;
             const privateKey = `PrivateKey = ${config.PrivateKey}\n`;
-            const address = `Address = ${config.Address.ip}/${config.Address.mask}\n`;
+            const address = `Address = ${config.Address.ip.ip}/${config.Address.mask}\n`;
             const fwmark = Predicate.isNotUndefined(config.FirewallMark)
                 ? `FirewallMark = ${config.FirewallMark}\n`
                 : "";
@@ -337,6 +337,7 @@ export const WireguardIniConfig = Schema.transformOrFail(
                 maybeInterfaceSection,
                 () => new WireguardErrors.WireguardError({ message: "No [Interface] section found" })
             );
+
             const peerSections = Function.pipe(
                 sections,
                 ReadonlyArray.filter((text) => text.startsWith("[Peer]")),
@@ -382,7 +383,7 @@ export const WireguardIniConfig = Schema.transformOrFail(
  */
 export const WireguardUapiConfig = Schema.transformOrFail(
     WireguardConfig,
-    Schema.tuple(Schema.string, InternetSchemas.CidrBlock),
+    Schema.tuple(Schema.string, InternetSchemas.CidrBlockFromString),
     // Encoding is non trivial, as we need to handle all the peers in individually and
     // we need to save the ini config address somewhere.
     (config, _options, _ast) =>
@@ -403,7 +404,7 @@ export const WireguardUapiConfig = Schema.transformOrFail(
             );
 
             const out = `${fwmark}${listenPort}${privateKey}${peers}\n` as const;
-            const address = yield* λ(Schema.encode(InternetSchemas.CidrBlock)(config.Address));
+            const address = yield* λ(Schema.encode(InternetSchemas.CidrBlockFromString)(config.Address));
             return Tuple.make(out, address);
         }).pipe(Effect.mapError(({ error }) => error)),
     // Decoding is non-trivial, as we need to parse all the peers from the uapi config.

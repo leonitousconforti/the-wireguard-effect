@@ -74,7 +74,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
      * as part of a prior peer, the allowed IP entry will be removed from that
      * peer and added to this peer.
      */
-    AllowedIPs: Schema.optional(Schema.array(InternetSchemas.CidrBlock), {
+    AllowedIPs: Schema.optional(Schema.array(InternetSchemas.CidrBlockFromString), {
         nullable: true,
         default: () => [],
     }),
@@ -132,7 +132,7 @@ export const WireguardIniPeer = Schema.transformOrFail(
     (peer, _options, _ast) => {
         const publicKey = `PublicKey = ${peer.PublicKey}\n`;
         const endpoint = `Endpoint = ${peer.Endpoint.address.ip}:${peer.Endpoint.natPort}\n`;
-        const aps = ReadonlyArray.map(peer.AllowedIPs, (ap) => `AllowedIPs = ${ap.ip}/${ap.mask}\n`);
+        const aps = ReadonlyArray.map(peer.AllowedIPs, (ap) => `AllowedIPs = ${ap.ip.ip}/${ap.mask}\n`);
         const keepAlive = Function.pipe(
             peer.PersistentKeepalive,
             Option.map((keepalive) => `PersistentKeepalive = ${Duration.toSeconds(keepalive)}\n`),
@@ -154,8 +154,12 @@ export const WireguardIniPeer = Schema.transformOrFail(
                 Endpoint,
                 PublicKey,
                 PresharedKey,
-                PersistentKeepalive: Duration.seconds(PersistentKeepalive),
-                AllowedIPs: Predicate.isNotNullable(AllowedIPs) ? AllowedIPs : [],
+                PersistentKeepalive,
+                AllowedIPs: Predicate.isNotNullable(AllowedIPs)
+                    ? !Array.isArray(AllowedIPs)
+                        ? [AllowedIPs]
+                        : AllowedIPs
+                    : [],
             }),
             Schema.decodeUnknown(WireguardPeer),
             Effect.mapError(({ error }) => error)

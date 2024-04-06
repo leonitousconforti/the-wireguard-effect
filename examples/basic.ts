@@ -29,7 +29,7 @@ export const program: Effect.Effect<
 > = Effect.gen(function* (λ) {
     const config = yield* λ(
         Schema.decode(WireguardConfig.WireguardConfig)({
-            Address: { ip: "3.3.3.3", mask: 32 },
+            Address: "3.3.3.3/24",
             ListenPort: 51820,
             PrivateKey: "",
             Peers: [
