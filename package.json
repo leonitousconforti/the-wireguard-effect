@@ -34,7 +34,7 @@
     },
     "devDependencies": {
         "@babel/cli": "7.24.1",
-        "@babel/core": "7.24.3",
+        "@babel/core": "7.24.4",
         "@babel/plugin-transform-export-namespace-from": "7.24.1",
         "@babel/plugin-transform-modules-commonjs": "7.24.1",
         "@effect/build-utils": "0.7.6",
