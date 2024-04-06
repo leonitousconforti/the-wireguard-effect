@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "AEIMQUYcgkosw",
+        "Annotable",
         "bufferutil",
         "codegen",
         "Conforti",
@@ -15,6 +16,7 @@
         "netsh",
         "packagejson",
         "prebuilds",
+        "preshare",
         "preshared",
         "protobuf",
         "rushstack",
