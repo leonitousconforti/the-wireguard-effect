@@ -1,4 +1,6 @@
 /**
+ * Wireguard errors
+ *
  * @since 1.0.0
  */
 
@@ -16,10 +18,13 @@ export const SuccessErrno = Function.pipe(
     Schema.templateLiteral(Schema.literal("errno="), Schema.literal(0)),
     Schema.identifier("SuccessErrno"),
     Schema.description("A successful errno"),
-    Schema.brand("SuccessErrno"),
+    Schema.brand("SuccessErrno")
 );
 
-/** @since 1.0.0 */
+/**
+ * @since 1.0.0
+ * @category Errors
+ */
 export type SuccessErrno = Schema.Schema.Type<typeof SuccessErrno>;
 
 /**
