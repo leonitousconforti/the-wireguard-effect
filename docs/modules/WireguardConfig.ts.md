@@ -128,6 +128,8 @@ Added in v1.0.0
 
 A wireguard configuration encoded in the INI format.
 
+TODO: Write an api interface type
+
 **Signature**
 
 ```ts
@@ -140,12 +142,14 @@ Added in v1.0.0
 
 A wireguard configuration encoded in the userspace api format.
 
+TODO: Write an api interface type
+
 **Signature**
 
 ```ts
 export declare const WireguardUapiConfig: Schema.transformOrFail<
   typeof WireguardConfig,
-  Schema.tuple<[Schema.$string, typeof InternetSchemas.CidrBlock]>,
+  Schema.tuple<[Schema.$string, InternetSchemas.$CidrBlockFromString]>,
   never
 >
 ```

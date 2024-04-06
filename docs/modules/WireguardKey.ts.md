@@ -16,9 +16,9 @@ Added in v1.0.0
 
 - [Crypto](#crypto)
   - [generateKeyPair](#generatekeypair)
-- [Datatypes](#datatypes)
+- [Schemas](#schemas)
   - [WireguardKey](#wireguardkey)
-- [utils](#utils)
+- [Unbranded Types](#unbranded-types)
   - [WireguardKey (type alias)](#wireguardkey-type-alias)
 
 ---
@@ -44,7 +44,7 @@ const { privateKey, publicKey } = generateKeyPair()
 
 Added in v1.0.0
 
-# Datatypes
+# Schemas
 
 ## WireguardKey
 
@@ -58,7 +58,7 @@ export declare const WireguardKey: Schema.brand<Schema.Schema<string, string, ne
 
 Added in v1.0.0
 
-# utils
+# Unbranded Types
 
 ## WireguardKey (type alias)
 

@@ -84,6 +84,8 @@ Added in v1.0.0
 
 A wireguard peer configuration encoded in INI format.
 
+TODO: Write an api interface type
+
 **Signature**
 
 ```ts
@@ -121,6 +123,8 @@ Added in v1.0.0
 ## WireguardUapiPeer
 
 A wireguard peer configuration encoded in the userspace api format.
+
+TODO: Write an api interface type
 
 **Signature**
 
