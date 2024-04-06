@@ -6,6 +6,8 @@ parent: Modules
 
 ## WireguardConfig overview
 
+Wireguard config schema definitions
+
 Added in v1.0.0
 
 ---
@@ -80,7 +82,7 @@ up: (
 ) =>
   Effect.Effect<
     WireguardInterface.WireguardInterface,
-    WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
+    WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
     Platform.FileSystem.FileSystem | Platform.Path.Path
   >
 ```
@@ -113,7 +115,7 @@ upScoped: (
 ) =>
   Effect.Effect<
     WireguardInterface.WireguardInterface,
-    WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
+    WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
     Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
   >
 ```
@@ -129,10 +131,7 @@ A wireguard configuration encoded in the INI format.
 **Signature**
 
 ```ts
-export declare const WireguardIniConfig: Schema.brand<
-  Schema.transformOrFail<typeof WireguardConfig, Schema.$string, never>,
-  "WireguardIniConfig"
->
+export declare const WireguardIniConfig: Schema.transformOrFail<typeof WireguardConfig, Schema.$string, never>
 ```
 
 Added in v1.0.0
@@ -144,37 +143,10 @@ A wireguard configuration encoded in the userspace api format.
 **Signature**
 
 ```ts
-export declare const WireguardUapiConfig: Schema.brand<
-  Schema.transformOrFail<
-    typeof WireguardConfig,
-    Schema.tuple<
-      [
-        Schema.$string,
-        Schema.brand<
-          Schema.transformOrFail<
-            Schema.union<
-              [
-                Schema.struct<{
-                  ipv4: Schema.brand<Schema.Schema<string, string, never>, "IPv4">
-                  mask: Schema.brand<Schema.Schema<number, number, never>, "IPv4CidrMask">
-                }>,
-                Schema.struct<{
-                  ipv6: Schema.brand<Schema.Schema<string, string, never>, "IPv6">
-                  mask: Schema.brand<Schema.Schema<number, number, never>, "IPv6CidrMask">
-                }>,
-                Schema.Schema<`${string}/${number}`, `${string}/${number}`, never>
-              ]
-            >,
-            typeof InternetSchemas.CidrBlockInternal,
-            never
-          >,
-          "CidrBlock"
-        >
-      ]
-    >,
-    never
-  >,
-  "WireguardUapiConfig"
+export declare const WireguardUapiConfig: Schema.transformOrFail<
+  typeof WireguardConfig,
+  Schema.tuple<[Schema.$string, typeof InternetSchemas.CidrBlock]>,
+  never
 >
 ```
 

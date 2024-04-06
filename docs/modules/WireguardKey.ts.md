@@ -6,6 +6,8 @@ parent: Modules
 
 ## WireguardKey overview
 
+Wireguard key schemas and helpers
+
 Added in v1.0.0
 
 ---
@@ -30,7 +32,7 @@ Generates a wireguard public private key pair.
 **Signature**
 
 ```ts
-export declare const generateKeyPair: () => { privateKey: WireguardKey; publicKey: WireguardKey }
+export declare const generateKeyPair: () => { readonly privateKey: WireguardKey; readonly publicKey: WireguardKey }
 ```
 
 **Example**

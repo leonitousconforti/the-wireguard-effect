@@ -6,6 +6,8 @@ parent: Modules
 
 ## WireguardPeer overview
 
+Wireguard peer schema definitions
+
 Added in v1.0.0
 
 ---
@@ -85,10 +87,7 @@ A wireguard peer configuration encoded in INI format.
 **Signature**
 
 ```ts
-export declare const WireguardIniPeer: Schema.brand<
-  Schema.transformOrFail<typeof WireguardPeer, Schema.$string, never>,
-  "WireguardIniPeer"
->
+export declare const WireguardIniPeer: Schema.transformOrFail<typeof WireguardPeer, Schema.$string, never>
 ```
 
 **Example**
@@ -126,10 +125,7 @@ A wireguard peer configuration encoded in the userspace api format.
 **Signature**
 
 ```ts
-export declare const WireguardUapiPeer: Schema.brand<
-  Schema.transformOrFail<typeof WireguardPeer, Schema.$string, never>,
-  "WireguardUapiPeer"
->
+export declare const WireguardUapiPeer: Schema.transformOrFail<typeof WireguardPeer, Schema.$string, never>
 ```
 
 **Example**

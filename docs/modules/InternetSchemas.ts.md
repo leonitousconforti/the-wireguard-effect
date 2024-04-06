@@ -6,52 +6,388 @@ parent: Modules
 
 ## InternetSchemas overview
 
+Internet schemas for wireguard configuration.
+
 Added in v1.0.0
 
 ---
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [Datatypes](#datatypes)
+- [Api interface](#api-interface)
+  - [$Address (interface)](#address-interface)
+  - [$AddressFromString (interface)](#addressfromstring-interface)
+  - [$CidrBlockFromString (interface)](#cidrblockfromstring-interface)
+  - [$DurationFromSeconds (interface)](#durationfromseconds-interface)
+  - [$Endpoint (interface)](#endpoint-interface)
+  - [$IPv4CidrMask (interface)](#ipv4cidrmask-interface)
+  - [$IPv4Endpoint (interface)](#ipv4endpoint-interface)
+  - [$IPv4FromString (interface)](#ipv4fromstring-interface)
+  - [$IPv6CidrMask (interface)](#ipv6cidrmask-interface)
+  - [$IPv6Endpoint (interface)](#ipv6endpoint-interface)
+  - [$IPv6FromString (interface)](#ipv6fromstring-interface)
+  - [$Port (interface)](#port-interface)
+  - [$SetupData (interface)](#setupdata-interface)
+- [Branded constructors](#branded-constructors)
+  - [DurationFromSecondsBrand](#durationfromsecondsbrand)
+  - [IPv4CidrMaskBrand](#ipv4cidrmaskbrand)
+  - [IPv6CidrMaskBrand](#ipv6cidrmaskbrand)
+  - [PortBrand](#portbrand)
+- [Branded types](#branded-types)
+  - [DurationFromSecondsBrand (type alias)](#durationfromsecondsbrand-type-alias)
+  - [IPv4CidrMaskBrand (type alias)](#ipv4cidrmaskbrand-type-alias)
+  - [IPv6CidrMaskBrand (type alias)](#ipv6cidrmaskbrand-type-alias)
+  - [PortBrand (type alias)](#portbrand-type-alias)
+- [Encoded types](#encoded-types)
+  - [AddressEncoded (type alias)](#addressencoded-type-alias)
+  - [AddressFromStringEncoded (type alias)](#addressfromstringencoded-type-alias)
+  - [CidrBlockFromStringEncoded (type alias)](#cidrblockfromstringencoded-type-alias)
+  - [EndpointEncoded (type alias)](#endpointencoded-type-alias)
+  - [IPv4FromStringEncoded (type alias)](#ipv4fromstringencoded-type-alias)
+  - [IPv6FromStringEncoded (type alias)](#ipv6fromstringencoded-type-alias)
+  - [SetupDataEncoded (type alias)](#setupdataencoded-type-alias)
+- [Schemas](#schemas)
   - [Address](#address)
-  - [BigintFromAddress](#bigintfromaddress)
-  - [CidrBlock](#cidrblock)
-  - [CidrBlockInternal (class)](#cidrblockinternal-class)
+  - [AddressFromString](#addressfromstring)
+  - [CidrBlock (class)](#cidrblock-class)
+    - [family (property)](#family-property)
+  - [CidrBlockFromString](#cidrblockfromstring)
+  - [DurationFromSeconds](#durationfromseconds)
   - [Endpoint](#endpoint)
-  - [IPv4](#ipv4)
-  - [IPv4Bigint](#ipv4bigint)
+  - [IPv4 (class)](#ipv4-class)
+    - [family (property)](#family-property-1)
   - [IPv4CidrMask](#ipv4cidrmask)
   - [IPv4Endpoint](#ipv4endpoint)
-  - [IPv6](#ipv6)
-  - [IPv6Bigint](#ipv6bigint)
+  - [IPv4FromString](#ipv4fromstring)
+  - [IPv6 (class)](#ipv6-class)
+    - [family (property)](#family-property-2)
   - [IPv6CidrMask](#ipv6cidrmask)
   - [IPv6Endpoint](#ipv6endpoint)
+  - [IPv6FromString](#ipv6fromstring)
   - [Port](#port)
   - [SetupData](#setupdata)
-- [utils](#utils)
+- [Unbranded types](#unbranded-types)
   - [Address (type alias)](#address-type-alias)
-  - [BigintFromAddress (type alias)](#bigintfromaddress-type-alias)
-  - [CidrBlock (type alias)](#cidrblock-type-alias)
-  - [CidrBlockEncoded (type alias)](#cidrblockencoded-type-alias)
+  - [AddressFromString (type alias)](#addressfromstring-type-alias)
+  - [CidrBlockFromString (type alias)](#cidrblockfromstring-type-alias)
   - [Endpoint (type alias)](#endpoint-type-alias)
-  - [EndpointEncoded (type alias)](#endpointencoded-type-alias)
-  - [IPv4 (type alias)](#ipv4-type-alias)
-  - [IPv4Bigint (type alias)](#ipv4bigint-type-alias)
-  - [IPv4CidrMask (type alias)](#ipv4cidrmask-type-alias)
-  - [IPv4Endpoint (type alias)](#ipv4endpoint-type-alias)
-  - [IPv4EndpointEncoded (type alias)](#ipv4endpointencoded-type-alias)
-  - [IPv6 (type alias)](#ipv6-type-alias)
-  - [IPv6Bigint (type alias)](#ipv6bigint-type-alias)
-  - [IPv6CidrMask (type alias)](#ipv6cidrmask-type-alias)
-  - [IPv6Endpoint (type alias)](#ipv6endpoint-type-alias)
-  - [IPv6EndpointEncoded (type alias)](#ipv6endpointencoded-type-alias)
-  - [Port (type alias)](#port-type-alias)
+  - [IPv4FromString (type alias)](#ipv4fromstring-type-alias)
+  - [IPv6FromString (type alias)](#ipv6fromstring-type-alias)
   - [SetupData (type alias)](#setupdata-type-alias)
-  - [SetupDataEncoded (type alias)](#setupdataencoded-type-alias)
 
 ---
 
-# Datatypes
+# Api interface
+
+## $Address (interface)
+
+**Signature**
+
+```ts
+export interface $Address extends Schema.union<[typeof IPv4, typeof IPv6]> {}
+```
+
+Added in v1.0.0
+
+## $AddressFromString (interface)
+
+**Signature**
+
+```ts
+export interface $AddressFromString extends Schema.union<[typeof IPv4FromString, typeof IPv6FromString]> {}
+```
+
+Added in v1.0.0
+
+## $CidrBlockFromString (interface)
+
+**Signature**
+
+```ts
+export interface $CidrBlockFromString
+  extends Schema.Annotable<$CidrBlockFromString, CidrBlock, `${string}/${number}`, never> {}
+```
+
+Added in v1.0.0
+
+## $DurationFromSeconds (interface)
+
+**Signature**
+
+```ts
+export interface $DurationFromSeconds
+  extends Schema.Annotable<$DurationFromSeconds, DurationFromSecondsBrand, number, never> {}
+```
+
+Added in v1.0.0
+
+## $Endpoint (interface)
+
+**Signature**
+
+```ts
+export interface $Endpoint extends Schema.union<[$IPv4Endpoint, $IPv6Endpoint]> {}
+```
+
+Added in v1.0.0
+
+## $IPv4CidrMask (interface)
+
+**Signature**
+
+```ts
+export interface $IPv4CidrMask
+  extends Schema.Annotable<$IPv4CidrMask, IPv4CidrMaskBrand, Brand.Brand.Unbranded<IPv4CidrMaskBrand>, never> {}
+```
+
+Added in v1.0.0
+
+## $IPv4Endpoint (interface)
+
+**Signature**
+
+```ts
+export interface $IPv4Endpoint
+  extends Schema.Annotable<
+    $IPv4Endpoint,
+    { readonly address: IPv4; readonly natPort: PortBrand; readonly listenPort: PortBrand },
+    | `${string}:${number}`
+    | `${string}:${number}:${number}`
+    | { readonly ip: string; readonly port: number }
+    | { readonly ip: string; readonly natPort: number; readonly listenPort: number },
+    never
+  > {}
+```
+
+Added in v1.0.0
+
+## $IPv4FromString (interface)
+
+**Signature**
+
+```ts
+export interface $IPv4FromString extends Schema.Annotable<$IPv4FromString, IPv4, string, never> {}
+```
+
+Added in v1.0.0
+
+## $IPv6CidrMask (interface)
+
+**Signature**
+
+```ts
+export interface $IPv6CidrMask
+  extends Schema.Annotable<$IPv6CidrMask, IPv6CidrMaskBrand, Brand.Brand.Unbranded<IPv6CidrMaskBrand>, never> {}
+```
+
+Added in v1.0.0
+
+## $IPv6Endpoint (interface)
+
+**Signature**
+
+```ts
+export interface $IPv6Endpoint
+  extends Schema.Annotable<
+    $IPv6Endpoint,
+    { readonly address: IPv6; readonly natPort: PortBrand; readonly listenPort: PortBrand },
+    | `[${string}]:${number}`
+    | `[${string}]:${number}:${number}`
+    | { readonly ip: string; readonly port: number }
+    | { readonly ip: string; readonly natPort: number; readonly listenPort: number },
+    never
+  > {}
+```
+
+Added in v1.0.0
+
+## $IPv6FromString (interface)
+
+**Signature**
+
+```ts
+export interface $IPv6FromString extends Schema.Annotable<$IPv6FromString, IPv6, string, never> {}
+```
+
+Added in v1.0.0
+
+## $Port (interface)
+
+**Signature**
+
+```ts
+export interface $Port extends Schema.Annotable<$Port, PortBrand, Brand.Brand.Unbranded<PortBrand>, never> {}
+```
+
+Added in v1.0.0
+
+## $SetupData (interface)
+
+**Signature**
+
+```ts
+export interface $SetupData extends Schema.tuple<[$Endpoint, $AddressFromString]> {}
+```
+
+Added in v1.0.0
+
+# Branded constructors
+
+## DurationFromSecondsBrand
+
+**Signature**
+
+```ts
+export declare const DurationFromSecondsBrand: Brand.Brand.Constructor<DurationFromSecondsBrand>
+```
+
+Added in v1.0.0
+
+## IPv4CidrMaskBrand
+
+**Signature**
+
+```ts
+export declare const IPv4CidrMaskBrand: Brand.Brand.Constructor<IPv4CidrMaskBrand>
+```
+
+Added in v1.0.0
+
+## IPv6CidrMaskBrand
+
+**Signature**
+
+```ts
+export declare const IPv6CidrMaskBrand: Brand.Brand.Constructor<IPv6CidrMaskBrand>
+```
+
+Added in v1.0.0
+
+## PortBrand
+
+**Signature**
+
+```ts
+export declare const PortBrand: Brand.Brand.Constructor<PortBrand>
+```
+
+Added in v1.0.0
+
+# Branded types
+
+## DurationFromSecondsBrand (type alias)
+
+**Signature**
+
+```ts
+export type DurationFromSecondsBrand = Duration.Duration & Brand.Brand<"DurationFromSeconds">
+```
+
+Added in v1.0.0
+
+## IPv4CidrMaskBrand (type alias)
+
+**Signature**
+
+```ts
+export type IPv4CidrMaskBrand = number & Brand.Brand<"IPv4CidrMask">
+```
+
+Added in v1.0.0
+
+## IPv6CidrMaskBrand (type alias)
+
+**Signature**
+
+```ts
+export type IPv6CidrMaskBrand = number & Brand.Brand<"IPv6CidrMask">
+```
+
+Added in v1.0.0
+
+## PortBrand (type alias)
+
+**Signature**
+
+```ts
+export type PortBrand = number & Brand.Brand<"Port">
+```
+
+Added in v1.0.0
+
+# Encoded types
+
+## AddressEncoded (type alias)
+
+**Signature**
+
+```ts
+export type AddressEncoded = Schema.Schema.Encoded<typeof Address>
+```
+
+Added in v1.0.0
+
+## AddressFromStringEncoded (type alias)
+
+**Signature**
+
+```ts
+export type AddressFromStringEncoded = Schema.Schema.Encoded<typeof AddressFromString>
+```
+
+Added in v1.0.0
+
+## CidrBlockFromStringEncoded (type alias)
+
+**Signature**
+
+```ts
+export type CidrBlockFromStringEncoded = Schema.Schema.Encoded<typeof CidrBlockFromString>
+```
+
+Added in v1.0.0
+
+## EndpointEncoded (type alias)
+
+**Signature**
+
+```ts
+export type EndpointEncoded = Schema.Schema.Encoded<typeof Endpoint>
+```
+
+Added in v1.0.0
+
+## IPv4FromStringEncoded (type alias)
+
+**Signature**
+
+```ts
+export type IPv4FromStringEncoded = Schema.Schema.Encoded<typeof IPv4FromString>
+```
+
+Added in v1.0.0
+
+## IPv6FromStringEncoded (type alias)
+
+**Signature**
+
+```ts
+export type IPv6FromStringEncoded = Schema.Schema.Encoded<typeof IPv6FromString>
+```
+
+Added in v1.0.0
+
+## SetupDataEncoded (type alias)
+
+**Signature**
+
+```ts
+export type SetupDataEncoded = Schema.Schema.Encoded<typeof SetupData>
+```
+
+Added in v1.0.0
+
+# Schemas
 
 ## Address
 
@@ -60,15 +396,7 @@ An IP address, which is either an IPv4 or IPv6 address.
 **Signature**
 
 ```ts
-export declare const Address: Schema.brand<
-  Schema.union<
-    [
-      Schema.brand<Schema.Schema<string, string, never>, "IPv4">,
-      Schema.brand<Schema.Schema<string, string, never>, "IPv6">
-    ]
-  >,
-  "Address"
->
+export declare const Address: $Address
 ```
 
 **Example**
@@ -89,106 +417,65 @@ assert.doesNotThrow(() => decodeAddress("2001:0db8:85a3:0000:0000:8a2e:0370:7334
 
 Added in v1.0.0
 
-## BigintFromAddress
+## AddressFromString
 
-An IP address as a bigint, helpful for some cidr and subnet related calculations.
-
-**Signature**
-
-```ts
-export declare const BigintFromAddress: Schema.union<
-  [
-    Schema.transformOrFail<
-      Schema.brand<Schema.Schema<string, string, never>, "IPv4">,
-      Schema.struct<{ value: Schema.bigintFromSelf; family: Schema.literal<["ipv4"]> }>,
-      never
-    >,
-    Schema.transformOrFail<
-      Schema.brand<Schema.Schema<string, string, never>, "IPv6">,
-      Schema.struct<{ value: Schema.bigintFromSelf; family: Schema.literal<["ipv6"]> }>,
-      never
-    >
-  ]
->
-```
-
-**Example**
-
-```ts
-import * as Schema from "@effect/schema/Schema"
-import { BigintFromAddress } from "the-wireguard-effect/InternetSchemas"
-
-const address1 = Schema.decodeSync(BigintFromAddress)("1.1.1.1")
-const address2 = Schema.decodeSync(BigintFromAddress)("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
-```
-
-Added in v1.0.0
-
-## CidrBlock
-
-A cidr block, which is an IP address followed by a slash and then a subnet mask.
+An IP address, which is either an IPv4 or IPv6 address. This schema
+transforms a `string` into an `Address`.
 
 **Signature**
 
 ```ts
-export declare const CidrBlock: Schema.brand<
-  Schema.transformOrFail<
-    Schema.union<
-      [
-        Schema.struct<{
-          ipv4: Schema.brand<Schema.Schema<string, string, never>, "IPv4">
-          mask: Schema.brand<Schema.Schema<number, number, never>, "IPv4CidrMask">
-        }>,
-        Schema.struct<{
-          ipv6: Schema.brand<Schema.Schema<string, string, never>, "IPv6">
-          mask: Schema.brand<Schema.Schema<number, number, never>, "IPv6CidrMask">
-        }>,
-        Schema.Schema<`${string}/${number}`, `${string}/${number}`, never>
-      ]
-    >,
-    typeof CidrBlockInternal,
-    never
-  >,
-  "CidrBlock"
->
-```
-
-**Example**
-
-```ts
-import * as Schema from "@effect/schema/Schema"
-
-import { CidrBlock, IPv4, IPv4CidrMask, IPv6, IPv6CidrMask } from "the-wireguard-effect/InternetSchemas"
-
-const block1 = Schema.decodeSync(CidrBlock)("192.168.1.1/24")
-assert.strictEqual(block1.mask, 24)
-assert.strictEqual(block1.total, 256n)
-assert.strictEqual(block1.family, "ipv4")
-assert.strictEqual(block1.ip, "192.168.1.1")
-assert.strictEqual(block1.networkAddress, "192.168.1.0")
-assert.strictEqual(block1.broadcastAddress, "192.168.1.255")
-
-const block2 = Schema.decodeSync(CidrBlock)("2001:db8:85a3::8a2e:370:7334/64")
-assert.strictEqual(block2.mask, 64)
-assert.strictEqual(block2.family, "ipv6")
-assert.strictEqual(block2.total, 18446744073709551616n)
-assert.strictEqual(block2.ip, "2001:db8:85a3::8a2e:370:7334")
-assert.strictEqual(block2.networkAddress, "2001:0db8:85a3:0000:0000:0000:0000:0000")
-assert.strictEqual(block2.broadcastAddress, "2001:0db8:85a3:0000:ffff:ffff:ffff:ffff")
+export declare const AddressFromString: $AddressFromString
 ```
 
 Added in v1.0.0
 
-## CidrBlockInternal (class)
+## CidrBlock (class)
 
 Internal helper representation of a cidr range so that we can do
-transformations to and from it as we cannot represent a stream
-using @effect/schema.
+transformations to and from it as we cannot represent a stream using
 
 **Signature**
 
 ```ts
-export declare class CidrBlockInternal
+export declare class CidrBlock
+```
+
+Added in v1.0.0
+
+### family (property)
+
+The address family of this cidr block.
+
+**Signature**
+
+```ts
+readonly family: "ipv4" | "ipv6"
+```
+
+Added in v1.0.0
+
+## CidrBlockFromString
+
+A schema that transforms a `string` into a `CidrBlock`.
+
+**Signature**
+
+```ts
+export declare const CidrBlockFromString: $CidrBlockFromString
+```
+
+Added in v1.0.0
+
+## DurationFromSeconds
+
+A schema that transforms a `number` tuple into a `Duration`. Treats the value
+as the number of seconds.
+
+**Signature**
+
+```ts
+export declare const DurationFromSeconds: $DurationFromSeconds
 ```
 
 Added in v1.0.0
@@ -200,65 +487,7 @@ A wireguard endpoint, which is either an IPv4 or IPv6 endpoint.
 **Signature**
 
 ```ts
-export declare const Endpoint: Schema.brand<
-  Schema.union<
-    [
-      Schema.brand<
-        Schema.transformOrFail<
-          Schema.union<
-            [
-              Schema.struct<{
-                ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">
-                port: Schema.brand<Schema.Schema<number, number, never>, "Port">
-              }>,
-              Schema.struct<{
-                ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">
-                natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-                listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-              }>,
-              Schema.Schema<`${string}:${number}`, `${string}:${number}`, never>,
-              Schema.Schema<`${string}:${number}:${number}`, `${string}:${number}:${number}`, never>
-            ]
-          >,
-          Schema.struct<{
-            ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">
-            natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-            listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-          }>,
-          never
-        >,
-        "IPv4Endpoint"
-      >,
-      Schema.brand<
-        Schema.transformOrFail<
-          Schema.union<
-            [
-              Schema.struct<{
-                ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">
-                port: Schema.brand<Schema.Schema<number, number, never>, "Port">
-              }>,
-              Schema.struct<{
-                ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">
-                natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-                listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-              }>,
-              Schema.Schema<`[${string}]:${number}`, `[${string}]:${number}`, never>,
-              Schema.Schema<`[${string}]:${number}:${number}`, `[${string}]:${number}:${number}`, never>
-            ]
-          >,
-          Schema.struct<{
-            ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">
-            natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-            listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-          }>,
-          never
-        >,
-        "IPv6Endpoint"
-      >
-    ]
-  >,
-  "Endpoint"
->
+export declare const Endpoint: $Endpoint
 ```
 
 **Example**
@@ -299,14 +528,14 @@ const endpoint8: Endpoint = Endpoint({
 
 Added in v1.0.0
 
-## IPv4
+## IPv4 (class)
 
 An IPv4 address.
 
 **Signature**
 
 ```ts
-export declare const IPv4: Schema.brand<Schema.Schema<string, string, never>, "IPv4">
+export declare class IPv4
 ```
 
 **Example**
@@ -327,34 +556,12 @@ assert.doesNotThrow(() => decodeIPv4("1.1.1.1"))
 
 Added in v1.0.0
 
-## IPv4Bigint
-
-An IPv4 address as a bigint, helpful for some cidr and subnet related calculations.
+### family (property)
 
 **Signature**
 
 ```ts
-export declare const IPv4Bigint: Schema.transformOrFail<
-  Schema.brand<Schema.Schema<string, string, never>, "IPv4">,
-  Schema.struct<{ value: Schema.bigintFromSelf; family: Schema.literal<["ipv4"]> }>,
-  never
->
-```
-
-**Example**
-
-```ts
-import * as Schema from "@effect/schema/Schema"
-import { IPv4Bigint } from "the-wireguard-effect/InternetSchemas"
-
-const decodeIPv4Bigint = Schema.decodeSync(IPv4Bigint)
-assert.deepStrictEqual(decodeIPv4Bigint("1.1.1.1"), { value: 16843009n, family: "ipv4" })
-
-const encodeIPv4Bigint = Schema.encodeSync(IPv4Bigint)
-assert.strictEqual(encodeIPv4Bigint({ value: 16843009n, family: "ipv4" }), "1.1.1.1")
-
-assert.throws(() => decodeIPv4Bigint("1.1.1.1000"))
-assert.doesNotThrow(() => decodeIPv4Bigint("2.2.2.2"))
+readonly family: "ipv4"
 ```
 
 Added in v1.0.0
@@ -366,7 +573,7 @@ An ipv4 cidr mask, which is a number between 0 and 32.
 **Signature**
 
 ```ts
-export declare const IPv4CidrMask: Schema.brand<Schema.Schema<number, number, never>, "IPv4CidrMask">
+export declare const IPv4CidrMask: $IPv4CidrMask
 ```
 
 **Example**
@@ -397,31 +604,16 @@ assumed that the nat port and listen port are the same.
 **Signature**
 
 ```ts
-export declare const IPv4Endpoint: Schema.brand<
-  Schema.transformOrFail<
-    Schema.union<
-      [
-        Schema.struct<{
-          ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">
-          port: Schema.brand<Schema.Schema<number, number, never>, "Port">
-        }>,
-        Schema.struct<{
-          ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">
-          natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-          listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-        }>,
-        Schema.Schema<`${string}:${number}`, `${string}:${number}`, never>,
-        Schema.Schema<`${string}:${number}:${number}`, `${string}:${number}:${number}`, never>
-      ]
-    >,
-    Schema.struct<{
-      ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">
-      natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-      listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-    }>,
-    never
+export declare const IPv4Endpoint: Schema.transform<
+  Schema.union<
+    [
+      Schema.struct<{ ip: Schema.$string; port: Schema.$number }>,
+      Schema.struct<{ ip: Schema.$string; natPort: Schema.$number; listenPort: Schema.$number }>,
+      Schema.Schema<`${string}:${number}`, `${string}:${number}`, never>,
+      Schema.Schema<`${string}:${number}:${number}`, `${string}:${number}:${number}`, never>
+    ]
   >,
-  "IPv4Endpoint"
+  Schema.struct<{ address: $IPv4FromString; natPort: $Port; listenPort: $Port }>
 >
 ```
 
@@ -449,14 +641,26 @@ const endpoint4: IPv4Endpoint = IPv4Endpoint({
 
 Added in v1.0.0
 
-## IPv6
+## IPv4FromString
+
+A schema that transforms a `string` into an `IPv4`.
+
+**Signature**
+
+```ts
+export declare const IPv4FromString: $IPv4FromString
+```
+
+Added in v1.0.0
+
+## IPv6 (class)
 
 An IPv6 address.
 
 **Signature**
 
 ```ts
-export declare const IPv6: Schema.brand<Schema.Schema<string, string, never>, "IPv6">
+export declare class IPv6
 ```
 
 **Example**
@@ -478,40 +682,12 @@ assert.doesNotThrow(() => decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
 
 Added in v1.0.0
 
-## IPv6Bigint
-
-An IPv6 address as a bigint, helpful for some cidr and subnet related calculations.
+### family (property)
 
 **Signature**
 
 ```ts
-export declare const IPv6Bigint: Schema.transformOrFail<
-  Schema.brand<Schema.Schema<string, string, never>, "IPv6">,
-  Schema.struct<{ value: Schema.bigintFromSelf; family: Schema.literal<["ipv6"]> }>,
-  never
->
-```
-
-**Example**
-
-```ts
-import * as Schema from "@effect/schema/Schema"
-import { IPv6Bigint } from "the-wireguard-effect/InternetSchemas"
-
-const decodeIPv6Bigint = Schema.decodeSync(IPv6Bigint)
-assert.deepStrictEqual(decodeIPv6Bigint("2001:db8:85a3::8a2e:370:7334"), {
-  value: 42540766452641154071740215577757643572n,
-  family: "ipv6"
-})
-
-const encodeIPv6Bigint = Schema.encodeSync(IPv6Bigint)
-assert.strictEqual(
-  encodeIPv6Bigint({ value: 42540766452641154071740215577757643572n, family: "ipv6" }),
-  "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
-)
-
-assert.throws(() => decodeIPv6Bigint("2001:0db8:85a3:0000:0000:8a2e:0370:7334:"))
-assert.doesNotThrow(() => decodeIPv6Bigint("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
+readonly family: "ipv6"
 ```
 
 Added in v1.0.0
@@ -523,7 +699,7 @@ An ipv6 cidr mask, which is a number between 0 and 128.
 **Signature**
 
 ```ts
-export declare const IPv6CidrMask: Schema.brand<Schema.Schema<number, number, never>, "IPv6CidrMask">
+export declare const IPv6CidrMask: $IPv6CidrMask
 ```
 
 **Example**
@@ -548,39 +724,13 @@ Added in v1.0.0
 ## IPv6Endpoint
 
 An IPv6 wireguard endpoint, which consists of an IPv6 address in square
-brackets followed by a nat port then an optional local port. If only one
-port is provided, it is assumed that the nat port and listen port are the
-same.
+brackets followed by a nat port then an optional local port. If only one port
+is provided, it is assumed that the nat port and listen port are the same.
 
 **Signature**
 
 ```ts
-export declare const IPv6Endpoint: Schema.brand<
-  Schema.transformOrFail<
-    Schema.union<
-      [
-        Schema.struct<{
-          ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">
-          port: Schema.brand<Schema.Schema<number, number, never>, "Port">
-        }>,
-        Schema.struct<{
-          ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">
-          natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-          listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-        }>,
-        Schema.Schema<`[${string}]:${number}`, `[${string}]:${number}`, never>,
-        Schema.Schema<`[${string}]:${number}:${number}`, `[${string}]:${number}:${number}`, never>
-      ]
-    >,
-    Schema.struct<{
-      ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">
-      natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-      listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-    }>,
-    never
-  >,
-  "IPv6Endpoint"
->
+export declare const IPv6Endpoint: $IPv6Endpoint
 ```
 
 **Example**
@@ -607,6 +757,18 @@ const endpoint4: IPv6Endpoint = IPv6Endpoint({
 
 Added in v1.0.0
 
+## IPv6FromString
+
+A schema that transforms a `string` into an `IPv6`.
+
+**Signature**
+
+```ts
+export declare const IPv6FromString: $IPv6FromString
+```
+
+Added in v1.0.0
+
 ## Port
 
 An operating system port number.
@@ -614,7 +776,7 @@ An operating system port number.
 **Signature**
 
 ```ts
-export declare const Port: Schema.brand<Schema.Schema<number, number, never>, "Port">
+export declare const Port: $Port
 ```
 
 **Example**
@@ -642,81 +804,7 @@ A wireguard setup data, which consists of an endpoint followed by an address.
 **Signature**
 
 ```ts
-export declare const SetupData: Schema.brand<
-  Schema.tuple<
-    [
-      Schema.brand<
-        Schema.union<
-          [
-            Schema.brand<
-              Schema.transformOrFail<
-                Schema.union<
-                  [
-                    Schema.struct<{
-                      ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">
-                      port: Schema.brand<Schema.Schema<number, number, never>, "Port">
-                    }>,
-                    Schema.struct<{
-                      ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">
-                      natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-                      listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-                    }>,
-                    Schema.Schema<`${string}:${number}`, `${string}:${number}`, never>,
-                    Schema.Schema<`${string}:${number}:${number}`, `${string}:${number}:${number}`, never>
-                  ]
-                >,
-                Schema.struct<{
-                  ip: Schema.brand<Schema.Schema<string, string, never>, "IPv4">
-                  natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-                  listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-                }>,
-                never
-              >,
-              "IPv4Endpoint"
-            >,
-            Schema.brand<
-              Schema.transformOrFail<
-                Schema.union<
-                  [
-                    Schema.struct<{
-                      ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">
-                      port: Schema.brand<Schema.Schema<number, number, never>, "Port">
-                    }>,
-                    Schema.struct<{
-                      ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">
-                      natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-                      listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-                    }>,
-                    Schema.Schema<`[${string}]:${number}`, `[${string}]:${number}`, never>,
-                    Schema.Schema<`[${string}]:${number}:${number}`, `[${string}]:${number}:${number}`, never>
-                  ]
-                >,
-                Schema.struct<{
-                  ip: Schema.brand<Schema.Schema<string, string, never>, "IPv6">
-                  natPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-                  listenPort: Schema.brand<Schema.Schema<number, number, never>, "Port">
-                }>,
-                never
-              >,
-              "IPv6Endpoint"
-            >
-          ]
-        >,
-        "Endpoint"
-      >,
-      Schema.brand<
-        Schema.union<
-          [
-            Schema.brand<Schema.Schema<string, string, never>, "IPv4">,
-            Schema.brand<Schema.Schema<string, string, never>, "IPv6">
-          ]
-        >,
-        "Address"
-      >
-    ]
-  >,
-  "SetupData"
->
+export declare const SetupData: $SetupData
 ```
 
 **Example**
@@ -735,7 +823,7 @@ const setupData2: SetupData = SetupData([endpoint, address])
 
 Added in v1.0.0
 
-# utils
+# Unbranded types
 
 ## Address (type alias)
 
@@ -747,32 +835,22 @@ export type Address = Schema.Schema.Type<typeof Address>
 
 Added in v1.0.0
 
-## BigintFromAddress (type alias)
+## AddressFromString (type alias)
 
 **Signature**
 
 ```ts
-export type BigintFromAddress = Schema.Schema.Type<typeof BigintFromAddress>
+export type AddressFromString = Schema.Schema.Type<typeof AddressFromString>
 ```
 
 Added in v1.0.0
 
-## CidrBlock (type alias)
+## CidrBlockFromString (type alias)
 
 **Signature**
 
 ```ts
-export type CidrBlock = Schema.Schema.Type<typeof CidrBlock>
-```
-
-Added in v1.0.0
-
-## CidrBlockEncoded (type alias)
-
-**Signature**
-
-```ts
-export type CidrBlockEncoded = Schema.Schema.Encoded<typeof CidrBlock>
+export type CidrBlockFromString = Schema.Schema.Type<typeof CidrBlockFromString>
 ```
 
 Added in v1.0.0
@@ -787,122 +865,22 @@ export type Endpoint = Schema.Schema.Type<typeof Endpoint>
 
 Added in v1.0.0
 
-## EndpointEncoded (type alias)
+## IPv4FromString (type alias)
 
 **Signature**
 
 ```ts
-export type EndpointEncoded = Schema.Schema.Encoded<typeof Endpoint>
+export type IPv4FromString = Schema.Schema.Type<typeof IPv4FromString>
 ```
 
 Added in v1.0.0
 
-## IPv4 (type alias)
+## IPv6FromString (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4 = Schema.Schema.Type<typeof IPv4>
-```
-
-Added in v1.0.0
-
-## IPv4Bigint (type alias)
-
-**Signature**
-
-```ts
-export type IPv4Bigint = Schema.Schema.Type<typeof IPv4Bigint>
-```
-
-Added in v1.0.0
-
-## IPv4CidrMask (type alias)
-
-**Signature**
-
-```ts
-export type IPv4CidrMask = Schema.Schema.Type<typeof IPv4CidrMask>
-```
-
-Added in v1.0.0
-
-## IPv4Endpoint (type alias)
-
-**Signature**
-
-```ts
-export type IPv4Endpoint = Schema.Schema.Type<typeof IPv4Endpoint>
-```
-
-Added in v1.0.0
-
-## IPv4EndpointEncoded (type alias)
-
-**Signature**
-
-```ts
-export type IPv4EndpointEncoded = Schema.Schema.Encoded<typeof IPv4Endpoint>
-```
-
-Added in v1.0.0
-
-## IPv6 (type alias)
-
-**Signature**
-
-```ts
-export type IPv6 = Schema.Schema.Type<typeof IPv6>
-```
-
-Added in v1.0.0
-
-## IPv6Bigint (type alias)
-
-**Signature**
-
-```ts
-export type IPv6Bigint = Schema.Schema.Type<typeof IPv6Bigint>
-```
-
-Added in v1.0.0
-
-## IPv6CidrMask (type alias)
-
-**Signature**
-
-```ts
-export type IPv6CidrMask = Schema.Schema.Type<typeof IPv6CidrMask>
-```
-
-Added in v1.0.0
-
-## IPv6Endpoint (type alias)
-
-**Signature**
-
-```ts
-export type IPv6Endpoint = Schema.Schema.Type<typeof IPv6Endpoint>
-```
-
-Added in v1.0.0
-
-## IPv6EndpointEncoded (type alias)
-
-**Signature**
-
-```ts
-export type IPv6EndpointEncoded = Schema.Schema.Encoded<typeof IPv6Endpoint>
-```
-
-Added in v1.0.0
-
-## Port (type alias)
-
-**Signature**
-
-```ts
-export type Port = Schema.Schema.Type<typeof Port>
+export type IPv6FromString = Schema.Schema.Type<typeof IPv6FromString>
 ```
 
 Added in v1.0.0
@@ -913,16 +891,6 @@ Added in v1.0.0
 
 ```ts
 export type SetupData = Schema.Schema.Type<typeof SetupData>
-```
-
-Added in v1.0.0
-
-## SetupDataEncoded (type alias)
-
-**Signature**
-
-```ts
-export type SetupDataEncoded = Schema.Schema.Encoded<typeof SetupData>
 ```
 
 Added in v1.0.0

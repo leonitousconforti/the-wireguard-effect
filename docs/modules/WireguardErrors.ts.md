@@ -6,6 +6,8 @@ parent: Modules
 
 ## WireguardErrors overview
 
+Wireguard errors
+
 Added in v1.0.0
 
 ---
@@ -14,9 +16,8 @@ Added in v1.0.0
 
 - [Errors](#errors)
   - [SuccessErrno](#successerrno)
-  - [WireguardError (class)](#wireguarderror-class)
-- [utils](#utils)
   - [SuccessErrno (type alias)](#successerrno-type-alias)
+  - [WireguardError (class)](#wireguarderror-class)
 
 ---
 
@@ -34,24 +35,22 @@ export declare const SuccessErrno: Schema.brand<Schema.Schema<"errno=0", "errno=
 
 Added in v1.0.0
 
-## WireguardError (class)
-
-**Signature**
-
-```ts
-export declare class WireguardError
-```
-
-Added in v1.0.0
-
-# utils
-
 ## SuccessErrno (type alias)
 
 **Signature**
 
 ```ts
 export type SuccessErrno = Schema.Schema.Type<typeof SuccessErrno>
+```
+
+Added in v1.0.0
+
+## WireguardError (class)
+
+**Signature**
+
+```ts
+export declare class WireguardError
 ```
 
 Added in v1.0.0

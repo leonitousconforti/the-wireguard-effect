@@ -6,6 +6,8 @@ parent: Modules
 
 ## WireguardInterface overview
 
+Wireguard interface helpers
+
 Added in v1.0.0
 
 ---
@@ -36,9 +38,10 @@ Added in v1.0.0
 
 ### upScoped (property)
 
-Starts a wireguard tunnel that will be gracefully shutdown and stop serving
-traffic once the scope is closed. If no how options is specified, then the
-interface will be brought up using the bundled-wireguard-go+userspace-api method.
+Starts a wireguard tunnel that will be gracefully shutdown and stop
+serving traffic once the scope is closed. If no how options is specified,
+then the interface will be brought up using the
+bundled-wireguard-go+userspace-api method.
 
 **Signature**
 
@@ -71,8 +74,9 @@ Added in v1.0.0
 ### up (property)
 
 Starts a wireguard tunnel that will continue to run and serve traffic
-even after the nodejs process exits. If no how options is specified, then the
-interface will be brought up using the bundled-wireguard-go+userspace-api method.
+even after the nodejs process exits. If no how options is specified, then
+the interface will be brought up using the
+bundled-wireguard-go+userspace-api method.
 
 **Signature**
 

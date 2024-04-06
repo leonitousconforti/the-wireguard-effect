@@ -6,6 +6,8 @@ parent: Modules
 
 ## index overview
 
+Internet schemas for wireguard configuration.
+
 Added in v1.0.0
 
 ---
@@ -26,7 +28,7 @@ Added in v1.0.0
 
 ## From "./InternetSchemas.js"
 
-Re-exports all named exports from the "./InternetSchemas.js" module as `InternetSchemas`.
+Internet schemas for wireguard configuration.
 
 **Signature**
 
@@ -38,7 +40,7 @@ Added in v1.0.0
 
 ## From "./WireguardConfig.js"
 
-Re-exports all named exports from the "./WireguardConfig.js" module as `WireguardConfig`.
+Wireguard config schema definitions
 
 **Signature**
 
@@ -50,7 +52,7 @@ Added in v1.0.0
 
 ## From "./WireguardErrors.js"
 
-Re-exports all named exports from the "./WireguardErrors.js" module as `WireguardErrors`.
+Wireguard errors
 
 **Signature**
 
@@ -62,7 +64,7 @@ Added in v1.0.0
 
 ## From "./WireguardInterface.js"
 
-Re-exports all named exports from the "./WireguardInterface.js" module as `WireguardInterface`.
+Wireguard interface helpers
 
 **Signature**
 
@@ -74,7 +76,7 @@ Added in v1.0.0
 
 ## From "./WireguardKey.js"
 
-Re-exports all named exports from the "./WireguardKey.js" module as `WireguardKey`.
+Wireguard key schemas and helpers
 
 **Signature**
 
@@ -86,7 +88,7 @@ Added in v1.0.0
 
 ## From "./WireguardPeer.js"
 
-Re-exports all named exports from the "./WireguardPeer.js" module as `WireguardPeer`.
+Wireguard peer schema definitions
 
 **Signature**
 
