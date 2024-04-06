@@ -25,7 +25,8 @@ jobs:
             submodules/wireguard-go/go.sum
       - run: pnpm check
       - run: pnpm build
-      # - run: pnpm test
-      - run: pnpm publish
+      - run: pnpm test
+      # FIXME: get rid of --no-git-checks
+      - run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
