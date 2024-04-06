@@ -300,6 +300,8 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
 /**
  * A wireguard configuration encoded in the INI format.
  *
+ * TODO: Write an api interface type
+ *
  * @since 1.0.0
  * @category Transformations
  * @see {@link WireguardConfig}
@@ -376,6 +378,8 @@ export const WireguardIniConfig = Schema.transformOrFail(
 
 /**
  * A wireguard configuration encoded in the userspace api format.
+ *
+ * TODO: Write an api interface type
  *
  * @since 1.0.0
  * @category Transformations

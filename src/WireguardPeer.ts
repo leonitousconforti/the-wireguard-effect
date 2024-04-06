@@ -97,6 +97,8 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
 /**
  * A wireguard peer configuration encoded in INI format.
  *
+ * TODO: Write an api interface type
+ *
  * @since 1.0.0
  * @category Transformations
  * @example
@@ -171,6 +173,8 @@ export const WireguardIniPeer = Schema.transformOrFail(
 
 /**
  * A wireguard peer configuration encoded in the userspace api format.
+ *
+ * TODO: Write an api interface type
  *
  * @since 1.0.0
  * @category Transformations
