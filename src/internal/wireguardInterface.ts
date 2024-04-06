@@ -86,14 +86,14 @@ export const InterfaceRegExpForPlatform: Effect.Effect<RegExp, WireguardErrors.W
     Match.value(`${process.arch}:${process.platform}`),
     Match.not(
         Predicate.some(ReadonlyArray.map(SupportedArchitectures, (arch) => String.startsWith(`${arch}:`))),
-        (bad) => Effect.fail(new WireguardErrors.WireguardError({ message: `Unsupported architecture ${bad}` })),
+        (bad) => Effect.fail(new WireguardErrors.WireguardError({ message: `Unsupported architecture ${bad}` }))
     ),
     Match.when(String.endsWith(":linux"), () => Effect.succeed(LinuxInterfaceNameRegExp)),
     Match.when(String.endsWith(":win32"), () => Effect.succeed(WindowsInterfaceNameRegExp)),
     Match.when(String.endsWith(":darwin"), () => Effect.succeed(DarwinInterfaceNameRegExp)),
     Match.when(String.endsWith(":openbsd"), () => Effect.succeed(OpenBSDInterfaceNameRegExp)),
     Match.when(String.endsWith(":freebsd"), () => Effect.succeed(FreeBSDInterfaceNameRegExp)),
-    Match.orElse((bad) => Effect.fail(new WireguardErrors.WireguardError({ message: `Unsupported platform ${bad}` }))),
+    Match.orElse((bad) => Effect.fail(new WireguardErrors.WireguardError({ message: `Unsupported platform ${bad}` })))
 );
 
 /** @internal */
@@ -110,7 +110,7 @@ export const getNextAvailableInterface: Effect.Effect<
         ReadonlyArray.filter((name) => regex.test(name)),
         ReadonlyArray.map(String.replaceAll(/\D/g, "")),
         ReadonlyArray.map(Number.parse),
-        ReadonlyArray.filterMap(Function.identity),
+        ReadonlyArray.filterMap(Function.identity)
     );
 
     // Find the next available interface index
@@ -121,8 +121,8 @@ export const getNextAvailableInterface: Effect.Effect<
             Stream.take(1),
             Stream.runCollect,
             Effect.map(Chunk.head),
-            Effect.map(Option.getOrThrow),
-        ),
+            Effect.map(Option.getOrThrow)
+        )
     );
 
     // We know this will be a supported platform now because otherwise
@@ -155,14 +155,14 @@ export const socketLocation = (interfaceObject: WireguardInterface.WireguardInte
         Match.when("darwin", () => `/var/run/wireguard/${interfaceObject.Name}.sock`),
         Match.when("freebsd", () => `/var/run/wireguard/${interfaceObject.Name}.sock`),
         Match.when("openbsd", () => `/var/run/wireguard/${interfaceObject.Name}.sock`),
-        Match.orElseAbsurd,
+        Match.orElseAbsurd
     )(Function.unsafeCoerce(process.platform));
 
 /** @internal */
 export const execCommand = (
     withSudo: boolean | "ask",
     command: string,
-    env?: { [key: string]: string },
+    env?: { [key: string]: string }
 ): Effect.Effect<void, WireguardErrors.WireguardError, never> =>
     withSudo === "ask"
         ? Effect.try({
@@ -199,9 +199,9 @@ export const upScoped = Function.dual<
                 | "bundled-wireguard-go+bundled-wg-quick"
                 | undefined;
             sudo?: boolean | "ask";
-        },
+        }
     ) => (
-        interfaceObject: WireguardInterface.WireguardInterface,
+        interfaceObject: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
         WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
@@ -222,7 +222,7 @@ export const upScoped = Function.dual<
                 | "bundled-wireguard-go+bundled-wg-quick"
                 | undefined;
             sudo?: boolean | "ask";
-        },
+        }
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
         WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
@@ -237,28 +237,28 @@ export const upScoped = Function.dual<
             Match.whenOr(
                 "bundled-wireguard-go+userspace-api",
                 "system-wireguard-go+userspace-api",
-                () => ({ how: "userspace-api" }) as const,
+                () => ({ how: "userspace-api" }) as const
             ),
             Match.whenOr(
                 "bundled-wireguard-go+bundled-wg-quick",
                 "system-wireguard+bundled-wg-quick",
                 "system-wireguard-go+bundled-wg-quick",
-                () => ({ how: "bundled-wg-quick" }) as const,
+                () => ({ how: "bundled-wg-quick" }) as const
             ),
             Match.whenOr(
                 "bundled-wireguard-go+system-wg-quick",
                 "system-wireguard+system-wg-quick",
                 "system-wireguard-go+system-wg-quick",
-                () => ({ how: "system-wg-quick" }) as const,
+                () => ({ how: "system-wg-quick" }) as const
             ),
-            Match.exhaustive,
+            Match.exhaustive
         );
 
         return Effect.acquireRelease(
             up(interfaceObject, config, options),
-            Function.flow(Function.constant(down(interfaceObject, downControlOptions)), Effect.orDie),
+            Function.flow(Function.constant(down(interfaceObject, downControlOptions)), Effect.orDie)
         );
-    },
+    }
 );
 
 /** @internal */
@@ -277,9 +277,9 @@ export const up = Function.dual<
                 | "bundled-wireguard-go+bundled-wg-quick"
                 | undefined;
             sudo?: boolean | "ask";
-        },
+        }
     ) => (
-        interfaceObject: WireguardInterface.WireguardInterface,
+        interfaceObject: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
         WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
@@ -300,7 +300,7 @@ export const up = Function.dual<
                 | "bundled-wireguard-go+bundled-wg-quick"
                 | undefined;
             sudo?: boolean | "ask";
-        },
+        }
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
         WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
@@ -378,7 +378,7 @@ export const up = Function.dual<
                     yield* λ(execCommand(options.sudo ?? "ask", command9));
                     return interfaceObject;
             }
-        }),
+        })
 );
 
 /** @internal */
@@ -387,14 +387,14 @@ export const down = (
     options: {
         sudo?: boolean | "ask";
         how: "bundled-wg-quick" | "userspace-api" | "system-wg-quick";
-    },
+    }
 ): Effect.Effect<void, Platform.Error.PlatformError, Platform.FileSystem.FileSystem> =>
     Effect.map(Platform.FileSystem.FileSystem, (fs) => fs.remove(socketLocation(interfaceObject)));
 
 /** @internal */
 export const setConfig = (
     config: WireguardConfig.WireguardConfig,
-    interfaceObject: WireguardInterface.WireguardInterface,
+    interfaceObject: WireguardInterface.WireguardInterface
 ): Effect.Effect<void, WireguardErrors.WireguardError | ParseResult.ParseError, never> =>
     Effect.gen(function* (λ) {
         const configDecoded = yield* λ(Schema.encode(WireguardConfig.WireguardConfig)(config));
@@ -409,14 +409,14 @@ export const setConfig = (
             Effect.map(Option.getOrThrow),
             Effect.map(String.trimEnd),
             Effect.flatMap(Schema.decodeUnknown(WireguardErrors.SuccessErrno)),
-            Effect.catchAll((error) => Effect.fail(new WireguardErrors.WireguardError({ message: error.message }))),
+            Effect.catchAll((error) => Effect.fail(new WireguardErrors.WireguardError({ message: error.message })))
         );
     });
 
 /** @internal */
 export const getConfig = (
     address: InternetSchemas.CidrBlock,
-    interfaceObject: WireguardInterface.WireguardInterface,
+    interfaceObject: WireguardInterface.WireguardInterface
 ): Effect.Effect<WireguardConfig.WireguardConfig, WireguardErrors.WireguardError, never> =>
     Function.pipe(
         Stream.make("get=1\n\n"),
@@ -430,8 +430,7 @@ export const getConfig = (
         Effect.tap(Function.flow(Chunk.last, Option.getOrThrow, Schema.decodeUnknown(WireguardErrors.SuccessErrno))),
         Effect.map(Chunk.join("\n")),
         Effect.map((uapiData) => Tuple.make(uapiData, address)),
-        Effect.map(WireguardConfig.WireguardUapiConfig),
         Effect.flatMap(Schema.encode(WireguardConfig.WireguardUapiConfig)),
         Effect.flatMap(Schema.decode(WireguardConfig.WireguardConfig)),
-        Effect.catchAll((error) => Effect.fail(new WireguardErrors.WireguardError({ message: error.message }))),
+        Effect.catchAll((error) => Effect.fail(new WireguardErrors.WireguardError({ message: error.message })))
     );

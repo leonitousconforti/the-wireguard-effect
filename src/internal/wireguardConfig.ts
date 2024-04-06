@@ -1,23 +1,27 @@
 import * as Platform from "@effect/platform";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
+import * as Chunk from "effect/Chunk";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
+import * as HashMap from "effect/HashMap";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
 import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Scope from "effect/Scope";
+import * as Sink from "effect/Sink";
+import * as Stream from "effect/Stream";
 import * as Tuple from "effect/Tuple";
 
 import * as InternetSchemas from "../InternetSchemas.js";
 import * as WireguardConfig from "../WireguardConfig.js";
-import * as WireguardError from "../WireguardErrors.js";
+import * as WireguardErrors from "../WireguardErrors.js";
 import * as WireguardInterface from "../WireguardInterface.js";
 import * as WireguardKey from "../WireguardKey.js";
 
 /** @internal */
 export const fromConfigFile = (
-    file: string,
+    file: string
 ): Effect.Effect<
     WireguardConfig.WireguardConfig,
     ParseResult.ParseError | Platform.Error.PlatformError,
@@ -26,8 +30,7 @@ export const fromConfigFile = (
     Effect.gen(function* (λ) {
         const fs = yield* λ(Platform.FileSystem.FileSystem);
         const fsConfig = yield* λ(fs.readFileString(file));
-        const iniConfigDecoded = WireguardConfig.WireguardIniConfig(fsConfig);
-        const iniConfigEncoded = yield* λ(Schema.encode(WireguardConfig.WireguardIniConfig)(iniConfigDecoded));
+        const iniConfigEncoded = yield* λ(Schema.encode(WireguardConfig.WireguardIniConfig)(fsConfig));
         const config = yield* λ(Schema.decode(WireguardConfig.WireguardConfig)(iniConfigEncoded));
         return config;
     });
@@ -35,9 +38,9 @@ export const fromConfigFile = (
 /** @internal */
 export const writeToFile = Function.dual<
     (
-        config: WireguardConfig.WireguardConfig,
+        config: WireguardConfig.WireguardConfig
     ) => (
-        file: string,
+        file: string
     ) => Effect.Effect<
         void,
         ParseResult.ParseError | Platform.Error.PlatformError,
@@ -45,7 +48,7 @@ export const writeToFile = Function.dual<
     >,
     (
         file: string,
-        config: WireguardConfig.WireguardConfig,
+        config: WireguardConfig.WireguardConfig
     ) => Effect.Effect<
         void,
         ParseResult.ParseError | Platform.Error.PlatformError,
@@ -59,185 +62,323 @@ export const writeToFile = Function.dual<
         const iniConfigDecoded = yield* λ(Schema.decode(WireguardConfig.WireguardIniConfig)(configEncoded));
         yield* λ(fs.makeDirectory(path.dirname(file), { recursive: true }));
         yield* λ(fs.writeFileString(file, iniConfigDecoded));
-    }),
+    })
 );
 
 /** @internal */
 export const generateP2PConfigs: {
     // Overload for when cidrBlock is not provided
-    <T extends InternetSchemas.SetupDataEncoded | InternetSchemas.SetupData>(
-        aliceData: T,
-        bobData: T,
-    ): Effect.Effect<
-        [aliceConfig: WireguardConfig.WireguardConfig, bobConfig: WireguardConfig.WireguardConfig],
-        ParseResult.ParseError,
+    <AliceData extends InternetSchemas.SetupDataEncoded, BobData extends InternetSchemas.SetupDataEncoded>(options: {
+        aliceData: AliceData;
+        bobData: BobData;
+    }): Effect.Effect<
+        readonly [aliceConfig: WireguardConfig.WireguardConfig, bobConfig: WireguardConfig.WireguardConfig],
+        ParseResult.ParseError | WireguardErrors.WireguardError,
         never
     >;
     // Overload for when cidrBlock is provided
-    <T extends InternetSchemas.EndpointEncoded | InternetSchemas.Endpoint>(
-        aliceEndpoint: T,
-        bobEndpoint: T,
-        cidrBlock: InternetSchemas.CidrBlockEncoded,
-    ): Effect.Effect<
-        [aliceConfig: WireguardConfig.WireguardConfig, bobConfig: WireguardConfig.WireguardConfig],
-        ParseResult.ParseError,
+    <AliceData extends InternetSchemas.EndpointEncoded, BobData extends InternetSchemas.EndpointEncoded>(options: {
+        aliceData: AliceData;
+        bobData: BobData;
+        cidrBlock: InternetSchemas.CidrBlock;
+        addressStartingIndex?: number | undefined;
+    }): Effect.Effect<
+        readonly [aliceConfig: WireguardConfig.WireguardConfig, bobConfig: WireguardConfig.WireguardConfig],
+        ParseResult.ParseError | WireguardErrors.WireguardError,
         never
     >;
 } = <
-    T extends
-        | InternetSchemas.SetupDataEncoded
-        | InternetSchemas.EndpointEncoded
-        | InternetSchemas.SetupData
-        | InternetSchemas.Endpoint,
->(
-    aliceData: T,
-    bobData: T,
-    cidrBlock?: InternetSchemas.CidrBlockEncoded | undefined,
-): Effect.Effect<
-    [aliceConfig: WireguardConfig.WireguardConfig, bobConfig: WireguardConfig.WireguardConfig],
-    ParseResult.ParseError,
+    AliceData extends InternetSchemas.SetupDataEncoded | InternetSchemas.EndpointEncoded,
+    BobData extends AliceData extends InternetSchemas.SetupDataEncoded
+        ? InternetSchemas.SetupDataEncoded
+        : InternetSchemas.EndpointEncoded,
+>(options: {
+    aliceData: AliceData;
+    bobData: BobData;
+    cidrBlock?: AliceData extends InternetSchemas.EndpointEncoded ? InternetSchemas.CidrBlock : never;
+    addressStartingIndex?: AliceData extends InternetSchemas.EndpointEncoded ? number | undefined : never;
+}): Effect.Effect<
+    readonly [aliceConfig: WireguardConfig.WireguardConfig, bobConfig: WireguardConfig.WireguardConfig],
+    ParseResult.ParseError | WireguardErrors.WireguardError,
     never
-> =>
-    Effect.gen(function* (λ) {
-        const hubEndpoint = aliceData;
-        const spokeEndpoints = ReadonlyArray.make(bobData);
-        const [aliceConfig, [bobConfig]] = Predicate.isUndefined(cidrBlock)
-            ? yield* λ(
-                  generateHubSpokeConfigs(
-                      hubEndpoint as InternetSchemas.SetupDataEncoded,
-                      spokeEndpoints as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
-                  ),
-              )
-            : yield* λ(
-                  generateHubSpokeConfigs(
-                      hubEndpoint as InternetSchemas.EndpointEncoded,
-                      spokeEndpoints as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
-                      cidrBlock,
-                  ),
-              );
-        return Tuple.make(aliceConfig, bobConfig);
-    });
+> => {
+    const hub = options.aliceData;
+    const spokes = ReadonlyArray.make(options.bobData);
+    const configs = Predicate.isUndefined(options.cidrBlock)
+        ? generateHubSpokeConfigs({
+              preshareKeys: "generate" as const,
+              trustMap: "trustAllPeers" as const,
+              hubData: hub as InternetSchemas.SetupDataEncoded,
+              spokeData: spokes as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+          })
+        : generateHubSpokeConfigs({
+              preshareKeys: "generate" as const,
+              trustMap: "trustAllPeers" as const,
+              hubData: hub as InternetSchemas.EndpointEncoded,
+              spokeData: spokes as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+              cidrBlock: options.cidrBlock,
+              addressStartingIndex: options.addressStartingIndex,
+          });
+    return Effect.map(configs, ([aliceConfig, [bobConfig]]) => Tuple.make(aliceConfig, bobConfig));
+};
+
+/** @internal */
+export const generateStarConfigs: {
+    // Overload for when cidrBlock is not provided
+    <
+        HubData extends InternetSchemas.SetupDataEncoded,
+        SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+    >(options: {
+        hubData: HubData;
+        spokeData: SpokeData;
+    }): Effect.Effect<
+        readonly [
+            hubConfig: WireguardConfig.WireguardConfig,
+            spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
+        ],
+        ParseResult.ParseError | WireguardErrors.WireguardError,
+        never
+    >;
+    // Overload for when cidrBlock is provided
+    <
+        HubData extends InternetSchemas.EndpointEncoded,
+        SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+    >(options: {
+        hubData: HubData;
+        spokeData: SpokeData;
+        cidrBlock: InternetSchemas.CidrBlock;
+        addressStartingIndex?: number | undefined;
+    }): Effect.Effect<
+        readonly [
+            hubConfig: WireguardConfig.WireguardConfig,
+            spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
+        ],
+        ParseResult.ParseError | WireguardErrors.WireguardError,
+        never
+    >;
+} = <
+    HubData extends InternetSchemas.SetupDataEncoded | InternetSchemas.EndpointEncoded,
+    SpokeData extends HubData extends InternetSchemas.SetupDataEncoded
+        ? ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>
+        : ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+>(options: {
+    hubData: HubData;
+    spokeData: SpokeData;
+    cidrBlock?: HubData extends InternetSchemas.EndpointEncoded ? InternetSchemas.CidrBlock : never;
+    addressStartingIndex?: HubData extends InternetSchemas.EndpointEncoded ? number | undefined : never;
+}): Effect.Effect<
+    readonly [
+        hubConfig: WireguardConfig.WireguardConfig,
+        spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
+    ],
+    ParseResult.ParseError | WireguardErrors.WireguardError,
+    never
+> => {
+    return Predicate.isUndefined(options.cidrBlock)
+        ? generateHubSpokeConfigs({
+              preshareKeys: "generate" as const,
+              trustMap: "trustAllPeers" as const,
+              hubData: options.hubData as InternetSchemas.SetupDataEncoded,
+              spokeData: options.spokeData as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+          })
+        : generateHubSpokeConfigs({
+              preshareKeys: "generate" as const,
+              trustMap: "trustAllPeers" as const,
+              cidrBlock: options.cidrBlock,
+              addressStartingIndex: options.addressStartingIndex,
+              hubData: options.hubData as InternetSchemas.EndpointEncoded,
+              spokeData: options.spokeData as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+          });
+};
 
 /** @internal */
 export const generateHubSpokeConfigs: {
     // Overload for when cidrBlock is not provided
-    <T extends InternetSchemas.SetupDataEncoded | InternetSchemas.SetupData>(
-        hubData: T,
-        spokeData: ReadonlyArray.NonEmptyReadonlyArray<T>,
-    ): Effect.Effect<
-        [
+    <
+        HubData extends InternetSchemas.SetupDataEncoded,
+        SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+        TrustMap extends HashMap.HashMap<keyof SpokeData, ReadonlyArray.NonEmptyReadonlyArray<keyof SpokeData>>,
+        PreshareKeysMap extends HashMap.HashMap<
+            keyof SpokeData | HubData,
+            { readonly privateKey: WireguardKey.WireguardKey; readonly publicKey: WireguardKey.WireguardKey }
+        >,
+    >(options: {
+        hubData: HubData;
+        spokeData: SpokeData;
+        preshareKeys?: PreshareKeysMap | "generate" | undefined;
+        trustMap?: TrustMap | "trustAllPeers" | "trustNoPeers" | undefined;
+    }): Effect.Effect<
+        readonly [
             hubConfig: WireguardConfig.WireguardConfig,
             spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
         ],
-        ParseResult.ParseError,
+        ParseResult.ParseError | WireguardErrors.WireguardError,
         never
     >;
     // Overload for when cidrBlock is provided
-    <T extends InternetSchemas.EndpointEncoded | InternetSchemas.Endpoint>(
-        hubData: T,
-        spokeData: ReadonlyArray.NonEmptyReadonlyArray<T>,
-        cidrBlock: InternetSchemas.CidrBlockEncoded,
-    ): Effect.Effect<
-        [
+    <
+        HubData extends InternetSchemas.EndpointEncoded,
+        SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+        TrustMap extends HashMap.HashMap<keyof SpokeData, ReadonlyArray.NonEmptyReadonlyArray<keyof SpokeData>>,
+        PreshareKeysMap extends HashMap.HashMap<
+            keyof SpokeData | HubData,
+            { readonly privateKey: WireguardKey.WireguardKey; readonly publicKey: WireguardKey.WireguardKey }
+        >,
+    >(options: {
+        hubData: HubData;
+        spokeData: SpokeData;
+        cidrBlock: InternetSchemas.CidrBlock;
+        addressStartingIndex?: number | undefined;
+        preshareKeys?: PreshareKeysMap | "generate" | undefined;
+        trustMap?: TrustMap | "trustAllPeers" | "trustNoPeers" | undefined;
+    }): Effect.Effect<
+        readonly [
             hubConfig: WireguardConfig.WireguardConfig,
             spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
         ],
-        ParseResult.ParseError,
+        ParseResult.ParseError | WireguardErrors.WireguardError,
         never
     >;
 } = <
-    T extends
-        | InternetSchemas.SetupDataEncoded
-        | InternetSchemas.EndpointEncoded
-        | InternetSchemas.SetupData
-        | InternetSchemas.Endpoint,
->(
-    hubData: T,
-    spokeData: ReadonlyArray.NonEmptyReadonlyArray<T>,
-    cidrBlock?: InternetSchemas.CidrBlockEncoded | undefined,
-): Effect.Effect<
-    [
+    HubData extends InternetSchemas.SetupDataEncoded | InternetSchemas.EndpointEncoded,
+    SpokeData extends HubData extends InternetSchemas.SetupDataEncoded
+        ? ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>
+        : ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+    TrustMap extends HashMap.HashMap<keyof SpokeData, ReadonlyArray.NonEmptyReadonlyArray<keyof SpokeData>>,
+    PreshareKeysMap extends HashMap.HashMap<
+        keyof SpokeData | HubData,
+        { readonly privateKey: WireguardKey.WireguardKey; readonly publicKey: WireguardKey.WireguardKey }
+    >,
+>(options: {
+    hubData: HubData;
+    spokeData: SpokeData;
+    cidrBlock?: HubData extends InternetSchemas.EndpointEncoded ? InternetSchemas.CidrBlock : never;
+    addressStartingIndex?: HubData extends InternetSchemas.EndpointEncoded ? number | undefined : never;
+    preshareKeys?: HubData extends InternetSchemas.EndpointEncoded ? PreshareKeysMap | "generate" | undefined : never;
+    trustMap?: HubData extends InternetSchemas.EndpointEncoded
+        ? TrustMap | "trustAllPeers" | "trustNoPeers" | undefined
+        : never;
+}): Effect.Effect<
+    readonly [
         hubConfig: WireguardConfig.WireguardConfig,
         spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
     ],
-    ParseResult.ParseError,
+    ParseResult.ParseError | WireguardErrors.WireguardError,
     never
 > =>
     Effect.gen(function* (λ) {
-        // Convert the setup data to the correct format if needed
-        const isSetupData = Predicate.isUndefined(cidrBlock);
-        const hubSetupData = isSetupData
-            ? (hubData as InternetSchemas.SetupDataEncoded)
-            : Tuple.make(hubData as InternetSchemas.EndpointEncoded, "");
-        const spokeSetupData = isSetupData
-            ? (spokeData as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>)
-            : ReadonlyArray.map(spokeData, (spoke) => Tuple.make(spoke as InternetSchemas.EndpointEncoded, ""));
+        const inputIsSetupData = Array.isArray(options.hubData);
 
-        // Generate the keys and parse the setup data
-        const hubKeys = WireguardKey.generateKeyPair();
-        const hubsData = yield* λ(Schema.decode(InternetSchemas.SetupData)(hubSetupData));
-        const spokesData = yield* λ(
-            Effect.all(ReadonlyArray.map(spokeSetupData, (spoke) => Schema.decode(InternetSchemas.SetupData)(spoke))),
+        const ipsNeeded =
+            ReadonlyArray.length(
+                options.spokeData as ReadonlyArray.NonEmptyReadonlyArray<
+                    InternetSchemas.SetupDataEncoded | InternetSchemas.EndpointEncoded
+                >
+            ) + 1;
+
+        // Bounds checking on the cidr block
+        if (options.cidrBlock && options.cidrBlock.total < ipsNeeded) {
+            return yield* λ(new WireguardErrors.WireguardError({ message: "Not enough IPs in the CIDR block" }));
+        }
+
+        // Generate some ip addresses to use if the input data was just an endpoint
+        const ips = options.cidrBlock?.range
+            ? yield* λ(
+                  Function.pipe(
+                      options.cidrBlock?.range,
+                      Stream.drop(options.addressStartingIndex ?? 0),
+                      Stream.mapEffect(Schema.encode(InternetSchemas.Address)),
+                      Stream.run(Sink.collectAllN(ipsNeeded)),
+                      Effect.map(Chunk.toArray)
+                  )
+              )
+            : yield* λ(Effect.succeed([]));
+
+        // Convert all inputs to be SetupDataEncoded
+        const hubSetupDataEncoded: InternetSchemas.SetupDataEncoded = inputIsSetupData
+            ? (options.hubData as InternetSchemas.SetupDataEncoded)
+            : Tuple.make(options.hubData as InternetSchemas.EndpointEncoded, ips.at(0)?.ip ?? "");
+        const spokeSetupDataEncoded: ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded> =
+            inputIsSetupData
+                ? (options.spokeData as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>)
+                : ReadonlyArray.map(options.spokeData, (spoke, index) =>
+                      Tuple.make(spoke as InternetSchemas.EndpointEncoded, ips.at(index + 1)?.ip ?? "")
+                  );
+
+        // Decode all SetupData inputs
+        const hubSetupData = yield* λ(Schema.decode(InternetSchemas.SetupData)(hubSetupDataEncoded));
+        const spokeSetupData = yield* λ(
+            Effect.all(
+                ReadonlyArray.map(spokeSetupDataEncoded, (spoke) => Schema.decode(InternetSchemas.SetupData)(spoke))
+            )
         );
+        const spokeSetupDataBoth = ReadonlyArray.zip(spokeSetupDataEncoded, spokeSetupData);
+
+        // Generate the keys for the hub
+        const hubKeys = WireguardKey.generateKeyPair();
+        // const hubPreshareKeys =
+        //     options.preshareKeys === "generate"
+        //         ? WireguardKey.generateKeyPair()
+        //         : Predicate.isNotUndefined(options.preshareKeys)
+        //           ? HashMap.get(options.preshareKeys, options.hubData).pipe(Option.getOrUndefined)
+        //           : undefined;
 
         // This hub peer config will be added to all the spoke interface configs
         const hubPeerConfig = {
             PublicKey: hubKeys.publicKey,
-            Endpoint: Tuple.getFirst(hubsData),
-            AllowedIPs: [
-                {
-                    ipv4: Tuple.getSecond(hubsData),
-                    mask: 32,
-                },
-            ],
+            Endpoint: Tuple.getFirst(hubSetupDataEncoded),
+            AllowedIPs: [{ ip: Tuple.getSecond(hubSetupDataEncoded), mask: 32 }],
         };
 
         // All these spoke peer configs will be added to the hub interface config
-        const spokePeerConfigs = ReadonlyArray.map(spokesData, (spoke) => {
+        const spokePeerConfigs = ReadonlyArray.map(spokeSetupDataBoth, ([spokeEncoded, spokeDecoded]) => {
             const keys = WireguardKey.generateKeyPair();
-            const peerConfig = {
-                Endpoint: Tuple.getFirst(spoke),
-                PublicKey: keys.publicKey,
-                AllowedIPs: [
-                    {
-                        ipv4: InternetSchemas.IPv4(Tuple.getSecond(spoke)),
-                        mask: InternetSchemas.IPv4CidrMask(32),
-                    },
-                ],
+            const preshareKeys =
+                options.preshareKeys === "generate"
+                    ? WireguardKey.generateKeyPair()
+                    : Predicate.isNotUndefined(options.preshareKeys)
+                      ? HashMap.get(options.preshareKeys, spokeDecoded).pipe(Option.getOrUndefined)
+                      : undefined;
+
+            return {
+                setupDataEncoded: spokeEncoded,
+                setupDataDecoded: spokeDecoded,
+                keys: {
+                    privateKey: keys.privateKey,
+                    privatePreshareKey: preshareKeys?.privateKey,
+                },
+                peerConfig: {
+                    PublicKey: keys.publicKey,
+                    Endpoint: Tuple.getFirst(spokeEncoded),
+                    AllowedIPs: [{ ip: Tuple.getSecond(spokeEncoded), mask: 32 }],
+                },
             };
-            return Tuple.make(Tuple.make(keys.privateKey, spoke), peerConfig);
         });
 
         // The hub interface config will have all the spoke peer configs
         const hubConfig = yield* λ(
             Schema.decode(WireguardConfig.WireguardConfig)({
                 PrivateKey: hubKeys.privateKey,
-                Address: {
-                    ipv4: Tuple.getSecond(hubsData),
-                    mask: 24,
-                },
-                ListenPort: Tuple.getFirst(hubsData).listenPort,
-                Peers: ReadonlyArray.map(spokePeerConfigs, Tuple.getSecond),
-            }),
+                ListenPort: Tuple.getFirst(hubSetupData).listenPort,
+                Peers: ReadonlyArray.map(spokePeerConfigs, ({ peerConfig }) => peerConfig),
+                Address: { ip: Tuple.getSecond(hubSetupDataEncoded), mask: options.cidrBlock?.mask ?? 24 },
+            })
         );
 
         // Each spoke interface config will have the hub peer config
         const spokeConfigs = yield* λ(
             Function.pipe(
                 spokePeerConfigs,
-                ReadonlyArray.map(([[privateKey, spoke]]) =>
+                ReadonlyArray.map(({ setupDataDecoded, setupDataEncoded, keys: { privateKey } }) =>
                     Schema.decode(WireguardConfig.WireguardConfig)({
                         PrivateKey: privateKey,
                         Peers: [hubPeerConfig],
-                        Address: {
-                            ipv4: Tuple.getSecond(spoke),
-                            mask: 24,
-                        },
-                        ListenPort: Tuple.getFirst(spoke).listenPort,
-                    }),
+                        Address: { ip: Tuple.getSecond(setupDataEncoded), mask: options.cidrBlock?.mask ?? 24 },
+                        ListenPort: Tuple.getFirst(setupDataDecoded).listenPort,
+                    })
                 ),
-                Effect.allWith(),
-            ),
+                Effect.allWith()
+            )
         );
 
         return Tuple.make(hubConfig, spokeConfigs);
@@ -259,12 +400,12 @@ export const up = Function.dual<
                 | undefined;
             sudo?: boolean | "ask";
         },
-        interfaceObject?: WireguardInterface.WireguardInterface | undefined,
+        interfaceObject?: WireguardInterface.WireguardInterface | undefined
     ) => (
-        config: WireguardConfig.WireguardConfig,
+        config: WireguardConfig.WireguardConfig
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
+        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
         Platform.FileSystem.FileSystem | Platform.Path.Path
     >,
     (
@@ -282,10 +423,10 @@ export const up = Function.dual<
                 | undefined;
             sudo?: boolean | "ask";
         },
-        interfaceObject?: WireguardInterface.WireguardInterface | undefined,
+        interfaceObject?: WireguardInterface.WireguardInterface | undefined
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
+        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
         Platform.FileSystem.FileSystem | Platform.Path.Path
     >
 >(3, (config, options, interfaceObject) =>
@@ -294,8 +435,8 @@ export const up = Function.dual<
         Option.fromNullable,
         Option.map(Effect.succeed),
         Option.getOrElse(() => WireguardInterface.WireguardInterface.getNextAvailableInterface),
-        Effect.flatMap((io) => io.up(config, options)),
-    ),
+        Effect.flatMap((io) => io.up(config, options))
+    )
 );
 
 /** @internal */
@@ -314,12 +455,12 @@ export const upScoped = Function.dual<
                 | undefined;
             sudo?: boolean | "ask";
         },
-        interfaceObject?: WireguardInterface.WireguardInterface | undefined,
+        interfaceObject?: WireguardInterface.WireguardInterface | undefined
     ) => (
-        config: WireguardConfig.WireguardConfig,
+        config: WireguardConfig.WireguardConfig
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
+        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
         Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
     >,
     (
@@ -337,10 +478,10 @@ export const upScoped = Function.dual<
                 | undefined;
             sudo?: boolean | "ask";
         },
-        interfaceObject?: WireguardInterface.WireguardInterface | undefined,
+        interfaceObject?: WireguardInterface.WireguardInterface | undefined
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        WireguardError.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
+        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
         Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
     >
 >(3, (config, options, interfaceObject) =>
@@ -349,6 +490,6 @@ export const upScoped = Function.dual<
         Option.fromNullable,
         Option.map(Effect.succeed),
         Option.getOrElse(() => WireguardInterface.WireguardInterface.getNextAvailableInterface),
-        Effect.flatMap((io) => io.upScoped(config, options)),
-    ),
+        Effect.flatMap((io) => io.upScoped(config, options))
+    )
 );
