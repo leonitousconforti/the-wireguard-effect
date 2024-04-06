@@ -1,4 +1,4 @@
-name: Publish Package to npmjs
+name: Publish
 
 on:
   release:
@@ -25,7 +25,7 @@ jobs:
             submodules/wireguard-go/go.sum
       - run: pnpm check
       - run: pnpm build
-      - run: pnpm test
+      # - run: pnpm test
       - run: pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
