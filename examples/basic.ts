@@ -1,6 +1,5 @@
 import * as Platform from "@effect/platform";
 import * as PlatformNode from "@effect/platform-node";
-import * as Socket from "@effect/platform/Socket";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
@@ -18,19 +17,19 @@ const ping = (endpoint: string): Effect.Effect<void, Cause.TimeoutException, nev
                 const socket: net.Socket = net.createConnection(endpoint);
                 socket.on("connect", () => resolve(socket));
                 socket.on("error", (error) => reject(error));
-            }),
+            })
     )
         .pipe(Effect.timeout("5 seconds"))
         .pipe(Effect.retry({ times: 3 }));
 
 export const program: Effect.Effect<
     void,
-    WireguardError.WireguardError | Cause.TimeoutException | Socket.SocketError | ParseResult.ParseError,
+    WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError | Platform.Error.PlatformError,
     Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
     const config = yield* λ(
         Schema.decode(WireguardConfig.WireguardConfig)({
-            Address: "3.3.3.3/32" as const,
+            Address: { ip: "3.3.3.3", mask: 32 },
             ListenPort: 51820,
             PrivateKey: "",
             Peers: [
@@ -40,12 +39,12 @@ export const program: Effect.Effect<
                     Endpoint: "2.2.2.2:51820" as const,
                 },
             ],
-        }),
+        })
     );
-    yield* λ(config.upScoped(undefined));
+    yield* λ(config.upScoped({ how: "system-wireguard+system-wg-quick" }));
     const peer1Endpoint = config.Peers[0].Endpoint;
     yield* λ(Console.log(peer1Endpoint));
-    yield* λ(ping(`${peer1Endpoint.ip}:${peer1Endpoint.natPort}`));
+    yield* λ(ping(`${peer1Endpoint.address.ip}:${peer1Endpoint.natPort}`));
 }).pipe(Effect.scoped);
 
 Effect.suspend(() => program).pipe(Effect.provide(PlatformNode.NodeContext.layer), PlatformNode.NodeRuntime.runMain);
