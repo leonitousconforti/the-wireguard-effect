@@ -156,6 +156,41 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
         <
             HubData extends InternetSchemas.SetupDataEncoded,
             SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+        >(options: {
+            hubData: HubData;
+            spokeData: SpokeData;
+        }): Effect.Effect<
+            readonly [hubConfig: WireguardConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig>],
+            ParseResult.ParseError | WireguardErrors.WireguardError,
+            never
+        >;
+        // Overload for when cidrBlock is provided
+        <
+            HubData extends InternetSchemas.EndpointEncoded,
+            SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+        >(options: {
+            hubData: HubData;
+            spokeData: SpokeData;
+            cidrBlock: InternetSchemas.CidrBlock;
+            addressStartingIndex?: number | undefined;
+        }): Effect.Effect<
+            readonly [hubConfig: WireguardConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig>],
+            ParseResult.ParseError | WireguardErrors.WireguardError,
+            never
+        >;
+    } = internal.generateHubSpokeConfigs;
+
+    /**
+     * Generates a collection of wireguard configurations
+     *
+     * @since 1.0.0
+     * @category Constructors
+     */
+    public static generate: {
+        // Overload for when cidrBlock is not provided
+        <
+            HubData extends InternetSchemas.SetupDataEncoded,
+            SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
             TrustMap extends HashMap.HashMap<keyof SpokeData, ReadonlyArray.NonEmptyReadonlyArray<keyof SpokeData>>,
             PreshareKeysMap extends HashMap.HashMap<
                 keyof SpokeData | HubData,

@@ -105,13 +105,13 @@ export const generateP2PConfigs: {
     const hub = options.aliceData;
     const spokes = ReadonlyArray.make(options.bobData);
     const configs = Predicate.isUndefined(options.cidrBlock)
-        ? generateHubSpokeConfigs({
+        ? generate({
               preshareKeys: "generate" as const,
               trustMap: "trustAllPeers" as const,
               hubData: hub as InternetSchemas.SetupDataEncoded,
               spokeData: spokes as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
           })
-        : generateHubSpokeConfigs({
+        : generate({
               preshareKeys: "generate" as const,
               trustMap: "trustAllPeers" as const,
               hubData: hub as InternetSchemas.EndpointEncoded,
@@ -175,13 +175,13 @@ export const generateStarConfigs: {
     never
 > => {
     return Predicate.isUndefined(options.cidrBlock)
-        ? generateHubSpokeConfigs({
+        ? generate({
               preshareKeys: "generate" as const,
               trustMap: "trustAllPeers" as const,
               hubData: options.hubData as InternetSchemas.SetupDataEncoded,
               spokeData: options.spokeData as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
           })
-        : generateHubSpokeConfigs({
+        : generate({
               preshareKeys: "generate" as const,
               trustMap: "trustAllPeers" as const,
               cidrBlock: options.cidrBlock,
@@ -193,6 +193,75 @@ export const generateStarConfigs: {
 
 /** @internal */
 export const generateHubSpokeConfigs: {
+    // Overload for when cidrBlock is not provided
+    <
+        HubData extends InternetSchemas.SetupDataEncoded,
+        SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+    >(options: {
+        hubData: HubData;
+        spokeData: SpokeData;
+    }): Effect.Effect<
+        readonly [
+            hubConfig: WireguardConfig.WireguardConfig,
+            spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
+        ],
+        ParseResult.ParseError | WireguardErrors.WireguardError,
+        never
+    >;
+    // Overload for when cidrBlock is provided
+    <
+        HubData extends InternetSchemas.EndpointEncoded,
+        SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+    >(options: {
+        hubData: HubData;
+        spokeData: SpokeData;
+        cidrBlock: InternetSchemas.CidrBlock;
+        addressStartingIndex?: number | undefined;
+    }): Effect.Effect<
+        readonly [
+            hubConfig: WireguardConfig.WireguardConfig,
+            spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
+        ],
+        ParseResult.ParseError | WireguardErrors.WireguardError,
+        never
+    >;
+} = <
+    HubData extends InternetSchemas.SetupDataEncoded | InternetSchemas.EndpointEncoded,
+    SpokeData extends HubData extends InternetSchemas.SetupDataEncoded
+        ? ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>
+        : ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+>(options: {
+    hubData: HubData;
+    spokeData: SpokeData;
+    cidrBlock?: HubData extends InternetSchemas.EndpointEncoded ? InternetSchemas.CidrBlock : never;
+    addressStartingIndex?: HubData extends InternetSchemas.EndpointEncoded ? number | undefined : never;
+}): Effect.Effect<
+    readonly [
+        hubConfig: WireguardConfig.WireguardConfig,
+        spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
+    ],
+    ParseResult.ParseError | WireguardErrors.WireguardError,
+    never
+> => {
+    return Predicate.isUndefined(options.cidrBlock)
+        ? generate({
+              preshareKeys: "generate" as const,
+              trustMap: "trustNoPeers" as const,
+              hubData: options.hubData as InternetSchemas.SetupDataEncoded,
+              spokeData: options.spokeData as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+          })
+        : generate({
+              preshareKeys: "generate" as const,
+              trustMap: "trustNoPeers" as const,
+              cidrBlock: options.cidrBlock,
+              addressStartingIndex: options.addressStartingIndex,
+              hubData: options.hubData as InternetSchemas.EndpointEncoded,
+              spokeData: options.spokeData as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+          });
+};
+
+/** @internal */
+export const generate: {
     // Overload for when cidrBlock is not provided
     <
         HubData extends InternetSchemas.SetupDataEncoded,
