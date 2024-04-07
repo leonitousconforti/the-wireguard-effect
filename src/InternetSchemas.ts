@@ -56,16 +56,15 @@ export interface $DurationFromSeconds
     extends Schema.Annotable<$DurationFromSeconds, DurationFromSecondsBrand, number, never> {}
 
 /**
- * A schema that transforms a `number` tuple into a `Duration`. Treats the value
- * as the number of seconds.
+ * Transforms a `number` of seconds into a `Duration`.
  *
  * @since 1.0.0
  * @category Schemas
  */
 export const DurationFromSeconds: $DurationFromSeconds = Schema.transform(
-    Schema.number,
+    Schema.Int,
     Schema.DurationFromSelf,
-    (ms) => Duration.seconds(ms),
+    (seconds) => Duration.seconds(seconds),
     (duration) => Duration.toSeconds(duration)
 )
     .pipe(Schema.fromBrand(DurationFromSecondsBrand))
@@ -99,9 +98,9 @@ export interface $Port extends Schema.Annotable<$Port, PortBrand, Brand.Brand.Un
  * @category Schemas
  * @example
  *     import * as Schema from "@effect/schema/Schema";
- *     import { Port } from "the-wireguard-effect/InternetSchemas";
+ *     import { Port, PortBrand } from "the-wireguard-effect/InternetSchemas";
  *
- *     const port: Port = Port(8080);
+ *     const port: PortBrand = PortBrand(8080);
  *     assert.strictEqual(port, 8080);
  *
  *     const decodePort = Schema.decodeSync(Port);
@@ -126,14 +125,14 @@ export const Port: $Port = Schema.Int.pipe(Schema.between(0, 2 ** 16 - 1))
  *     import * as Schema from "@effect/schema/Schema";
  *     import { IPv4 } from "the-wireguard-effect/InternetSchemas";
  *
- *     const ipv4: IPv4 = IPv4("1.1.1.1");
+ *     const ipv4: IPv4 = new IPv4({ ip: "1.1.1.1" });
  *     assert.strictEqual(ipv4, "1.1.1.1");
  *
  *     const decodeIPv4 = Schema.decodeSync(IPv4);
- *     assert.strictEqual(decodeIPv4("1.1.1.1"), "1.1.1.1");
+ *     assert.strictEqual(decodeIPv4({ ip: "1.1.1.1" }), "1.1.1.1");
  *
- *     assert.throws(() => decodeIPv4("1.1.a.1"));
- *     assert.doesNotThrow(() => decodeIPv4("1.1.1.1"));
+ *     assert.throws(() => decodeIPv4({ ip: "1.1.a.1" }));
+ *     assert.doesNotThrow(() => decodeIPv4({ ip: "1.1.1.1" }));
  */
 export class IPv4 extends Schema.Class<IPv4>("IPv4")({
     ip: Schema.string.pipe(
@@ -189,6 +188,17 @@ export type IPv4FromStringEncoded = Schema.Schema.Encoded<typeof IPv4FromString>
  *
  * @since 1.0.0
  * @category Schemas
+ * @example
+ *     import * as Schema from "@effect/schema/Schema";
+ *     import { IPv4FromString } from "the-wireguard-effect/InternetSchemas";
+ *
+ *     const decodeIPv4 = Schema.decodeSync(IPv4FromString);
+ *     assert.strictEqual(decodeIPv4("1.1.1.1").ip, "1.1.1.1");
+ *
+ *     assert.throws(() => decodeIPv4("1.1.a.1"));
+ *     assert.doesNotThrow(() => decodeIPv4("1.1.1.1"));
+ *
+ * @see {@link IPv4}
  */
 export const IPv4FromString: $IPv4FromString = Schema.transform(
     Schema.string,
@@ -203,27 +213,31 @@ export const IPv4FromString: $IPv4FromString = Schema.transform(
 /**
  * An IPv6 address.
  *
+ * TODO: remove old errors
+ *
  * @since 1.0.0
  * @category Schemas
  * @example
  *     import * as Schema from "@effect/schema/Schema";
  *     import { IPv6 } from "the-wireguard-effect/InternetSchemas";
  *
- *     const ipv6: IPv6 = IPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334");
+ *     const ipv6: IPv6 = new IPv6({
+ *         ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+ *     });
  *     assert.strictEqual(ipv6, "2001:0db8:85a3:0000:0000:8a2e:0370:7334");
  *
  *     const decodeIPv6 = Schema.decodeSync(IPv6);
  *     assert.deepStrictEqual(
- *         decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334"),
+ *         decodeIPv6({ ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334" }),
  *         "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
  *     );
  *
  *     assert.throws(() =>
- *         decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334:")
+ *         decodeIPv6({ ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334:" })
  *     );
- *     assert.throws(() => decodeIPv6("2001::85a3::0000::0370:7334"));
+ *     assert.throws(() => decodeIPv6({ ip: "2001::85a3::0000::0370:7334" }));
  *     assert.doesNotThrow(() =>
- *         decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
+ *         decodeIPv6({ ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334" })
  *     );
  */
 export class IPv6 extends Schema.Class<IPv6>("IPv6")({
@@ -310,6 +324,25 @@ export type IPv6FromStringEncoded = Schema.Schema.Encoded<typeof IPv6FromString>
  *
  * @since 1.0.0
  * @category Schemas
+ * @example
+ *     import * as Schema from "@effect/schema/Schema";
+ *     import { IPv6FromString } from "the-wireguard-effect/InternetSchemas";
+ *
+ *     const decodeIPv6 = Schema.decodeSync(IPv6FromString);
+ *     assert.deepStrictEqual(
+ *         decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334").ip,
+ *         "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+ *     );
+ *
+ *     assert.throws(() =>
+ *         decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334:")
+ *     );
+ *     assert.throws(() => decodeIPv6("2001::85a3::0000::0370:7334"));
+ *     assert.doesNotThrow(() =>
+ *         decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
+ *     );
+ *
+ * @see {@link IPv6}
  */
 export const IPv6FromString: $IPv6FromString = Schema.transform(
     Schema.string,
@@ -348,19 +381,16 @@ export type AddressEncoded = Schema.Schema.Encoded<typeof Address>;
  *     import * as Schema from "@effect/schema/Schema";
  *     import { Address } from "the-wireguard-effect/InternetSchemas";
  *
- *     const address1: Address = Address("1.1.1.1");
- *     const address2: Address = Address(
- *         "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+ *     const decodeAddress = Schema.decodeSync(Address);
+ *
+ *     assert.throws(() => decodeAddress({ ip: "1.1.b.1" }));
+ *     assert.throws(() =>
+ *         decodeAddress({ ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334:" })
  *     );
  *
- *     const decodeAddress = Schema.decodeSync(Address);
- *     assert.throws(() => decodeAddress("1.1.b.1"));
- *     assert.throws(() =>
- *         decodeAddress("2001:0db8:85a3:0000:0000:8a2e:0370:7334:")
- *     );
- *     assert.doesNotThrow(() => decodeAddress("1.1.1.2"));
+ *     assert.doesNotThrow(() => decodeAddress({ ip: "1.1.1.2" }));
  *     assert.doesNotThrow(() =>
- *         decodeAddress("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
+ *         decodeAddress({ ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334" })
  *     );
  *
  * @see {@link IPv4}
@@ -395,6 +425,21 @@ export type AddressFromStringEncoded = Schema.Schema.Encoded<typeof AddressFromS
  *
  * @since 1.0.0
  * @category Schemas
+ * @example
+ *     import * as Schema from "@effect/schema/Schema";
+ *     import { AddressFromString } from "the-wireguard-effect/InternetSchemas";
+ *
+ *     const decodeAddress = Schema.decodeSync(AddressFromString);
+ *
+ *     assert.throws(() => decodeAddress("1.1.b.1"));
+ *     assert.throws(() =>
+ *         decodeAddress("2001:0db8:85a3:0000:0000:8a2e:0370:7334:")
+ *     );
+ *
+ *     assert.doesNotThrow(() => decodeAddress("1.1.1.2"));
+ *     assert.doesNotThrow(() =>
+ *         decodeAddress("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
+ *     );
  */
 export const AddressFromString: $AddressFromString = Schema.union(IPv4FromString, IPv6FromString).annotations({
     identifier: "AddressFromString",
@@ -427,17 +472,20 @@ export interface $IPv4CidrMask
  * @category Schemas
  * @example
  *     import * as Schema from "@effect/schema/Schema";
- *     import { IPv4CidrMask } from "the-wireguard-effect/InternetSchemas";
+ *     import {
+ *         IPv4CidrMask,
+ *         IPv4CidrMaskBrand,
+ *     } from "the-wireguard-effect/InternetSchemas";
  *
- *     const mask: IPv4CidrMask = IPv4CidrMask(24);
+ *     const mask: IPv4CidrMaskBrand = IPv4CidrMaskBrand(24);
  *     assert.strictEqual(mask, 24);
  *
  *     const decodeMask = Schema.decodeSync(IPv4CidrMask);
  *     assert.strictEqual(decodeMask(24), 24);
  *
- *     assert.throws(() => IPv4CidrMask(33));
- *     assert.doesNotThrow(() => IPv4CidrMask(0));
- *     assert.doesNotThrow(() => IPv4CidrMask(32));
+ *     assert.throws(() => decodeMask(33));
+ *     assert.doesNotThrow(() => decodeMask(0));
+ *     assert.doesNotThrow(() => decodeMask(32));
  */
 export const IPv4CidrMask: $IPv4CidrMask = Schema.Int.pipe(Schema.between(0, 32))
     .pipe(Schema.fromBrand(IPv4CidrMaskBrand))
@@ -472,17 +520,20 @@ export interface $IPv6CidrMask
  * @category Schemas
  * @example
  *     import * as Schema from "@effect/schema/Schema";
- *     import { IPv6CidrMask } from "the-wireguard-effect/InternetSchemas";
+ *     import {
+ *         IPv6CidrMask,
+ *         IPv6CidrMaskBrand,
+ *     } from "the-wireguard-effect/InternetSchemas";
  *
- *     const mask: IPv6CidrMask = IPv6CidrMask(64);
+ *     const mask: IPv6CidrMaskBrand = IPv6CidrMaskBrand(64);
  *     assert.strictEqual(mask, 64);
  *
  *     const decodeMask = Schema.decodeSync(IPv6CidrMask);
  *     assert.strictEqual(decodeMask(64), 64);
  *
- *     assert.throws(() => IPv6CidrMask(129));
- *     assert.doesNotThrow(() => IPv6CidrMask(0));
- *     assert.doesNotThrow(() => IPv6CidrMask(128));
+ *     assert.throws(() => decodeMask(129));
+ *     assert.doesNotThrow(() => decodeMask(0));
+ *     assert.doesNotThrow(() => decodeMask(128));
  */
 export const IPv6CidrMask: $IPv6CidrMask = Schema.Int.pipe(Schema.between(0, 128))
     .pipe(Schema.fromBrand(IPv6CidrMaskBrand))
@@ -628,25 +679,21 @@ export interface $IPv4Endpoint
  * @category Schemas
  * @example
  *     import * as Schema from "@effect/schema/Schema";
+ *     import { IPv4Endpoint } from "the-wireguard-effect/InternetSchemas";
  *
- *     import {
- *         Port,
- *         IPv4,
- *         IPv4Endpoint,
- *     } from "the-wireguard-effect/InternetSchemas";
+ *     const decodeEndpoint = Schema.decodeSync(IPv4Endpoint);
+ *     const endpoint1 = decodeEndpoint("1.2.3.4:51820");
+ *     const endpoint2 = decodeEndpoint("1.2.3.4:51820:41820");
  *
- *     const endpoint1 = Schema.decodeSync(IPv4Endpoint)("1.2.3.4:51820");
- *     const endpoint2 = Schema.decodeSync(IPv4Endpoint)("1.2.3.4:51820:41820");
- *
- *     const endpoint3 = Schema.decodeSync(IPv4Endpoint)({
+ *     const endpoint3 = decodeEndpoint({
  *         ip: "1.2.3.4",
  *         port: 51820,
  *     });
  *
- *     const endpoint4: IPv4Endpoint = IPv4Endpoint({
- *         ip: IPv4("1.2.3.4"),
- *         natPort: Port(51820),
- *         listenPort: Port(41820),
+ *     const endpoint4 = decodeEndpoint({
+ *         ip: "1.2.3.4",
+ *         natPort: 51820,
+ *         listenPort: 41820,
  *     });
  */
 export const IPv4Endpoint = Schema.transform(
@@ -701,29 +748,25 @@ export interface $IPv6Endpoint
  * @category Schemas
  * @example
  *     import * as Schema from "@effect/schema/Schema";
+ *     import { IPv6Endpoint } from "the-wireguard-effect/InternetSchemas";
  *
- *     import {
- *         Port,
- *         IPv6,
- *         IPv6Endpoint,
- *     } from "the-wireguard-effect/InternetSchemas";
- *
- *     const endpoint1 = Schema.decodeSync(IPv6Endpoint)(
+ *     const decodeEndpoint = Schema.decodeSync(IPv6Endpoint);
+ *     const endpoint1 = decodeEndpoint(
  *         "[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820"
  *     );
- *     const endpoint2 = Schema.decodeSync(IPv6Endpoint)(
+ *     const endpoint2 = decodeEndpoint(
  *         "[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820:41820"
  *     );
  *
- *     const endpoint3 = Schema.decodeSync(IPv6Endpoint)({
+ *     const endpoint3 = decodeEndpoint({
  *         ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
  *         port: 51820,
  *     });
  *
- *     const endpoint4: IPv6Endpoint = IPv6Endpoint({
- *         ip: IPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334"),
- *         natPort: Port(51820),
- *         listenPort: Port(41820),
+ *     const endpoint4 = decodeEndpoint({
+ *         ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+ *         natPort: 51820,
+ *         listenPort: 41820,
  *     });
  */
 export const IPv6Endpoint: $IPv6Endpoint = Schema.transform(
@@ -796,43 +839,39 @@ export type EndpointEncoded = Schema.Schema.Encoded<typeof Endpoint>;
  * @example
  *     import * as Schema from "@effect/schema/Schema";
  *
- *     import {
- *         Endpoint,
- *         IPv4,
- *         IPv6,
- *         Port,
- *     } from "the-wireguard-effect/InternetSchemas";
+ *     import { Endpoint } from "the-wireguard-effect/InternetSchemas";
  *
- *     const endpoint1 = Schema.decodeSync(Endpoint)("1.2.3.4:51820");
- *     const endpoint2 = Schema.decodeSync(Endpoint)("1.2.3.4:51820:41820");
+ *     const decodeEndpoint = Schema.decodeSync(Endpoint);
+ *     const endpoint1 = decodeEndpoint("1.2.3.4:51820");
+ *     const endpoint2 = decodeEndpoint("1.2.3.4:51820:41820");
  *
- *     const endpoint3 = Schema.decodeSync(Endpoint)({
+ *     const endpoint3 = decodeEndpoint({
  *         ip: "1.2.3.4",
  *         port: 51820,
  *     });
  *
- *     const endpoint4: Endpoint = Endpoint({
- *         ip: IPv4("1.2.3.4"),
- *         natPort: Port(51820),
- *         listenPort: Port(41820),
+ *     const endpoint4: Endpoint = decodeEndpoint({
+ *         ip: "1.2.3.4",
+ *         natPort: 51820,
+ *         listenPort: 41820,
  *     });
  *
- *     const endpoint5 = Schema.decodeSync(Endpoint)(
+ *     const endpoint5 = decodeEndpoint(
  *         "[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820"
  *     );
- *     const endpoint6 = Schema.decodeSync(Endpoint)(
+ *     const endpoint6 = decodeEndpoint(
  *         "[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820:41820"
  *     );
  *
- *     const endpoint7 = Schema.decodeSync(Endpoint)({
+ *     const endpoint7 = decodeEndpoint({
  *         ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
  *         port: 51820,
  *     });
  *
- *     const endpoint8: Endpoint = Endpoint({
- *         ip: IPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334"),
- *         natPort: Port(51820),
- *         listenPort: Port(41820),
+ *     const endpoint8: Endpoint = decodeEndpoint({
+ *         ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+ *         natPort: 51820,
+ *         listenPort: 41820,
  *     });
  *
  * @see {@link IPv4Endpoint}
@@ -868,21 +907,10 @@ export type SetupDataEncoded = Schema.Schema.Encoded<typeof SetupData>;
  * @category Schemas
  * @example
  *     import * as Schema from "@effect/schema/Schema";
+ *     import { SetupData } from "the-wireguard-effect/InternetSchemas";
  *
- *     import {
- *         Address,
- *         Endpoint,
- *         SetupData,
- *     } from "the-wireguard-effect/InternetSchemas";
- *
- *     const setupData1 = Schema.decodeSync(SetupData)([
- *         "1.1.1.1:51280",
- *         "10.0.0.1",
- *     ]);
- *
- *     const address = Schema.decodeSync(Address)("10.0.0.1");
- *     const endpoint = Schema.decodeSync(Endpoint)("1.1.1.1:51820");
- *     const setupData2: SetupData = SetupData([endpoint, address]);
+ *     const decodeSetupData = Schema.decodeSync(SetupData);
+ *     const setupData = decodeSetupData(["1.1.1.1:51280", "10.0.0.1"]);
  *
  * @see {@link EndpointSchema}
  * @see {@link Address}
