@@ -103,7 +103,6 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
  * @category Transformations
  * @example
  *     import * as Effect from "effect/Effect";
- *     import * as Duration from "effect/Duration";
  *     import * as Function from "effect/Function";
  *     import * as Schema from "@effect/schema/Schema";
  *     import * as WireguardKey from "the-wireguard-effect/WireguardKey";
@@ -116,7 +115,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
  *         PublicKey: publicKey,
  *         AllowedIPs: ["192.168.0.0/24"],
  *         Endpoint: "192.168.0.1:51820",
- *         PersistentKeepalive: Duration.seconds(20),
+ *         PersistentKeepalive: 20,
  *     });
  *
  *     const iniPeer = Function.pipe(
@@ -180,7 +179,6 @@ export const WireguardIniPeer = Schema.transformOrFail(
  * @category Transformations
  * @example
  *     import * as Effect from "effect/Effect";
- *     import * as Duration from "effect/Duration";
  *     import * as Function from "effect/Function";
  *     import * as Schema from "@effect/schema/Schema";
  *     import * as WireguardKey from "the-wireguard-effect/WireguardKey";
@@ -193,7 +191,7 @@ export const WireguardIniPeer = Schema.transformOrFail(
  *         PublicKey: publicKey,
  *         AllowedIPs: ["192.168.0.0/24"],
  *         Endpoint: "192.168.0.1:51820",
- *         PersistentKeepalive: Duration.seconds(20),
+ *         PersistentKeepalive: 20,
  *     });
  *
  *     const uapiPeer = Function.pipe(

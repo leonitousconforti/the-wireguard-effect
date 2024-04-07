@@ -1,6 +1,7 @@
 {
     "$schema": "./node_modules/@effect/docgen/schema.json",
     "exclude": ["src/internal/**/*.ts"],
+    "projectHomepage": "https://github.com/leonitousconforti/the-wireguard-effect",
     "examplesCompilerOptions": {
         "noEmit": true,
         "strict": true,
