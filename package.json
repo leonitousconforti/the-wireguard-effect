@@ -1,6 +1,6 @@
 {
     "name": "the-wireguard-effect",
-    "version": "0.0.1-alpha.16",
+    "version": "0.0.1-alpha.17",
     "description": "Cross platform userspace wireguard api client for nodejs built on wireguard-go with effect-ts",
     "keywords": [
         "wireguard",
@@ -8,13 +8,25 @@
         "effect-ts"
     ],
     "homepage": "https://github.com/leonitousconforti/the-wireguard-effect",
+    "bugs": {
+        "url": "https://github.com/leonitousconforti/the-wireguard-effect/issues",
+        "email": "leo@leoconforti.us"
+    },
     "repository": {
         "type": "git",
-        "url": "https://github.com/leonitousconforti/the-wireguard-effect.git"
+        "url": "git+https://github.com/leonitousconforti/the-wireguard-effect.git"
     },
     "license": "GPL-3.0-only",
     "author": "Leo Conforti <leo@leoconforti.us> (https://leoconforti.us)",
     "type": "module",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/dts/index.d.ts",
+    "directories": {
+        "doc": "docs",
+        "example": "examples",
+        "test": "test"
+    },
     "scripts": {
         "build": "pnpm clean && pnpm codegen && pnpm build-esm && pnpm build-cjs && pnpm build-annotate && build-utils pack-v2 && pnpm build-submodules && docgen",
         "build-annotate": "babel build --plugins annotate-pure-calls --out-dir build --source-maps",
