@@ -1,6 +1,6 @@
 {
     "name": "the-wireguard-effect",
-    "version": "0.0.1-alpha.19",
+    "version": "0.0.1-alpha.20",
     "description": "Cross platform userspace wireguard api client for nodejs built on wireguard-go with effect-ts",
     "keywords": [
         "wireguard",
@@ -98,7 +98,7 @@
             "prebuilds/freebsd-wg-quick",
             "prebuilds/openbsd-wg-quick"
         ],
-        "provenance": false
+        "provenance": true
     },
     "pnpm": {
         "patchedDependencies": {
