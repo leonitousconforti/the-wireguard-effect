@@ -2,7 +2,7 @@ name: Publish
 
 on:
   release:
-    types: [created]
+    types: [published]
 
 concurrency:
   cancel-in-progress: false
@@ -24,16 +24,28 @@ jobs:
         with:
           cache-dependency-path: |
             submodules/wireguard-go/go.sum
+
       - run: pnpm check
       - run: pnpm build
       - run: pnpm test
       - run: git status
-      - run: pnpm version ${TAG_NAME} --no-git-tag-version
-        env:
-          TAG_NAME: ${{ github.event.release.tag_name }}
-      - run: pnpm publish --no-git-checks --registry=https://registry.npmjs.org/
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+          registry-url: "https://registry.npmjs.org/"
+      - run: git status
+      - run: cat .npmrc
+      - run: pnpm publish --no-git-checks --registry https://registry.npmjs.org/
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: pnpm publish --no-git-checks --registry=https://npm.pkg.github.com/
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+          registry-url: "https://npm.pkg.github.com/"
+      - run: git status
+      - run: cat .npmrc
+      - run: pnpm publish --no-git-checks --registry https://npm.pkg.github.com/
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
