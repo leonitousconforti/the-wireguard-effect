@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   '@effect/build-utils@0.7.6':
-    hash: gten7waxrvyrskmmrqkd52uamu
+    hash: whl4uh3kr7re23fvpdziecduvq
     path: patches/@effect__build-utils@0.7.6.patch
 
 dependencies:
@@ -35,7 +35,7 @@ devDependencies:
     version: 7.24.1(@babel/core@7.24.4)
   '@effect/build-utils':
     specifier: 0.7.6
-    version: 0.7.6(patch_hash=gten7waxrvyrskmmrqkd52uamu)
+    version: 0.7.6(patch_hash=whl4uh3kr7re23fvpdziecduvq)
   '@effect/docgen':
     specifier: 0.4.0
     version: 0.4.0(tsx@4.7.2)(typescript@5.4.4)
@@ -397,7 +397,7 @@ packages:
     resolution: {integrity: sha512-rPwwm/RrFIolz6xHa8Kzpshuwpe+xu/XcEw9iUmRF2tnyIwxxaW7XoFKaQ+GfPju81cKpH4vJeq7/2IizKvyjg==}
     dev: true
 
-  /@effect/build-utils@0.7.6(patch_hash=gten7waxrvyrskmmrqkd52uamu):
+  /@effect/build-utils@0.7.6(patch_hash=whl4uh3kr7re23fvpdziecduvq):
     resolution: {integrity: sha512-VAqZhs4t54FD6Y47/LB9LI/qvNhbj6MhsycM4BY5M2oln8SCZsKGHBV8cmvlYHXmrx1+YWn7tvlgGidWP8K6+A==}
     engines: {node: '>=16.17.1'}
     hasBin: true
