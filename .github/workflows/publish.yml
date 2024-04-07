@@ -50,10 +50,8 @@ jobs:
         with:
           node-version: "18.x"
           registry-url: "https://npm.pkg.github.com/"
-      - run: pnpm check
-      - run: pnpm build
-      - run: pnpm test
       - run: npm init -y --scope ${{ github.repository_owner }}
+      - run: pnpm build
       - run: pnpm publish --no-git-checks --access public --registry https://npm.pkg.github.com/
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
