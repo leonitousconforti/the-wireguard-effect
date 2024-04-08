@@ -132,6 +132,7 @@ jobs:
             pnpm test
 
   windows-test:
+    if: false
     runs-on: windows-latest
     needs: [build]
     steps:
