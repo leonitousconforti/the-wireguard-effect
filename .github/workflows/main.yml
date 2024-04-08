@@ -48,6 +48,7 @@ jobs:
       - run: pnpm install
       - run: pnpm check
       - run: pnpm build
+      - run: rm -rf submodules/
       - run: rm -rf node_modules/
       - uses: actions/upload-artifact@v4
         with:
