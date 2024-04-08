@@ -10,6 +10,7 @@ export default defineConfig({
         coverage: {
             provider: "v8",
         },
+        reporters: ["hanging-process", "github-actions", "default"],
     },
     resolve: {
         alias: {
