@@ -11,7 +11,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
 
 jobs:
-  linux-build:
+  linux-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,7 +55,7 @@ jobs:
       - run: sudo apt-get install -y wireguard
       - run: pnpm test
 
-  macos-build:
+  macos-test:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -98,7 +98,7 @@ jobs:
       - run: brew install wireguard-tools
       - run: pnpm test
 
-  freebsd-build:
+  freebsd-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -109,10 +109,10 @@ jobs:
         with:
           usesh: true
           prepare: |
-            pkg search nodejs
+            pkg search node-18
             pkg search npm
             pkg search wireguard
-            pkg install -y nodejs npm wiregaurd
+            pkg install -y node-18 npm-10.2.5 wireguard-go-0.0.20230223_4,1
             npm install -g pnpm
             pnpm install
           run: |
@@ -120,7 +120,7 @@ jobs:
             pnpm build
             pnpm test
 
-  openbsd-build:
+  openbsd-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -131,9 +131,9 @@ jobs:
         with:
           usesh: true
           prepare: |
-            pkg_search nodejs
-            pkg_search npm
-            pkg_search wireguard
+            pkg_info -Q nodejs
+            pkg_info -Q npm
+            pkg_info -Q wireguard
             pkg_add nodejs npm wiregaurd
             npm install -g pnpm
             pnpm install
@@ -141,3 +141,31 @@ jobs:
             pnpm check
             pnpm build
             pnpm test
+
+  windows-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      # - run: pnpm install
+      # - run: pnpm check
+      # - run: pnpm build
+
+      - shell: pwsh
+        run: dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+      - shell: pwsh
+        run: dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+      - shell: pwsh
+        run: wsl --set-default-version 2
+      - shell: pwsh
+        run: wsl --update
+      - shell: pwsh
+        run: wsl --install -d Ubuntu
+      - shell: pwsh
+        run: wsl --list --verbose
+
+      # - run: sudo apt-get update
+      # - run: sudo apt-get install -y wireguard
+      # - run: pnpm test
