@@ -109,10 +109,12 @@ jobs:
         with:
           usesh: true
           prepare: |
-            node -v
+            freebsd-update fetch
+            freebsd-update install
+            pkg install -y node wireguard-tools-1.0.20210914_2
             npm -v
-            wg-quick -v
-            pkg install -y npm-node18-10.2.5 wireguard-go-0.0.20230223_4,1
+            node -v
+            wg-quick --help
             npm install -g pnpm
             pnpm install
           run: |
@@ -131,10 +133,12 @@ jobs:
         with:
           usesh: true
           prepare: |
-            node -v
-            npm -v
-            wg-quick -v
+            pkg_info -Q node-18 node18
+            pkg_add node-18.0.0p0
             pkg_add wireguard-tools-1.0.20210914p2v0
+            npm -v
+            node -v
+            wg-quick --help
             npm install -g pnpm
             pnpm install
           run: |
@@ -161,8 +165,8 @@ jobs:
         run: wsl --set-default-version 2
       - shell: pwsh
         run: wsl --update
-      - shell: pwsh
-        run: wsl --install -d Ubuntu
+      # - shell: pwsh
+      #   run: wsl --install -d Ubuntu
       - shell: pwsh
         run: wsl --list --verbose
 
