@@ -50,8 +50,6 @@ jobs:
         shell: bash
         run: pnpm install
 
-      - run: wsl --set-default-version 1
-      - uses: Vampire/setup-wsl@v3
       - uses: mxschmitt/action-tmate@v3
       # - run: pnpm check
       # - run: pnpm build
