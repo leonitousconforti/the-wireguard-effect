@@ -109,10 +109,10 @@ jobs:
         with:
           usesh: true
           prepare: |
-            pkg search node-18
-            pkg search npm
-            pkg search wireguard
-            pkg install -y node-18 npm-10.2.5 wireguard-go-0.0.20230223_4,1
+            node -v
+            npm -v
+            wg-quick -v
+            pkg install -y npm-node18-10.2.5 wireguard-go-0.0.20230223_4,1
             npm install -g pnpm
             pnpm install
           run: |
@@ -131,10 +131,10 @@ jobs:
         with:
           usesh: true
           prepare: |
-            pkg_info -Q nodejs
-            pkg_info -Q npm
-            pkg_info -Q wireguard
-            pkg_add nodejs npm wiregaurd
+            node -v
+            npm -v
+            wg-quick -v
+            pkg_add wireguard-tools-1.0.20210914p2v0
             npm install -g pnpm
             pnpm install
           run: |
