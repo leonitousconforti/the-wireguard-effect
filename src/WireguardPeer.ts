@@ -95,9 +95,14 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
 }) {}
 
 /**
+ * @since 1.0.0
+ * @category Api interface
+ */
+export interface $WireguardIniPeer
+    extends Schema.Annotable<$WireguardIniPeer, string, Schema.Schema.Encoded<typeof WireguardPeer>, never> {}
+
+/**
  * A wireguard peer configuration encoded in INI format.
- *
- * TODO: Write an api interface type
  *
  * @since 1.0.0
  * @category Transformations
@@ -126,7 +131,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
  *
  * @see {@link WireguardPeer}
  */
-export const WireguardIniPeer = Schema.transformOrFail(
+export const WireguardIniPeer: $WireguardIniPeer = Schema.transformOrFail(
     WireguardPeer,
     Schema.string,
     // Encoding is trivial using the ini library.
@@ -172,9 +177,14 @@ export const WireguardIniPeer = Schema.transformOrFail(
 });
 
 /**
+ * @since 1.0.0
+ * @category Api interface
+ */
+export interface $WireguardUapiPeer
+    extends Schema.Annotable<$WireguardUapiPeer, string, Schema.Schema.Encoded<typeof WireguardPeer>, never> {}
+
+/**
  * A wireguard peer configuration encoded in the userspace api format.
- *
- * TODO: Write an api interface type
  *
  * @since 1.0.0
  * @category Transformations
@@ -203,7 +213,7 @@ export const WireguardIniPeer = Schema.transformOrFail(
  *
  * @see {@link WireguardPeer}
  */
-export const WireguardUapiPeer = Schema.transformOrFail(
+export const WireguardUapiPeer: $WireguardUapiPeer = Schema.transformOrFail(
     WireguardPeer,
     Schema.string,
     // Decoding is trivial, just rename some fields.

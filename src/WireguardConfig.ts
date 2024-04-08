@@ -104,15 +104,14 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
     } = internal.generateP2PConfigs;
 
     /**
-     * Generates two wireguard configurations, each with the other as a single
-     * peer and shares their keys appropriately.
-     *
-     * TODO: update docs
+     * Generates a collection of wireguard configurations for a star network
+     * with a single central hub node and many peers all connected to it where
+     * the peers all trust each other.
      *
      * @since 1.0.0
      * @category Constructors
-     * @param aliceData - The data for the first peer.
-     * @param bobData - The data for the second peer.
+     * @param hubData - The data for the hub node.
+     * @param spokeData - The data for the spoke nodes.
      */
     public static generateStarConfigs: {
         // Overload for when cidrBlock is not provided
@@ -144,8 +143,9 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
     } = internal.generateStarConfigs;
 
     /**
-     * Generates a collection of wireguard configurations for a star network
-     * with a single central hub node and many peers all connected to it.
+     * Generates a collection of wireguard configurations for a hub and spoke
+     * network with a single central hub node and many peers all connected to it
+     * where none of the peers trust each other.
      *
      * @since 1.0.0
      * @category Constructors
@@ -182,7 +182,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
     } = internal.generateHubSpokeConfigs;
 
     /**
-     * Generates a collection of wireguard configurations
+     * Generates a collection of wireguard configurations.
      *
      * @since 1.0.0
      * @category Constructors
@@ -452,15 +452,20 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
 }
 
 /**
+ * @since 1.0.0
+ * @category Api interface
+ */
+export interface $WireguardIniConfig
+    extends Schema.Annotable<$WireguardIniConfig, string, Schema.Schema.Encoded<typeof WireguardConfig>, never> {}
+
+/**
  * A wireguard configuration encoded in the INI format.
- *
- * TODO: Write an api interface type
  *
  * @since 1.0.0
  * @category Transformations
  * @see {@link WireguardConfig}
  */
-export const WireguardIniConfig = Schema.transformOrFail(
+export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(
     WireguardConfig,
     Schema.string,
     // Encoding is non-trivial, as we need to handle all the peers individually.
@@ -531,15 +536,25 @@ export const WireguardIniConfig = Schema.transformOrFail(
 });
 
 /**
+ * @since 1.0.0
+ * @category Api interface
+ */
+export interface $WireguardUapiConfig
+    extends Schema.Annotable<
+        $WireguardUapiConfig,
+        readonly [string, InternetSchemas.CidrBlock],
+        Schema.Schema.Encoded<typeof WireguardConfig>,
+        never
+    > {}
+
+/**
  * A wireguard configuration encoded in the userspace api format.
- *
- * TODO: Write an api interface type
  *
  * @since 1.0.0
  * @category Transformations
  * @see {@link WireguardConfig}
  */
-export const WireguardUapiConfig = Schema.transformOrFail(
+export const WireguardUapiConfig: $WireguardUapiConfig = Schema.transformOrFail(
     WireguardConfig,
     Schema.tuple(Schema.string, InternetSchemas.CidrBlockFromString),
     // Encoding is non trivial, as we need to handle all the peers in individually and
