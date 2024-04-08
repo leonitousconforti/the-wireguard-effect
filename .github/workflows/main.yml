@@ -116,8 +116,8 @@ jobs:
             node -v
             wg-quick --help
             npm install -g pnpm
-            pnpm install
           run: |
+            pnpm install
             pnpm check
             pnpm build
             pnpm test
@@ -138,8 +138,8 @@ jobs:
             node -v
             wg-quick --help
             npm install -g pnpm
-            pnpm install
           run: |
+            pnpm install
             pnpm check
             pnpm build
             pnpm test
@@ -165,8 +165,8 @@ jobs:
         run: wsl --update
       # - shell: pwsh
       #   run: wsl --install -d Ubuntu
-      - shell: pwsh
-        run: wsl --list --verbose
+      # - shell: pwsh
+      #   run: wsl --list --verbose
 
       # - run: sudo apt-get update
       # - run: sudo apt-get install -y wireguard
