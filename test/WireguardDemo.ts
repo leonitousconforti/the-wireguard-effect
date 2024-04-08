@@ -1,10 +1,9 @@
 /** https://git.zx2c4.com/wireguard-tools/plain/contrib/ncat-client-server/client.sh */
 
-import { describe, expect, it } from "@effect/vitest";
-
-import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeSocket from "@effect/platform-node/NodeSocket";
 import * as HttpClient from "@effect/platform/HttpClient";
+import * as Socket from "@effect/platform/Socket";
+import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -16,7 +15,19 @@ import * as InternetSchemas from "the-wireguard-effect/InternetSchemas";
 import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
 import * as WireguardKey from "the-wireguard-effect/WireguardKey";
 
-const WireguardDemoSchema = Schema.transform(
+export interface $WireguardDemoSchema
+    extends Schema.Annotable<
+        $WireguardDemoSchema,
+        {
+            readonly serverPort: InternetSchemas.PortBrand;
+            readonly serverPublicKey: WireguardKey.WireguardKey;
+            readonly internalAddress: InternetSchemas.Address;
+        },
+        `OK:${string}:${number}:${string}\n`,
+        never
+    > {}
+
+export const WireguardDemoSchema: $WireguardDemoSchema = Schema.transform(
     Schema.templateLiteral(
         Schema.literal("OK"),
         Schema.literal(":"),
@@ -38,9 +49,18 @@ const WireguardDemoSchema = Schema.transform(
     },
     ({ serverPort, serverPublicKey, internalAddress }) =>
         `OK:${serverPublicKey}:${serverPort}:${internalAddress}\n` as const
-);
+).annotations({
+    identifier: "WireguardDemoSchema",
+    description: "Wireguard demo server response",
+});
 
-const WireguardDemoConfig = ({ publicKey, privateKey } = WireguardKey.generateKeyPair()) =>
+/**
+ * Creates a Wireguard configuration to connect to demo.wireguard.com. When
+ * connected, you should be able to see the hidden page at 192.168.4.1
+ */
+export const createWireguardDemoConfig = (
+    { publicKey, privateKey } = WireguardKey.generateKeyPair()
+): Effect.Effect<WireguardConfig.WireguardConfig, Socket.SocketError | ParseResult.ParseError, never> =>
     Function.pipe(
         Stream.make(`${publicKey}\n`),
         Stream.concat(Stream.never),
@@ -71,29 +91,11 @@ const WireguardDemoConfig = ({ publicKey, privateKey } = WireguardKey.generateKe
         )
     );
 
-describe("wireguard e2e test using demo.wireguard.com", () => {
-    it.effect("Should be able to connect to the demo server", () =>
-        Effect.gen(function* (λ) {
-            const config = yield* λ(WireguardDemoConfig());
-            const remotePeer = yield* λ(
-                Function.pipe(
-                    config.Address.range,
-                    Stream.drop(1),
-                    Stream.runHead,
-                    Effect.map(Option.getOrThrow),
-                    Effect.map((address) => address.ip)
-                )
-            );
-
-            yield* λ(config.upScoped({ how: "system-wireguard+system-wg-quick", sudo: true }));
-            const hiddenPageUrl = new URL(`http://${remotePeer}`);
-            const hiddenPage = yield* λ(
-                HttpClient.request.get(hiddenPageUrl).pipe(HttpClient.client.fetchOk(), HttpClient.response.text)
-            );
-
-            expect(hiddenPage).toMatchSnapshot();
-        })
-            .pipe(Effect.scoped)
-            .pipe(Effect.provide(NodeContext.layer))
-    );
-});
+/**
+ * Attempts to view the hidden page on the demo.wireguard.com server, you should
+ * only be able to see it when connected as a peer.
+ */
+export const requestHiddenPage: Effect.Effect<string, HttpClient.error.HttpClientError, never> = HttpClient.request
+    .get("http://192.168.4.1")
+    .pipe(HttpClient.client.fetchOk())
+    .pipe(HttpClient.response.text);

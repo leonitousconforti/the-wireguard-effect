@@ -5,7 +5,7 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
     test: {
-        include: ["./test/**/*.ts"],
+        include: ["./test/**/*.test.ts"],
         globals: true,
         coverage: {
             provider: "v8",
