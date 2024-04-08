@@ -45,13 +45,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: "Install dependencies with pnpm"
-        run: pnpm install
-
+      - run: pnpm install
       - run: pnpm check
       - run: pnpm build
-
-      - run: sudo apt-get update
       - run: sudo apt-get install -y wireguard
       - run: pnpm test
 
@@ -89,12 +85,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: "Install dependencies with pnpm"
-        run: pnpm install
-
+      - run: pnpm install
       - run: pnpm check
       - run: pnpm build
-
       - run: brew install wireguard-tools
       - run: pnpm test
 
