@@ -27,6 +27,7 @@ mkdir -p ../dist/prebuilds
 (cd ./wireguard-tools && cp src/wg-quick/freebsd.bash ../../dist/prebuilds/freebsd-wg-quick && chmod +x ../../dist/prebuilds/freebsd-wg-quick)
 (cd ./wireguard-tools && cp src/wg-quick/openbsd.bash ../../dist/prebuilds/openbsd-wg-quick && chmod +x ../../dist/prebuilds/openbsd-wg-quick)
 
-
+# Symlink prebuilds
+(cd ../src/internal && ln -s ../../dist/prebuilds/* .)
 (cd ../dist/dist/cjs/internal && ln -s ../../../prebuilds/* .)
 (cd ../dist/dist/esm/internal && ln -s ../../../prebuilds/* .)
