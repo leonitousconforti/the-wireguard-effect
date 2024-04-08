@@ -11,7 +11,7 @@ import * as WireguardError from "the-wireguard-effect/WireguardErrors";
 
 export const program: Effect.Effect<
     void,
-    WireguardError.WireguardError | Cause.TimeoutException | ParseResult.ParseError | Platform.Error.PlatformError,
+    WireguardError.WireguardError | Cause.UnknownException | ParseResult.ParseError | Platform.Error.PlatformError,
     Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
     const config = yield* λ(

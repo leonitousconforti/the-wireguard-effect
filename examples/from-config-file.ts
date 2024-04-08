@@ -10,7 +10,7 @@ import * as WireguardError from "the-wireguard-effect/WireguardErrors";
 
 export const program: Effect.Effect<
     void,
-    ParseResult.ParseError | Platform.Error.PlatformError | WireguardError.WireguardError | Cause.TimeoutException,
+    ParseResult.ParseError | Platform.Error.PlatformError | WireguardError.WireguardError | Cause.UnknownException,
     Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
     const config = yield* λ(WireguardConfig.WireguardConfig.fromConfigFile("examples/wireguard-config.conf"));
