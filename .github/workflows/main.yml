@@ -34,7 +34,6 @@ jobs:
           run_install: false
 
       - name: "Get pnpm store"
-        shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
@@ -47,7 +46,6 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: "Install dependencies with pnpm"
-        shell: bash
         run: pnpm install
 
       - run: pnpm check
@@ -80,7 +78,6 @@ jobs:
           run_install: false
 
       - name: "Get pnpm store"
-        shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
@@ -93,11 +90,28 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: "Install dependencies with pnpm"
-        shell: bash
         run: pnpm install
 
       - run: pnpm check
       - run: pnpm build
 
-      - run: brew install wireguard
+      - run: brew install wireguard-tools
       - run: pnpm test
+
+  freebsd-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      - uses: vmactions/freebsd-vm@v1
+        with:
+          usesh: true
+          prepare: |
+            pkg install -y nodejs npm pnpm wiregaurd
+            pnpm install
+          run: |
+            pnpm check
+            pnpm build
+            pnpm test
