@@ -20,6 +20,7 @@ Added in v1.0.0
   - [$CidrBlockFromString (interface)](#cidrblockfromstring-interface)
   - [$DurationFromSeconds (interface)](#durationfromseconds-interface)
   - [$Endpoint (interface)](#endpoint-interface)
+  - [$HostnameEndpoint (interface)](#hostnameendpoint-interface)
   - [$IPv4CidrMask (interface)](#ipv4cidrmask-interface)
   - [$IPv4Endpoint (interface)](#ipv4endpoint-interface)
   - [$IPv4FromString (interface)](#ipv4fromstring-interface)
@@ -54,6 +55,7 @@ Added in v1.0.0
   - [CidrBlockFromString](#cidrblockfromstring)
   - [DurationFromSeconds](#durationfromseconds)
   - [Endpoint](#endpoint)
+  - [HostnameEndpoint](#hostnameendpoint)
   - [IPv4 (class)](#ipv4-class)
     - [family (property)](#family-property-1)
   - [IPv4CidrMask](#ipv4cidrmask)
@@ -74,6 +76,8 @@ Added in v1.0.0
   - [IPv4FromString (type alias)](#ipv4fromstring-type-alias)
   - [IPv6FromString (type alias)](#ipv6fromstring-type-alias)
   - [SetupData (type alias)](#setupdata-type-alias)
+- [utils](#utils)
+  - [splitLiteral](#splitliteral)
 
 ---
 
@@ -126,7 +130,26 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface $Endpoint extends Schema.union<[$IPv4Endpoint, $IPv6Endpoint]> {}
+export interface $Endpoint extends Schema.union<[$IPv4Endpoint, $IPv6Endpoint, $HostnameEndpoint]> {}
+```
+
+Added in v1.0.0
+
+## $HostnameEndpoint (interface)
+
+**Signature**
+
+```ts
+export interface $HostnameEndpoint
+  extends Schema.Annotable<
+    $HostnameEndpoint,
+    { readonly host: string; readonly natPort: PortBrand; readonly listenPort: PortBrand },
+    | `${string}:${number}`
+    | `${string}:${number}:${number}`
+    | { readonly host: string; readonly port: number }
+    | { readonly host: string; readonly natPort: number; readonly listenPort: number },
+    never
+  > {}
 ```
 
 Added in v1.0.0
@@ -542,6 +565,20 @@ const endpoint8: Endpoint = decodeEndpoint({
 
 Added in v1.0.0
 
+## HostnameEndpoint
+
+A hostname wireguard endpoint, which consists of a hostname followed by a\
+Nat port then an optional local port. If only one port is provided, it is
+assumed that the nat port and listen port are the same.
+
+**Signature**
+
+```ts
+export declare const HostnameEndpoint: $HostnameEndpoint
+```
+
+Added in v1.0.0
+
 ## IPv4 (class)
 
 An IPv4 address.
@@ -618,17 +655,7 @@ assumed that the nat port and listen port are the same.
 **Signature**
 
 ```ts
-export declare const IPv4Endpoint: Schema.transform<
-  Schema.union<
-    [
-      Schema.struct<{ ip: Schema.$string; port: Schema.$number }>,
-      Schema.struct<{ ip: Schema.$string; natPort: Schema.$number; listenPort: Schema.$number }>,
-      Schema.Schema<`${string}:${number}`, `${string}:${number}`, never>,
-      Schema.Schema<`${string}:${number}:${number}`, `${string}:${number}:${number}`, never>
-    ]
-  >,
-  Schema.struct<{ address: $IPv4FromString; natPort: $Port; listenPort: $Port }>
->
+export declare const IPv4Endpoint: $IPv4Endpoint
 ```
 
 **Example**
@@ -938,6 +965,21 @@ Added in v1.0.0
 
 ```ts
 export type SetupData = Schema.Schema.Type<typeof SetupData>
+```
+
+Added in v1.0.0
+
+# utils
+
+## splitLiteral
+
+**Signature**
+
+```ts
+export declare const splitLiteral: <Str extends string, Delimiter extends string>(
+  str: Str,
+  delimiter: Delimiter
+) => Split<Str, Delimiter>
 ```
 
 Added in v1.0.0

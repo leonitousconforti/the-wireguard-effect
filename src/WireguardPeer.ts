@@ -132,7 +132,8 @@ export const WireguardIniPeer = Schema.transformOrFail(
     // Encoding is trivial using the ini library.
     (peer, _options, _ast) => {
         const publicKey = `PublicKey = ${peer.PublicKey}\n`;
-        const endpoint = `Endpoint = ${peer.Endpoint.address.ip}:${peer.Endpoint.natPort}\n`;
+        const host = "address" in peer.Endpoint ? peer.Endpoint.address.ip : peer.Endpoint.host;
+        const endpoint = `Endpoint = ${host}:${peer.Endpoint.natPort}\n`;
         const aps = ReadonlyArray.map(peer.AllowedIPs, (ap) => `AllowedIPs = ${ap.ip.ip}/${ap.mask}\n`);
         const keepAlive = Function.pipe(
             peer.PersistentKeepalive,
@@ -208,7 +209,8 @@ export const WireguardUapiPeer = Schema.transformOrFail(
     // Decoding is trivial, just rename some fields.
     (peer, _options, _ast) => {
         const publicKeyHex = Buffer.from(peer.PublicKey, "base64").toString("hex");
-        const endpointString = `${peer.Endpoint.address.ip}:${peer.Endpoint.natPort}`;
+        const host = "address" in peer.Endpoint ? peer.Endpoint.address.ip : peer.Endpoint.host;
+        const endpointString = `Endpoint = ${host}:${peer.Endpoint.natPort}\n`;
 
         const durationSeconds = Function.pipe(
             peer.PersistentKeepalive,

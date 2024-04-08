@@ -6,3 +6,7 @@
 /coverage/
 /node_modules/
 /docs/examples/
+
+src/internal/*-wireguard-go
+src/internal/*-wg-quick
+src/internal/*-wintun.dll
