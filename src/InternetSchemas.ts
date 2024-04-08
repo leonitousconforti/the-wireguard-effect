@@ -567,7 +567,7 @@ export class CidrBlock extends Schema.Class<CidrBlock>("CidrBlock")({
      * The first address in the range given by this address' subnet, often
      * referred to as the Network Address.
      */
-    public get networkAddressAsBigint(): bigint {
+    private get networkAddressAsBigint(): bigint {
         const bits = this.family === "ipv4" ? 32 : 128;
         const bigIntegerAddress = this.ip.asBigint;
         const intermediate = bigIntegerAddress.toString(2).padStart(bits, "0").slice(0, this.mask);
@@ -577,16 +577,36 @@ export class CidrBlock extends Schema.Class<CidrBlock>("CidrBlock")({
     }
 
     /**
+     * The first address in the range given by this address' subnet, often
+     * referred to as the Network Address.
+     */
+    public get networkAddress(): Effect.Effect<Address, ParseResult.ParseError, never> {
+        return this.family === "ipv4"
+            ? IPv4.FromBigint(this.networkAddressAsBigint)
+            : IPv6.FromBigint(this.networkAddressAsBigint);
+    }
+
+    /**
      * The last address in the range given by this address' subnet, often
      * referred to as the Broadcast Address.
      */
-    public get broadcastAddressAsBigint(): bigint {
+    private get broadcastAddressAsBigint(): bigint {
         const bits = this.family === "ipv4" ? 32 : 128;
         const bigIntegerAddress = this.ip.asBigint;
         const intermediate = bigIntegerAddress.toString(2).padStart(bits, "0").slice(0, this.mask);
         const broadcastAddressString = intermediate + "1".repeat(bits - this.mask);
         const broadcastAddressBigInt = BigInt(`0b${broadcastAddressString}`);
         return broadcastAddressBigInt;
+    }
+
+    /**
+     * The last address in the range given by this address' subnet, often
+     * referred to as the Broadcast Address.
+     */
+    public get broadcastAddress(): Effect.Effect<Address, ParseResult.ParseError, never> {
+        return this.family === "ipv4"
+            ? IPv4.FromBigint(this.broadcastAddressAsBigint)
+            : IPv6.FromBigint(this.broadcastAddressAsBigint);
     }
 
     /**
@@ -696,7 +716,7 @@ export interface $IPv4Endpoint
  *         listenPort: 41820,
  *     });
  */
-export const IPv4Endpoint = Schema.transform(
+export const IPv4Endpoint: $IPv4Endpoint = Schema.transform(
     Schema.union(
         Schema.struct({ ip: Schema.string, port: Schema.number }),
         Schema.struct({ ip: Schema.string, natPort: Schema.number, listenPort: Schema.number }),
@@ -718,7 +738,7 @@ export const IPv4Endpoint = Schema.transform(
         const listenPortParsed = Predicate.isNotUndefined(listenPort) ? Number.parseInt(listenPort, 10) : natPortParsed;
         return { address: ip, natPort: natPortParsed, listenPort: listenPortParsed };
     },
-    ({ address, natPort, listenPort }) => `${address}:${natPort}:${listenPort}` as any
+    ({ address, natPort, listenPort }) => `${address}:${natPort}:${listenPort}` as const
 ).annotations({
     identifier: "IPv4Endpoint",
     description: "An ipv4 wireguard endpoint",
@@ -817,7 +837,58 @@ export const IPv6Endpoint: $IPv6Endpoint = Schema.transform(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $Endpoint extends Schema.union<[$IPv4Endpoint, $IPv6Endpoint]> {}
+export interface $HostnameEndpoint
+    extends Schema.Annotable<
+        $HostnameEndpoint,
+        { readonly host: string; readonly natPort: PortBrand; readonly listenPort: PortBrand },
+        | `${string}:${number}`
+        | `${string}:${number}:${number}`
+        | { readonly host: string; readonly port: number }
+        | { readonly host: string; readonly natPort: number; readonly listenPort: number },
+        never
+    > {}
+
+/**
+ * A hostname wireguard endpoint, which consists of a hostname followed by a\
+ * Nat port then an optional local port. If only one port is provided, it is
+ * assumed that the nat port and listen port are the same.
+ *
+ * @since 1.0.0
+ * @category Schemas
+ */
+export const HostnameEndpoint: $HostnameEndpoint = Schema.transform(
+    Schema.union(
+        Schema.struct({ host: Schema.string, port: Schema.number }),
+        Schema.struct({ host: Schema.string, natPort: Schema.number, listenPort: Schema.number }),
+        Schema.templateLiteral(Schema.string, Schema.literal(":"), Schema.number),
+        Schema.templateLiteral(Schema.string, Schema.literal(":"), Schema.number, Schema.literal(":"), Schema.number)
+    ),
+    Schema.struct({ host: Schema.string, natPort: Port, listenPort: Port }),
+    (data) => {
+        const isObjectInput = !Predicate.isString(data);
+        const [host, natPort, listenPort] = isObjectInput
+            ? ([
+                  data.host,
+                  "natPort" in data ? (`${data.natPort}` as const) : (`${data.port}` as const),
+                  "listenPort" in data ? (`${data.listenPort}` as const) : undefined,
+              ] as const)
+            : splitLiteral(data, ":");
+
+        const natPortParsed = Number.parseInt(natPort, 10);
+        const listenPortParsed = Predicate.isNotUndefined(listenPort) ? Number.parseInt(listenPort, 10) : natPortParsed;
+        return { host, natPort: natPortParsed, listenPort: listenPortParsed };
+    },
+    ({ host, natPort, listenPort }) => `${host}:${natPort}:${listenPort}` as const
+).annotations({
+    identifier: "HostnameEndpoint",
+    description: "A hostname endpoint",
+});
+
+/**
+ * @since 1.0.0
+ * @category Api interface
+ */
+export interface $Endpoint extends Schema.union<[$IPv4Endpoint, $IPv6Endpoint, $HostnameEndpoint]> {}
 
 /**
  * @since 1.0.0
@@ -877,7 +948,7 @@ export type EndpointEncoded = Schema.Schema.Encoded<typeof Endpoint>;
  * @see {@link IPv4Endpoint}
  * @see {@link IPv6Endpoint}
  */
-export const Endpoint: $Endpoint = Schema.union(IPv4Endpoint, IPv6Endpoint).annotations({
+export const Endpoint: $Endpoint = Schema.union(IPv4Endpoint, IPv6Endpoint, HostnameEndpoint).annotations({
     identifier: "Endpoint",
     description: "An ipv4 or ipv6 wireguard endpoint",
 });
