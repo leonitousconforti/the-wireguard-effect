@@ -111,7 +111,7 @@ jobs:
           prepare: |
             freebsd-update fetch
             freebsd-update install
-            pkg install -y node wireguard-tools-1.0.20210914_2
+            pkg install -y node npm wireguard-tools-1.0.20210914_2
             npm -v
             node -v
             wg-quick --help
@@ -133,9 +133,7 @@ jobs:
         with:
           usesh: true
           prepare: |
-            pkg_info -Q node-18 node18
-            pkg_add node-18.0.0p0
-            pkg_add wireguard-tools-1.0.20210914p2v0
+            pkg_add node npm wireguard-tools-1.0.20210914p2v0
             npm -v
             node -v
             wg-quick --help
