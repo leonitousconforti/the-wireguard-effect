@@ -109,7 +109,27 @@ jobs:
         with:
           usesh: true
           prepare: |
-            pkg install -y nodejs npm pnpm wiregaurd
+            pkg install -y nodejs npm wiregaurd
+            npm install -g pnpm
+            pnpm install
+          run: |
+            pnpm check
+            pnpm build
+            pnpm test
+
+  openbsd-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      - uses: vmactions/openbsd-vm@v1
+        with:
+          usesh: true
+          prepare: |
+            pkg_add nodejs npm wiregaurd
+            npm install -g pnpm
             pnpm install
           run: |
             pnpm check
