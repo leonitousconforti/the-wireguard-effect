@@ -11,7 +11,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
 
 jobs:
-  linux-test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -48,56 +48,46 @@ jobs:
       - run: pnpm install
       - run: pnpm check
       - run: pnpm build
+      - run: rm -rf node_modules/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: the-wireguard-effect
+          path: .
+
+  linux-test:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: the-wireguard-effect
+      - run: ls
+      - run: pwd
+      - run: pnpm install
       - run: sudo apt-get install -y wireguard
       - run: pnpm test
 
   macos-test:
     runs-on: macos-latest
+    needs: [build]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
-          submodules: 'true'
-
-      - uses: actions/setup-go@v5
-        with:
-          cache-dependency-path: |
-            submodules/wireguard-go/go.sum
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "18.x"
-
-      - name: "Install pnpm"
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8
-          run_install: false
-
-      - name: "Get pnpm store"
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: "Setup pnpm cache"
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-node18.x-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
+          name: the-wireguard-effect
+      - run: ls
+      - run: pwd
       - run: pnpm install
-      - run: pnpm check
-      - run: pnpm build
       - run: brew install wireguard-tools
       - run: pnpm test
 
   freebsd-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
-          submodules: 'true'
-
+          name: the-wireguard-effect
+      - run: ls
+      - run: pwd
       - uses: vmactions/freebsd-vm@v1
         with:
           usesh: true
@@ -111,17 +101,16 @@ jobs:
             npm install -g pnpm
           run: |
             pnpm install
-            pnpm check
-            pnpm build
             pnpm test
 
   openbsd-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
-          submodules: 'true'
-
+          name: the-wireguard-effect
+      - run: ls
+      - run: pwd
       - uses: vmactions/openbsd-vm@v1
         with:
           usesh: true
@@ -133,8 +122,6 @@ jobs:
             npm install -g pnpm
           run: |
             pnpm install
-            pnpm check
-            pnpm build
             pnpm test
 
   windows-test:
