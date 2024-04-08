@@ -14,6 +14,9 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
+- [Api interface](#api-interface)
+  - [$WireguardIniConfig (interface)](#wireguardiniconfig-interface)
+  - [$WireguardUapiConfig (interface)](#wireguarduapiconfig-interface)
 - [Datatypes](#datatypes)
   - [WireguardConfig (class)](#wireguardconfig-class)
     - [writeToFile (property)](#writetofile-property)
@@ -24,6 +27,35 @@ Added in v1.0.0
   - [WireguardUapiConfig](#wireguarduapiconfig)
 
 ---
+
+# Api interface
+
+## $WireguardIniConfig (interface)
+
+**Signature**
+
+```ts
+export interface $WireguardIniConfig
+  extends Schema.Annotable<$WireguardIniConfig, string, Schema.Schema.Encoded<typeof WireguardConfig>, never> {}
+```
+
+Added in v1.0.0
+
+## $WireguardUapiConfig (interface)
+
+**Signature**
+
+```ts
+export interface $WireguardUapiConfig
+  extends Schema.Annotable<
+    $WireguardUapiConfig,
+    readonly [string, InternetSchemas.CidrBlock],
+    Schema.Schema.Encoded<typeof WireguardConfig>,
+    never
+  > {}
+```
+
+Added in v1.0.0
 
 # Datatypes
 
@@ -88,12 +120,10 @@ Added in v1.0.0
 
 A wireguard configuration encoded in the INI format.
 
-TODO: Write an api interface type
-
 **Signature**
 
 ```ts
-export declare const WireguardIniConfig: Schema.transformOrFail<typeof WireguardConfig, Schema.$string, never>
+export declare const WireguardIniConfig: $WireguardIniConfig
 ```
 
 Added in v1.0.0
@@ -102,16 +132,10 @@ Added in v1.0.0
 
 A wireguard configuration encoded in the userspace api format.
 
-TODO: Write an api interface type
-
 **Signature**
 
 ```ts
-export declare const WireguardUapiConfig: Schema.transformOrFail<
-  typeof WireguardConfig,
-  Schema.tuple<[Schema.$string, InternetSchemas.$CidrBlockFromString]>,
-  never
->
+export declare const WireguardUapiConfig: $WireguardUapiConfig
 ```
 
 Added in v1.0.0

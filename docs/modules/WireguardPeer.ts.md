@@ -14,6 +14,9 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
+- [Api interface](#api-interface)
+  - [$WireguardIniPeer (interface)](#wireguardinipeer-interface)
+  - [$WireguardUapiPeer (interface)](#wireguarduapipeer-interface)
 - [Datatypes](#datatypes)
   - [WireguardPeer (class)](#wireguardpeer-class)
 - [Transformations](#transformations)
@@ -21,6 +24,30 @@ Added in v1.0.0
   - [WireguardUapiPeer](#wireguarduapipeer)
 
 ---
+
+# Api interface
+
+## $WireguardIniPeer (interface)
+
+**Signature**
+
+```ts
+export interface $WireguardIniPeer
+  extends Schema.Annotable<$WireguardIniPeer, string, Schema.Schema.Encoded<typeof WireguardPeer>, never> {}
+```
+
+Added in v1.0.0
+
+## $WireguardUapiPeer (interface)
+
+**Signature**
+
+```ts
+export interface $WireguardUapiPeer
+  extends Schema.Annotable<$WireguardUapiPeer, string, Schema.Schema.Encoded<typeof WireguardPeer>, never> {}
+```
+
+Added in v1.0.0
 
 # Datatypes
 
@@ -84,12 +111,10 @@ Added in v1.0.0
 
 A wireguard peer configuration encoded in INI format.
 
-TODO: Write an api interface type
-
 **Signature**
 
 ```ts
-export declare const WireguardIniPeer: Schema.transformOrFail<typeof WireguardPeer, Schema.$string, never>
+export declare const WireguardIniPeer: $WireguardIniPeer
 ```
 
 **Example**
@@ -123,12 +148,10 @@ Added in v1.0.0
 
 A wireguard peer configuration encoded in the userspace api format.
 
-TODO: Write an api interface type
-
 **Signature**
 
 ```ts
-export declare const WireguardUapiPeer: Schema.transformOrFail<typeof WireguardPeer, Schema.$string, never>
+export declare const WireguardUapiPeer: $WireguardUapiPeer
 ```
 
 **Example**
