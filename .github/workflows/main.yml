@@ -11,7 +11,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
 
 jobs:
-  build:
+  linux-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,4 +55,49 @@ jobs:
 
       - run: sudo apt-get update
       - run: sudo apt-get install -y wireguard
+      - run: pnpm test
+
+  macos-build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      - uses: actions/setup-go@v5
+        with:
+          cache-dependency-path: |
+            submodules/wireguard-go/go.sum
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+
+      - name: "Install pnpm"
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: false
+
+      - name: "Get pnpm store"
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: "Setup pnpm cache"
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-node18.x-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: "Install dependencies with pnpm"
+        shell: bash
+        run: pnpm install
+
+      - run: pnpm check
+      - run: pnpm build
+
+      - run: brew install wireguard
       - run: pnpm test
