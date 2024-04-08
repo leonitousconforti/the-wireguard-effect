@@ -95,19 +95,13 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "18.x"
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 8
       - uses: vmactions/freebsd-vm@v1
         with:
           usesh: true
           prepare: |
             freebsd-update fetch
             freebsd-update install
-            pkg install -y node npm go wireguard-tools-1.0.20210914_2
+            pkg install -y node npm wireguard-tools-1.0.20210914_2
             npm -v
             node -v
             wg-quick --help
@@ -123,17 +117,11 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "18.x"
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 8
       - uses: vmactions/openbsd-vm@v1
         with:
           usesh: true
           prepare: |
-            pkg_add node npm go wireguard-tools-1.0.20210914p2v0
+            pkg_add node npm wireguard-tools-1.0.20210914p2v0
             npm -v
             node -v
             wg-quick --help
