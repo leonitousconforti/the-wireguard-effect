@@ -122,7 +122,7 @@ jobs:
         with:
           usesh: true
           prepare: |
-            pkg_add sudo node npm wireguard-tools-1.0.20210914p2v0
+            pkg_add sudo-1.9.15.5 node wireguard-tools-1.0.20210914p2v0
             npm -v
             node -v
             wg-quick --help
