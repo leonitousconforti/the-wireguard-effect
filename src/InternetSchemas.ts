@@ -210,8 +210,6 @@ export const IPv4FromString: $IPv4FromString = Schema.transform(
 /**
  * An IPv6 address.
  *
- * TODO: remove old errors
- *
  * @since 1.0.0
  * @category Schemas
  * @example
@@ -275,7 +273,7 @@ export class IPv6 extends Schema.Class<IPv6>("IPv6")({
 
             const remaining = 8 - (first.length + last.length);
             if (!remaining) {
-                // return Effect.fail(new ParseResult.Type(ast, "Error parsing groups"));
+                throw new Error("Error parsing groups");
             }
 
             groups = groups.concat(first);
@@ -286,12 +284,12 @@ export class IPv6 extends Schema.Class<IPv6>("IPv6")({
         } else if (halves.length === 1) {
             groups = this.ip.split(":");
         } else {
-            // return Effect.fail(new ParseResult.Type(ast, "Too many :: groups found"));
+            throw new Error("Too many :: groups found");
         }
 
         groups = groups.map((group: string) => parseInt(group, 16).toString(16));
         if (groups.length !== 8) {
-            // return Effect.fail(new ParseResult.Type(ast, "Invalid number of groups"));
+            throw new Error("Invalid number of groups");
         }
 
         return BigInt(`0x${groups.map(paddedHex).join("")}`);

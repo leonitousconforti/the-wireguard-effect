@@ -711,8 +711,6 @@ Added in v1.0.0
 
 An IPv6 address.
 
-TODO: remove old errors
-
 **Signature**
 
 ```ts
