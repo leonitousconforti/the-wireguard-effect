@@ -11,7 +11,6 @@ describe("wireguard e2e test using demo.wireguard.com", () => {
             Effect.gen(function* (λ) {
                 const config = yield* λ(DemoUtils.createWireguardDemoConfig());
                 yield* λ(config.upScoped({ how: "system-wireguard+system-wg-quick", sudo: true }));
-                yield* λ(Effect.sleep("5 seconds"));
                 const hiddenPage = yield* λ(DemoUtils.requestHiddenPage);
                 expect(hiddenPage).toMatchSnapshot();
             })

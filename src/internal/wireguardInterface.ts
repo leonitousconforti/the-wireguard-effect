@@ -169,11 +169,11 @@ export const execCommand = (
         : Effect.tryPromise(() => {
               const subprocess = execa.execaCommand(`${withSudo === true ? "sudo " : ""}${command}`, {
                   env: env ?? {},
-                  cleanup: false,
-                  detached: true,
-                  stdio: "ignore",
+                  cleanup: !command.includes("wireguard-go"),
+                  detached: command.includes("wireguard-go"),
+                  stdio: command.includes("wireguard-go") ? "ignore" : "inherit",
               });
-              subprocess.unref();
+              if (command.includes("wireguard-go")) subprocess.unref();
               return subprocess;
           });
 };
