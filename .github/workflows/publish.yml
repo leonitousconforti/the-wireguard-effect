@@ -16,6 +16,9 @@ jobs:
       id-token: write
       packages: write
     steps:
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y wireguard
+
       - uses: actions/checkout@v4
         with:
           submodules: 'true'
