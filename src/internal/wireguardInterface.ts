@@ -319,7 +319,7 @@ export const up = Function.dual<
             yield* λ(config.writeToFile(file));
 
             // Find bundled executables and scripts
-            const bundledWgQuickExecutablePath = yield* λ(WgQuickExecutablePath);
+            const bundledWgQuickExecutablePath = "";
             const bundledWireguardGoExecutablePath = yield* λ(WireguardGoExecutablePath);
 
             switch (options?.how) {
