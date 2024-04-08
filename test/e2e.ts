@@ -84,14 +84,16 @@ describe("wireguard e2e test using demo.wireguard.com", () => {
                     Effect.map((address) => address.ip)
                 )
             );
-            yield* λ(config.writeToFile("wg0.conf"));
-            yield* λ(config.up({ how: "system-wireguard+system-wg-quick", sudo: true }));
 
+            yield* λ(config.upScoped({ how: "system-wireguard+system-wg-quick", sudo: true }));
             const hiddenPageUrl = new URL(`http://${remotePeer}`);
             const hiddenPage = yield* λ(
                 HttpClient.request.get(hiddenPageUrl).pipe(HttpClient.client.fetchOk(), HttpClient.response.text)
             );
+
             expect(hiddenPage).toMatchSnapshot();
-        }).pipe(Effect.provide(NodeContext.layer))
+        })
+            .pipe(Effect.scoped)
+            .pipe(Effect.provide(NodeContext.layer))
     );
 });

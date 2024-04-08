@@ -46,27 +46,7 @@ bundled-wireguard-go+userspace-api method.
 **Signature**
 
 ```ts
-upScoped: (
-  config: WireguardConfig.WireguardConfig,
-  options: {
-    how?:
-      | "bundled-wireguard-go+userspace-api"
-      | "system-wireguard-go+userspace-api"
-      | "system-wireguard+system-wg-quick"
-      | "system-wireguard+bundled-wg-quick"
-      | "system-wireguard-go+system-wg-quick"
-      | "bundled-wireguard-go+system-wg-quick"
-      | "system-wireguard-go+bundled-wg-quick"
-      | "bundled-wireguard-go+bundled-wg-quick"
-      | undefined
-    sudo?: boolean | "ask"
-  }
-) =>
-  Effect.Effect<
-    WireguardInterface,
-    WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
-    Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
-  >
+upScoped: { (config: WireguardConfig.WireguardConfig, options: {    how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;    sudo?: boolean | "ask" | undefined;}): Effect.Effect<void, WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException, Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope>; (config: WireguardConfig.WireguardConfig, options: {    how: "system-wireguard+system-wg-quick" | "system-wireguard+bundled-wg-quick" | "system-wireguard-go+system-wg-quick" | "bundled-wireguard-go+system-wg-quick" | "system-wireguard-go+bundled-wg-quick" | "bundled-wireguard-go+bundled-wg-quick";    sudo?: boolean | "ask" | undefined;}): Effect.Effect<string, WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException, Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope>; }
 ```
 
 Added in v1.0.0
@@ -81,27 +61,7 @@ bundled-wireguard-go+userspace-api method.
 **Signature**
 
 ```ts
-up: (
-  config: WireguardConfig.WireguardConfig,
-  options: {
-    how?:
-      | "bundled-wireguard-go+userspace-api"
-      | "system-wireguard-go+userspace-api"
-      | "system-wireguard+system-wg-quick"
-      | "system-wireguard+bundled-wg-quick"
-      | "system-wireguard-go+system-wg-quick"
-      | "bundled-wireguard-go+system-wg-quick"
-      | "system-wireguard-go+bundled-wg-quick"
-      | "bundled-wireguard-go+bundled-wg-quick"
-      | undefined
-    sudo?: boolean | "ask"
-  }
-) =>
-  Effect.Effect<
-    WireguardInterface,
-    WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
-    Platform.FileSystem.FileSystem | Platform.Path.Path
-  >
+up: { (config: WireguardConfig.WireguardConfig, options: {    how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;    sudo?: boolean | "ask" | undefined;}): Effect.Effect<void, WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException, Platform.FileSystem.FileSystem | Platform.Path.Path>; (config: WireguardConfig.WireguardConfig, options: {    how: "system-wireguard+system-wg-quick" | "system-wireguard+bundled-wg-quick" | "system-wireguard-go+system-wg-quick" | "bundled-wireguard-go+system-wg-quick" | "system-wireguard-go+bundled-wg-quick" | "bundled-wireguard-go+bundled-wg-quick";    sudo?: boolean | "ask" | undefined;}): Effect.Effect<string, WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException, Platform.FileSystem.FileSystem | Platform.Path.Path>; }
 ```
 
 Added in v1.0.0
@@ -113,8 +73,7 @@ Stops a previously started wireguard tunnel.
 **Signature**
 
 ```ts
-down: (options: { sudo?: boolean | "ask"; how: "bundled-wg-quick" | "userspace-api" | "system-wg-quick" }) =>
-  Effect.Effect<void, Platform.Error.PlatformError, Platform.FileSystem.FileSystem>
+down: { (options: {    sudo?: boolean | "ask" | undefined;    how: "userspace-api";}): Effect.Effect<void, Cause.UnknownException, Platform.FileSystem.FileSystem>; (options: {    sudo?: boolean | "ask" | undefined;    how: "bundled-wg-quick" | "system-wg-quick";    file: string;}): Effect.Effect<void, Cause.UnknownException, Platform.FileSystem.FileSystem>; }
 ```
 
 Added in v1.0.0

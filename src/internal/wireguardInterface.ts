@@ -3,6 +3,7 @@ import * as Socket from "@effect/platform-node/NodeSocket";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as sudoPrompt from "@vscode/sudo-prompt";
+import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -163,50 +164,89 @@ export const execCommand = (
     withSudo: boolean | "ask",
     command: string,
     env?: { [key: string]: string }
-): Effect.Effect<void, WireguardErrors.WireguardError, never> =>
-    withSudo === "ask"
-        ? Effect.try({
-              try: () => sudoPrompt.exec(`${command}`, { name: "The-WireGuard-Effect", env: env ?? {} }),
-              catch: (error) => new WireguardErrors.WireguardError({ message: `${error}` }),
-          })
-        : Effect.tryPromise({
-              try: () => {
-                  const subprocess = execa.execaCommand(`${withSudo === true ? "sudo " : ""}${command}`, {
-                      env: env ?? {},
-                      cleanup: false,
-                      detached: true,
-                      stdio: "ignore",
-                  });
-                  subprocess.unref();
-                  return subprocess;
-              },
-              catch: (error) => new WireguardErrors.WireguardError({ message: `${error}` }),
+): Effect.Effect<void, Cause.UnknownException, never> => {
+    console.log(`${withSudo === true ? "sudo " : ""}${command}`);
+
+    return withSudo === "ask"
+        ? Effect.try(() => sudoPrompt.exec(`${command}`, { name: "The-WireGuard-Effect", env: env ?? {} }))
+        : Effect.tryPromise(() => {
+              const subprocess = execa.execaCommand(`${withSudo === true ? "sudo " : ""}${command}`, {
+                  env: env ?? {},
+                  cleanup: false,
+                  detached: true,
+                  stdio: "ignore",
+              });
+              subprocess.unref();
+              return subprocess;
           });
+};
 
 /** @internal */
-export const upScoped = Function.dual<
+export const upScoped: {
     (
         config: WireguardConfig.WireguardConfig,
         options: {
-            how?:
-                | "bundled-wireguard-go+userspace-api"
-                | "system-wireguard-go+userspace-api"
+            how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;
+            sudo?: boolean | "ask" | undefined;
+        }
+    ): (
+        interfaceObject: WireguardInterface.WireguardInterface
+    ) => Effect.Effect<
+        void,
+        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
+        Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
+    >;
+    (
+        config: WireguardConfig.WireguardConfig,
+        options: {
+            how:
                 | "system-wireguard+system-wg-quick"
                 | "system-wireguard+bundled-wg-quick"
                 | "system-wireguard-go+system-wg-quick"
                 | "bundled-wireguard-go+system-wg-quick"
                 | "system-wireguard-go+bundled-wg-quick"
-                | "bundled-wireguard-go+bundled-wg-quick"
-                | undefined;
-            sudo?: boolean | "ask";
+                | "bundled-wireguard-go+bundled-wg-quick";
+            sudo?: boolean | "ask" | undefined;
         }
-    ) => (
+    ): (
         interfaceObject: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
-        WireguardInterface.WireguardInterface,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
+        string,
+        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
         Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
-    >,
+    >;
+    (
+        interfaceObject: WireguardInterface.WireguardInterface,
+        config: WireguardConfig.WireguardConfig,
+        options: {
+            how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;
+            sudo?: boolean | "ask" | undefined;
+        }
+    ): Effect.Effect<
+        void,
+        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
+        Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
+    >;
+    (
+        interfaceObject: WireguardInterface.WireguardInterface,
+        config: WireguardConfig.WireguardConfig,
+        options: {
+            how:
+                | "system-wireguard+system-wg-quick"
+                | "system-wireguard+bundled-wg-quick"
+                | "system-wireguard-go+system-wg-quick"
+                | "bundled-wireguard-go+system-wg-quick"
+                | "system-wireguard-go+bundled-wg-quick"
+                | "bundled-wireguard-go+bundled-wg-quick";
+            sudo?: boolean | "ask" | undefined;
+        }
+    ): Effect.Effect<
+        string,
+        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
+        Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
+    >;
+} = Function.dual(
+    (args) => Schema.is(WireguardInterface.WireguardInterface)(args[0]),
     (
         interfaceObject: WireguardInterface.WireguardInterface,
         config: WireguardConfig.WireguardConfig,
@@ -221,70 +261,108 @@ export const upScoped = Function.dual<
                 | "system-wireguard-go+bundled-wg-quick"
                 | "bundled-wireguard-go+bundled-wg-quick"
                 | undefined;
-            sudo?: boolean | "ask";
+            sudo?: boolean | "ask" | undefined;
         }
-    ) => Effect.Effect<
-        WireguardInterface.WireguardInterface,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
-        Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
-    >
->(
-    (args) => Schema.is(WireguardInterface.WireguardInterface)(args[0]),
-    (interfaceObject, config, options) => {
-        const downControlOptions = Function.pipe(
-            Match.value(options?.how),
-            Match.when(Predicate.isUndefined, () => ({ how: "userspace-api" }) as const),
+    ) =>
+        Function.pipe(
+            Match.value(options.how),
             Match.whenOr(
+                Predicate.isUndefined,
                 "bundled-wireguard-go+userspace-api",
                 "system-wireguard-go+userspace-api",
-                () => ({ how: "userspace-api" }) as const
+                (how) =>
+                    Effect.acquireRelease(up(interfaceObject, config, { how, sudo: options.sudo }), () =>
+                        down(interfaceObject, { how: "userspace-api", sudo: options.sudo }).pipe(Effect.orDie)
+                    )
             ),
             Match.whenOr(
                 "bundled-wireguard-go+bundled-wg-quick",
                 "system-wireguard+bundled-wg-quick",
                 "system-wireguard-go+bundled-wg-quick",
-                () => ({ how: "bundled-wg-quick" }) as const
+                (how) =>
+                    Effect.acquireRelease(up(interfaceObject, config, { how, sudo: options.sudo }), (file) =>
+                        down(interfaceObject, { how: "bundled-wg-quick", sudo: options.sudo, file }).pipe(Effect.orDie)
+                    )
             ),
             Match.whenOr(
                 "bundled-wireguard-go+system-wg-quick",
                 "system-wireguard+system-wg-quick",
                 "system-wireguard-go+system-wg-quick",
-                () => ({ how: "system-wg-quick" }) as const
+                (how) =>
+                    Effect.acquireRelease(up(interfaceObject, config, { how, sudo: options.sudo }), (file) =>
+                        down(interfaceObject, { how: "system-wg-quick", sudo: options.sudo, file }).pipe(Effect.orDie)
+                    )
             ),
             Match.exhaustive
-        );
-
-        return Effect.acquireRelease(
-            up(interfaceObject, config, options),
-            Function.flow(Function.constant(down(interfaceObject, downControlOptions)), Effect.orDie)
-        );
-    }
+        )
 );
 
 /** @internal */
-export const up = Function.dual<
+export const up: {
     (
         config: WireguardConfig.WireguardConfig,
         options: {
-            how?:
-                | "bundled-wireguard-go+userspace-api"
-                | "system-wireguard-go+userspace-api"
+            how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;
+            sudo?: boolean | "ask" | undefined;
+        }
+    ): (
+        interfaceObject: WireguardInterface.WireguardInterface
+    ) => Effect.Effect<
+        void,
+        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
+        Platform.FileSystem.FileSystem | Platform.Path.Path
+    >;
+    (
+        config: WireguardConfig.WireguardConfig,
+        options: {
+            how:
                 | "system-wireguard+system-wg-quick"
                 | "system-wireguard+bundled-wg-quick"
                 | "system-wireguard-go+system-wg-quick"
                 | "bundled-wireguard-go+system-wg-quick"
                 | "system-wireguard-go+bundled-wg-quick"
-                | "bundled-wireguard-go+bundled-wg-quick"
-                | undefined;
-            sudo?: boolean | "ask";
+                | "bundled-wireguard-go+bundled-wg-quick";
+            sudo?: boolean | "ask" | undefined;
         }
-    ) => (
+    ): (
         interfaceObject: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
-        WireguardInterface.WireguardInterface,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
+        string,
+        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
         Platform.FileSystem.FileSystem | Platform.Path.Path
-    >,
+    >;
+    (
+        interfaceObject: WireguardInterface.WireguardInterface,
+        config: WireguardConfig.WireguardConfig,
+        options: {
+            how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;
+            sudo?: boolean | "ask" | undefined;
+        }
+    ): Effect.Effect<
+        void,
+        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
+        Platform.FileSystem.FileSystem | Platform.Path.Path
+    >;
+    (
+        interfaceObject: WireguardInterface.WireguardInterface,
+        config: WireguardConfig.WireguardConfig,
+        options: {
+            how:
+                | "system-wireguard+system-wg-quick"
+                | "system-wireguard+bundled-wg-quick"
+                | "system-wireguard-go+system-wg-quick"
+                | "bundled-wireguard-go+system-wg-quick"
+                | "system-wireguard-go+bundled-wg-quick"
+                | "bundled-wireguard-go+bundled-wg-quick";
+            sudo?: boolean | "ask" | undefined;
+        }
+    ): Effect.Effect<
+        string,
+        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
+        Platform.FileSystem.FileSystem | Platform.Path.Path
+    >;
+} = Function.dual(
+    (args) => Schema.is(WireguardInterface.WireguardInterface)(args[0]),
     (
         interfaceObject: WireguardInterface.WireguardInterface,
         config: WireguardConfig.WireguardConfig,
@@ -299,16 +377,9 @@ export const up = Function.dual<
                 | "system-wireguard-go+bundled-wg-quick"
                 | "bundled-wireguard-go+bundled-wg-quick"
                 | undefined;
-            sudo?: boolean | "ask";
+            sudo?: boolean | "ask" | undefined;
         }
-    ) => Effect.Effect<
-        WireguardInterface.WireguardInterface,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError,
-        Platform.FileSystem.FileSystem | Platform.Path.Path
-    >
->(
-    (args) => Schema.is(WireguardInterface.WireguardInterface)(args[0]),
-    (interfaceObject, config, options) =>
+    ) =>
         Effect.gen(function* (λ) {
             const path = yield* λ(Platform.Path.Path);
             const fs = yield* λ(Platform.FileSystem.FileSystem);
@@ -319,77 +390,101 @@ export const up = Function.dual<
             yield* λ(config.writeToFile(file));
 
             // Find bundled executables and scripts
-            const bundledWgQuickExecutablePath = "";
+            const bundledWgQuickExecutablePath = yield* λ(WgQuickExecutablePath);
             const bundledWireguardGoExecutablePath = yield* λ(WireguardGoExecutablePath);
 
-            switch (options?.how) {
+            switch (options.how) {
                 // Bring up the interface using the bundled wireguard-go and userspace API
                 case undefined:
                 case "bundled-wireguard-go+userspace-api":
                     const command2_1 = `${bundledWireguardGoExecutablePath} ${interfaceObject.Name}`;
                     yield* λ(execCommand(options?.sudo ?? "ask", command2_1));
                     yield* λ(setConfig(config, interfaceObject));
-                    return interfaceObject;
+                    return undefined;
 
                 // Bring up the interface using the bundled wireguard-go and the bundled wg-quick script
                 case "bundled-wireguard-go+bundled-wg-quick":
                     const env3 = { WG_QUICK_USERSPACE_IMPLEMENTATION: bundledWireguardGoExecutablePath };
                     const command3 = `${bundledWgQuickExecutablePath} up ${file}`;
                     yield* λ(execCommand(options.sudo ?? "ask", command3, env3));
-                    return interfaceObject;
+                    return file;
 
                 // Bring up the interface using the bundled wireguard-go and the system wg-quick script
                 case "bundled-wireguard-go+system-wg-quick":
                     const env4 = { WG_QUICK_USERSPACE_IMPLEMENTATION: bundledWireguardGoExecutablePath };
                     const command4 = `wg-quick up ${file}`;
                     yield* λ(execCommand(options.sudo ?? "ask", command4, env4));
-                    return interfaceObject;
+                    return file;
 
                 // Bring up the interface using the system wireguard-go and the userspace API
                 case "system-wireguard-go+userspace-api":
                     const command5_1 = `wireguard-go ${interfaceObject.Name}`;
                     yield* λ(execCommand(options.sudo ?? "ask", command5_1));
                     yield* λ(setConfig(config, interfaceObject));
-                    return interfaceObject;
+                    return undefined;
 
                 // Bring up the interface using the system wireguard-go and the bundled wg-quick script
                 case "system-wireguard-go+bundled-wg-quick":
                     const env6 = { WG_QUICK_USERSPACE_IMPLEMENTATION: "wireguard-go" };
                     const command6 = `${bundledWgQuickExecutablePath} up ${file}`;
                     yield* λ(execCommand(options.sudo ?? "ask", command6, env6));
-                    return interfaceObject;
+                    return file;
 
                 // Bring up the interface using the system wireguard-go and the system wg-quick script
                 case "system-wireguard-go+system-wg-quick":
                     const env7 = { WG_QUICK_USERSPACE_IMPLEMENTATION: "wireguard-go" };
                     const command7 = `wg-quick up ${file}`;
                     yield* λ(execCommand(options.sudo ?? "ask", command7, env7));
-                    return interfaceObject;
+                    return file;
 
                 // Bring up the interface using the system wireguard and the bundled wg-quick script
                 case "system-wireguard+bundled-wg-quick":
                     const command8 = `${bundledWgQuickExecutablePath} up ${file}`;
                     yield* λ(execCommand(options.sudo ?? "ask", command8));
-                    return interfaceObject;
+                    return file;
 
                 // Bring up the interface using the system wireguard and the system wg quick script
                 case "system-wireguard+system-wg-quick":
                     const command9 = `wg-quick up ${file}`;
                     yield* λ(execCommand(options.sudo ?? "ask", command9));
-                    return interfaceObject;
+                    return file;
             }
         })
 );
 
 /** @internal */
-export const down = (
+export const down: {
+    (
+        interfaceObject: WireguardInterface.WireguardInterface,
+        options: {
+            sudo?: boolean | "ask" | undefined;
+            how: "userspace-api";
+        }
+    ): Effect.Effect<void, Cause.UnknownException, Platform.FileSystem.FileSystem>;
+    (
+        interfaceObject: WireguardInterface.WireguardInterface,
+        options: {
+            sudo?: boolean | "ask" | undefined;
+            how: "bundled-wg-quick" | "system-wg-quick";
+            file: string;
+        }
+    ): Effect.Effect<void, Cause.UnknownException, Platform.FileSystem.FileSystem>;
+} = (
     interfaceObject: WireguardInterface.WireguardInterface,
-    options: {
-        sudo?: boolean | "ask";
-        how: "bundled-wg-quick" | "userspace-api" | "system-wg-quick";
-    }
-): Effect.Effect<void, Platform.Error.PlatformError, Platform.FileSystem.FileSystem> =>
-    Effect.map(Platform.FileSystem.FileSystem, (fs) => fs.remove(socketLocation(interfaceObject)));
+    options:
+        | {
+              sudo?: boolean | "ask" | undefined;
+              how: "userspace-api";
+          }
+        | {
+              sudo?: boolean | "ask" | undefined;
+              how: "bundled-wg-quick" | "system-wg-quick";
+              file: string;
+          }
+): Effect.Effect<void, Cause.UnknownException, Platform.FileSystem.FileSystem> =>
+    options.how === "userspace-api"
+        ? Effect.map(Platform.FileSystem.FileSystem, (fs) => fs.remove(socketLocation(interfaceObject)))
+        : execCommand(options.sudo ?? "ask", `wg-quick down ${options.file}`);
 
 /** @internal */
 export const setConfig = (
