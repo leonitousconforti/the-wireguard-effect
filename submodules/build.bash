@@ -31,3 +31,8 @@ mkdir -p ../dist/prebuilds
 (cd ../src/internal && ln -s ../../dist/prebuilds/* .)
 (cd ../dist/dist/cjs/internal && ln -s ../../../prebuilds/* .)
 (cd ../dist/dist/esm/internal && ln -s ../../../prebuilds/* .)
+
+# Copy licenses
+(cd ./wintun && cp ./LICENSE.txt ../../dist/prebuilds/LICENSE-wintun)
+(cd ./wireguard-go && cp ./LICENSE ../../dist/prebuilds/LICENSE-wireguard-go)
+(cd ./wireguard-tools && cp ./COPYING ../../dist/prebuilds/LICENSE-wireguard-tools)
