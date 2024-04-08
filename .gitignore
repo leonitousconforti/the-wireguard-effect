@@ -7,5 +7,6 @@
 /node_modules/
 /docs/examples/
 
-/src/internal/
-!/src/internal/*.ts
+src/internal/*-wireguard-go
+src/internal/*-wg-quick
+src/internal/*-wintun.dll
