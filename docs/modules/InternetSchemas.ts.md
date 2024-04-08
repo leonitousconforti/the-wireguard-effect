@@ -76,6 +76,8 @@ Added in v1.0.0
   - [IPv4FromString (type alias)](#ipv4fromstring-type-alias)
   - [IPv6FromString (type alias)](#ipv6fromstring-type-alias)
   - [SetupData (type alias)](#setupdata-type-alias)
+- [utils](#utils)
+  - [splitLiteral](#splitliteral)
 
 ---
 
@@ -963,6 +965,21 @@ Added in v1.0.0
 
 ```ts
 export type SetupData = Schema.Schema.Type<typeof SetupData>
+```
+
+Added in v1.0.0
+
+# utils
+
+## splitLiteral
+
+**Signature**
+
+```ts
+export declare const splitLiteral: <Str extends string, Delimiter extends string>(
+  str: Str,
+  delimiter: Delimiter
+) => Split<Str, Delimiter>
 ```
 
 Added in v1.0.0

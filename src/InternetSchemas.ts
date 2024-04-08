@@ -27,10 +27,7 @@ type Split<Str extends string, Delimiter extends string> = string extends Str | 
       ? [T, ...Split<U, Delimiter>]
       : [Str];
 
-/**
- * @internal
- * @see {@link Split}
- */
+/** @since 1.0.0 */
 export const splitLiteral = <Str extends string, Delimiter extends string>(
     str: Str,
     delimiter: Delimiter
