@@ -61,8 +61,12 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
-      - run: ls
-      - run: pwd
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
       - run: pnpm install
       - run: sudo apt-get install -y wireguard
       - run: pnpm test
@@ -74,20 +78,29 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
-      - run: ls
-      - run: pwd
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
       - run: pnpm install
       - run: brew install wireguard-tools
       - run: pnpm test
 
   freebsd-test:
     runs-on: ubuntu-latest
+    needs: [build]
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
-      - run: ls
-      - run: pwd
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
       - uses: vmactions/freebsd-vm@v1
         with:
           usesh: true
@@ -105,12 +118,17 @@ jobs:
 
   openbsd-test:
     runs-on: ubuntu-latest
+    needs: [build]
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
-      - run: ls
-      - run: pwd
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
       - uses: vmactions/openbsd-vm@v1
         with:
           usesh: true
@@ -126,15 +144,8 @@ jobs:
 
   windows-test:
     runs-on: windows-latest
+    needs: [build]
     steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: 'true'
-
-      # - run: pnpm install
-      # - run: pnpm check
-      # - run: pnpm build
-
       - shell: pwsh
         run: dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
       - shell: pwsh
@@ -147,7 +158,3 @@ jobs:
       #   run: wsl --install -d Ubuntu
       # - shell: pwsh
       #   run: wsl --list --verbose
-
-      # - run: sudo apt-get update
-      # - run: sudo apt-get install -y wireguard
-      # - run: pnpm test
