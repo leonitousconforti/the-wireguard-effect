@@ -10,6 +10,7 @@
         "module": "ES2022",
         "target": "ES2022",
         "lib": ["ES2022"],
+        "baseUrl": "../../",
         "paths": {
             "the-wireguard-effect": ["./src/index.js"],
             "the-wireguard-effect/*": ["./src/*.js"]
