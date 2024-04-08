@@ -109,6 +109,9 @@ jobs:
         with:
           usesh: true
           prepare: |
+            pkg search nodejs
+            pkg search npm
+            pkg search wireguard
             pkg install -y nodejs npm wiregaurd
             npm install -g pnpm
             pnpm install
@@ -128,6 +131,9 @@ jobs:
         with:
           usesh: true
           prepare: |
+            pkg_search nodejs
+            pkg_search npm
+            pkg_search wireguard
             pkg_add nodejs npm wiregaurd
             npm install -g pnpm
             pnpm install
