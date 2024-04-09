@@ -37,7 +37,7 @@
         "clean": "rimraf .tsbuildinfo docs build dist coverage && rimraf --glob src/internal/*-wireguard-go src/internal/*-wg-quick src/internal/*-wintun.dll",
         "codegen": "build-utils prepare-v2",
         "coverage": "vitest --coverage",
-        "test": "vitest --watch false"
+        "test": "vitest"
     },
     "resolutions": {
         "rollup": "npm:@rollup/wasm-node"
