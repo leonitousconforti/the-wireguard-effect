@@ -4,7 +4,7 @@ import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as Effect from "effect/Effect";
 import * as DemoUtils from "./WireguardDemo.js";
 
-describe.skip("wireguard e2e test using demo.wireguard.com", () => {
+describe("wireguard e2e test using demo.wireguard.com", () => {
     it.effect(
         "Should be able to connect to the demo server",
         () =>
