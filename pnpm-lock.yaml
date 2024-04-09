@@ -40,8 +40,8 @@ devDependencies:
     specifier: 0.7.6
     version: 0.7.6(patch_hash=whl4uh3kr7re23fvpdziecduvq)
   '@effect/docgen':
-    specifier: 0.3.8
-    version: 0.3.8(tsx@4.7.2)(typescript@5.4.4)
+    specifier: 0.4.1
+    version: 0.4.1(tsx@4.7.2)(typescript@5.4.4)
   '@effect/eslint-plugin':
     specifier: 0.1.2
     version: 0.1.2
@@ -413,9 +413,9 @@ packages:
     dev: true
     patched: true
 
-  /@effect/docgen@0.3.8(tsx@4.7.2)(typescript@5.4.4):
-    resolution: {integrity: sha512-yg777LXbKjgpHS+PC2dXS5tHTWRXQoCgcWJtM7CsNkZ2mefvmO7aufiRCaWYDnCF58otv10Tijuyanii4b2cxQ==}
-    engines: {node: '>=16.17.1'}
+  /@effect/docgen@0.4.1(tsx@4.7.2)(typescript@5.4.4):
+    resolution: {integrity: sha512-AXaBdh/mO3kWLT3XYpxpR+hyWzK5rVE3jsksQFmOa2JNtWCx4FHg+OhuDvHaLyS9OP3NXq98Ib0kICS55BnkSg==}
+    engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
       tsx: ^4.1.0
@@ -423,7 +423,7 @@ packages:
     dependencies:
       doctrine: 3.0.0
       glob: 10.3.12
-      markdown-toc: github.com/effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5
+      markdown-toc: git/github.com+effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5
       prettier: 3.2.5
       tsx: 4.7.2
       typescript: 5.4.4
@@ -4043,8 +4043,8 @@ packages:
     engines: {node: '>=12.20'}
     dev: true
 
-  github.com/effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5:
-    resolution: {tarball: https://codeload.github.com/effect-ts/markdown-toc/tar.gz/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5}
+  git/github.com+effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5:
+    resolution: {commit: 4bfeb0f140105440ea0d12df2fa23199cc3ec1d5, repo: git@github.com:effect-ts/markdown-toc.git, type: git}
     name: markdown-toc
     version: 1.2.0
     engines: {node: '>=0.10.0'}
