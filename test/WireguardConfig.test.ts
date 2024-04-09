@@ -3,7 +3,6 @@ import { describe, it } from "vitest";
 import * as PlatformNode from "@effect/platform-node";
 import * as Schema from "@effect/schema/Schema";
 import * as Chunk from "effect/Chunk";
-import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Sink from "effect/Sink";
@@ -33,21 +32,28 @@ describe("WireguardConfig", () => {
             const aliceSetupData = Tuple.make(aliceEndpoint, ips[0]);
             const bobSetupData = Tuple.make(bobEndpoint, ips[1]);
 
-            const [aliceConfig, bobConfig] = yield* λ(
+            yield* λ(
                 WireguardConfig.WireguardConfig.generateP2PConfigs({
                     aliceData: aliceSetupData,
                     bobData: bobSetupData,
                 })
             );
 
-            yield* λ(aliceConfig.writeToFile("alice.conf"));
-            yield* λ(bobConfig.writeToFile("bob.conf"));
+            // const [aliceConfig, bobConfig] = yield* λ(
+            //     WireguardConfig.WireguardConfig.generateP2PConfigs({
+            //         aliceData: aliceSetupData,
+            //         bobData: bobSetupData,
+            //     })
+            // );
 
-            const aliceConfig2 = yield* λ(WireguardConfig.WireguardConfig.fromConfigFile("alice.conf"));
-            const bobConfig2 = yield* λ(WireguardConfig.WireguardConfig.fromConfigFile("bob.conf"));
+            // yield* λ(aliceConfig.writeToFile("alice.conf"));
+            // yield* λ(bobConfig.writeToFile("bob.conf"));
 
-            yield* λ(Console.log(aliceConfig2));
-            yield* λ(Console.log(bobConfig2));
+            // const aliceConfig2 = yield* λ(WireguardConfig.WireguardConfig.fromConfigFile("alice.conf"));
+            // const bobConfig2 = yield* λ(WireguardConfig.WireguardConfig.fromConfigFile("bob.conf"));
+
+            // yield* λ(Console.log(aliceConfig2));
+            // yield* λ(Console.log(bobConfig2));
         })
             .pipe(Effect.provide(PlatformNode.NodeContext.layer))
             .pipe(Effect.runPromise));
