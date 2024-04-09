@@ -111,7 +111,6 @@ jobs:
           run: |
             pnpm install
             pnpm test
-      - uses: mxschmitt/action-tmate@v3
 
   openbsd-test:
     runs-on: ubuntu-latest
