@@ -111,7 +111,6 @@ jobs:
           run: |
             pnpm install
             pnpm test
-            exit
 
   openbsd-test:
     runs-on: ubuntu-latest
@@ -134,7 +133,6 @@ jobs:
           run: |
             pnpm install
             pnpm test
-            exit
 
   windows-test:
     if: false
