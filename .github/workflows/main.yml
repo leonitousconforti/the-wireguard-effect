@@ -100,8 +100,6 @@ jobs:
         with:
           usesh: true
           prepare: |
-            freebsd-update fetch
-            freebsd-update install
             pkg install -y sudo node npm wireguard-tools-1.0.20210914_2
             npm -v
             node -v
@@ -110,6 +108,7 @@ jobs:
           run: |
             pnpm install
             pnpm test
+            echo "here"
 
   openbsd-test:
     runs-on: ubuntu-latest
