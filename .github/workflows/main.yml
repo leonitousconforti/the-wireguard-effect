@@ -99,6 +99,8 @@ jobs:
       - uses: vmactions/freebsd-vm@v1
         with:
           usesh: true
+          sync: rsync
+          copyback: false
           prepare: |
             pkg install -y sudo node npm wireguard-tools-1.0.20210914_2
             npm -v
@@ -120,6 +122,8 @@ jobs:
       - uses: vmactions/openbsd-vm@v1
         with:
           usesh: true
+          sync: rsync
+          copyback: false
           prepare: |
             pkg_add sudo-1.9.15.5 node wireguard-tools-1.0.20210914p2v0
             npm -v
