@@ -5,7 +5,6 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
     test: {
-        pool: "forks",
         include: ["./test/**/*.test.ts"],
         globals: true,
         coverage: {
