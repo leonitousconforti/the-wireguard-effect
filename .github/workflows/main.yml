@@ -135,7 +135,6 @@ jobs:
             pnpm test
 
   windows-wsl2-test:
-    if: false
     runs-on: windows-latest
     needs: [build]
     steps:
