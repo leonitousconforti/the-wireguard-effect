@@ -50,6 +50,7 @@ jobs:
       - run: pnpm build
       - run: rm -rf submodules/
       - run: rm -rf node_modules/
+      - run: rm -rf .git/
       - uses: actions/upload-artifact@v4
         with:
           name: the-wireguard-effect
@@ -110,7 +111,7 @@ jobs:
           run: |
             pnpm install
             pnpm test
-            echo "here"
+            exit
 
   openbsd-test:
     runs-on: ubuntu-latest
@@ -133,6 +134,7 @@ jobs:
           run: |
             pnpm install
             pnpm test
+            exit
 
   windows-test:
     if: false
