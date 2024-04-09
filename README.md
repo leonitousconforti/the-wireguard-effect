@@ -1,25 +1,27 @@
 # the-wireguard-effect
 
-Cross platform userspace wireguard api client for nodejs built on wireguard-go with effect-ts. The [Wireguard cross platform docs](https://www.wireguard.com/xplatform/) are a good place to look if you don't know what I am talking about.
+Cross platform wireguard api client for nodejs built on wireguard-go with effect-ts.
 
 ## Motivation/ideation :bulb:
 
-The motivation for this project came from wanting to communicate between two Github Actions runners on the same workflow. I needed to send network requests
+The motivation for this project came from wanting to create wireguard configurations and ultimately control a wireguard interface from JS for a different project of mine.
 
 ## Goals :white_check_mark:
 
-- [x] - don't need to have wireguard installed
+- [x] - doesn't require wireguard to be installed
+- [x] - fully typed wireguard configurations (thanks to @effect/schema)
 - [x] - cross platform (supports linux amd64, linux arm64, mac amd64, mac arm64, windows amd64, and windows arm64, freebsd amd64, freebsd arm64, openbsd amd64, and openbsd arm64)
-- [x] - userspace (at least my code, the node.js part, operates entirely in userspace. When wireguard-go needs admin permissions you will be prompted)
-- [x] - Github actions to allow two runners in the same workflow to communicate
+- [x] - userspace implementation (implements the wireguard userspace api as well if that is something you are interested in, the [Wireguard cross platform docs](https://www.wireguard.com/xplatform/) have details about it.)
+- [x] - strong control over how the interface is managed across all platforms
 
 ## Non-Goals :wastebasket:
 
-- Performance. I know I should be using the wireguard kernel module when on a linux host, but for simplicity this uses wireguard-go on all platforms.
+- Utilities for installing or checking if wireguard is installed on the system.
+- Utilities to configure userspace network interfaces when bringing a config up using the userspace api
 
-## Compatibility :closed_lock_with_key:
+## Security :closed_lock_with_key:
 
-As of writing, there is only one version of the wireguard api. If this changes in the future, I will update the package to add compatibility for the newer version.
+the-wireguard-effect is not an official WireGuard project, and WireGuard is a registered trademark of Jason A. Donenfeld. The is a hobby project of mine, it has not received an independent security audit and never will.
 
 ## Contributing and getting help :speech_balloon: :beers:
 
