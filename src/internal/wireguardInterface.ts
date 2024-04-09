@@ -167,6 +167,7 @@ export const execCommand = (
     return withSudo === "ask"
         ? Effect.try(() => sudoPrompt.exec(`${command}`, { name: "The-WireGuard-Effect", env: env ?? {} }))
         : Effect.tryPromise(() => {
+              // TODO: figure out why this causes the tests to hang only on FreeBSD
               const subprocess = execa.execaCommand(`${withSudo === true ? "sudo " : ""}${command}`, {
                   env: env ?? {},
                   //   cleanup: !command.includes("wireguard-go"),

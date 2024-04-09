@@ -134,7 +134,7 @@ jobs:
             pnpm install
             pnpm test
 
-  windows-test:
+  windows-wsl2-test:
     if: false
     runs-on: windows-latest
     needs: [build]
@@ -151,3 +151,20 @@ jobs:
       #   run: wsl --install -d Ubuntu
       # - shell: pwsh
       #   run: wsl --list --verbose
+
+  windows-test:
+    if: false
+    runs-on: windows-latest
+    needs: [build]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: the-wireguard-effect
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+      - run: pnpm install
+      - run: choco install wireguard
