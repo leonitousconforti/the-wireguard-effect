@@ -153,7 +153,7 @@ jobs:
       - run: dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
       - run: wsl --set-default-version 2
       - run: wsl --update
-      - run: wsl --install Ubuntu --web-download #--no-launch
+      - run: wsl --install Ubuntu --web-download --no-launch
       - run: wsl --list --verbose
 
   windows-test:
