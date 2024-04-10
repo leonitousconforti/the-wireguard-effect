@@ -152,8 +152,8 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
-
       # Yes all this is necassary to get WSL2 working on GitHub Actions without any user input
+      # They are all as separate steps so its easier to debug and see what/where it fails
       - run: dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
       - run: dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
       - run: wsl --set-default-version 2
@@ -164,16 +164,13 @@ jobs:
       - run: wsl --list --verbose
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get upgrade -y
-      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y wireguard nodejs npm
-
-      # This is where the testing starts
-      - run: |
-          wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm
-          wsl --distribution Ubuntu22.04 --user root -- pwd
-          wsl --distribution Ubuntu22.04 --user root -- ls -la
-          wsl --distribution Ubuntu22.04 --user root -- cd /mnt/c/Users/runner/work/the-wireguard-effect/the-wireguard-effect && ls -la
-          wsl --distribution Ubuntu22.04 --user root -- cd /mnt/c/Users/runner/work/the-wireguard-effect/the-wireguard-effect && pnpm install
-          wsl --distribution Ubuntu22.04 --user root -- cd /mnt/c/Users/runner/work/the-wireguard-effect/the-wireguard-effect && pnpm test
+      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y wireguard
+      - run: wsl --distribution Ubuntu22.04 --user root -- curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+      - run: wsl --distribution Ubuntu22.04 --user root -- nvm install 18
+      - run: wsl --distribution Ubuntu22.04 --user root -- nvm use 18
+      - run: wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm
+      - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
+      - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test
 
   windows-test:
     if: false
