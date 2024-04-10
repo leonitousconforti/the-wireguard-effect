@@ -9,7 +9,7 @@ on:
     - cron:  '30 * * * *'
 
 concurrency:
-  cancel-in-progress: true
+  cancel-in-progress: false
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
 
 jobs:
