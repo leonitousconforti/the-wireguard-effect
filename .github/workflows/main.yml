@@ -165,7 +165,8 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get upgrade -y
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y wireguard
-      - run: wsl --distribution Ubuntu22.04 --user root -- touch ~/.profile
+      - run: wsl --distribution Ubuntu22.04 --user root -- export NVM_DIR="$HOME/.nvm"
+      - run: wsl --distribution Ubuntu22.04 --user root -- [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
       - run: wsl --distribution Ubuntu22.04 --user root -- curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
       - run: wsl --distribution Ubuntu22.04 --user root -- nvm install 18
       - run: wsl --distribution Ubuntu22.04 --user root -- nvm use 18
