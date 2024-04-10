@@ -1,5 +1,10 @@
 {
   "features": {
+    "ghcr.io/devcontainers-contrib/features/apt-get-packages:1": {
+      "version": "1.0.6",
+      "resolved": "ghcr.io/devcontainers-contrib/features/apt-get-packages@sha256:e978f0cd0b621d9ad5efec334408e5a6d3d2a65c99a9a60613115168e186d2c9",
+      "integrity": "sha256:e978f0cd0b621d9ad5efec334408e5a6d3d2a65c99a9a60613115168e186d2c9"
+    },
     "ghcr.io/devcontainers/features/common-utils:2": {
       "version": "2.4.2",
       "resolved": "ghcr.io/devcontainers/features/common-utils@sha256:bebfdcd6097a35506bf0f064a31e52ad4205467d9d7a226a688f51b851c88b65",
