@@ -149,16 +149,28 @@ jobs:
       run:
         shell: pwsh
     steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: the-wireguard-effect
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+      - run: pnpm install
+
+      # Yes all this is necassary to get WSL2 working on GitHub Actions without any user input
       - run: dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
       - run: dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
       - run: wsl --set-default-version 2
       - run: wsl --update
       - run: wsl --install --no-distribution
       - run: Invoke-WebRequest -URI https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-root.tar.xz -OutFile jammy-server-cloudimg-amd64-root.tar.xz
-      - run: wsl --import Ubuntu . jammy-server-cloudimg-amd64-root.tar.xz --version 2
-      # - run: wsl -d Ubuntu22.04
+      - run: wsl --import Ubuntu22.04 . jammy-server-cloudimg-amd64-root.tar.xz --version 2
       - run: wsl -d Ubuntu22.04 --user root -- sudo apt-get update
       - run: wsl -d Ubuntu22.04 --user root -- sudo apt-get upgrade -y
+      - run: wsl -d Ubuntu22.04 --user root -- sudo apt-get install -y wireguard
 
   windows-test:
     if: false
