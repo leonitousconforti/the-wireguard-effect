@@ -157,7 +157,8 @@ jobs:
       - run: Invoke-WebRequest -URI https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-root.tar.xz -OutFile jammy-server-cloudimg-amd64-root.tar.xz
       - run: wsl --import Ubuntu . jammy-server-cloudimg-amd64-root.tar.xz --version 2
       # - run: wsl -d Ubuntu22.04
-      # - run: wsl -d Ubuntu22.04 --user root -- apt update
+      - run: wsl -d Ubuntu22.04 --user root -- sudo apt-get update
+      - run: wsl -d Ubuntu22.04 --user root -- sudo apt-get upgrade -y
 
   windows-test:
     if: false
