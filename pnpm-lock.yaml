@@ -41,7 +41,7 @@ devDependencies:
     version: 0.7.6(patch_hash=whl4uh3kr7re23fvpdziecduvq)
   '@effect/docgen':
     specifier: 0.4.1
-    version: 0.4.1(tsx@4.7.2)(typescript@5.4.4)
+    version: 0.4.1(tsx@4.7.2)(typescript@5.4.5)
   '@effect/eslint-plugin':
     specifier: 0.1.2
     version: 0.1.2
@@ -118,8 +118,8 @@ devDependencies:
     specifier: 4.7.2
     version: 4.7.2
   typescript:
-    specifier: 5.4.4
-    version: 5.4.4
+    specifier: 5.4.5
+    version: 5.4.5
   vite:
     specifier: 5.2.8
     version: 5.2.8(@types/node@20.12.7)
@@ -413,7 +413,7 @@ packages:
     dev: true
     patched: true
 
-  /@effect/docgen@0.4.1(tsx@4.7.2)(typescript@5.4.4):
+  /@effect/docgen@0.4.1(tsx@4.7.2)(typescript@5.4.5):
     resolution: {integrity: sha512-AXaBdh/mO3kWLT3XYpxpR+hyWzK5rVE3jsksQFmOa2JNtWCx4FHg+OhuDvHaLyS9OP3NXq98Ib0kICS55BnkSg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
@@ -423,10 +423,10 @@ packages:
     dependencies:
       doctrine: 3.0.0
       glob: 10.3.12
-      markdown-toc: git/github.com+effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5
+      markdown-toc: github.com/effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5
       prettier: 3.2.5
       tsx: 4.7.2
-      typescript: 5.4.4
+      typescript: 5.4.5
     dev: true
 
   /@effect/eslint-plugin@0.1.2:
@@ -1510,8 +1510,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001607
-      electron-to-chromium: 1.4.730
+      caniuse-lite: 1.0.30001608
+      electron-to-chromium: 1.4.732
       node-releases: 2.0.14
       update-browserslist-db: 1.0.13(browserslist@4.23.0)
     dev: true
@@ -1535,8 +1535,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /caniuse-lite@1.0.30001607:
-    resolution: {integrity: sha512-WcvhVRjXLKFB/kmOFVwELtMxyhq3iM/MvmXcyCe2PNf166c39mptscOc/45TTS96n2gpNV2z7+NakArTWZCQ3w==}
+  /caniuse-lite@1.0.30001608:
+    resolution: {integrity: sha512-cjUJTQkk9fQlJR2s4HMuPMvTiRggl0rAVMtthQuyOlDWuqHXqN8azLq+pi8B2TjwKJ32diHjUqRIKeFX4z1FoA==}
     dev: true
 
   /chai@4.4.1:
@@ -1774,8 +1774,8 @@ packages:
     resolution: {integrity: sha512-8nNzkhSzFLhG9YxowXKawlk4+b3zwwOsbZwaaYhy1OjZGcEgcE6i0ywMFieXNSfOtsQ8swV1+5hvF+VBEtwwqg==}
     dev: true
 
-  /electron-to-chromium@1.4.730:
-    resolution: {integrity: sha512-oJRPo82XEqtQAobHpJIR3zW5YO3sSRRkPz2an4yxi1UvqhsGm54vR/wzTFV74a3soDOJ8CKW7ajOOX5ESzddwg==}
+  /electron-to-chromium@1.4.732:
+    resolution: {integrity: sha512-nLrzr6UML+oqCyvseTxJ1WxLsnMSQPJCoHu+MuOuNiCp7BHEdG9AmCTw2Y9FU/wFFc/ETE0F6JVtzzPryEjecw==}
     dev: true
 
   /emoji-regex@8.0.0:
@@ -3794,8 +3794,8 @@ packages:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
     dev: true
 
-  /typescript@5.4.4:
-    resolution: {integrity: sha512-dGE2Vv8cpVvw28v8HCPqyb08EzbBURxDpuhJvTrusShUfGnhHBafDsLdS1EhhxyL6BJQE+2cT3dDPAv+MQ6oLw==}
+  /typescript@5.4.5:
+    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
@@ -4043,8 +4043,8 @@ packages:
     engines: {node: '>=12.20'}
     dev: true
 
-  git/github.com+effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5:
-    resolution: {commit: 4bfeb0f140105440ea0d12df2fa23199cc3ec1d5, repo: git@github.com:effect-ts/markdown-toc.git, type: git}
+  github.com/effect-ts/markdown-toc/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5:
+    resolution: {tarball: https://codeload.github.com/effect-ts/markdown-toc/tar.gz/4bfeb0f140105440ea0d12df2fa23199cc3ec1d5}
     name: markdown-toc
     version: 1.2.0
     engines: {node: '>=0.10.0'}

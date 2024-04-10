@@ -45,7 +45,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node18.x-pnpm-store-
 
-      - run: git config --global url."https://".insteadOf git+ssh://git@
       - run: pnpm install
       - run: pnpm check
       - run: pnpm build
