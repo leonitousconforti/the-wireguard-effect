@@ -170,9 +170,8 @@ export const execCommand = (
               // TODO: figure out why this causes the tests to hang only on FreeBSD
               const subprocess = execa.execaCommand(`${withSudo === true ? "sudo " : ""}${command}`, {
                   env: env ?? {},
-                  cleanup: false,
+                  stdio: "ignore",
                   detached: command.includes("wireguard-go"),
-                  stdio: command.includes("wireguard-go") ? "ignore" : "inherit",
               });
               if (command.includes("wireguard-go")) subprocess.unref();
               return subprocess;
