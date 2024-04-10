@@ -152,13 +152,6 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "18.x"
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 8
-      - run: pnpm install
 
       # Yes all this is necassary to get WSL2 working on GitHub Actions without any user input
       - run: dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
@@ -169,9 +162,18 @@ jobs:
       - run: Invoke-WebRequest -URI https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-root.tar.xz -OutFile jammy-server-cloudimg-amd64-root.tar.xz
       - run: wsl --import Ubuntu22.04 . jammy-server-cloudimg-amd64-root.tar.xz --version 2
       - run: wsl --list --verbose
-      - run: wsl -d Ubuntu22.04 --user root -- sudo apt-get update
-      - run: wsl -d Ubuntu22.04 --user root -- sudo apt-get upgrade -y
-      - run: wsl -d Ubuntu22.04 --user root -- sudo apt-get install -y wireguard
+      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
+      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get upgrade -y
+      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y wireguard nodejs npm
+
+      # This is where the testing starts
+      - run: |
+          wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm
+          wsl --distribution Ubuntu22.04 --user root -- pwd
+          wsl --distribution Ubuntu22.04 --user root -- ls -la
+          wsl --distribution Ubuntu22.04 --user root -- cd /mnt/c/Users/runner/work/the-wireguard-effect/the-wireguard-effect && ls -la
+          wsl --distribution Ubuntu22.04 --user root -- cd /mnt/c/Users/runner/work/the-wireguard-effect/the-wireguard-effect && pnpm install
+          wsl --distribution Ubuntu22.04 --user root -- cd /mnt/c/Users/runner/work/the-wireguard-effect/the-wireguard-effect && pnpm test
 
   windows-test:
     if: false
