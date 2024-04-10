@@ -15,6 +15,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -60,6 +61,7 @@ jobs:
 
   linux-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
@@ -77,6 +79,7 @@ jobs:
 
   macos-test:
     runs-on: macos-latest
+    timeout-minutes: 10
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
@@ -94,6 +97,7 @@ jobs:
 
   freebsd-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
@@ -116,6 +120,7 @@ jobs:
 
   openbsd-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
@@ -138,6 +143,7 @@ jobs:
 
   windows-wsl2-test:
     runs-on: windows-latest
+    timeout-minutes: 10
     needs: [build]
     steps:
       - shell: pwsh
@@ -156,6 +162,7 @@ jobs:
   windows-test:
     if: false
     runs-on: windows-latest
+    timeout-minutes: 10
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
