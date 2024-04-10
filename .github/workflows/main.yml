@@ -155,6 +155,7 @@ jobs:
       - run: wsl --update
       - run: wsl --install Ubuntu --web-download --no-launch
       - run: wsl --list --verbose
+      - run: wsl --manage --help
 
   windows-test:
     if: false
