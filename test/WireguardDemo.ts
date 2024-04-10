@@ -8,6 +8,7 @@ import * as Schema from "@effect/schema/Schema";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Option from "effect/Option";
+import * as Schedule from "effect/Schedule";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 
@@ -98,4 +99,5 @@ export const createWireguardDemoConfig = (
 export const requestHiddenPage: Effect.Effect<string, HttpClient.error.HttpClientError, never> = HttpClient.request
     .get("http://192.168.4.1")
     .pipe(HttpClient.client.fetchOk())
-    .pipe(HttpClient.response.text);
+    .pipe(HttpClient.response.text)
+    .pipe(Effect.retry(Schedule.recurs(5).pipe(Schedule.addDelay(() => "5 seconds"))));
