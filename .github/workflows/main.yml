@@ -165,10 +165,9 @@ jobs:
 
       # Actually install the wsl ubuntu 18.04 app
       - run: |
-          Add-AppxPackage .\Ubuntu1804.appx
-          Write-Output "Installed the ubuntu18.04"
+          invoke-expression -Command "Add-AppxPackage .\Ubuntu1804.appx"
 
-      # Wsl ubuntu 18.04 app without requiring user input
+      # Unattended Wsl ubuntu 18.04 app setup without requiring user input
       - run: |
           $str1="/Users/"
           $str2="/AppData/Local/Microsoft/WindowsApps/ubuntu1804"
