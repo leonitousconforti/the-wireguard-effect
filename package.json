@@ -65,7 +65,7 @@
         "@effect/vitest": "0.2.6",
         "@rollup/wasm-node": "4.14.1",
         "@types/ini": "4.1.0",
-        "@types/node": "20.12.6",
+        "@types/node": "20.12.7",
         "@vitest/coverage-v8": "1.4.0",
         "babel-plugin-annotate-pure-calls": "0.4.0",
         "effect": "2.4.18",
