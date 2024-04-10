@@ -43,7 +43,7 @@ jobs:
           path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-node18.x-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+            ${{ runner.os }}-node18.x-pnpm-store-
 
       - run: pnpm install
       - run: pnpm check
