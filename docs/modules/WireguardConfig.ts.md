@@ -79,11 +79,7 @@ Writes a wireguard interface configuration to an INI file.
 
 ```ts
 writeToFile: (file: string) =>
-  Effect.Effect<
-    void,
-    ParseResult.ParseError | Platform.Error.PlatformError,
-    Platform.FileSystem.FileSystem | Platform.Path.Path
-  >
+  Effect.Effect<void, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem | Path.Path>
 ```
 
 Added in v1.0.0
@@ -96,7 +92,7 @@ even after the nodejs process exits.
 **Signature**
 
 ```ts
-up: { (options: {    how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;    sudo?: boolean | "ask" | undefined;}, interfaceObject?: WireguardInterface.WireguardInterface | undefined): Effect.Effect<void, WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException, Platform.FileSystem.FileSystem | Platform.Path.Path>; (options: {    how: "system-wireguard+system-wg-quick" | "system-wireguard+bundled-wg-quick" | "system-wireguard-go+system-wg-quick" | "bundled-wireguard-go+system-wg-quick" | "system-wireguard-go+bundled-wg-quick" | "bundled-wireguard-go+bundled-wg-quick";    sudo?: boolean | "ask" | undefined;}, interfaceObject?: WireguardInterface.WireguardInterface | undefined): Effect.Effect<string, WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException, Platform.FileSystem.FileSystem | Platform.Path.Path>; }
+up: { (options: {    how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;    sudo?: boolean | "ask" | undefined;}, interfaceObject?: WireguardInterface.WireguardInterface | undefined): Effect.Effect<void, WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException, FileSystem.FileSystem | Path.Path>; (options: {    how: "system-wireguard+system-wg-quick" | "system-wireguard+bundled-wg-quick" | "system-wireguard-go+system-wg-quick" | "bundled-wireguard-go+system-wg-quick" | "system-wireguard-go+bundled-wg-quick" | "bundled-wireguard-go+bundled-wg-quick";    sudo?: boolean | "ask" | undefined;}, interfaceObject?: WireguardInterface.WireguardInterface | undefined): Effect.Effect<string, WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException, FileSystem.FileSystem | Path.Path>; }
 ```
 
 Added in v1.0.0
@@ -109,7 +105,7 @@ serving traffic once the scope is closed.
 **Signature**
 
 ```ts
-upScoped: { (options: {    how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;    sudo?: boolean | "ask" | undefined;}, interfaceObject?: WireguardInterface.WireguardInterface | undefined): Effect.Effect<void, WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException, Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope>; (options: {    how: "system-wireguard+system-wg-quick" | "system-wireguard+bundled-wg-quick" | "system-wireguard-go+system-wg-quick" | "bundled-wireguard-go+system-wg-quick" | "system-wireguard-go+bundled-wg-quick" | "bundled-wireguard-go+bundled-wg-quick";    sudo?: boolean | "ask" | undefined;}, interfaceObject?: WireguardInterface.WireguardInterface | undefined): Effect.Effect<string, WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException, Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope>; }
+upScoped: { (options: {    how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;    sudo?: boolean | "ask" | undefined;}, interfaceObject?: WireguardInterface.WireguardInterface | undefined): Effect.Effect<void, WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException, FileSystem.FileSystem | Path.Path | Scope.Scope>; (options: {    how: "system-wireguard+system-wg-quick" | "system-wireguard+bundled-wg-quick" | "system-wireguard-go+system-wg-quick" | "bundled-wireguard-go+system-wg-quick" | "system-wireguard-go+bundled-wg-quick" | "bundled-wireguard-go+bundled-wg-quick";    sudo?: boolean | "ask" | undefined;}, interfaceObject?: WireguardInterface.WireguardInterface | undefined): Effect.Effect<string, WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException, FileSystem.FileSystem | Path.Path | Scope.Scope>; }
 ```
 
 Added in v1.0.0

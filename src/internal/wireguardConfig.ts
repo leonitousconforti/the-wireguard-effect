@@ -1,4 +1,6 @@
-import * as Platform from "@effect/platform";
+import * as PlatformError from "@effect/platform/Error";
+import * as FileSystem from "@effect/platform/FileSystem";
+import * as Path from "@effect/platform/Path";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
@@ -25,11 +27,11 @@ export const fromConfigFile = (
     file: string
 ): Effect.Effect<
     WireguardConfig.WireguardConfig,
-    ParseResult.ParseError | Platform.Error.PlatformError,
-    Platform.FileSystem.FileSystem
+    ParseResult.ParseError | PlatformError.PlatformError,
+    FileSystem.FileSystem
 > =>
     Effect.gen(function* (λ) {
-        const fs = yield* λ(Platform.FileSystem.FileSystem);
+        const fs = yield* λ(FileSystem.FileSystem);
         const fsConfig = yield* λ(fs.readFileString(file));
         const iniConfigEncoded = yield* λ(Schema.encode(WireguardConfig.WireguardIniConfig)(fsConfig));
         const config = yield* λ(Schema.decode(WireguardConfig.WireguardConfig)(iniConfigEncoded));
@@ -42,23 +44,15 @@ export const writeToFile = Function.dual<
         config: WireguardConfig.WireguardConfig
     ) => (
         file: string
-    ) => Effect.Effect<
-        void,
-        ParseResult.ParseError | Platform.Error.PlatformError,
-        Platform.FileSystem.FileSystem | Platform.Path.Path
-    >,
+    ) => Effect.Effect<void, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem | Path.Path>,
     (
         file: string,
         config: WireguardConfig.WireguardConfig
-    ) => Effect.Effect<
-        void,
-        ParseResult.ParseError | Platform.Error.PlatformError,
-        Platform.FileSystem.FileSystem | Platform.Path.Path
-    >
+    ) => Effect.Effect<void, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem | Path.Path>
 >(2, (file: string, config: WireguardConfig.WireguardConfig) =>
     Effect.gen(function* (λ) {
-        const path = yield* λ(Platform.Path.Path);
-        const fs = yield* λ(Platform.FileSystem.FileSystem);
+        const path = yield* λ(Path.Path);
+        const fs = yield* λ(FileSystem.FileSystem);
         const configEncoded = yield* λ(Schema.encode(WireguardConfig.WireguardConfig)(config));
         const iniConfigDecoded = yield* λ(Schema.decode(WireguardConfig.WireguardIniConfig)(configEncoded));
         yield* λ(fs.makeDirectory(path.dirname(file), { recursive: true }));
@@ -466,8 +460,8 @@ export const up: {
         config: WireguardConfig.WireguardConfig
     ) => Effect.Effect<
         void,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Platform.FileSystem.FileSystem | Platform.Path.Path
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        FileSystem.FileSystem | Path.Path
     >;
     (
         options: {
@@ -485,8 +479,8 @@ export const up: {
         config: WireguardConfig.WireguardConfig
     ) => Effect.Effect<
         string,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Platform.FileSystem.FileSystem | Platform.Path.Path
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        FileSystem.FileSystem | Path.Path
     >;
     (
         config: WireguardConfig.WireguardConfig,
@@ -497,8 +491,8 @@ export const up: {
         interfaceObject?: WireguardInterface.WireguardInterface | undefined
     ): Effect.Effect<
         void,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Platform.FileSystem.FileSystem | Platform.Path.Path
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        FileSystem.FileSystem | Path.Path
     >;
     (
         config: WireguardConfig.WireguardConfig,
@@ -515,8 +509,8 @@ export const up: {
         interfaceObject?: WireguardInterface.WireguardInterface | undefined
     ): Effect.Effect<
         string,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Platform.FileSystem.FileSystem | Platform.Path.Path
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        FileSystem.FileSystem | Path.Path
     >;
 } = Function.dual(
     3,
@@ -536,17 +530,17 @@ export const up: {
                   void,
                   | WireguardErrors.WireguardError
                   | ParseResult.ParseError
-                  | Platform.Error.PlatformError
+                  | PlatformError.PlatformError
                   | Cause.UnknownException,
-                  Platform.FileSystem.FileSystem | Platform.Path.Path
+                  FileSystem.FileSystem | Path.Path
               >
             : Effect.Effect<
                   string,
                   | WireguardErrors.WireguardError
                   | ParseResult.ParseError
-                  | Platform.Error.PlatformError
+                  | PlatformError.PlatformError
                   | Cause.UnknownException,
-                  Platform.FileSystem.FileSystem | Platform.Path.Path
+                  FileSystem.FileSystem | Path.Path
               >,
     >(
         config: WireguardConfig.WireguardConfig,
@@ -589,8 +583,8 @@ export const upScoped: {
         config: WireguardConfig.WireguardConfig
     ) => Effect.Effect<
         void,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        FileSystem.FileSystem | Path.Path | Scope.Scope
     >;
     (
         options: {
@@ -608,8 +602,8 @@ export const upScoped: {
         config: WireguardConfig.WireguardConfig
     ) => Effect.Effect<
         string,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        FileSystem.FileSystem | Path.Path | Scope.Scope
     >;
     (
         config: WireguardConfig.WireguardConfig,
@@ -620,8 +614,8 @@ export const upScoped: {
         interfaceObject?: WireguardInterface.WireguardInterface | undefined
     ): Effect.Effect<
         void,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        FileSystem.FileSystem | Path.Path | Scope.Scope
     >;
     (
         config: WireguardConfig.WireguardConfig,
@@ -638,8 +632,8 @@ export const upScoped: {
         interfaceObject?: WireguardInterface.WireguardInterface | undefined
     ): Effect.Effect<
         string,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        FileSystem.FileSystem | Path.Path | Scope.Scope
     >;
 } = Function.dual(
     3,
@@ -659,17 +653,17 @@ export const upScoped: {
                   void,
                   | WireguardErrors.WireguardError
                   | ParseResult.ParseError
-                  | Platform.Error.PlatformError
+                  | PlatformError.PlatformError
                   | Cause.UnknownException,
-                  Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
+                  FileSystem.FileSystem | Path.Path | Scope.Scope
               >
             : Effect.Effect<
                   string,
                   | WireguardErrors.WireguardError
                   | ParseResult.ParseError
-                  | Platform.Error.PlatformError
+                  | PlatformError.PlatformError
                   | Cause.UnknownException,
-                  Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
+                  FileSystem.FileSystem | Path.Path | Scope.Scope
               >,
     >(
         config: WireguardConfig.WireguardConfig,

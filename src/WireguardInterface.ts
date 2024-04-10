@@ -4,7 +4,9 @@
  * @since 1.0.0
  */
 
-import * as Platform from "@effect/platform";
+import * as PlatformError from "@effect/platform/Error";
+import * as FileSystem from "@effect/platform/FileSystem";
+import * as Path from "@effect/platform/Path";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Cause from "effect/Cause";
@@ -70,9 +72,9 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             void,
             | WireguardErrors.WireguardError
             | ParseResult.ParseError
-            | Platform.Error.PlatformError
+            | PlatformError.PlatformError
             | Cause.UnknownException,
-            Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
+            FileSystem.FileSystem | Path.Path | Scope.Scope
         >;
         (
             config: WireguardConfig.WireguardConfig,
@@ -90,9 +92,9 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             string,
             | WireguardErrors.WireguardError
             | ParseResult.ParseError
-            | Platform.Error.PlatformError
+            | PlatformError.PlatformError
             | Cause.UnknownException,
-            Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
+            FileSystem.FileSystem | Path.Path | Scope.Scope
         >;
     } = <
         How extends
@@ -110,17 +112,17 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
                   void,
                   | WireguardErrors.WireguardError
                   | ParseResult.ParseError
-                  | Platform.Error.PlatformError
+                  | PlatformError.PlatformError
                   | Cause.UnknownException,
-                  Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
+                  FileSystem.FileSystem | Path.Path | Scope.Scope
               >
             : Effect.Effect<
                   string,
                   | WireguardErrors.WireguardError
                   | ParseResult.ParseError
-                  | Platform.Error.PlatformError
+                  | PlatformError.PlatformError
                   | Cause.UnknownException,
-                  Platform.FileSystem.FileSystem | Platform.Path.Path | Scope.Scope
+                  FileSystem.FileSystem | Path.Path | Scope.Scope
               >,
     >(
         config: WireguardConfig.WireguardConfig,
@@ -164,9 +166,9 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             void,
             | WireguardErrors.WireguardError
             | ParseResult.ParseError
-            | Platform.Error.PlatformError
+            | PlatformError.PlatformError
             | Cause.UnknownException,
-            Platform.FileSystem.FileSystem | Platform.Path.Path
+            FileSystem.FileSystem | Path.Path
         >;
         (
             config: WireguardConfig.WireguardConfig,
@@ -184,9 +186,9 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             string,
             | WireguardErrors.WireguardError
             | ParseResult.ParseError
-            | Platform.Error.PlatformError
+            | PlatformError.PlatformError
             | Cause.UnknownException,
-            Platform.FileSystem.FileSystem | Platform.Path.Path
+            FileSystem.FileSystem | Path.Path
         >;
     } = <
         How extends
@@ -204,17 +206,17 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
                   void,
                   | WireguardErrors.WireguardError
                   | ParseResult.ParseError
-                  | Platform.Error.PlatformError
+                  | PlatformError.PlatformError
                   | Cause.UnknownException,
-                  Platform.FileSystem.FileSystem | Platform.Path.Path
+                  FileSystem.FileSystem | Path.Path
               >
             : Effect.Effect<
                   string,
                   | WireguardErrors.WireguardError
                   | ParseResult.ParseError
-                  | Platform.Error.PlatformError
+                  | PlatformError.PlatformError
                   | Cause.UnknownException,
-                  Platform.FileSystem.FileSystem | Platform.Path.Path
+                  FileSystem.FileSystem | Path.Path
               >,
     >(
         config: WireguardConfig.WireguardConfig,
@@ -245,12 +247,12 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         (options: {
             sudo?: boolean | "ask" | undefined;
             how: "userspace-api";
-        }): Effect.Effect<void, Cause.UnknownException, Platform.FileSystem.FileSystem>;
+        }): Effect.Effect<void, Cause.UnknownException, FileSystem.FileSystem>;
         (options: {
             sudo?: boolean | "ask" | undefined;
             how: "bundled-wg-quick" | "system-wg-quick";
             file: string;
-        }): Effect.Effect<void, Cause.UnknownException, Platform.FileSystem.FileSystem>;
+        }): Effect.Effect<void, Cause.UnknownException, FileSystem.FileSystem>;
     } = (
         options:
             | {

@@ -1,5 +1,7 @@
-import * as Platform from "@effect/platform";
 import * as Socket from "@effect/platform-node/NodeSocket";
+import * as PlatformError from "@effect/platform/Error";
+import * as FileSystem from "@effect/platform/FileSystem";
+import * as Path from "@effect/platform/Path";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as sudoPrompt from "@vscode/sudo-prompt";
@@ -56,11 +58,11 @@ export const FreeBSDInterfaceNameRegExp: RegExp = /^eth\d+$/;
 /** @internal */
 export const WireguardGoExecutablePath: Effect.Effect<
     string,
-    Platform.Error.PlatformError,
-    Platform.FileSystem.FileSystem | Platform.Path.Path
+    PlatformError.PlatformError,
+    FileSystem.FileSystem | Path.Path
 > = Effect.gen(function* (λ) {
-    const path = yield* λ(Platform.Path.Path);
-    const fs = yield* λ(Platform.FileSystem.FileSystem);
+    const path = yield* λ(Path.Path);
+    const fs = yield* λ(FileSystem.FileSystem);
     const arch = process.arch === "x64" ? "amd64" : process.arch;
     const url = new URL(`./${process.platform}-${arch}-wireguard-go`, import.meta.url);
     const pathString = yield* λ(path.fromFileUrl(url));
@@ -71,11 +73,11 @@ export const WireguardGoExecutablePath: Effect.Effect<
 /** @internal */
 export const WgQuickExecutablePath: Effect.Effect<
     string,
-    Platform.Error.PlatformError,
-    Platform.FileSystem.FileSystem | Platform.Path.Path
+    PlatformError.PlatformError,
+    FileSystem.FileSystem | Path.Path
 > = Effect.gen(function* (λ) {
-    const path = yield* λ(Platform.Path.Path);
-    const fs = yield* λ(Platform.FileSystem.FileSystem);
+    const path = yield* λ(Path.Path);
+    const fs = yield* λ(FileSystem.FileSystem);
     const url = new URL(`./${process.platform}-wg-quick`, import.meta.url);
     const pathString = yield* λ(path.fromFileUrl(url));
     yield* λ(fs.access(pathString, { ok: true }));
@@ -190,8 +192,8 @@ export const upScoped: {
         interfaceObject: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
         void,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        Scope.Scope | FileSystem.FileSystem | Path.Path
     >;
     (
         config: WireguardConfig.WireguardConfig,
@@ -209,8 +211,8 @@ export const upScoped: {
         interfaceObject: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
         string,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        Scope.Scope | FileSystem.FileSystem | Path.Path
     >;
     (
         interfaceObject: WireguardInterface.WireguardInterface,
@@ -221,8 +223,8 @@ export const upScoped: {
         }
     ): Effect.Effect<
         void,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        Scope.Scope | FileSystem.FileSystem | Path.Path
     >;
     (
         interfaceObject: WireguardInterface.WireguardInterface,
@@ -239,8 +241,8 @@ export const upScoped: {
         }
     ): Effect.Effect<
         string,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Scope.Scope | Platform.FileSystem.FileSystem | Platform.Path.Path
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        Scope.Scope | FileSystem.FileSystem | Path.Path
     >;
 } = Function.dual(
     (args) => Schema.is(WireguardInterface.WireguardInterface)(args[0]),
@@ -259,18 +261,18 @@ export const upScoped: {
             ? Effect.Effect<
                   void,
                   | WireguardErrors.WireguardError
-                  | Platform.Error.PlatformError
+                  | PlatformError.PlatformError
                   | ParseResult.ParseError
                   | Cause.UnknownException,
-                  Platform.Path.Path | Platform.FileSystem.FileSystem
+                  Path.Path | FileSystem.FileSystem
               >
             : Effect.Effect<
                   string,
                   | WireguardErrors.WireguardError
-                  | Platform.Error.PlatformError
+                  | PlatformError.PlatformError
                   | ParseResult.ParseError
                   | Cause.UnknownException,
-                  Platform.Path.Path | Platform.FileSystem.FileSystem
+                  Path.Path | FileSystem.FileSystem
               >,
     >(
         interfaceObject: WireguardInterface.WireguardInterface,
@@ -335,8 +337,8 @@ export const up: {
         interfaceObject: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
         void,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Platform.FileSystem.FileSystem | Platform.Path.Path
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        FileSystem.FileSystem | Path.Path
     >;
     (
         config: WireguardConfig.WireguardConfig,
@@ -354,8 +356,8 @@ export const up: {
         interfaceObject: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
         string,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Platform.FileSystem.FileSystem | Platform.Path.Path
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        FileSystem.FileSystem | Path.Path
     >;
     (
         interfaceObject: WireguardInterface.WireguardInterface,
@@ -366,8 +368,8 @@ export const up: {
         }
     ): Effect.Effect<
         void,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Platform.FileSystem.FileSystem | Platform.Path.Path
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        FileSystem.FileSystem | Path.Path
     >;
     (
         interfaceObject: WireguardInterface.WireguardInterface,
@@ -384,8 +386,8 @@ export const up: {
         }
     ): Effect.Effect<
         string,
-        WireguardErrors.WireguardError | ParseResult.ParseError | Platform.Error.PlatformError | Cause.UnknownException,
-        Platform.FileSystem.FileSystem | Platform.Path.Path
+        WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        FileSystem.FileSystem | Path.Path
     >;
 } = Function.dual(
     (args) => Schema.is(WireguardInterface.WireguardInterface)(args[0]),
@@ -412,12 +414,12 @@ export const up: {
         }
     ): Effect.Effect<
         Ret,
-        WireguardErrors.WireguardError | Platform.Error.PlatformError | ParseResult.ParseError | Cause.UnknownException,
-        Platform.Path.Path | Platform.FileSystem.FileSystem
+        WireguardErrors.WireguardError | PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException,
+        Path.Path | FileSystem.FileSystem
     > =>
         Effect.gen(function* (λ) {
-            const path = yield* λ(Platform.Path.Path);
-            const fs = yield* λ(Platform.FileSystem.FileSystem);
+            const path = yield* λ(Path.Path);
+            const fs = yield* λ(FileSystem.FileSystem);
             const tempDirectory = yield* λ(fs.makeTempDirectory());
 
             // Write the configuration to a temporary file
@@ -499,7 +501,7 @@ export const down: {
             sudo?: boolean | "ask" | undefined;
             how: "userspace-api";
         }
-    ): Effect.Effect<void, Cause.UnknownException, Platform.FileSystem.FileSystem>;
+    ): Effect.Effect<void, Cause.UnknownException, FileSystem.FileSystem>;
     (
         interfaceObject: WireguardInterface.WireguardInterface,
         options: {
@@ -507,7 +509,7 @@ export const down: {
             how: "bundled-wg-quick" | "system-wg-quick";
             file: string;
         }
-    ): Effect.Effect<void, Cause.UnknownException, Platform.FileSystem.FileSystem>;
+    ): Effect.Effect<void, Cause.UnknownException, FileSystem.FileSystem>;
 } = (
     interfaceObject: WireguardInterface.WireguardInterface,
     options:
@@ -520,9 +522,9 @@ export const down: {
               how: "bundled-wg-quick" | "system-wg-quick";
               file: string;
           }
-): Effect.Effect<void, Cause.UnknownException, Platform.FileSystem.FileSystem> =>
+): Effect.Effect<void, Cause.UnknownException, FileSystem.FileSystem> =>
     options.how === "userspace-api"
-        ? Effect.map(Platform.FileSystem.FileSystem, (fs) => fs.remove(socketLocation(interfaceObject)))
+        ? Effect.map(FileSystem.FileSystem, (fs) => fs.remove(socketLocation(interfaceObject)))
         : execCommand(options.sudo ?? "ask", `wg-quick down ${options.file}`);
 
 /** @internal */
@@ -537,7 +539,11 @@ export const setConfig = (
         return Function.pipe(
             Stream.make(`set=1\n\n${uapiConfig}`),
             Stream.encodeText,
-            Stream.pipeThroughChannelOrFail(Socket.makeNetChannel({ path: socketLocation(interfaceObject) })),
+            Stream.pipeThroughChannelOrFail(
+                Socket.makeNetChannel({
+                    path: socketLocation(interfaceObject),
+                })
+            ),
             Stream.decodeText(),
             Stream.run(Sink.last()),
             Effect.map(Option.getOrThrow),
@@ -555,7 +561,11 @@ export const getConfig = (
     Function.pipe(
         Stream.make("get=1\n\n"),
         Stream.encodeText,
-        Stream.pipeThroughChannelOrFail(Socket.makeNetChannel({ path: socketLocation(interfaceObject) })),
+        Stream.pipeThroughChannelOrFail(
+            Socket.makeNetChannel({
+                path: socketLocation(interfaceObject),
+            })
+        ),
         Stream.decodeText(),
         Stream.flatMap(Function.compose(String.linesIterator, Stream.fromIterable)),
         Stream.map(String.trimEnd),
