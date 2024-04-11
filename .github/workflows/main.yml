@@ -188,7 +188,7 @@ jobs:
       - run: Copy-Item "D:\a\the-wireguard-effect\the-wireguard-effect\submodules\.wslconfig" -Destination "C:\Users\runneradmin"
       - run: sleep 15
 
-      # This is where our testing starts
+      # Install dependencies
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get upgrade -y
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y wireguard
@@ -196,6 +196,8 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo bash nodesource_setup.sh
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y nodejs
       - run: wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm
+
+      # This is where our testing starts
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
 
