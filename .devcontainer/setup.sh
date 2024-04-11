@@ -17,9 +17,6 @@ npm install -g @devcontainers/cli npm-check-updates
 echo "📦 Installing repo dependencies..."
 pnpm install
 
-echo "🏗️ Building + testing..."
-pnpm build
-
-echo "✅ Devcontainer setup complete!"
+echo "✅ Devcontainer setup complete! You should run \"pnpm build\" and \"pnpm test\" now"
 echo "🙏 Thank you for contributing to the-wireguard-effect!"
 echo "📝 P.S Don't forget to configure your git credentials with 'git config --global user.name you' and 'git config --global user.email you@z.com'"
