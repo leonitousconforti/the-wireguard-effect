@@ -11,3 +11,4 @@ src/internal/*-wireguard-go
 src/internal/*-wg-quick
 src/internal/LICENSE-*
 src/internal/*-wintun.dll
+src/internal/*.exe
