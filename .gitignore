@@ -9,4 +9,5 @@
 
 src/internal/*-wireguard-go
 src/internal/*-wg-quick
+src/internal/*-wireguard-tools
 src/internal/*-wintun.dll
