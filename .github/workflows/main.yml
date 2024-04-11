@@ -165,11 +165,9 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get upgrade -y
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y wireguard
-      - run: wsl --distribution Ubuntu22.04 --user root -- touch /root/.bashrc
-      - run: wsl --distribution Ubuntu22.04 --user root -- curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-      - run: wsl --distribution Ubuntu22.04 --user root -- source /root/.bashrc
-      - run: wsl --distribution Ubuntu22.04 --user root -- nvm install 18
-      - run: wsl --distribution Ubuntu22.04 --user root -- nvm use 18
+      - run: wsl --distribution Ubuntu22.04 --user root -- curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
+      - run: wsl --distribution Ubuntu22.04 --user root -- sudo bash nodesource_setup.sh
+      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y nodejs
       - run: wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test
