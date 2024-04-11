@@ -175,6 +175,8 @@ jobs:
       - run: pnpm install
       - run: choco install wireguard
       - run: pnpm test
+      - if: ${{ always() }}
+        uses: mxschmitt/action-tmate@v3
 
   windows-wsl2-test:
     runs-on: windows-latest
