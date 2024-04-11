@@ -174,7 +174,7 @@ jobs:
           version: 8
       - run: pnpm install
       - run: choco install wireguard
-      - run: setx path "%path%;C:\Program/ Files\WireGuard\"
+      - run: set PATH=%PATH%;"C:\Program Files\WireGuard\"
       - run: pnpm test
       - if: ${{ always() }}
         uses: mxschmitt/action-tmate@v3

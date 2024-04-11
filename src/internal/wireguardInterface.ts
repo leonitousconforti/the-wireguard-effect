@@ -72,12 +72,13 @@ export const WireguardGoExecutablePath: Effect.Effect<
 
 /** @internal */
 export const WgQuickExecutablePath: Effect.Effect<
-    string,
+    string | undefined,
     PlatformError.PlatformError,
     FileSystem.FileSystem | Path.Path
 > = Effect.gen(function* (λ) {
     const path = yield* λ(Path.Path);
     const fs = yield* λ(FileSystem.FileSystem);
+    if (process.platform === "win32") return undefined;
     const url = new URL(`./${process.platform}-wg-quick`, import.meta.url);
     const pathString = yield* λ(path.fromFileUrl(url));
     yield* λ(fs.access(pathString, { ok: true }));
@@ -488,7 +489,7 @@ export const up: {
                 // Bring up the interface using the system wireguard and the system wg quick script
                 case "system-wireguard+system-wg-quick":
                     const command9 = `wg-quick up ${file}`;
-                    const command10 = `wireguard.exe /installtunnelservice ${file} ${interfaceObject.Name}`;
+                    const command10 = `wireguard.exe /installtunnelservice ${file}`;
                     yield* λ(execCommand(options.sudo ?? "ask", process.platform === "win32" ? command10 : command9));
                     return file as Ret;
 
