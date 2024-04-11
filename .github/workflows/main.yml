@@ -55,10 +55,12 @@ jobs:
         with:
           name: modified-wsl2-linux-kernel
           path: submodules/WSL2-Linux-Kernel/arch/x86/boot/bzImage
-
-      - run: rm -rf submodules/
-      - run: rm -rf node_modules/
-      - run: rm -rf .git/
+      - run: rm -rf submodules/wintun
+      - run: rm -rf submodules/wireguard-apple
+      - run: rm -rf submodules/wireguard-go
+      - run: rm -rf submodules/wireguard-tools
+      - run: rm -rf submodules/wireguard-windows
+      - run: rm -rf submodules/WSL2-Linux-Kernel
       - uses: actions/upload-artifact@v4
         with:
           name: the-wireguard-effect
@@ -171,6 +173,9 @@ jobs:
       - run: Invoke-WebRequest -URI https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-root.tar.xz -OutFile jammy-server-cloudimg-amd64-root.tar.xz
       - run: wsl --import Ubuntu22.04 . jammy-server-cloudimg-amd64-root.tar.xz --version 2
       - run: wsl --list --verbose
+      - run: wsl --shutdown
+      - run: Copy-Item "D:\a\the-wireguard-effect\the-wireguard-effect\submodules\.wslconfig" -Destination "C:\Users\runneradmin"
+      - run: sleep 15
 
       # This is where our testing starts
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
@@ -182,6 +187,8 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
+
+      # FIXME: remove once done debugging
       - if: ${{ always() }}
         uses: mxschmitt/action-tmate@v3
 
