@@ -1,16 +1,8 @@
 diff --git a/arch/x86/configs/config-wsl b/arch/x86/configs/config-wsl
-index 80cba64c7..07f874d1b 100644
+index 80cba64c7..8ce744fa6 100644
 --- a/arch/x86/configs/config-wsl
 +++ b/arch/x86/configs/config-wsl
-@@ -1067,6 +1067,7 @@ CONFIG_NETFILTER_SYNPROXY=y
- CONFIG_NF_TABLES=y
- CONFIG_NF_TABLES_INET=y
- # CONFIG_NF_TABLES_NETDEV is not set
-+CONFIG_NFT_FIB=y
- CONFIG_NFT_NUMGEN=y
- CONFIG_NFT_CT=y
- CONFIG_NFT_COUNTER=y
-@@ -1256,7 +1257,7 @@ CONFIG_NF_SOCKET_IPV4=y
+@@ -1256,7 +1256,7 @@ CONFIG_NF_SOCKET_IPV4=y
  CONFIG_NF_TABLES_IPV4=y
  CONFIG_NFT_REJECT_IPV4=y
  # CONFIG_NFT_DUP_IPV4 is not set
@@ -19,7 +11,7 @@ index 80cba64c7..07f874d1b 100644
  # CONFIG_NF_TABLES_ARP is not set
  # CONFIG_NF_DUP_IPV4 is not set
  # CONFIG_NF_LOG_ARP is not set
-@@ -1295,7 +1296,7 @@ CONFIG_NF_SOCKET_IPV6=y
+@@ -1295,7 +1295,7 @@ CONFIG_NF_SOCKET_IPV6=y
  CONFIG_NF_TABLES_IPV6=y
  CONFIG_NFT_REJECT_IPV6=y
  # CONFIG_NFT_DUP_IPV6 is not set
