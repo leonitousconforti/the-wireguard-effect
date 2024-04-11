@@ -16,6 +16,6 @@ describe("wireguard e2e test using demo.wireguard.com", () => {
             })
                 .pipe(Effect.scoped)
                 .pipe(Effect.provide(NodeContext.layer)),
-        { timeout: 30_000 }
+        { timeout: 60_000 }
     );
 });
