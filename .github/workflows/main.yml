@@ -158,6 +158,24 @@ jobs:
             pnpm install
             pnpm test
 
+  windows-test:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    needs: [build]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: the-wireguard-effect
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+      - run: pnpm install
+      - run: choco install wireguard
+      - run: pnpm test
+
   windows-wsl2-test:
     runs-on: windows-latest
     timeout-minutes: 10
@@ -199,21 +217,3 @@ jobs:
       # This is where our testing starts
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
-
-  windows-test:
-    if: false
-    runs-on: windows-latest
-    timeout-minutes: 10
-    needs: [build]
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: the-wireguard-effect
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "18.x"
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 8
-      - run: pnpm install
-      - run: choco install wireguard
