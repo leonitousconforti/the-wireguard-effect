@@ -17,11 +17,11 @@ mkdir -p ../dist/prebuilds
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=freebsd GOARCH=arm64 make && mv wireguard-go ../../dist/prebuilds/freebsd-arm64-wireguard-go)
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=openbsd GOARCH=arm64 make && mv wireguard-go ../../dist/prebuilds/openbsd-arm64-wireguard-go)
 
-# wintun prebuilds
+# wintun prebuilds (TODO: aquire these from a public source and check hashes)
 (cd ./wintun && cp wintun-amd64.dll ../../dist/prebuilds/win32-amd64-wintun.dll)
 (cd ./wintun && cp wintun-arm64.dll ../../dist/prebuilds/win32-arm64-wintun.dll)
 
-# wireguard-tools prebuilds
+# wg-quick prebuilds
 (cd ./wireguard-tools && cp src/wg-quick/linux.bash ../../dist/prebuilds/linux-wg-quick && chmod +x ../../dist/prebuilds/linux-wg-quick)
 (cd ./wireguard-tools && cp src/wg-quick/darwin.bash ../../dist/prebuilds/darwin-wg-quick && chmod +x ../../dist/prebuilds/darwin-wg-quick)
 (cd ./wireguard-tools && cp src/wg-quick/freebsd.bash ../../dist/prebuilds/freebsd-wg-quick && chmod +x ../../dist/prebuilds/freebsd-wg-quick)
