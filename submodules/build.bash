@@ -28,7 +28,7 @@ mkdir -p ../dist/prebuilds
 (cd ./wireguard-tools && cp src/wg-quick/openbsd.bash ../../dist/prebuilds/openbsd-wg-quick && chmod +x ../../dist/prebuilds/openbsd-wg-quick)
 
 # Wireguard-windows prebuilds
-(export GOROOT=.deps/go && cd ./wireguard-windows && make clean && make amd64/wireguard.exe)
+(export GOROOT=".deps/go" && export GOTOOLDIR=".deps/go/pkg/tool/linux_amd64" && cd ./wireguard-windows && make clean && make amd64/wireguard.exe)
 
 # Windows WSL2 modified linux kernel (https://github.com/microsoft/WSL/issues/7547)
 (cd ./WSL2-Linux-Kernel && git apply ../WSL2-modified.patch)
