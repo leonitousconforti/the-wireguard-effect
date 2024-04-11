@@ -46,7 +46,17 @@ jobs:
             ${{ runner.os }}-node18.x-pnpm-store-
 
       - run: sudo apt-get update
-      - run: sudo apt-get install build-essential flex bison dwarves libssl-dev libelf-dev bc -y
+      - run: sudo apt-get install build-essential flex bison dwarves libssl-dev libelf-dev bc ccache -y
+      - name: "Prepare ccache timestamp"
+        run: |
+          echo "TIMESTAMP=$(date -u +%Y-%m-%d-%H\;%M\;%S)" >> $GITHUB_ENV
+      - name: "Setup ccache"
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.cache/ccache
+          key: wsl2-linux-kernel-ccache-${{ env.TIMESTAMP }}
+          restore-keys: |
+            wsl2-linux-kernel-ccache-
 
       - run: pnpm install
       - run: pnpm check
@@ -55,6 +65,7 @@ jobs:
         with:
           name: modified-wsl2-linux-kernel
           path: submodules/WSL2-Linux-Kernel/arch/x86/boot/bzImage
+
       - run: rm -rf submodules/wintun
       - run: rm -rf submodules/wireguard-apple
       - run: rm -rf submodules/wireguard-go

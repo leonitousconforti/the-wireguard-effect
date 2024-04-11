@@ -29,7 +29,7 @@ mkdir -p ../dist/prebuilds
 
 # Windows WSL2 modified linux kernel
 (cd ./WSL2-Linux-Kernel && git apply ../WSL2-modified.patch)
-(cd ./WSL2-Linux-Kernel && make -j $(nproc) KCONFIG_CONFIG=Microsoft/config-wsl)
+(cd ./WSL2-Linux-Kernel && make -j $(nproc) KCONFIG_CONFIG=Microsoft/config-wsl CC="ccache gcc")
 (cd ./WSL2-Linux-Kernel && rm -r Microsoft/*.old)
 (cd ./WSL2-Linux-Kernel && git reset --hard)
 
