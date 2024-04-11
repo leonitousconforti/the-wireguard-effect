@@ -51,6 +51,11 @@ jobs:
       - run: pnpm install
       - run: pnpm check
       - run: pnpm build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: modified-wsl2-linux-kernel
+          path: submodules/WSL2-Linux-Kernel/arch/x86/boot/bzImage
+
       - run: rm -rf submodules/
       - run: rm -rf node_modules/
       - run: rm -rf .git/
@@ -152,6 +157,10 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
+      - uses: actions/download-artifact@v4
+        with:
+          name: modified-wsl2-linux-kernel
+
       # Yes all this is necassary to get WSL2 working on GitHub Actions without any user input
       # They are all as separate steps so its easier to debug and see what/where it fails (especially when I was writting this)
       - run: dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
@@ -162,6 +171,8 @@ jobs:
       - run: Invoke-WebRequest -URI https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-root.tar.xz -OutFile jammy-server-cloudimg-amd64-root.tar.xz
       - run: wsl --import Ubuntu22.04 . jammy-server-cloudimg-amd64-root.tar.xz --version 2
       - run: wsl --list --verbose
+
+      # This is where our testing starts
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get upgrade -y
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y wireguard
