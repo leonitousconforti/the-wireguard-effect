@@ -35,7 +35,7 @@ export const SupportedArchitectures = ["x64", "arm64"] as const;
 export type SupportedArchitecture = (typeof SupportedArchitectures)[number];
 
 /** @internal */
-export const SupportedPlatforms = ["linux", "darwin", "openbsd", "freebsd"] as const;
+export const SupportedPlatforms = ["linux", "darwin", "openbsd", "freebsd", "win32"] as const;
 
 /** @internal */
 export type SupportedPlatform = (typeof SupportedPlatforms)[number];
@@ -92,6 +92,7 @@ export const InterfaceRegExpForPlatform: Effect.Effect<RegExp, WireguardErrors.W
         (bad) => Effect.fail(new WireguardErrors.WireguardError({ message: `Unsupported architecture ${bad}` }))
     ),
     Match.when(String.endsWith(":linux"), () => Effect.succeed(LinuxInterfaceNameRegExp)),
+    Match.when(String.endsWith(":win32"), () => Effect.succeed(WindowsInterfaceNameRegExp)),
     Match.when(String.endsWith(":darwin"), () => Effect.succeed(DarwinInterfaceNameRegExp)),
     Match.when(String.endsWith(":openbsd"), () => Effect.succeed(OpenBSDInterfaceNameRegExp)),
     Match.when(String.endsWith(":freebsd"), () => Effect.succeed(FreeBSDInterfaceNameRegExp)),
@@ -134,6 +135,7 @@ export const getNextAvailableInterface: Effect.Effect<
     // Construct the next available interface name
     const fromString = Schema.decodeSync(WireguardInterface.WireguardInterface);
     switch (platform) {
+        case "win32":
         case "freebsd":
             return fromString({ Name: `eth${nextAvailableInterfaceIndex}` });
         case "linux":
@@ -164,17 +166,20 @@ export const execCommand = (
     command: string,
     env?: { [key: string]: string }
 ): Effect.Effect<void, Cause.UnknownException, never> => {
-    console.log(`${withSudo === true ? "sudo " : ""}${command}`);
+    console.log(`${withSudo === true && process.platform !== "win32" ? "sudo " : ""}${command}`);
 
     return withSudo === "ask"
         ? Effect.try(() => sudoPrompt.exec(`${command}`, { name: "The-WireGuard-Effect", env: env ?? {} }))
         : Effect.tryPromise(() => {
-              const subprocess = execa.execaCommand(`${withSudo === true ? "sudo " : ""}${command}`, {
-                  env: env ?? {},
-                  stdio: "ignore",
-                  cleanup: !command.includes("wireguard-go"),
-                  detached: command.includes("wireguard-go"),
-              });
+              const subprocess = execa.execaCommand(
+                  `${withSudo === true && process.platform !== "win32" ? "sudo " : ""}${command}`,
+                  {
+                      env: env ?? {},
+                      stdio: "ignore",
+                      cleanup: !command.includes("wireguard-go"),
+                      detached: command.includes("wireguard-go"),
+                  }
+              );
               if (command.includes("wireguard-go")) subprocess.unref();
               return subprocess;
           });
@@ -483,7 +488,8 @@ export const up: {
                 // Bring up the interface using the system wireguard and the system wg quick script
                 case "system-wireguard+system-wg-quick":
                     const command9 = `wg-quick up ${file}`;
-                    yield* λ(execCommand(options.sudo ?? "ask", command9));
+                    const command10 = `wireguard.exe /installtunnelservice ${file} ${interfaceObject.Name}`;
+                    yield* λ(execCommand(options.sudo ?? "ask", process.platform === "win32" ? command10 : command9));
                     return file as Ret;
 
                 // Nothing else should be possible
