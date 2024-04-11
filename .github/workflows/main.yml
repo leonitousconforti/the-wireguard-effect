@@ -203,10 +203,6 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
 
-      # FIXME: remove once done debugging
-      - if: ${{ always() }}
-        uses: mxschmitt/action-tmate@v3
-
   windows-test:
     if: false
     runs-on: windows-latest
