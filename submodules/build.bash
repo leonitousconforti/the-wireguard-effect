@@ -27,6 +27,12 @@ mkdir -p ../dist/prebuilds
 (cd ./wireguard-tools && cp src/wg-quick/freebsd.bash ../../dist/prebuilds/freebsd-wg-quick && chmod +x ../../dist/prebuilds/freebsd-wg-quick)
 (cd ./wireguard-tools && cp src/wg-quick/openbsd.bash ../../dist/prebuilds/openbsd-wg-quick && chmod +x ../../dist/prebuilds/openbsd-wg-quick)
 
+# Windows WSL2 modified linux kernel
+(cd ./WSL2-Linux-Kernel && git apply ../WSL2-modified.patch)
+(cd ./WSL2-Linux-Kernel && make -j $(nproc) KCONFIG_CONFIG=Microsoft/config-wsl)
+(cd ./WSL2-Linux-Kernel && rm -r Microsoft/*.old)
+(cd ./WSL2-Linux-Kernel && git reset --hard)
+
 # Symlink prebuilds
 (cd ../src/internal && ln -s ../../dist/prebuilds/* .)
 (cd ../dist/dist/cjs/internal && ln -s ../../../prebuilds/* .)
