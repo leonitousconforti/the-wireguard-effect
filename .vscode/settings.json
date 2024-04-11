@@ -6,6 +6,7 @@
         "codegen",
         "Conforti",
         "devcontainers",
+        "distros",
         "docgen",
         "execa",
         "fwmark",
