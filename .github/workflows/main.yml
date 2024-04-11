@@ -66,6 +66,7 @@ jobs:
           name: modified-wsl2-linux-kernel
           path: submodules/WSL2-Linux-Kernel/arch/x86/boot/bzImage
 
+      - run: rm -rf .git/
       - run: rm -rf submodules/wintun
       - run: rm -rf submodules/wireguard-apple
       - run: rm -rf submodules/wireguard-go
@@ -91,7 +92,7 @@ jobs:
       - uses: pnpm/action-setup@v3
         with:
           version: 8
-      - run: pnpm install --full
+      - run: pnpm install --force
       - run: sudo apt-get install -y wireguard
       - run: pnpm test
 
@@ -109,7 +110,7 @@ jobs:
       - uses: pnpm/action-setup@v3
         with:
           version: 8
-      - run: pnpm install --full
+      - run: pnpm install --force
       - run: brew install wireguard-tools
       - run: pnpm test
 
@@ -133,7 +134,7 @@ jobs:
             wg-quick --help
             npm install -g pnpm
           run: |
-            pnpm install --full
+            pnpm install --force
             pnpm test
 
   openbsd-test:
@@ -156,7 +157,7 @@ jobs:
             wg-quick --help
             npm install -g pnpm
           run: |
-            pnpm install --full
+            pnpm install --force
             pnpm test
 
   windows-wsl2-test:
@@ -198,7 +199,7 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm
 
       # This is where our testing starts
-      - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install --full
+      - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install --force
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
 
       # FIXME: remove once done debugging
@@ -220,5 +221,5 @@ jobs:
       - uses: pnpm/action-setup@v3
         with:
           version: 8
-      - run: pnpm install --full
+      - run: pnpm install --force
       - run: choco install wireguard
