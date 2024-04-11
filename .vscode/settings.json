@@ -6,6 +6,7 @@
         "codegen",
         "Conforti",
         "devcontainers",
+        "distros",
         "docgen",
         "execa",
         "fwmark",
@@ -40,6 +41,7 @@
         "submodules/wireguard-go/**": true,
         "submodules/wireguard-tools/**": true,
         "submodules/wireguard-windows/**": true,
-        "submodules/wireguard-apple/**": true
+        "submodules/wireguard-apple/**": true,
+        "submodules/WSL2-Linux-Kernel/**": true
     }
 }

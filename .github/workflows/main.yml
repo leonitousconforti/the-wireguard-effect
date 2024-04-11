@@ -15,7 +15,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,7 +25,6 @@ jobs:
         with:
           cache-dependency-path: |
             submodules/wireguard-go/go.sum
-
       - uses: actions/setup-node@v4
         with:
           node-version: "18.x"
@@ -35,11 +34,9 @@ jobs:
         with:
           version: 8
           run_install: false
-
       - name: "Get pnpm store"
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
       - name: "Setup pnpm cache"
         uses: actions/cache@v4
         with:
@@ -48,12 +45,32 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node18.x-pnpm-store-
 
+      - run: sudo apt-get update
+      - run: sudo apt-get install build-essential flex bison dwarves libssl-dev libelf-dev bc ccache -y
+      - name: "Setup ccache"
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.cache/ccache
+          key: wsl2-linux-kernel-ccache-${{ hashFiles('submodules/WSL2-modified.patch') }}
+          restore-keys: |
+            wsl2-linux-kernel-ccache-
+
       - run: pnpm install
       - run: pnpm check
       - run: pnpm build
-      - run: rm -rf submodules/
-      - run: rm -rf node_modules/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: modified-wsl2-linux-kernel
+          path: submodules/WSL2-Linux-Kernel/arch/x86/boot/bzImage
+
       - run: rm -rf .git/
+      - run: rm -rf node_modules/
+      - run: rm -rf submodules/wintun
+      - run: rm -rf submodules/wireguard-apple
+      - run: rm -rf submodules/wireguard-go
+      - run: rm -rf submodules/wireguard-tools
+      - run: rm -rf submodules/wireguard-windows
+      - run: rm -rf submodules/WSL2-Linux-Kernel
       - uses: actions/upload-artifact@v4
         with:
           name: the-wireguard-effect
@@ -145,19 +162,43 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 10
     needs: [build]
+    defaults:
+      run:
+        shell: pwsh
     steps:
-      - shell: pwsh
-        run: dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-      - shell: pwsh
-        run: dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-      - shell: pwsh
-        run: wsl --set-default-version 2
-      - shell: pwsh
-        run: wsl --update
-      # - shell: pwsh
-      #   run: wsl --install -d Ubuntu
-      # - shell: pwsh
-      #   run: wsl --list --verbose
+      - uses: actions/download-artifact@v4
+        with:
+          name: the-wireguard-effect
+      - uses: actions/download-artifact@v4
+        with:
+          name: modified-wsl2-linux-kernel
+
+      # Yes all this is necassary to get WSL2 working on GitHub Actions without any user input
+      # They are all as separate steps so its easier to debug and see what/where it fails (especially when I was writting this)
+      - run: dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+      - run: dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+      - run: wsl --set-default-version 2
+      - run: wsl --update
+      - run: wsl --install --no-distribution
+      - run: Invoke-WebRequest -URI https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-root.tar.xz -OutFile jammy-server-cloudimg-amd64-root.tar.xz
+      - run: wsl --import Ubuntu22.04 . jammy-server-cloudimg-amd64-root.tar.xz --version 2
+      - run: wsl --list --verbose
+      - run: wsl --shutdown
+      - run: Copy-Item "D:\a\the-wireguard-effect\the-wireguard-effect\submodules\.wslconfig" -Destination "C:\Users\runneradmin"
+      - run: sleep 15
+
+      # Install dependencies
+      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
+      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get upgrade -y
+      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y wireguard
+      - run: wsl --distribution Ubuntu22.04 --user root -- curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
+      - run: wsl --distribution Ubuntu22.04 --user root -- sudo bash nodesource_setup.sh
+      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y nodejs
+      - run: wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm
+
+      # This is where our testing starts
+      - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
+      - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
 
   windows-test:
     if: false
