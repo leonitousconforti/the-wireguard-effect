@@ -27,7 +27,7 @@ mkdir -p ../dist/prebuilds
 (cd ./wireguard-tools && cp src/wg-quick/freebsd.bash ../../dist/prebuilds/freebsd-wg-quick && chmod +x ../../dist/prebuilds/freebsd-wg-quick)
 (cd ./wireguard-tools && cp src/wg-quick/openbsd.bash ../../dist/prebuilds/openbsd-wg-quick && chmod +x ../../dist/prebuilds/openbsd-wg-quick)
 
-# Windows WSL2 modified linux kernel
+# Windows WSL2 modified linux kernel (https://github.com/microsoft/WSL/issues/7547)
 (cd ./WSL2-Linux-Kernel && git apply ../WSL2-modified.patch)
 (cd ./WSL2-Linux-Kernel && make -j $(nproc) KCONFIG_CONFIG=Microsoft/config-wsl CC="ccache gcc")
 (cd ./WSL2-Linux-Kernel && rm -r Microsoft/*.old)
