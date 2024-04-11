@@ -1,7 +1,16 @@
 diff --git a/arch/x86/configs/config-wsl b/arch/x86/configs/config-wsl
-index 80cba64c7..6aa83f2ac 100644
+index 80cba64c7..43896db0a 100644
 --- a/arch/x86/configs/config-wsl
 +++ b/arch/x86/configs/config-wsl
+@@ -1097,7 +1097,7 @@ CONFIG_NETFILTER_XTABLES=y
+ # Xtables combined modules
+ #
+ CONFIG_NETFILTER_XT_MARK=y
+-# CONFIG_NETFILTER_XT_CONNMARK is not set
++CONFIG_NETFILTER_XT_CONNMARK=y
+ CONFIG_NETFILTER_XT_SET=y
+
+ #
 @@ -1140,7 +1140,7 @@ CONFIG_NETFILTER_XT_MATCH_COMMENT=y
  # CONFIG_NETFILTER_XT_MATCH_CONNBYTES is not set
  # CONFIG_NETFILTER_XT_MATCH_CONNLABEL is not set
