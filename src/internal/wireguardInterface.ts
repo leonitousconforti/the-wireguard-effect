@@ -529,10 +529,22 @@ export const down: {
               how: "bundled-wg-quick" | "system-wg-quick";
               file: string;
           }
-): Effect.Effect<void, Cause.UnknownException, FileSystem.FileSystem> =>
-    options.how === "userspace-api"
-        ? Effect.map(FileSystem.FileSystem, (fs) => fs.remove(socketLocation(interfaceObject)))
-        : execCommand(options.sudo ?? "ask", `wg-quick down ${options.file}`);
+): Effect.Effect<void, Cause.UnknownException, FileSystem.FileSystem> => {
+    const how = options.how;
+    switch (how) {
+        case "userspace-api":
+            return Effect.map(FileSystem.FileSystem, (fs) => fs.remove(socketLocation(interfaceObject)));
+        case "bundled-wg-quick":
+            // FIXME: this needs to be updated for windows
+            return execCommand(options.sudo ?? "ask", `wg-quick down ${options.file}`);
+        case "system-wg-quick":
+            const command1 = `wg-quick down ${options.file}`;
+            const command2 = `wireguard.exe /uninstalltunnelservice ${interfaceObject.Name}`;
+            return execCommand(options.sudo ?? "ask", process.platform === "win32" ? command2 : command1);
+        default:
+            return Function.absurd(how);
+    }
+};
 
 /** @internal */
 export const setConfig = (
