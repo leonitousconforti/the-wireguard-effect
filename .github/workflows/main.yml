@@ -180,8 +180,6 @@ jobs:
       - run: echo "C:\Program Files\WireGuard" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - run: wireguard.exe
       - run: pnpm test
-      - if: ${{ always() }}
-        uses: mxschmitt/action-tmate@v3
 
   windows-wsl2-test:
     runs-on: windows-latest
