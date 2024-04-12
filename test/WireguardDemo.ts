@@ -5,10 +5,10 @@ import * as HttpClient from "@effect/platform/HttpClient";
 import * as Socket from "@effect/platform/Socket";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
+import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Option from "effect/Option";
-import * as Schedule from "effect/Schedule";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 
@@ -77,6 +77,7 @@ export const createWireguardDemoConfig = (
         Effect.flatMap(Schema.decodeUnknown(WireguardDemoSchema)),
         Effect.flatMap((serverResponse) =>
             Schema.decode(WireguardConfig.WireguardConfig)({
+                Dns: "1.1.1.1",
                 PrivateKey: privateKey,
                 Address: `${serverResponse.internalAddress.ip}/24`,
                 ListenPort: 0,
@@ -96,8 +97,28 @@ export const createWireguardDemoConfig = (
  * Attempts to view the hidden page on the demo.wireguard.com server, you should
  * only be able to see it when connected as a peer.
  */
-export const requestHiddenPage: Effect.Effect<string, HttpClient.error.HttpClientError, never> = HttpClient.request
-    .get("http://192.168.4.1")
-    .pipe(HttpClient.client.fetchOk())
-    .pipe(HttpClient.response.text)
-    .pipe(Effect.retry(Schedule.recurs(5).pipe(Schedule.addDelay(() => "5 seconds"))));
+export const requestHiddenPage: Effect.Effect<
+    string,
+    HttpClient.error.HttpClientError | Cause.TimeoutException,
+    HttpClient.client.Client.Default
+> = Effect.gen(function* (λ) {
+    const defaultClient = yield* λ(HttpClient.client.Client);
+    const client = defaultClient.pipe(HttpClient.client.filterStatusOk);
+    const request = HttpClient.request.get("http://192.168.4.1");
+    return yield* λ(client(request).pipe(HttpClient.response.text, Effect.timeout("3 seconds")));
+});
+
+/**
+ * Attempts to connect to https://www.google.com to ensure that dns is still
+ * working and we can connect to the internet when the wireguard tunnel is up.
+ */
+export const requestGoogle: Effect.Effect<
+    void,
+    HttpClient.error.HttpClientError | Cause.TimeoutException,
+    HttpClient.client.Client.Default
+> = Effect.gen(function* (λ) {
+    const defaultClient = yield* λ(HttpClient.client.Client);
+    const client = defaultClient.pipe(HttpClient.client.filterStatusOk);
+    const request = HttpClient.request.get("https://www.google.com");
+    return yield* λ(client(request).pipe(HttpClient.response.text, Effect.timeout("3 seconds")));
+});
