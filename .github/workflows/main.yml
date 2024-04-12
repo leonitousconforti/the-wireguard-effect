@@ -162,6 +162,9 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 10
     needs: [build]
+    defaults:
+      run:
+        shell: pwsh
     steps:
       - uses: actions/download-artifact@v4
         with:
