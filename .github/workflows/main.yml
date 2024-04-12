@@ -164,7 +164,7 @@ jobs:
     needs: [build]
     defaults:
       run:
-        shell: cmd
+        shell: pwsh
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -177,7 +177,8 @@ jobs:
           version: 8
       - run: pnpm install
       - run: choco install wireguard
-      - run: set PATH=%PATH%;"C:\Program Files\WireGuard\"
+      - run: echo "C:\Program Files\WireGuard" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - run: wiregaurd.exe
       - run: pnpm test
       - if: ${{ always() }}
         uses: mxschmitt/action-tmate@v3
