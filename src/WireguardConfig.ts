@@ -37,6 +37,7 @@ import * as internal from "./internal/wireguardConfig.js";
  */
 export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIniConfig")({
     Address: InternetSchemas.CidrBlockFromString,
+    Dns: Schema.optional(InternetSchemas.AddressFromString),
 
     /**
      * The value for this is a decimal-string integer corresponding to the
@@ -468,6 +469,7 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(
             const listenPort = `ListenPort = ${config.ListenPort}\n`;
             const privateKey = `PrivateKey = ${config.PrivateKey}\n`;
             const address = `Address = ${config.Address.ip.ip}/${config.Address.mask}\n`;
+            const dns = Predicate.isNotUndefined(config.Dns) ? `Dns = ${config.Dns?.ip}\n` : "";
             const fwmark = Predicate.isNotUndefined(config.FirewallMark)
                 ? `FirewallMark = ${config.FirewallMark}\n`
                 : "";
@@ -481,7 +483,7 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(
                 )
             );
 
-            return `[Interface]\n${listenPort}${fwmark}${address}${privateKey}\n${peersConfig}`;
+            return `[Interface]\n${dns}${listenPort}${fwmark}${address}${privateKey}\n${peersConfig}`;
         }).pipe(Effect.mapError(({ error }) => error)),
     // Decoding is likewise non-trivial, as we need to parse all the peers from the ini config.
     (iniConfig, _options, _ast) =>
@@ -511,8 +513,9 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(
                 interfaceSection,
                 ini.parse,
                 (jsonConfig) => ({ ...jsonConfig["Interface"], Peers: parsePeers }),
-                ({ ListenPort, FirewallMark, Address, PrivateKey, Peers }) =>
+                ({ Dns, ListenPort, FirewallMark, Address, PrivateKey, Peers }) =>
                     ({
+                        Dns,
                         Peers,
                         Address,
                         PrivateKey,
