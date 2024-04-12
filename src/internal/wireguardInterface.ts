@@ -70,6 +70,7 @@ export const WireguardGoExecutablePath: Effect.Effect<
     return pathString;
 });
 
+// FIXME: maybe this doesn't need to be "string | undefined" for windows
 /** @internal */
 export const WgQuickExecutablePath: Effect.Effect<
     string | undefined,
