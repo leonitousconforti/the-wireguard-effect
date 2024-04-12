@@ -13,6 +13,7 @@
         "gitsubmodule",
         "hardlink",
         "inet",
+        "installtunnelservice",
         "leonitous",
         "netsh",
         "packagejson",
@@ -29,6 +30,7 @@
         "typeclass",
         "typeof",
         "Uapi",
+        "uninstalltunnelservice",
         "Userspace",
         "utun",
         "wintun"
