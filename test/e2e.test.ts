@@ -6,7 +6,7 @@ import * as Effect from "effect/Effect";
 import * as DemoUtils from "./WireguardDemo.js";
 
 describe("wireguard e2e test using demo.wireguard.com", () => {
-    it.scoped(
+    it.scopedLive(
         "Should be able to connect to the demo server",
         () =>
             Effect.gen(function* (λ) {
