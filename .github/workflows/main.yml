@@ -46,7 +46,7 @@ jobs:
             ${{ runner.os }}-node18.x-pnpm-store-
 
       - run: sudo apt-get update
-      - run: sudo apt-get install mingw-w64 imagemagick libarchive-tools build-essential flex bison dwarves libssl-dev libelf-dev bc ccache librsvg2-bin -y
+      - run: sudo apt-get install mingw-w64 imagemagick libarchive-tools build-essential flex bison dwarves libssl-dev libelf-dev bc ccache librsvg2-bin openresolv -y
       - name: "Setup ccache"
         uses: actions/cache@v4
         with:
@@ -213,7 +213,7 @@ jobs:
       # Install dependencies
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get upgrade -y
-      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y wireguard
+      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y wireguard openresolv
       - run: wsl --distribution Ubuntu22.04 --user root -- curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo bash nodesource_setup.sh
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y nodejs
