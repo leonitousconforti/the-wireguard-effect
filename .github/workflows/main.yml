@@ -46,7 +46,7 @@ jobs:
             ${{ runner.os }}-node18.x-pnpm-store-
 
       - run: sudo apt-get update
-      - run: sudo apt-get install mingw-w64 imagemagick libarchive-tools build-essential flex bison dwarves libssl-dev libelf-dev bc ccache librsvg2-bin openresolv -y
+      - run: sudo apt-get install mingw-w64 imagemagick libarchive-tools build-essential flex bison dwarves libssl-dev libelf-dev bc ccache librsvg2-bin -y
       - name: "Setup ccache"
         uses: actions/cache@v4
         with:
@@ -91,7 +91,7 @@ jobs:
         with:
           version: 8
       - run: pnpm install
-      - run: sudo apt-get install -y wireguard
+      - run: sudo apt-get install -y wireguard openresolv
       - run: pnpm test
 
   macos-test:
