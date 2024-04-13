@@ -126,7 +126,7 @@ jobs:
           sync: rsync
           copyback: false
           prepare: |
-            pkg install -y sudo node npm wireguard-tools-1.0.20210914_2
+            pkg install -y sudo node npm wireguard-tools-1.0.20210914_3
             npm -v
             node -v
             wg-quick --help
