@@ -9,6 +9,7 @@ import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Option from "effect/Option";
+import * as Schedule from "effect/Schedule";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 
@@ -93,6 +94,9 @@ export const createWireguardDemoConfig = (
         )
     );
 
+/** @internal */
+export const retryPolicy = Schedule.recurs(4).pipe(Schedule.addDelay(() => "3 seconds"));
+
 /**
  * Attempts to view the hidden page on the demo.wireguard.com server, you should
  * only be able to see it when connected as a peer.
@@ -106,7 +110,7 @@ export const requestHiddenPage: Effect.Effect<
     const client = defaultClient.pipe(HttpClient.client.filterStatusOk);
     const request = HttpClient.request.get("http://192.168.4.1");
     return yield* λ(client(request).pipe(HttpClient.response.text, Effect.timeout("3 seconds")));
-});
+}).pipe(Effect.retry(retryPolicy));
 
 /**
  * Attempts to connect to https://www.google.com to ensure that dns is still
@@ -121,4 +125,4 @@ export const requestGoogle: Effect.Effect<
     const client = defaultClient.pipe(HttpClient.client.filterStatusOk);
     const request = HttpClient.request.get("https://www.google.com");
     return yield* λ(client(request).pipe(HttpClient.response.text, Effect.timeout("3 seconds")));
-});
+}).pipe(Effect.retry(retryPolicy));
