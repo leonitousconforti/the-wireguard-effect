@@ -53,7 +53,7 @@
         "@babel/plugin-transform-export-namespace-from": "7.24.1",
         "@babel/plugin-transform-modules-commonjs": "7.24.1",
         "@effect/build-utils": "0.7.6",
-        "@effect/docgen": "0.4.1",
+        "@effect/docgen": "0.4.2",
         "@effect/eslint-plugin": "0.1.2",
         "@effect/language-service": "0.1.0",
         "@effect/platform": "0.48.27",
