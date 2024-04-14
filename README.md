@@ -8,11 +8,30 @@ The motivation for this project came from wanting to create wireguard configurat
 
 ## Goals :white_check_mark:
 
-- [x] - doesn't require wireguard to be installed
 - [x] - fully typed wireguard configurations (thanks to @effect/schema)
+- [x] - doesn't require wireguard to be installed (ships with most prebuilds)
 - [x] - cross platform (supports linux amd64, linux arm64, mac amd64, mac arm64, windows amd64, and windows arm64, freebsd amd64, freebsd arm64, openbsd amd64, and openbsd arm64)
-- [x] - userspace implementation (implements the wireguard userspace api as well if that is something you are interested in, the [Wireguard cross platform docs](https://www.wireguard.com/xplatform/) have details about it.)
-- [x] - strong control over how the interface is managed across all platforms
+- [x] - userspace api implementation (the [Wireguard cross platform docs](https://www.wireguard.com/xplatform/) have details about it.)
+- [x] - strong control over how the interface is managed across all platforms.
+
+the-wireguard-effect should be able to manage interfaces using any of the follow implementations:
+
+ - system-wireguard+system-wg-quick (this is the only one tested right now): Simplest option, just need to have wireguard for your platform installed.
+ - system-wireguard+bundled-wg-quick: This option will use wireguard installed on your system but the included wg-quick script
+ - system-wireguard-go+system-wg-quick: This option will use wireguard-go installed on your system and the wg-quick script from your system
+ - bundled-wireguard-go+system-wg-quick: This option will use the bundled wireguard-go prebuild and the wg-quick script from your system
+ - system-wireguard-go+bundled-wg-quick: This option will use wireguard-go from your system and the bundled wg-quick script
+ - bundled-wireguard-go+bundled-wg-quick: This option will use the bundled wireguard-go and the bundled wg-quick script
+ - This option will use the bundled wireguard-go prebuild and the bundled wg-quick script, great for if you can't assume that wireguard will be installed but might leave some performance on the table.
+ - bundled-wireguard-go+userspace-api: This option will use the bundled wireguard-go prebuild and the wireguard userspace api
+ - system-wireguard-go+userspace-api: This option will use the system wireguard-go and the userspace api, can run 'sudo-less' but the userspace api does not configure any routes so you must do so manually with something like iptables or netsh or find a different package to do so.
+
+For all interface control implementations, you set if to use run the commands with sudo/admin privileges or to prompt the user for sudo/admin privileges using `@vscode/sudo-prompt`
+
+## Todo/Future :construction:
+
+- Add tests for the advanced config generation
+- Add tests and examples for all the other interface control implementations
 
 ## Non-Goals :wastebasket:
 
