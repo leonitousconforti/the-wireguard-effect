@@ -157,7 +157,7 @@ export const WireguardIniPeer: $WireguardIniPeer = Schema.transformOrFail(
         Function.pipe(
             iniPeer,
             ini.decode,
-            ({ PersistentKeepalive, PublicKey, Endpoint, AllowedIPs, PresharedKey }) => ({
+            ({ AllowedIPs, Endpoint, PersistentKeepalive, PresharedKey, PublicKey }) => ({
                 Endpoint,
                 PublicKey,
                 PresharedKey,
@@ -251,7 +251,7 @@ export const WireguardUapiPeer: $WireguardUapiPeer = Schema.transformOrFail(
     // Encoding is non-trivial, we need to parse the string and find all
     // the fields we need then decode them, which can fail.
     (uapiPeer, _options, _ast) => {
-        const { public_key, endpoint, persistent_keepalive_interval, allowed_ip, preshared_key } = ini.decode(uapiPeer);
+        const { allowed_ip, endpoint, persistent_keepalive_interval, preshared_key, public_key } = ini.decode(uapiPeer);
 
         const presharedKey = Function.pipe(
             preshared_key,

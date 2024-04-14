@@ -505,7 +505,7 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(
                 interfaceSection,
                 ini.parse,
                 (jsonConfig) => ({ ...jsonConfig["Interface"], Peers: parsePeers }),
-                ({ Dns, ListenPort, FirewallMark, Address, PrivateKey, Peers }) =>
+                ({ Address, Dns, FirewallMark, ListenPort, Peers, PrivateKey }) =>
                     ({
                         Dns,
                         Peers,
