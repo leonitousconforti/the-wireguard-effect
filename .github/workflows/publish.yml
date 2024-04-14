@@ -17,7 +17,7 @@ jobs:
       packages: write
     steps:
       - run: sudo apt-get update
-      - run: sudo apt-get install -y wireguard
+      - run: sudo apt-get install wireguard mingw-w64 imagemagick libarchive-tools build-essential flex bison dwarves libssl-dev libelf-dev bc ccache librsvg2-bin -y
 
       - uses: actions/checkout@v4
         with:
