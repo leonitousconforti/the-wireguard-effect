@@ -25,15 +25,15 @@ jobs:
         with:
           version: 8
           run_install: false
-      # - name: "Get pnpm store"
-      #   run: |
-      #     echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-      # - name: "Setup pnpm cache"
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ${{ env.STORE_PATH }}
-      #     key: ${{ runner.os }}-node18.x-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-node18.x-pnpm-store-
+      - name: "Get pnpm store"
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - name: "Setup pnpm cache"
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-node18.x-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-node18.x-pnpm-store-
 
       - uses: mxschmitt/action-tmate@v3
