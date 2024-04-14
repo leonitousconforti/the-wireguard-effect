@@ -1,6 +1,6 @@
 {
     "name": "the-wireguard-effect",
-    "version": "0.0.1-alpha.29",
+    "version": "0.0.1-beta.0",
     "description": "Cross platform wireguard api client for nodejs built on wireguard-go with effect-ts",
     "keywords": [
         "wireguard",
