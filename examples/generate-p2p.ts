@@ -7,12 +7,11 @@ import * as Tuple from "effect/Tuple";
 import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
 import * as WireguardErrors from "the-wireguard-effect/WireguardErrors";
 
-const aliceSetupData = Tuple.make("10.0.1.1:51820" as const, "");
-const bobSetupData = Tuple.make("10.0.2.1:51820" as const, "");
+const aliceSetupData = Tuple.make("10.0.1.1:51820" as const, "1.1.1.1:51280");
+const bobSetupData = Tuple.make("10.0.2.1:51820" as const, "2.2.2.2:51280:41280");
 
 const program: Effect.Effect<void, ParseResult.ParseError | WireguardErrors.WireguardError, never> = Effect.gen(
     function* (λ) {
-        // Distribute these configs somehow
         const [aliceConfig, bobConfig] = yield* λ(
             WireguardConfig.WireguardConfig.generateP2PConfigs({
                 aliceData: aliceSetupData,
@@ -20,6 +19,7 @@ const program: Effect.Effect<void, ParseResult.ParseError | WireguardErrors.Wire
             })
         );
 
+        // Distribute these configs somehow
         yield* λ(Console.log(aliceConfig));
         yield* λ(Console.log(bobConfig));
     }

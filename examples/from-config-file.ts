@@ -14,9 +14,7 @@ export const program: Effect.Effect<
     Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
     const config = yield* λ(WireguardConfig.WireguardConfig.fromConfigFile("examples/wireguard-config.conf"));
-    yield* λ(config.upScoped({ how: "system-wireguard+system-wg-quick" }));
-    const peer1Endpoint = config.Peers[0].Endpoint;
-    yield* λ(Console.log(peer1Endpoint));
-}).pipe(Effect.scoped);
+    yield* λ(Console.log(config));
+});
 
 Effect.suspend(() => program).pipe(Effect.provide(PlatformNode.NodeContext.layer), PlatformNode.NodeRuntime.runMain);

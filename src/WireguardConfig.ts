@@ -118,24 +118,16 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
      */
     public static generateStarConfigs: {
         // Overload for when cidrBlock is not provided
-        <
-            HubData extends InternetSchemas.SetupDataEncoded,
-            SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
-        >(options: {
-            hubData: HubData;
-            spokeData: SpokeData;
+        <Nodes extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>>(options: {
+            nodes: Nodes;
         }): Effect.Effect<
             readonly [hubConfig: WireguardConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig>],
             ParseResult.ParseError | WireguardErrors.WireguardError,
             never
         >;
         // Overload for when cidrBlock is provided
-        <
-            HubData extends InternetSchemas.EndpointEncoded,
-            SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
-        >(options: {
-            hubData: HubData;
-            spokeData: SpokeData;
+        <Nodes extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>>(options: {
+            nodes: Nodes;
             cidrBlock: InternetSchemas.CidrBlock;
             addressStartingIndex?: number | undefined;
         }): Effect.Effect<
@@ -195,7 +187,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
         <
             HubData extends InternetSchemas.SetupDataEncoded,
             SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
-            TrustMap extends HashMap.HashMap<keyof SpokeData, ReadonlyArray.NonEmptyReadonlyArray<keyof SpokeData>>,
+            TrustMap extends HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>,
             PreshareKeysMap extends HashMap.HashMap<
                 keyof SpokeData | HubData,
                 { readonly privateKey: WireguardKey.WireguardKey; readonly publicKey: WireguardKey.WireguardKey }
@@ -214,7 +206,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
         <
             HubData extends InternetSchemas.EndpointEncoded,
             SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
-            TrustMap extends HashMap.HashMap<keyof SpokeData, ReadonlyArray.NonEmptyReadonlyArray<keyof SpokeData>>,
+            TrustMap extends HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>,
             PreshareKeysMap extends HashMap.HashMap<
                 keyof SpokeData | HubData,
                 { readonly privateKey: WireguardKey.WireguardKey; readonly publicKey: WireguardKey.WireguardKey }
@@ -231,7 +223,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             ParseResult.ParseError | WireguardErrors.WireguardError,
             never
         >;
-    } = internal.generateHubSpokeConfigs;
+    } = internal.generate;
 
     /**
      * Loads a wireguard interface configuration from an INI file.
