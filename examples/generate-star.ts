@@ -7,23 +7,17 @@ import * as Tuple from "effect/Tuple";
 import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
 import * as WireguardErrors from "the-wireguard-effect/WireguardErrors";
 
-// Alice will be the hub
-const aliceSetupData = Tuple.make("10.0.1.1:51820" as const, "");
-
-// Bob, Charlie, Dave, and Eve will be spokes
-const bobSetupData = Tuple.make("10.0.2.1:51820" as const, "");
-const charlieSetupData = Tuple.make("10.0.3.1:51820" as const, "");
-const daveSetupData = Tuple.make("10.0.4.1:51820" as const, "");
-const eveSetupData = Tuple.make("10.0.5.1:51820" as const, "");
-const spokesSetupData = [bobSetupData, charlieSetupData, daveSetupData, eveSetupData] as const;
+const aliceSetupData = Tuple.make("10.0.1.1:51820" as const, "1.1.1.1");
+const bobSetupData = Tuple.make("10.0.2.1:51820" as const, "2.2.2.2:51280");
+const charlieSetupData = Tuple.make("10.0.3.1:51820" as const, "3.3.3.3:51280:41280");
+const daveSetupData = Tuple.make("10.0.4.1:51820" as const, "4.4.4.4");
+const eveSetupData = Tuple.make("10.0.5.1:51820" as const, "5.5.5.5");
+const nodesSetupData = [aliceSetupData, bobSetupData, charlieSetupData, daveSetupData, eveSetupData] as const;
 
 const program: Effect.Effect<void, ParseResult.ParseError | WireguardErrors.WireguardError, never> = Effect.gen(
     function* (λ) {
         const [hubConfig, spokeConfigs] = yield* λ(
-            WireguardConfig.WireguardConfig.generateHubSpokeConfigs({
-                hubData: aliceSetupData,
-                spokeData: spokesSetupData,
-            })
+            WireguardConfig.WireguardConfig.generateStarConfigs({ nodes: nodesSetupData })
         );
 
         // Distribute these configs somehow

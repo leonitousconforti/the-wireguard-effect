@@ -3,14 +3,14 @@ import { describe, expect, it } from "@effect/vitest";
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeHttp from "@effect/platform-node/NodeHttpClient";
 import * as Effect from "effect/Effect";
-import * as DemoUtils from "./WireguardDemo.js";
+import * as DemoUtils from "the-wireguard-effect/WireguardDemo";
 
 describe("wireguard e2e test using demo.wireguard.com", () => {
     it.scopedLive(
         "Should be able to connect to the demo server",
         () =>
             Effect.gen(function* (λ) {
-                const config = yield* λ(DemoUtils.createWireguardDemoConfig());
+                const config = yield* λ(DemoUtils.requestWireguardDemoConfig());
                 yield* λ(config.writeToFile("./wg0.conf"));
                 yield* λ(config.upScoped({ how: "system-wireguard+system-wg-quick", sudo: true }));
 

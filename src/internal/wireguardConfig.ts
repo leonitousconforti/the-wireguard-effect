@@ -121,11 +121,13 @@ export const generateP2PConfigs: {
 export const generateStarConfigs: {
     // Overload for when cidrBlock is not provided
     <
-        HubData extends InternetSchemas.SetupDataEncoded,
-        SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+        Nodes extends readonly [
+            InternetSchemas.SetupDataEncoded,
+            InternetSchemas.SetupDataEncoded,
+            ...Array<InternetSchemas.SetupDataEncoded>,
+        ],
     >(options: {
-        hubData: HubData;
-        spokeData: SpokeData;
+        nodes: Nodes;
     }): Effect.Effect<
         readonly [
             hubConfig: WireguardConfig.WireguardConfig,
@@ -136,11 +138,13 @@ export const generateStarConfigs: {
     >;
     // Overload for when cidrBlock is provided
     <
-        HubData extends InternetSchemas.EndpointEncoded,
-        SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+        Nodes extends readonly [
+            InternetSchemas.EndpointEncoded,
+            InternetSchemas.EndpointEncoded,
+            ...Array<InternetSchemas.EndpointEncoded>,
+        ],
     >(options: {
-        hubData: HubData;
-        spokeData: SpokeData;
+        nodes: Nodes;
         cidrBlock: InternetSchemas.CidrBlock;
         addressStartingIndex?: number | undefined;
     }): Effect.Effect<
@@ -152,15 +156,33 @@ export const generateStarConfigs: {
         never
     >;
 } = <
-    HubData extends InternetSchemas.SetupDataEncoded | InternetSchemas.EndpointEncoded,
-    SpokeData extends HubData extends InternetSchemas.SetupDataEncoded
-        ? ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>
-        : ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+    Nodes extends
+        | readonly [
+              InternetSchemas.SetupDataEncoded,
+              InternetSchemas.SetupDataEncoded,
+              ...Array<InternetSchemas.SetupDataEncoded>,
+          ]
+        | readonly [
+              InternetSchemas.EndpointEncoded,
+              InternetSchemas.EndpointEncoded,
+              ...Array<InternetSchemas.EndpointEncoded>,
+          ],
 >(options: {
-    hubData: HubData;
-    spokeData: SpokeData;
-    cidrBlock?: HubData extends InternetSchemas.EndpointEncoded ? InternetSchemas.CidrBlock : never;
-    addressStartingIndex?: HubData extends InternetSchemas.EndpointEncoded ? number | undefined : never;
+    nodes: Nodes;
+    cidrBlock?: Nodes extends readonly [
+        InternetSchemas.EndpointEncoded,
+        InternetSchemas.EndpointEncoded,
+        ...Array<InternetSchemas.EndpointEncoded>,
+    ]
+        ? InternetSchemas.CidrBlock
+        : never;
+    addressStartingIndex?: Nodes extends readonly [
+        InternetSchemas.EndpointEncoded,
+        InternetSchemas.EndpointEncoded,
+        ...Array<InternetSchemas.EndpointEncoded>,
+    ]
+        ? number | undefined
+        : never;
 }): Effect.Effect<
     readonly [
         hubConfig: WireguardConfig.WireguardConfig,
@@ -169,20 +191,21 @@ export const generateStarConfigs: {
     ParseResult.ParseError | WireguardErrors.WireguardError,
     never
 > => {
+    const [firstNode, secondNode, ...rest] = options.nodes;
     return Predicate.isUndefined(options.cidrBlock)
         ? generate({
               preshareKeys: "generate" as const,
               trustMap: "trustAllPeers" as const,
-              hubData: options.hubData as InternetSchemas.SetupDataEncoded,
-              spokeData: options.spokeData as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+              hubData: firstNode as InternetSchemas.SetupDataEncoded,
+              spokeData: [secondNode, ...rest] as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
           })
         : generate({
               preshareKeys: "generate" as const,
               trustMap: "trustAllPeers" as const,
               cidrBlock: options.cidrBlock,
               addressStartingIndex: options.addressStartingIndex,
-              hubData: options.hubData as InternetSchemas.EndpointEncoded,
-              spokeData: options.spokeData as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+              hubData: firstNode as InternetSchemas.EndpointEncoded,
+              spokeData: [secondNode, ...rest] as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
           });
 };
 
@@ -261,7 +284,7 @@ export const generate: {
     <
         HubData extends InternetSchemas.SetupDataEncoded,
         SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
-        TrustMap extends HashMap.HashMap<keyof SpokeData, ReadonlyArray.NonEmptyReadonlyArray<keyof SpokeData>>,
+        TrustMap extends HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>,
         PreshareKeysMap extends HashMap.HashMap<
             keyof SpokeData | HubData,
             { readonly privateKey: WireguardKey.WireguardKey; readonly publicKey: WireguardKey.WireguardKey }
@@ -283,7 +306,7 @@ export const generate: {
     <
         HubData extends InternetSchemas.EndpointEncoded,
         SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
-        TrustMap extends HashMap.HashMap<keyof SpokeData, ReadonlyArray.NonEmptyReadonlyArray<keyof SpokeData>>,
+        TrustMap extends HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>,
         PreshareKeysMap extends HashMap.HashMap<
             keyof SpokeData | HubData,
             { readonly privateKey: WireguardKey.WireguardKey; readonly publicKey: WireguardKey.WireguardKey }
@@ -308,7 +331,7 @@ export const generate: {
     SpokeData extends HubData extends InternetSchemas.SetupDataEncoded
         ? ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>
         : ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
-    TrustMap extends HashMap.HashMap<keyof SpokeData, ReadonlyArray.NonEmptyReadonlyArray<keyof SpokeData>>,
+    TrustMap extends HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>,
     PreshareKeysMap extends HashMap.HashMap<
         keyof SpokeData | HubData,
         { readonly privateKey: WireguardKey.WireguardKey; readonly publicKey: WireguardKey.WireguardKey }
@@ -332,7 +355,6 @@ export const generate: {
 > =>
     Effect.gen(function* (λ) {
         const inputIsSetupData = Array.isArray(options.hubData);
-
         const ipsNeeded =
             ReadonlyArray.length(
                 options.spokeData as ReadonlyArray.NonEmptyReadonlyArray<
@@ -342,7 +364,11 @@ export const generate: {
 
         // Bounds checking on the cidr block
         if (options.cidrBlock && options.cidrBlock.total < ipsNeeded) {
-            return yield* λ(new WireguardErrors.WireguardError({ message: "Not enough IPs in the CIDR block" }));
+            return yield* λ(
+                new WireguardErrors.WireguardError({
+                    message: `Not enough IPs in the CIDR block for ${ipsNeeded} nodes`,
+                })
+            );
         }
 
         // Generate some ip addresses to use if the input data was just an endpoint
@@ -356,7 +382,7 @@ export const generate: {
                       Effect.map(Chunk.toArray)
                   )
               )
-            : yield* λ(Effect.succeed([]));
+            : yield* λ(Effect.succeed(ReadonlyArray.empty()));
 
         // Convert all inputs to be SetupDataEncoded
         const hubSetupDataEncoded: InternetSchemas.SetupDataEncoded = inputIsSetupData
