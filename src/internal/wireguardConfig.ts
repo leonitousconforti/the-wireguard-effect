@@ -459,7 +459,7 @@ export const generate: {
         const spokeConfigs = yield* λ(
             Function.pipe(
                 spokePeerConfigs,
-                ReadonlyArray.map(({ setupDataDecoded, setupDataEncoded, keys: { privateKey } }) =>
+                ReadonlyArray.map(({ keys: { privateKey }, setupDataDecoded, setupDataEncoded }) =>
                     Schema.decode(WireguardConfig.WireguardConfig)({
                         PrivateKey: privateKey,
                         Peers: [hubPeerConfig],
