@@ -1,4 +1,9 @@
-/** https://git.zx2c4.com/wireguard-tools/plain/contrib/ncat-client-server/client.sh */
+/**
+ * Utilities for connecting to the Wireguard demo server at demo.wireguard.com
+ *
+ * @since 1.0.0
+ * @see https://git.zx2c4.com/wireguard-tools/plain/contrib/ncat-client-server/client.sh
+ */
 
 import * as NodeSocket from "@effect/platform-node/NodeSocket";
 import * as HttpClient from "@effect/platform/HttpClient";
@@ -13,10 +18,14 @@ import * as Schedule from "effect/Schedule";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 
-import * as InternetSchemas from "the-wireguard-effect/InternetSchemas";
-import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
-import * as WireguardKey from "the-wireguard-effect/WireguardKey";
+import * as InternetSchemas from "./InternetSchemas.js";
+import * as WireguardConfig from "./WireguardConfig.js";
+import * as WireguardKey from "./WireguardKey.js";
 
+/**
+ * @since 1.0.0
+ * @category Api interface
+ */
 export interface $WireguardDemoSchema
     extends Schema.Annotable<
         $WireguardDemoSchema,
@@ -29,6 +38,10 @@ export interface $WireguardDemoSchema
         never
     > {}
 
+/**
+ * @since 1.0.0
+ * @category Schema
+ */
 export const WireguardDemoSchema: $WireguardDemoSchema = Schema.transform(
     Schema.templateLiteral(
         Schema.literal("OK"),
@@ -59,8 +72,10 @@ export const WireguardDemoSchema: $WireguardDemoSchema = Schema.transform(
 /**
  * Creates a Wireguard configuration to connect to demo.wireguard.com. When
  * connected, you should be able to see the hidden page at 192.168.4.1
+ *
+ * @since 1.0.0
  */
-export const createWireguardDemoConfig = (
+export const requestWireguardDemoConfig = (
     { publicKey, privateKey } = WireguardKey.generateKeyPair()
 ): Effect.Effect<WireguardConfig.WireguardConfig, Socket.SocketError | ParseResult.ParseError, never> =>
     Function.pipe(
@@ -100,6 +115,8 @@ export const retryPolicy = Schedule.recurs(4).pipe(Schedule.addDelay(() => "3 se
 /**
  * Attempts to view the hidden page on the demo.wireguard.com server, you should
  * only be able to see it when connected as a peer.
+ *
+ * @since 1.0.0
  */
 export const requestHiddenPage: Effect.Effect<
     string,
@@ -115,6 +132,8 @@ export const requestHiddenPage: Effect.Effect<
 /**
  * Attempts to connect to https://www.google.com to ensure that dns is still
  * working and we can connect to the internet when the wireguard tunnel is up.
+ *
+ * @since 1.0.0
  */
 export const requestGoogle: Effect.Effect<
     void,
