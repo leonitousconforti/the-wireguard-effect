@@ -104,8 +104,8 @@ connected, you should be able to see the hidden page at 192.168.4.1
 
 ```ts
 export declare const requestWireguardDemoConfig: ({
-  publicKey,
-  privateKey
+  privateKey,
+  publicKey
 }?: {
   readonly privateKey: string & Brand<"WireguardKey">
   readonly publicKey: string & Brand<"WireguardKey">

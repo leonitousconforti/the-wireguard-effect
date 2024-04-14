@@ -168,7 +168,7 @@ export const execCommand = (
     command: string,
     env?: { [key: string]: string }
 ): Effect.Effect<void, Cause.UnknownException, never> => {
-    console.log(`${withSudo === true && process.platform !== "win32" ? "sudo " : ""}${command}`);
+    // console.log(`${withSudo === true && process.platform !== "win32" ? "sudo " : ""}${command}`);
 
     return withSudo === "ask"
         ? Effect.try(() => sudoPrompt.exec(`${command}`, { name: "The-WireGuard-Effect", env: env ?? {} }))

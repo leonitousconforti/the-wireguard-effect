@@ -1,11 +1,9 @@
 /* eslint-disable no-undef */
 module.exports = {
-    ignorePatterns: ["dist", "*.mjs", "docs", "*.md", "submodules", "build"],
+    root: true,
+    env: { node: true, es2022: true },
     parser: "@typescript-eslint/parser",
-    parserOptions: {
-        ecmaVersion: 2018,
-        sourceType: "module",
-    },
+    parserOptions: { ecmaVersion: 2022, sourceType: "module" },
     settings: {
         "import/parsers": {
             "@typescript-eslint/parser": [".ts", ".tsx"],
@@ -21,9 +19,11 @@ module.exports = {
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:@effect/recommended",
+        "plugin:prettier/recommended",
     ],
-    plugins: ["deprecation", "import", "sort-destructure-keys", "codegen"],
+    plugins: ["deprecation", "import", "sort-destructure-keys", "codegen", "prettier"],
     rules: {
+        "no-console": "warn",
         "no-case-declarations": "off",
         "codegen/codegen": "error",
         "object-shorthand": "error",
@@ -42,4 +42,13 @@ module.exports = {
         ],
         "@effect/dprint": "off",
     },
+    overrides: [
+        {
+            files: ["./src/index.ts"],
+            rules: {
+                "prettier/prettier": "off",
+            },
+        },
+    ],
+    ignorePatterns: ["dist", "*.mjs", "docs", "*.md", "submodules", "build"],
 };
