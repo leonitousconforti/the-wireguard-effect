@@ -22,7 +22,7 @@ import * as net from "node:net";
  * @see https://stackoverflow.com/questions/70831365/can-i-slice-literal-type-in-typescript
  */
 type Split<Str extends string, Delimiter extends string> = string extends Str | ""
-    ? string[]
+    ? Array<string>
     : Str extends `${infer T}${Delimiter}${infer U}`
       ? [T, ...Split<U, Delimiter>]
       : [Str];
@@ -141,7 +141,7 @@ export class IPv4 extends Schema.Class<IPv4>("IPv4")({
 
     public static readonly FromBigint = (n: bigint): Effect.Effect<IPv4, ParseResult.ParseError, never> => {
         const padded = n.toString(16).replace(/:/g, "").padStart(8, "0");
-        const groups: number[] = [];
+        const groups: Array<number> = [];
         for (let i = 0; i < 8; i += 2) {
             const h = padded.slice(i, i + 2);
             groups.push(parseInt(h, 16));
@@ -257,7 +257,7 @@ export class IPv6 extends Schema.Class<IPv6>("IPv6")({
             return parseInt(octet, 16).toString(16).padStart(4, "0");
         }
 
-        let groups: string[] = [];
+        let groups: Array<string> = [];
         const halves = this.ip.split("::");
 
         if (halves.length === 2) {
@@ -733,7 +733,7 @@ export const IPv4Endpoint: $IPv4Endpoint = Schema.transform(
         const listenPortParsed = Predicate.isNotUndefined(listenPort) ? Number.parseInt(listenPort, 10) : natPortParsed;
         return { address: ip, natPort: natPortParsed, listenPort: listenPortParsed };
     },
-    ({ address, natPort, listenPort }) => `${address}:${natPort}:${listenPort}` as const
+    ({ address, listenPort, natPort }) => `${address}:${natPort}:${listenPort}` as const
 ).annotations({
     identifier: "IPv4Endpoint",
     description: "An ipv4 wireguard endpoint",
@@ -808,8 +808,8 @@ export const IPv6Endpoint: $IPv6Endpoint = Schema.transform(
     Schema.struct({ address: IPv6FromString, natPort: Port, listenPort: Port }),
     (data) => {
         const isObjectInput = !Predicate.isString(data);
-        type Tail<T extends ReadonlyArray<any>> = T extends [infer A, ...infer R] ? R : never;
-        const tail = <T extends ReadonlyArray<any>>(elements: T): Tail<T> => elements.slice(1) as Tail<T>;
+        type Tail<T extends ReadonlyArray<unknown>> = T extends [infer _First, ...infer Rest] ? Rest : never;
+        const tail = <T extends ReadonlyArray<unknown>>(elements: T): Tail<T> => elements.slice(1) as Tail<T>;
         const [ip, natPort, listenPort] = isObjectInput
             ? ([
                   data.ip,
@@ -822,7 +822,7 @@ export const IPv6Endpoint: $IPv6Endpoint = Schema.transform(
         const listenPortParsed = Predicate.isNotUndefined(listenPort) ? Number.parseInt(listenPort, 10) : natPortParsed;
         return { address: ip.slice(1), natPort: natPortParsed, listenPort: listenPortParsed } as const;
     },
-    ({ address, natPort, listenPort }) => `[${address}]:${natPort}:${listenPort}` as const
+    ({ address, listenPort, natPort }) => `[${address}]:${natPort}:${listenPort}` as const
 ).annotations({
     identifier: "IPv6Endpoint",
     description: "An ipv6 wireguard endpoint",
@@ -873,7 +873,7 @@ export const HostnameEndpoint: $HostnameEndpoint = Schema.transform(
         const listenPortParsed = Predicate.isNotUndefined(listenPort) ? Number.parseInt(listenPort, 10) : natPortParsed;
         return { host, natPort: natPortParsed, listenPort: listenPortParsed };
     },
-    ({ host, natPort, listenPort }) => `${host}:${natPort}:${listenPort}` as const
+    ({ host, listenPort, natPort }) => `${host}:${natPort}:${listenPort}` as const
 ).annotations({
     identifier: "HostnameEndpoint",
     description: "A hostname endpoint",
