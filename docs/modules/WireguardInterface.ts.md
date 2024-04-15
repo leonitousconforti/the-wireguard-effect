@@ -73,7 +73,7 @@ Stops a previously started wireguard tunnel.
 **Signature**
 
 ```ts
-down: { (options: {    sudo?: boolean | "ask" | undefined;    how: "userspace-api";}): Effect.Effect<void, Cause.UnknownException, FileSystem.FileSystem>; (options: {    sudo?: boolean | "ask" | undefined;    how: "bundled-wg-quick" | "system-wg-quick";    file: string;}): Effect.Effect<void, Cause.UnknownException, FileSystem.FileSystem>; }
+down: { (options: {    sudo?: boolean | "ask" | undefined;    how: "userspace-api";}): Effect.Effect<void, PlatformError.PlatformError | Cause.UnknownException, Path.Path | FileSystem.FileSystem>; (options: {    sudo?: boolean | "ask" | undefined;    how: "bundled-wg-quick" | "system-wg-quick";    file: string;}): Effect.Effect<void, PlatformError.PlatformError | Cause.UnknownException, Path.Path | FileSystem.FileSystem>; }
 ```
 
 Added in v1.0.0
