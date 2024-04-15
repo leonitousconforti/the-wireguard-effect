@@ -247,30 +247,26 @@ export const WireguardUapiPeer: $WireguardUapiPeer = Schema.transformOrFail(Wire
     },
 
     // Encoding is non-trivial, we need to parse the string and find all
-    encode:
-        // the fields we need then decode them, which can fail.
-        (uapiPeer, _options, _ast) => {
-            const { allowed_ip, endpoint, persistent_keepalive_interval, preshared_key, public_key } =
-                ini.decode(uapiPeer);
+    // the fields we need then decode them, which can fail.
+    encode: (uapiPeer, _options, _ast) => {
+        const { allowed_ip, endpoint, persistent_keepalive_interval, preshared_key, public_key } = ini.decode(uapiPeer);
 
-            const presharedKey = Function.pipe(
-                preshared_key,
-                Option.fromNullable,
-                Option.map((hex) => Buffer.from(hex, "hex").toString("base64"))
-            );
+        const presharedKey = Function.pipe(
+            preshared_key,
+            Option.fromNullable,
+            Option.map((hex) => Buffer.from(hex, "hex").toString("base64"))
+        );
 
-            const data = {
-                Endpoint: endpoint,
-                PublicKey: public_key,
-                AllowedIPs: allowed_ip,
-                PresharedKey: presharedKey,
-                PersistentKeepalive: Duration.seconds(persistent_keepalive_interval),
-            };
+        const data = {
+            Endpoint: endpoint,
+            PublicKey: public_key,
+            AllowedIPs: allowed_ip,
+            PresharedKey: presharedKey,
+            PersistentKeepalive: Duration.seconds(persistent_keepalive_interval),
+        };
 
-            return Schema.decodeUnknown(Schema.parseJson(WireguardPeer))(data).pipe(
-                Effect.mapError(({ error }) => error)
-            );
-        },
+        return Schema.decodeUnknown(Schema.parseJson(WireguardPeer))(data).pipe(Effect.mapError(({ error }) => error));
+    },
 }).annotations({
     identifier: "WireguardUapiPeer",
     description: "A wireguard userspace api peer configuration",

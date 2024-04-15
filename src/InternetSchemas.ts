@@ -659,7 +659,6 @@ export const CidrBlockFromString: $CidrBlockFromString = Schema.transform(
             const [ip, mask] = splitLiteral(str, "/");
             return { ip, mask: Number.parseInt(mask, 10) };
         },
-
         encode: ({ ip, mask }) => `${ip}/${mask}` as const,
     }
 ).annotations({
@@ -733,7 +732,6 @@ export const IPv4Endpoint: $IPv4Endpoint = Schema.transform(
                 : natPortParsed;
             return { address: ip, natPort: natPortParsed, listenPort: listenPortParsed };
         },
-
         encode: ({ address, listenPort, natPort }) => `${address}:${natPort}:${listenPort}` as const,
     }
 ).annotations({
@@ -830,7 +828,6 @@ export const IPv6Endpoint: $IPv6Endpoint = Schema.transform(
                 : natPortParsed;
             return { address: ip.slice(1), natPort: natPortParsed, listenPort: listenPortParsed } as const;
         },
-
         encode: ({ address, listenPort, natPort }) => `[${address}]:${natPort}:${listenPort}` as const,
     }
 ).annotations({
@@ -886,7 +883,6 @@ export const HostnameEndpoint: $HostnameEndpoint = Schema.transform(
                 : natPortParsed;
             return { host, natPort: natPortParsed, listenPort: listenPortParsed };
         },
-
         encode: ({ host, listenPort, natPort }) => `${host}:${natPort}:${listenPort}` as const,
     }
 ).annotations({

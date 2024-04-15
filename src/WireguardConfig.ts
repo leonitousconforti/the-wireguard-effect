@@ -545,29 +545,28 @@ export const WireguardUapiConfig: $WireguardUapiConfig = Schema.transformOrFail(
     Schema.Tuple(Schema.String, InternetSchemas.CidrBlockFromString),
     {
         // Encoding is non trivial, as we need to handle all the peers in individually and
-        decode:
-            // we need to save the ini config address somewhere.
-            (config, _options, _ast) =>
-                Effect.gen(function* (λ) {
-                    const fwmark = `fwmark=${config.FirewallMark}\n` as const;
-                    const listenPort = `listen_port=${config.ListenPort}\n` as const;
-                    const privateKeyHex = Buffer.from(config.PrivateKey, "base64").toString("hex");
-                    const privateKey = `private_key=${privateKeyHex}\n` as const;
+        // we need to save the ini config address somewhere.
+        decode: (config, _options, _ast) =>
+            Effect.gen(function* (λ) {
+                const fwmark = `fwmark=${config.FirewallMark}\n` as const;
+                const listenPort = `listen_port=${config.ListenPort}\n` as const;
+                const privateKeyHex = Buffer.from(config.PrivateKey, "base64").toString("hex");
+                const privateKey = `private_key=${privateKeyHex}\n` as const;
 
-                    const peers = yield* λ(
-                        Function.pipe(
-                            config.Peers,
-                            ReadonlyArray.map((peer) => Schema.encode(WireguardPeer.WireguardPeer)(peer)),
-                            ReadonlyArray.map(Effect.flatMap(Schema.decode(WireguardPeer.WireguardUapiPeer))),
-                            Effect.allWith(),
-                            Effect.map(ReadonlyArray.join("\n"))
-                        )
-                    );
+                const peers = yield* λ(
+                    Function.pipe(
+                        config.Peers,
+                        ReadonlyArray.map((peer) => Schema.encode(WireguardPeer.WireguardPeer)(peer)),
+                        ReadonlyArray.map(Effect.flatMap(Schema.decode(WireguardPeer.WireguardUapiPeer))),
+                        Effect.allWith(),
+                        Effect.map(ReadonlyArray.join("\n"))
+                    )
+                );
 
-                    const out = `${fwmark}${listenPort}${privateKey}${peers}\n` as const;
-                    const address = yield* λ(Schema.encode(InternetSchemas.CidrBlockFromString)(config.Address));
-                    return Tuple.make(out, address);
-                }).pipe(Effect.mapError(({ error }) => error)),
+                const out = `${fwmark}${listenPort}${privateKey}${peers}\n` as const;
+                const address = yield* λ(Schema.encode(InternetSchemas.CidrBlockFromString)(config.Address));
+                return Tuple.make(out, address);
+            }).pipe(Effect.mapError(({ error }) => error)),
 
         // Decoding is non-trivial, as we need to parse all the peers from the uapi config.
         encode: ([uapiConfig, address], _options, _ast) =>

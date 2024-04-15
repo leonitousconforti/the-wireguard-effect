@@ -63,7 +63,6 @@ export const WireguardDemoSchema: $WireguardDemoSchema = Schema.transform(
             const [_status, key, port, address] = InternetSchemas.splitLiteral(input, ":");
             return { serverPort: Number.parseInt(port), serverPublicKey: key, internalAddress: address.slice(0, -1) };
         },
-
         encode: ({ internalAddress, serverPort, serverPublicKey }) =>
             `OK:${serverPublicKey}:${serverPort}:${internalAddress}\n` as const,
     }

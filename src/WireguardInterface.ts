@@ -37,7 +37,6 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
                         : Effect.fail(new ParseResult.Type(ast, s, `Expected interface name to match ${x}`))
                 )
             ),
-
         encode: (s) => Effect.succeed(s),
     }),
 }) {
