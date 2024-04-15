@@ -3,10 +3,10 @@ import * as crypto from "node:crypto";
 import * as WireguardKey from "../WireguardKey.js";
 
 /** @internal */
-export const generatePreshareKey = (): WireguardKey.WireguardKey => {
-    const key = crypto.generateKeySync("hmac", { length: 32 });
-    return WireguardKey.WireguardKey(key.export().subarray(12).toString("base64"));
-};
+// export const generatePreshareKey = (): WireguardKey.WireguardKey => {
+//     const key = crypto.generateKeySync("hmac", { length: 32 });
+//     return WireguardKey.WireguardKey(key.export().subarray(12).toString("base64"));
+// };
 
 /** @internal */
 export const generateKeyPair = (): { privateKey: WireguardKey.WireguardKey; publicKey: WireguardKey.WireguardKey } => {

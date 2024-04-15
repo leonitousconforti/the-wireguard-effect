@@ -54,8 +54,8 @@ export const generateKeyPair: {
  *     import { generatePreshareKey } from "the-wireguard-effect/WireguardKey";
  *     const preshareKey = generatePreshareKey();
  */
-export const generatePreshareKey: {
-    (): WireguardKey;
-} = internal.generatePreshareKey;
+// export const generatePreshareKey: {
+//     (): WireguardKey;
+// } = internal.generatePreshareKey;
 
 export default WireguardKey;
