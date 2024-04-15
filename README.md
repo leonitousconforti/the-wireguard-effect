@@ -16,7 +16,7 @@ The motivation for this project came from wanting to create wireguard configurat
 
 the-wireguard-effect should be able to manage interfaces using any of the follow implementations:
 
- - system-wireguard+system-wg-quick (this is the only one tested right now): Simplest option, just need to have wireguard for your platform installed.
+ - system-wireguard+system-wg-quick: Simplest option, just need to have wireguard for your platform installed.
  - system-wireguard+bundled-wg-quick: This option will use wireguard installed on your system but the included wg-quick script
  - system-wireguard-go+system-wg-quick: This option will use wireguard-go installed on your system and the wg-quick script from your system
  - bundled-wireguard-go+system-wg-quick: This option will use the bundled wireguard-go prebuild and the wg-quick script from your system
@@ -30,13 +30,12 @@ For all interface control implementations, you set if to use run the commands wi
 
 ## Todo/Future :construction:
 
-- Add tests for the advanced config generation
-- Add tests and examples for all the other interface control implementations
+- Nothing at the moment
 
 ## Non-Goals :wastebasket:
 
 - Utilities for installing or checking if wireguard is installed on the system.
-- Utilities to configure userspace network interfaces when bringing a config up using the userspace api
+- Utilities to configure userspace network interfaces or generation of any iptables or nftables rules when bringing a config up using the userspace api
 
 ## Security :closed_lock_with_key:
 
