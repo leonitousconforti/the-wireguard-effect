@@ -225,4 +225,5 @@ jobs:
       # This is where our testing starts
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
       - run: wsl --distribution Ubuntu22.04 --user root -- chmod +x ./src/internal/*
+      - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/internal/
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
