@@ -16,6 +16,7 @@ Added in v1.0.0
 
 - [Crypto](#crypto)
   - [generateKeyPair](#generatekeypair)
+  - [generatePreshareKey](#generatepresharekey)
 - [Schemas](#schemas)
   - [WireguardKey](#wireguardkey)
 - [Unbranded Types](#unbranded-types)
@@ -40,6 +41,25 @@ export declare const generateKeyPair: () => { readonly privateKey: WireguardKey;
 ```ts
 import { generateKeyPair } from "the-wireguard-effect/WireguardKey"
 const { privateKey, publicKey } = generateKeyPair()
+```
+
+Added in v1.0.0
+
+## generatePreshareKey
+
+Generates a wireguard preshare key.
+
+**Signature**
+
+```ts
+export declare const generatePreshareKey: () => WireguardKey
+```
+
+**Example**
+
+```ts
+import { generatePreshareKey } from "the-wireguard-effect/WireguardKey"
+const preshareKey = generatePreshareKey()
 ```
 
 Added in v1.0.0

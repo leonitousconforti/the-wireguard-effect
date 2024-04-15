@@ -8,6 +8,7 @@ import * as Chunk from "effect/Chunk";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as HashMap from "effect/HashMap";
+import * as Match from "effect/Match";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
 import * as ReadonlyArray from "effect/ReadonlyArray";
@@ -284,16 +285,15 @@ export const generate: {
     <
         HubData extends InternetSchemas.SetupDataEncoded,
         SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
-        TrustMap extends HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>,
-        PreshareKeysMap extends HashMap.HashMap<
-            keyof SpokeData | HubData,
-            { readonly privateKey: WireguardKey.WireguardKey; readonly publicKey: WireguardKey.WireguardKey }
-        >,
     >(options: {
         hubData: HubData;
         spokeData: SpokeData;
-        preshareKeys?: PreshareKeysMap | "generate" | undefined;
-        trustMap?: TrustMap | "trustAllPeers" | "trustNoPeers" | undefined;
+        preshareKeys?: HashMap.HashMap<SpokeData[number] | HubData, WireguardKey.WireguardKey> | "generate" | undefined;
+        trustMap?:
+            | HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>
+            | "trustAllPeers"
+            | "trustNoPeers"
+            | undefined;
     }): Effect.Effect<
         readonly [
             hubConfig: WireguardConfig.WireguardConfig,
@@ -306,18 +306,17 @@ export const generate: {
     <
         HubData extends InternetSchemas.EndpointEncoded,
         SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
-        TrustMap extends HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>,
-        PreshareKeysMap extends HashMap.HashMap<
-            keyof SpokeData | HubData,
-            { readonly privateKey: WireguardKey.WireguardKey; readonly publicKey: WireguardKey.WireguardKey }
-        >,
     >(options: {
         hubData: HubData;
         spokeData: SpokeData;
         cidrBlock: InternetSchemas.CidrBlock;
         addressStartingIndex?: number | undefined;
-        preshareKeys?: PreshareKeysMap | "generate" | undefined;
-        trustMap?: TrustMap | "trustAllPeers" | "trustNoPeers" | undefined;
+        preshareKeys?: HashMap.HashMap<SpokeData[number] | HubData, WireguardKey.WireguardKey> | "generate" | undefined;
+        trustMap?:
+            | HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>
+            | "trustAllPeers"
+            | "trustNoPeers"
+            | undefined;
     }): Effect.Effect<
         readonly [
             hubConfig: WireguardConfig.WireguardConfig,
@@ -331,20 +330,17 @@ export const generate: {
     SpokeData extends HubData extends InternetSchemas.SetupDataEncoded
         ? ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>
         : ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
-    TrustMap extends HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>,
-    PreshareKeysMap extends HashMap.HashMap<
-        keyof SpokeData | HubData,
-        { readonly privateKey: WireguardKey.WireguardKey; readonly publicKey: WireguardKey.WireguardKey }
-    >,
 >(options: {
     hubData: HubData;
     spokeData: SpokeData;
-    cidrBlock?: HubData extends InternetSchemas.EndpointEncoded ? InternetSchemas.CidrBlock : never;
-    addressStartingIndex?: HubData extends InternetSchemas.EndpointEncoded ? number | undefined : never;
-    preshareKeys?: HubData extends InternetSchemas.EndpointEncoded ? PreshareKeysMap | "generate" | undefined : never;
-    trustMap?: HubData extends InternetSchemas.EndpointEncoded
-        ? TrustMap | "trustAllPeers" | "trustNoPeers" | undefined
-        : never;
+    cidrBlock?: InternetSchemas.CidrBlock | undefined;
+    addressStartingIndex?: number | undefined;
+    preshareKeys?: HashMap.HashMap<SpokeData[number] | HubData, WireguardKey.WireguardKey> | "generate" | undefined;
+    trustMap?:
+        | HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>
+        | "trustAllPeers"
+        | "trustNoPeers"
+        | undefined;
 }): Effect.Effect<
     readonly [
         hubConfig: WireguardConfig.WireguardConfig,
@@ -384,6 +380,38 @@ export const generate: {
               )
             : yield* λ(Effect.succeed(ReadonlyArray.empty()));
 
+        // Convert the trustMap to a HashMap if it's not already
+        type TrustMap = Exclude<typeof options.trustMap, "trustAllPeers" | "trustNoPeers" | undefined>;
+        const trustMap: TrustMap = Function.pipe(
+            Match.value(options.trustMap),
+            Match.when("trustAllPeers", () =>
+                Function.pipe(
+                    options.spokeData,
+                    ReadonlyArray.map((spoke) => Tuple.make(spoke, options.spokeData)),
+                    HashMap.fromIterable
+                )
+            ),
+            Match.when(HashMap.isHashMap, Function.identity<TrustMap>),
+            Match.whenOr("trustNoPeers", Predicate.isUndefined, (): TrustMap => Function.unsafeCoerce(HashMap.empty())),
+            Match.exhaustive
+        );
+
+        // Convert the preshareKeys to a HashMap if it's not already
+        type PreshareMap = Exclude<typeof options.preshareKeys, "generate" | undefined>;
+        const preshareKeys: PreshareMap = Function.pipe(
+            Match.value(options.preshareKeys),
+            Match.when("generate", () =>
+                Function.pipe(
+                    options.spokeData,
+                    ReadonlyArray.map((spoke) => Tuple.make(spoke, WireguardKey.generatePreshareKey())),
+                    HashMap.fromIterable
+                )
+            ),
+            Match.when(HashMap.isHashMap, Function.identity<PreshareMap>),
+            Match.when(Predicate.isUndefined, (): PreshareMap => Function.unsafeCoerce(HashMap.empty())),
+            Match.exhaustive
+        );
+
         // Convert all inputs to be SetupDataEncoded
         const hubSetupDataEncoded: InternetSchemas.SetupDataEncoded = inputIsSetupData
             ? (options.hubData as InternetSchemas.SetupDataEncoded)
@@ -406,15 +434,11 @@ export const generate: {
 
         // Generate the keys for the hub
         const hubKeys = WireguardKey.generateKeyPair();
-        // const hubPreshareKeys =
-        //     options.preshareKeys === "generate"
-        //         ? WireguardKey.generateKeyPair()
-        //         : Predicate.isNotUndefined(options.preshareKeys)
-        //           ? HashMap.get(options.preshareKeys, options.hubData).pipe(Option.getOrUndefined)
-        //           : undefined;
+        const hubPreshareKey = HashMap.get(preshareKeys, hubSetupDataEncoded);
 
         // This hub peer config will be added to all the spoke interface configs
         const hubPeerConfig = {
+            PreshareKey: hubPreshareKey,
             PublicKey: hubKeys.publicKey,
             Endpoint: Tuple.getFirst(hubSetupDataEncoded),
             AllowedIPs: [`${Tuple.getSecond(hubSetupDataEncoded)}/32`] as const,
@@ -423,27 +447,30 @@ export const generate: {
         // All these spoke peer configs will be added to the hub interface config
         const spokePeerConfigs = ReadonlyArray.map(spokeSetupDataBoth, ([spokeEncoded, spokeDecoded]) => {
             const keys = WireguardKey.generateKeyPair();
-            const preshareKeys =
-                options.preshareKeys === "generate"
-                    ? WireguardKey.generateKeyPair()
-                    : Predicate.isNotUndefined(options.preshareKeys)
-                      ? HashMap.get(options.preshareKeys, spokeDecoded).pipe(Option.getOrUndefined)
-                      : undefined;
+            const preshareKey = HashMap.get(preshareKeys, spokeEncoded);
 
             return {
                 setupDataEncoded: spokeEncoded,
                 setupDataDecoded: spokeDecoded,
                 keys: {
+                    preshareKey,
                     privateKey: keys.privateKey,
-                    privatePreshareKey: preshareKeys?.privateKey,
                 },
                 peerConfig: {
+                    PreshareKey: preshareKey,
                     PublicKey: keys.publicKey,
                     Endpoint: Tuple.getFirst(spokeEncoded),
                     AllowedIPs: [`${Tuple.getSecond(spokeEncoded)}/32`] as const,
                 },
             };
         });
+
+        // The hub will get all the peers added to it
+        const spokePeerConfigsBySetupData = Function.pipe(
+            spokePeerConfigs,
+            ReadonlyArray.map((peer) => Tuple.make(peer.setupDataEncoded, peer)),
+            HashMap.fromIterable
+        );
 
         // The hub interface config will have all the spoke peer configs
         const hubConfig = yield* λ(
@@ -455,18 +482,27 @@ export const generate: {
             })
         );
 
-        // Each spoke interface config will have the hub peer config
+        // Each spoke interface config will have the hub peer config and the other peers from the trust map
         const spokeConfigs = yield* λ(
             Function.pipe(
                 spokePeerConfigs,
-                ReadonlyArray.map(({ keys: { privateKey }, setupDataDecoded, setupDataEncoded }) =>
-                    Schema.decode(WireguardConfig.WireguardConfig)({
+                ReadonlyArray.map(({ keys: { privateKey }, setupDataDecoded, setupDataEncoded }) => {
+                    const friends = Function.pipe(
+                        trustMap,
+                        HashMap.get(setupDataEncoded),
+                        Option.getOrElse(() => ReadonlyArray.empty()),
+                        ReadonlyArray.map((friend) => HashMap.get(spokePeerConfigsBySetupData, friend)),
+                        ReadonlyArray.map(Option.getOrThrow),
+                        ReadonlyArray.map(({ peerConfig }) => peerConfig)
+                    );
+
+                    return Schema.decode(WireguardConfig.WireguardConfig)({
                         PrivateKey: privateKey,
-                        Peers: [hubPeerConfig],
+                        Peers: [hubPeerConfig, ...friends],
                         ListenPort: Tuple.getFirst(setupDataDecoded).listenPort,
                         Address: `${Tuple.getSecond(setupDataEncoded)}/${options.cidrBlock?.mask ?? 24}`,
-                    })
-                ),
+                    });
+                }),
                 Effect.allWith()
             )
         );
