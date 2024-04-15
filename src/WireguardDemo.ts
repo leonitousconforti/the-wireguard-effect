@@ -43,27 +43,30 @@ export interface $WireguardDemoSchema
  * @category Schema
  */
 export const WireguardDemoSchema: $WireguardDemoSchema = Schema.transform(
-    Schema.templateLiteral(
-        Schema.literal("OK"),
-        Schema.literal(":"),
-        Schema.string,
-        Schema.literal(":"),
-        Schema.number,
-        Schema.literal(":"),
-        Schema.string,
-        Schema.literal("\n")
+    Schema.TemplateLiteral(
+        Schema.Literal("OK"),
+        Schema.Literal(":"),
+        Schema.String,
+        Schema.Literal(":"),
+        Schema.Number,
+        Schema.Literal(":"),
+        Schema.String,
+        Schema.Literal("\n")
     ),
-    Schema.struct({
+    Schema.Struct({
         serverPort: InternetSchemas.Port,
         serverPublicKey: WireguardKey.WireguardKey,
         internalAddress: InternetSchemas.AddressFromString,
     }),
-    (input) => {
-        const [_status, key, port, address] = InternetSchemas.splitLiteral(input, ":");
-        return { serverPort: Number.parseInt(port), serverPublicKey: key, internalAddress: address.slice(0, -1) };
-    },
-    ({ internalAddress, serverPort, serverPublicKey }) =>
-        `OK:${serverPublicKey}:${serverPort}:${internalAddress}\n` as const
+    {
+        decode: (input) => {
+            const [_status, key, port, address] = InternetSchemas.splitLiteral(input, ":");
+            return { serverPort: Number.parseInt(port), serverPublicKey: key, internalAddress: address.slice(0, -1) };
+        },
+
+        encode: ({ internalAddress, serverPort, serverPublicKey }) =>
+            `OK:${serverPublicKey}:${serverPort}:${internalAddress}\n` as const,
+    }
 ).annotations({
     identifier: "WireguardDemoSchema",
     description: "Wireguard demo server response",

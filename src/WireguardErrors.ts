@@ -15,7 +15,7 @@ import * as Function from "effect/Function";
  * @category Errors
  */
 export const SuccessErrno = Function.pipe(
-    Schema.templateLiteral(Schema.literal("errno="), Schema.literal(0)),
+    Schema.TemplateLiteral(Schema.Literal("errno="), Schema.Literal(0)),
     Schema.identifier("SuccessErrno"),
     Schema.description("A successful errno"),
     Schema.brand("SuccessErrno")

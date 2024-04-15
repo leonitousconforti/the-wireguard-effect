@@ -26,10 +26,8 @@ import * as internal from "./internal/wireguardInterface.js";
  */
 export class WireguardInterface extends Schema.Class<WireguardInterface>("WireguardInterface")({
     /** Ensures the interface name matches the platform's interface name regex. */
-    Name: Schema.transformOrFail(
-        Schema.string,
-        Schema.string,
-        (s, _options, ast) =>
+    Name: Schema.transformOrFail(Schema.String, Schema.String, {
+        decode: (s, _options, ast) =>
             Function.pipe(
                 internal.InterfaceRegExpForPlatform,
                 Effect.mapError((error) => new ParseResult.Type(ast, s, error.message)),
@@ -39,8 +37,9 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
                         : Effect.fail(new ParseResult.Type(ast, s, `Expected interface name to match ${x}`))
                 )
             ),
-        (s) => Effect.succeed(s)
-    ),
+
+        encode: (s) => Effect.succeed(s),
+    }),
 }) {
     /**
      * @since 1.0.0

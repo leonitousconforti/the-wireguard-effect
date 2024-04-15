@@ -58,12 +58,10 @@ export interface $DurationFromSeconds
  * @since 1.0.0
  * @category Schemas
  */
-export const DurationFromSeconds: $DurationFromSeconds = Schema.transform(
-    Schema.Int,
-    Schema.DurationFromSelf,
-    (seconds) => Duration.seconds(seconds),
-    (duration) => Duration.toSeconds(duration)
-)
+export const DurationFromSeconds: $DurationFromSeconds = Schema.transform(Schema.Int, Schema.DurationFromSelf, {
+    decode: (seconds) => Duration.seconds(seconds),
+    encode: (duration) => Duration.toSeconds(duration),
+})
     .pipe(Schema.fromBrand(DurationFromSecondsBrand))
     .annotations({
         identifier: "DurationFromSeconds",
@@ -132,7 +130,7 @@ export const Port: $Port = Schema.Int.pipe(Schema.between(0, 2 ** 16 - 1))
  *     assert.doesNotThrow(() => decodeIPv4({ ip: "1.1.1.1" }));
  */
 export class IPv4 extends Schema.Class<IPv4>("IPv4")({
-    ip: Schema.string.pipe(
+    ip: Schema.String.pipe(
         Schema.filter((s, _, ast) => (net.isIPv4(s) ? Option.none() : Option.some(new ParseResult.Type(ast, s))))
     ),
 }) {
@@ -197,12 +195,10 @@ export type IPv4FromStringEncoded = Schema.Schema.Encoded<typeof IPv4FromString>
  *
  * @see {@link IPv4}
  */
-export const IPv4FromString: $IPv4FromString = Schema.transform(
-    Schema.string,
-    IPv4,
-    (str) => ({ ip: str }),
-    ({ ip }) => ip
-).annotations({
+export const IPv4FromString: $IPv4FromString = Schema.transform(Schema.String, IPv4, {
+    decode: (str) => ({ ip: str }),
+    encode: ({ ip }) => ip,
+}).annotations({
     identifier: "IPv4FromString",
     description: "An ipv4 address",
 });
@@ -236,7 +232,7 @@ export const IPv4FromString: $IPv4FromString = Schema.transform(
  *     );
  */
 export class IPv6 extends Schema.Class<IPv6>("IPv6")({
-    ip: Schema.string.pipe(
+    ip: Schema.String.pipe(
         Schema.filter((s, _, ast) => (net.isIPv6(s) ? Option.none() : Option.some(new ParseResult.Type(ast, s))))
     ),
 }) {
@@ -339,12 +335,10 @@ export type IPv6FromStringEncoded = Schema.Schema.Encoded<typeof IPv6FromString>
  *
  * @see {@link IPv6}
  */
-export const IPv6FromString: $IPv6FromString = Schema.transform(
-    Schema.string,
-    IPv6,
-    (str) => ({ ip: str }),
-    ({ ip }) => ip
-).annotations({
+export const IPv6FromString: $IPv6FromString = Schema.transform(Schema.String, IPv6, {
+    decode: (str) => ({ ip: str }),
+    encode: ({ ip }) => ip,
+}).annotations({
     identifier: "IPv6FromString",
     description: "An ipv6 address",
 });
@@ -353,7 +347,7 @@ export const IPv6FromString: $IPv6FromString = Schema.transform(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $Address extends Schema.union<[typeof IPv4, typeof IPv6]> {}
+export interface $Address extends Schema.Union<[typeof IPv4, typeof IPv6]> {}
 
 /**
  * @since 1.0.0
@@ -391,7 +385,7 @@ export type AddressEncoded = Schema.Schema.Encoded<typeof Address>;
  * @see {@link IPv4}
  * @see {@link IPv6}
  */
-export const Address: $Address = Schema.union(IPv4, IPv6).annotations({
+export const Address: $Address = Schema.Union(IPv4, IPv6).annotations({
     identifier: "Address",
     description: "An ip address",
 });
@@ -400,7 +394,7 @@ export const Address: $Address = Schema.union(IPv4, IPv6).annotations({
  * @since 1.0.0
  * @category Api interface
  */
-export interface $AddressFromString extends Schema.union<[typeof IPv4FromString, typeof IPv6FromString]> {}
+export interface $AddressFromString extends Schema.Union<[typeof IPv4FromString, typeof IPv6FromString]> {}
 
 /**
  * @since 1.0.0
@@ -436,7 +430,7 @@ export type AddressFromStringEncoded = Schema.Schema.Encoded<typeof AddressFromS
  *         decodeAddress("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
  *     );
  */
-export const AddressFromString: $AddressFromString = Schema.union(IPv4FromString, IPv6FromString).annotations({
+export const AddressFromString: $AddressFromString = Schema.Union(IPv4FromString, IPv6FromString).annotations({
     identifier: "AddressFromString",
     description: "An ip address",
 });
@@ -549,7 +543,7 @@ export class CidrBlock extends Schema.Class<CidrBlock>("CidrBlock")({
     ip: AddressFromString,
 
     /** The subnet mask of this cidr block. */
-    mask: Schema.union(IPv4CidrMask, IPv6CidrMask),
+    mask: Schema.Union(IPv4CidrMask, IPv6CidrMask),
 }) {
     /**
      * The address family of this cidr block.
@@ -658,13 +652,16 @@ export type CidrBlockFromStringEncoded = Schema.Schema.Encoded<typeof CidrBlockF
  * @category Schemas
  */
 export const CidrBlockFromString: $CidrBlockFromString = Schema.transform(
-    Schema.templateLiteral(Schema.string, Schema.literal("/"), Schema.number),
+    Schema.TemplateLiteral(Schema.String, Schema.Literal("/"), Schema.Number),
     CidrBlock,
-    (str) => {
-        const [ip, mask] = splitLiteral(str, "/");
-        return { ip, mask: Number.parseInt(mask, 10) };
-    },
-    ({ ip, mask }) => `${ip}/${mask}` as const
+    {
+        decode: (str) => {
+            const [ip, mask] = splitLiteral(str, "/");
+            return { ip, mask: Number.parseInt(mask, 10) };
+        },
+
+        encode: ({ ip, mask }) => `${ip}/${mask}` as const,
+    }
 ).annotations({
     identifier: "CidrBlockFromString",
     description: "A cidr block",
@@ -712,28 +709,33 @@ export interface $IPv4Endpoint
  *     });
  */
 export const IPv4Endpoint: $IPv4Endpoint = Schema.transform(
-    Schema.union(
-        Schema.struct({ ip: Schema.string, port: Schema.number }),
-        Schema.struct({ ip: Schema.string, natPort: Schema.number, listenPort: Schema.number }),
-        Schema.templateLiteral(Schema.string, Schema.literal(":"), Schema.number),
-        Schema.templateLiteral(Schema.string, Schema.literal(":"), Schema.number, Schema.literal(":"), Schema.number)
+    Schema.Union(
+        Schema.Struct({ ip: Schema.String, port: Schema.Number }),
+        Schema.Struct({ ip: Schema.String, natPort: Schema.Number, listenPort: Schema.Number }),
+        Schema.TemplateLiteral(Schema.String, Schema.Literal(":"), Schema.Number),
+        Schema.TemplateLiteral(Schema.String, Schema.Literal(":"), Schema.Number, Schema.Literal(":"), Schema.Number)
     ),
-    Schema.struct({ address: IPv4FromString, natPort: Port, listenPort: Port }),
-    (data) => {
-        const isObjectInput = !Predicate.isString(data);
-        const [ip, natPort, listenPort] = isObjectInput
-            ? ([
-                  data.ip,
-                  "natPort" in data ? (`${data.natPort}` as const) : (`${data.port}` as const),
-                  "listenPort" in data ? (`${data.listenPort}` as const) : undefined,
-              ] as const)
-            : splitLiteral(data, ":");
+    Schema.Struct({ address: IPv4FromString, natPort: Port, listenPort: Port }),
+    {
+        decode: (data) => {
+            const isObjectInput = !Predicate.isString(data);
+            const [ip, natPort, listenPort] = isObjectInput
+                ? ([
+                      data.ip,
+                      "natPort" in data ? (`${data.natPort}` as const) : (`${data.port}` as const),
+                      "listenPort" in data ? (`${data.listenPort}` as const) : undefined,
+                  ] as const)
+                : splitLiteral(data, ":");
 
-        const natPortParsed = Number.parseInt(natPort, 10);
-        const listenPortParsed = Predicate.isNotUndefined(listenPort) ? Number.parseInt(listenPort, 10) : natPortParsed;
-        return { address: ip, natPort: natPortParsed, listenPort: listenPortParsed };
-    },
-    ({ address, listenPort, natPort }) => `${address}:${natPort}:${listenPort}` as const
+            const natPortParsed = Number.parseInt(natPort, 10);
+            const listenPortParsed = Predicate.isNotUndefined(listenPort)
+                ? Number.parseInt(listenPort, 10)
+                : natPortParsed;
+            return { address: ip, natPort: natPortParsed, listenPort: listenPortParsed };
+        },
+
+        encode: ({ address, listenPort, natPort }) => `${address}:${natPort}:${listenPort}` as const,
+    }
 ).annotations({
     identifier: "IPv4Endpoint",
     description: "An ipv4 wireguard endpoint",
@@ -785,44 +787,52 @@ export interface $IPv6Endpoint
  *     });
  */
 export const IPv6Endpoint: $IPv6Endpoint = Schema.transform(
-    Schema.union(
-        Schema.struct({ ip: Schema.string, port: Schema.number }),
-        Schema.struct({ ip: Schema.string, natPort: Schema.number, listenPort: Schema.number }),
-        Schema.templateLiteral(
-            Schema.literal("["),
-            Schema.string,
-            Schema.literal("]"),
-            Schema.literal(":"),
-            Schema.number
+    Schema.Union(
+        Schema.Struct({ ip: Schema.String, port: Schema.Number }),
+        Schema.Struct({ ip: Schema.String, natPort: Schema.Number, listenPort: Schema.Number }),
+        Schema.TemplateLiteral(
+            Schema.Literal("["),
+            Schema.String,
+            Schema.Literal("]"),
+            Schema.Literal(":"),
+            Schema.Number
         ),
-        Schema.templateLiteral(
-            Schema.literal("["),
-            Schema.string,
-            Schema.literal("]"),
-            Schema.literal(":"),
-            Schema.number,
-            Schema.literal(":"),
-            Schema.number
+        Schema.TemplateLiteral(
+            Schema.Literal("["),
+            Schema.String,
+            Schema.Literal("]"),
+            Schema.Literal(":"),
+            Schema.Number,
+            Schema.Literal(":"),
+            Schema.Number
         )
     ),
-    Schema.struct({ address: IPv6FromString, natPort: Port, listenPort: Port }),
-    (data) => {
-        const isObjectInput = !Predicate.isString(data);
-        type Tail<T extends ReadonlyArray<unknown>> = T extends [infer _First, ...infer Rest] ? Rest : never;
-        const tail = <T extends ReadonlyArray<unknown>>(elements: T): Tail<T> => elements.slice(1) as Tail<T>;
-        const [ip, natPort, listenPort] = isObjectInput
-            ? ([
-                  data.ip,
-                  "natPort" in data ? (`${data.natPort}` as const) : (`${data.port}` as const),
-                  "listenPort" in data ? (`${data.listenPort}` as const) : undefined,
-              ] as const)
-            : ([splitLiteral(data, "]")[0].slice(1), ...tail(splitLiteral(splitLiteral(data, "]")[1], ":"))] as const);
+    Schema.Struct({ address: IPv6FromString, natPort: Port, listenPort: Port }),
+    {
+        decode: (data) => {
+            const isObjectInput = !Predicate.isString(data);
+            type Tail<T extends ReadonlyArray<unknown>> = T extends [infer _First, ...infer Rest] ? Rest : never;
+            const tail = <T extends ReadonlyArray<unknown>>(elements: T): Tail<T> => elements.slice(1) as Tail<T>;
+            const [ip, natPort, listenPort] = isObjectInput
+                ? ([
+                      data.ip,
+                      "natPort" in data ? (`${data.natPort}` as const) : (`${data.port}` as const),
+                      "listenPort" in data ? (`${data.listenPort}` as const) : undefined,
+                  ] as const)
+                : ([
+                      splitLiteral(data, "]")[0].slice(1),
+                      ...tail(splitLiteral(splitLiteral(data, "]")[1], ":")),
+                  ] as const);
 
-        const natPortParsed = Number.parseInt(natPort, 10);
-        const listenPortParsed = Predicate.isNotUndefined(listenPort) ? Number.parseInt(listenPort, 10) : natPortParsed;
-        return { address: ip.slice(1), natPort: natPortParsed, listenPort: listenPortParsed } as const;
-    },
-    ({ address, listenPort, natPort }) => `[${address}]:${natPort}:${listenPort}` as const
+            const natPortParsed = Number.parseInt(natPort, 10);
+            const listenPortParsed = Predicate.isNotUndefined(listenPort)
+                ? Number.parseInt(listenPort, 10)
+                : natPortParsed;
+            return { address: ip.slice(1), natPort: natPortParsed, listenPort: listenPortParsed } as const;
+        },
+
+        encode: ({ address, listenPort, natPort }) => `[${address}]:${natPort}:${listenPort}` as const,
+    }
 ).annotations({
     identifier: "IPv6Endpoint",
     description: "An ipv6 wireguard endpoint",
@@ -852,28 +862,33 @@ export interface $HostnameEndpoint
  * @category Schemas
  */
 export const HostnameEndpoint: $HostnameEndpoint = Schema.transform(
-    Schema.union(
-        Schema.struct({ host: Schema.string, port: Schema.number }),
-        Schema.struct({ host: Schema.string, natPort: Schema.number, listenPort: Schema.number }),
-        Schema.templateLiteral(Schema.string, Schema.literal(":"), Schema.number),
-        Schema.templateLiteral(Schema.string, Schema.literal(":"), Schema.number, Schema.literal(":"), Schema.number)
+    Schema.Union(
+        Schema.Struct({ host: Schema.String, port: Schema.Number }),
+        Schema.Struct({ host: Schema.String, natPort: Schema.Number, listenPort: Schema.Number }),
+        Schema.TemplateLiteral(Schema.String, Schema.Literal(":"), Schema.Number),
+        Schema.TemplateLiteral(Schema.String, Schema.Literal(":"), Schema.Number, Schema.Literal(":"), Schema.Number)
     ),
-    Schema.struct({ host: Schema.string, natPort: Port, listenPort: Port }),
-    (data) => {
-        const isObjectInput = !Predicate.isString(data);
-        const [host, natPort, listenPort] = isObjectInput
-            ? ([
-                  data.host,
-                  "natPort" in data ? (`${data.natPort}` as const) : (`${data.port}` as const),
-                  "listenPort" in data ? (`${data.listenPort}` as const) : undefined,
-              ] as const)
-            : splitLiteral(data, ":");
+    Schema.Struct({ host: Schema.String, natPort: Port, listenPort: Port }),
+    {
+        decode: (data) => {
+            const isObjectInput = !Predicate.isString(data);
+            const [host, natPort, listenPort] = isObjectInput
+                ? ([
+                      data.host,
+                      "natPort" in data ? (`${data.natPort}` as const) : (`${data.port}` as const),
+                      "listenPort" in data ? (`${data.listenPort}` as const) : undefined,
+                  ] as const)
+                : splitLiteral(data, ":");
 
-        const natPortParsed = Number.parseInt(natPort, 10);
-        const listenPortParsed = Predicate.isNotUndefined(listenPort) ? Number.parseInt(listenPort, 10) : natPortParsed;
-        return { host, natPort: natPortParsed, listenPort: listenPortParsed };
-    },
-    ({ host, listenPort, natPort }) => `${host}:${natPort}:${listenPort}` as const
+            const natPortParsed = Number.parseInt(natPort, 10);
+            const listenPortParsed = Predicate.isNotUndefined(listenPort)
+                ? Number.parseInt(listenPort, 10)
+                : natPortParsed;
+            return { host, natPort: natPortParsed, listenPort: listenPortParsed };
+        },
+
+        encode: ({ host, listenPort, natPort }) => `${host}:${natPort}:${listenPort}` as const,
+    }
 ).annotations({
     identifier: "HostnameEndpoint",
     description: "A hostname endpoint",
@@ -883,7 +898,7 @@ export const HostnameEndpoint: $HostnameEndpoint = Schema.transform(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $Endpoint extends Schema.union<[$IPv4Endpoint, $IPv6Endpoint, $HostnameEndpoint]> {}
+export interface $Endpoint extends Schema.Union<[$IPv4Endpoint, $IPv6Endpoint, $HostnameEndpoint]> {}
 
 /**
  * @since 1.0.0
@@ -943,7 +958,7 @@ export type EndpointEncoded = Schema.Schema.Encoded<typeof Endpoint>;
  * @see {@link IPv4Endpoint}
  * @see {@link IPv6Endpoint}
  */
-export const Endpoint: $Endpoint = Schema.union(IPv4Endpoint, IPv6Endpoint, HostnameEndpoint).annotations({
+export const Endpoint: $Endpoint = Schema.Union(IPv4Endpoint, IPv6Endpoint, HostnameEndpoint).annotations({
     identifier: "Endpoint",
     description: "An ipv4 or ipv6 wireguard endpoint",
 });
@@ -952,7 +967,7 @@ export const Endpoint: $Endpoint = Schema.union(IPv4Endpoint, IPv6Endpoint, Host
  * @since 1.0.0
  * @category Api interface
  */
-export interface $SetupData extends Schema.tuple<[$Endpoint, $AddressFromString]> {}
+export interface $SetupData extends Schema.Tuple<[$Endpoint, $AddressFromString]> {}
 
 /**
  * @since 1.0.0
@@ -981,7 +996,7 @@ export type SetupDataEncoded = Schema.Schema.Encoded<typeof SetupData>;
  * @see {@link EndpointSchema}
  * @see {@link Address}
  */
-export const SetupData: $SetupData = Schema.tuple(Endpoint, AddressFromString).annotations({
+export const SetupData: $SetupData = Schema.Tuple(Endpoint, AddressFromString).annotations({
     identifier: "SetupData",
     description: "A wireguard setup data",
 });
