@@ -95,6 +95,8 @@ jobs:
       - run: pnpm install
       - run: sudo apt-get install -y wireguard openresolv
       - run: pnpm test
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
 
   macos-test:
     runs-on: macos-latest
@@ -113,6 +115,8 @@ jobs:
       - run: pnpm install
       - run: brew install wireguard-tools
       - run: pnpm test
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
 
   freebsd-test:
     runs-on: ubuntu-latest
@@ -136,6 +140,8 @@ jobs:
           run: |
             pnpm install
             pnpm test
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
 
   openbsd-test:
     runs-on: ubuntu-latest
@@ -159,6 +165,8 @@ jobs:
           run: |
             pnpm install
             pnpm test
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
 
   windows-test:
     runs-on: windows-latest
@@ -182,6 +190,8 @@ jobs:
       - run: echo "C:\Program Files\WireGuard" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - run: wireguard.exe
       - run: pnpm test
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
 
   windows-wsl2-test:
     runs-on: windows-latest
@@ -221,3 +231,5 @@ jobs:
       # This is where our testing starts
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
