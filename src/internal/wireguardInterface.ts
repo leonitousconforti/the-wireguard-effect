@@ -94,7 +94,7 @@ export const WireguardExeExecutablePath: Effect.Effect<
     const path = yield* λ(Path.Path);
     const fs = yield* λ(FileSystem.FileSystem);
     if (process.platform !== "win32") return undefined;
-    const url = new URL(`./wireguard.exe`, import.meta.url);
+    const url = new URL(`./win32-amd64-wireguard.exe`, import.meta.url);
     const pathString = yield* λ(path.fromFileUrl(url));
     yield* λ(fs.access(pathString, { ok: true }));
     return pathString;
