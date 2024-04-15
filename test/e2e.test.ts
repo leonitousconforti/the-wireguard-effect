@@ -11,7 +11,6 @@ describe("wireguard e2e test using demo.wireguard.com", () => {
         () =>
             Effect.gen(function* (λ) {
                 const config = yield* λ(DemoUtils.requestWireguardDemoConfig());
-                yield* λ(config.writeToFile("./wg0.conf"));
                 yield* λ(config.upScoped({ how: "system-wireguard+system-wg-quick", sudo: true }));
 
                 // FIXME: how can we get rid of this?

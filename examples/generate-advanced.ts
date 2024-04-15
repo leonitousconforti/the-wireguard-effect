@@ -12,8 +12,8 @@ import * as WireguardErrors from "the-wireguard-effect/WireguardErrors";
 const aliceSetupData = Tuple.make("10.0.1.1:51820" as const, "1.1.1.1");
 
 // Bob, Charlie, Dave, and Eve will be spokes
-const bobSetupData = Tuple.make("10.0.2.1:51820" as const, "2.2.2.2:51280");
-const charlieSetupData = Tuple.make("10.0.3.1:51820" as const, "3.3.3.3:51280:41280");
+const bobSetupData = Tuple.make("10.0.2.1:51820" as const, "2.2.2.2");
+const charlieSetupData = Tuple.make("10.0.3.1:51820" as const, "3.3.3.3");
 const daveSetupData = Tuple.make("10.0.4.1:51820" as const, "4.4.4.4");
 const eveSetupData = Tuple.make("10.0.5.1:51820" as const, "5.5.5.5");
 const spokesSetupData = [bobSetupData, charlieSetupData, daveSetupData, eveSetupData] as const;

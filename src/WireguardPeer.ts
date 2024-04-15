@@ -148,7 +148,7 @@ export const WireguardIniPeer: $WireguardIniPeer = Schema.transformOrFail(Wiregu
             Option.map((key) => `PresharedKey = ${key}\n`),
             Option.getOrElse(() => "")
         );
-        return Effect.succeed(`[Peer]\n${publicKey}${endpoint}${keepAlive}${presharedKey}${aps.join("\n")}\n` as const);
+        return Effect.succeed(`[Peer]\n${publicKey}${endpoint}${keepAlive}${presharedKey}${aps.join("\n")}` as const);
     },
 
     // Decoding is likewise trivial using the ini library.

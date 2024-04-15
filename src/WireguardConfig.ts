@@ -467,7 +467,7 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(Wi
                     ReadonlyArray.map((peer) => Schema.encode(WireguardPeer.WireguardPeer)(peer)),
                     ReadonlyArray.map(Effect.flatMap(Schema.decode(WireguardPeer.WireguardIniPeer))),
                     Effect.allWith(),
-                    Effect.map(ReadonlyArray.join("\n\n"))
+                    Effect.map(ReadonlyArray.join("\n"))
                 )
             );
 
