@@ -19,7 +19,7 @@ import * as internal from "./internal/wireguardKey.js";
  * @see https://lists.zx2c4.com/pipermail/wireguard/2020-December/006222.html
  */
 export const WireguardKey = Function.pipe(
-    Schema.string,
+    Schema.String,
     Schema.pattern(/^[\d+/A-Za-z]{42}[048AEIMQUYcgkosw]=$/),
     Schema.identifier("WireguardKey"),
     Schema.description("A wireguard key"),
@@ -44,5 +44,18 @@ export type WireguardKey = Schema.Schema.Type<typeof WireguardKey>;
 export const generateKeyPair: {
     (): { readonly privateKey: WireguardKey; readonly publicKey: WireguardKey };
 } = internal.generateKeyPair;
+
+// /**
+//  * Generates a wireguard preshare key.
+//  *
+//  * @since 1.0.0
+//  * @category Crypto
+//  * @example
+//  *     import { generatePreshareKey } from "the-wireguard-effect/WireguardKey";
+//  *     const preshareKey = generatePreshareKey();
+//  */
+// export const generatePreshareKey: {
+//     (): WireguardKey;
+// } = internal.generatePreshareKey;
 
 export default WireguardKey;

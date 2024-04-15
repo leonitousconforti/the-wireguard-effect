@@ -12,6 +12,11 @@ export default defineConfig({
         },
         reporters: ["hanging-process", "github-actions", "default"],
     },
+    server: {
+        watch: {
+            ignored: ["**/node_modules/**", "**/.git/**", "**/submodules/**"],
+        },
+    },
     resolve: {
         alias: {
             "the-wireguard-effect": path.resolve(__dirname, "src"),
