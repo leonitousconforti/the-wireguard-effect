@@ -88,7 +88,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface $Address extends Schema.union<[typeof IPv4, typeof IPv6]> {}
+export interface $Address extends Schema.Union<[typeof IPv4, typeof IPv6]> {}
 ```
 
 Added in v1.0.0
@@ -98,7 +98,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface $AddressFromString extends Schema.union<[typeof IPv4FromString, typeof IPv6FromString]> {}
+export interface $AddressFromString extends Schema.Union<[typeof IPv4FromString, typeof IPv6FromString]> {}
 ```
 
 Added in v1.0.0
@@ -130,7 +130,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface $Endpoint extends Schema.union<[$IPv4Endpoint, $IPv6Endpoint, $HostnameEndpoint]> {}
+export interface $Endpoint extends Schema.Union<[$IPv4Endpoint, $IPv6Endpoint, $HostnameEndpoint]> {}
 ```
 
 Added in v1.0.0
@@ -249,7 +249,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface $SetupData extends Schema.tuple<[$Endpoint, $AddressFromString]> {}
+export interface $SetupData extends Schema.Tuple<[$Endpoint, $AddressFromString]> {}
 ```
 
 Added in v1.0.0

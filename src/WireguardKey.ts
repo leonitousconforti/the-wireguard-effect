@@ -45,15 +45,15 @@ export const generateKeyPair: {
     (): { readonly privateKey: WireguardKey; readonly publicKey: WireguardKey };
 } = internal.generateKeyPair;
 
-/**
- * Generates a wireguard preshare key.
- *
- * @since 1.0.0
- * @category Crypto
- * @example
- *     import { generatePreshareKey } from "the-wireguard-effect/WireguardKey";
- *     const preshareKey = generatePreshareKey();
- */
+// /**
+//  * Generates a wireguard preshare key.
+//  *
+//  * @since 1.0.0
+//  * @category Crypto
+//  * @example
+//  *     import { generatePreshareKey } from "the-wireguard-effect/WireguardKey";
+//  *     const preshareKey = generatePreshareKey();
+//  */
 // export const generatePreshareKey: {
 //     (): WireguardKey;
 // } = internal.generatePreshareKey;
