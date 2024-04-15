@@ -52,7 +52,7 @@ export const generateKeyPair: {
  * @category Crypto
  * @example
  *     import { generatePreshareKey } from "the-wireguard-effect/WireguardKey";
- *     const { preshareKey } = generatePreshareKey();
+ *     const preshareKey = generatePreshareKey();
  */
 export const generatePreshareKey: {
     (): WireguardKey;
