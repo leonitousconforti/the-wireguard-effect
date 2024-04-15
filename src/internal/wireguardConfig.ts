@@ -434,11 +434,11 @@ export const generate: {
 
         // Generate the keys for the hub
         const hubKeys = WireguardKey.generateKeyPair();
-        const hubPreshareKey = HashMap.get(preshareKeys, hubSetupDataEncoded);
+        const hubPreshareKey = HashMap.get(preshareKeys, hubSetupDataEncoded).pipe(Option.getOrUndefined);
 
         // This hub peer config will be added to all the spoke interface configs
         const hubPeerConfig = {
-            PreshareKey: hubPreshareKey,
+            PresharedKey: hubPreshareKey,
             PublicKey: hubKeys.publicKey,
             Endpoint: Tuple.getFirst(hubSetupDataEncoded),
             AllowedIPs: [`${Tuple.getSecond(hubSetupDataEncoded)}/32`] as const,
@@ -447,7 +447,7 @@ export const generate: {
         // All these spoke peer configs will be added to the hub interface config
         const spokePeerConfigs = ReadonlyArray.map(spokeSetupDataBoth, ([spokeEncoded, spokeDecoded]) => {
             const keys = WireguardKey.generateKeyPair();
-            const preshareKey = HashMap.get(preshareKeys, spokeEncoded);
+            const preshareKey = HashMap.get(preshareKeys, spokeEncoded).pipe(Option.getOrUndefined);
 
             return {
                 setupDataEncoded: spokeEncoded,
@@ -457,7 +457,7 @@ export const generate: {
                     privateKey: keys.privateKey,
                 },
                 peerConfig: {
-                    PreshareKey: preshareKey,
+                    PresharedKey: preshareKey,
                     PublicKey: keys.publicKey,
                     Endpoint: Tuple.getFirst(spokeEncoded),
                     AllowedIPs: [`${Tuple.getSecond(spokeEncoded)}/32`] as const,
