@@ -94,6 +94,7 @@ jobs:
           version: 8
       - run: pnpm install
       - run: sudo apt-get install -y wireguard openresolv
+      - run: chmod +x ./src/internal/*
       - run: pnpm test
       - uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
@@ -114,6 +115,7 @@ jobs:
           version: 8
       - run: pnpm install
       - run: brew install wireguard-tools
+      - run: chmod +x ./src/internal/*
       - run: pnpm test
       - uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
@@ -139,6 +141,7 @@ jobs:
             npm install -g pnpm
           run: |
             pnpm install
+            chmod +x ./src/internal/*
             pnpm test
       - uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
@@ -164,6 +167,7 @@ jobs:
             npm install -g pnpm
           run: |
             pnpm install
+            chmod +x ./src/internal/*
             pnpm test
       - uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
@@ -230,6 +234,7 @@ jobs:
 
       # This is where our testing starts
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
+      - run: wsl --distribution Ubuntu22.04 --user root -- chmod +x ./src/internal/*
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
       - uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
