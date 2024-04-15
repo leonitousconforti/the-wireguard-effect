@@ -490,7 +490,7 @@ export const up: {
                 case "system-wireguard-go+bundled-wg-quick":
                     const env6 = { WG_QUICK_USERSPACE_IMPLEMENTATION: "wireguard-go" };
                     const command6_1 = `${bundledWgQuickExecutablePath} up ${file}`;
-                    const command6_2 = `${bundledWireguardExeExecutablePath}.exe /installtunnelservice ${file}`;
+                    const command6_2 = `${bundledWireguardExeExecutablePath} /installtunnelservice ${file}`;
                     const command6 = process.platform === "win32" ? command6_2 : command6_1;
                     yield* λ(execCommand(options.sudo ?? "ask", command6, env6));
                     return file as Ret;
