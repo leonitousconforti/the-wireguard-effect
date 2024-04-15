@@ -32,7 +32,7 @@ const helper = (
         .pipe(Effect.provide(NodeContext.layer))
         .pipe(Effect.provide(NodeHttp.layer));
 
-const timeout = Duration.seconds(30).pipe(Duration.toMillis);
+const timeout = Duration.seconds(60).pipe(Duration.toMillis);
 
 describe("wireguard e2e test using demo.wireguard.com", () => {
     it.scopedLive(
