@@ -1,3 +1,7 @@
+// On your digital ocean test server:
+// sudo nohup ./the-wireguard-effect-ci.sh &
+// sudo nohup python3 -m http.server 8080 --bind 192.168.4.1 &
+
 import { describe, expect, it } from "@effect/vitest";
 
 import * as NodeContext from "@effect/platform-node/NodeContext";
