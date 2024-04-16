@@ -17,6 +17,7 @@ import * as Option from "effect/Option";
 import * as Schedule from "effect/Schedule";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
+import * as net from "node:net";
 
 import * as InternetSchemas from "./InternetSchemas.js";
 import * as WireguardConfig from "./WireguardConfig.js";
@@ -78,17 +79,13 @@ export const WireguardDemoSchema: $WireguardDemoSchema = Schema.transform(
  * @since 1.0.0
  */
 export const requestWireguardDemoConfig = (
+    connectOptions: net.NetConnectOpts = { port: 42912, host: "demo.wireguard.com" },
     { privateKey, publicKey } = WireguardKey.generateKeyPair()
 ): Effect.Effect<WireguardConfig.WireguardConfig, Socket.SocketError | ParseResult.ParseError, never> =>
     Function.pipe(
         Stream.make(`${publicKey}\n`),
         Stream.concat(Stream.never),
-        Stream.pipeThroughChannelOrFail(
-            NodeSocket.makeNetChannel({
-                port: 42912,
-                host: "demo.wireguard.com",
-            })
-        ),
+        Stream.pipeThroughChannelOrFail(NodeSocket.makeNetChannel(connectOptions)),
         Stream.decodeText(),
         Stream.run(Sink.head()),
         Effect.map(Option.getOrUndefined),
