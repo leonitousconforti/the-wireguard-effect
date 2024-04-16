@@ -142,7 +142,7 @@ jobs:
             npm -v
             node -v
             wg-quick --help
-            npm install -g pnpm
+            npm install -g pnpm@8.15.4
           run: |
             pnpm install
             chmod +x ./src/internal/*
@@ -166,7 +166,7 @@ jobs:
             npm -v
             node -v
             wg-quick --help
-            npm install -g pnpm
+            npm install -g pnpm@8.15.4
           run: |
             pnpm install
             chmod +x ./src/internal/*
@@ -232,7 +232,7 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo bash nodesource_setup.sh
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y nodejs
-      - run: wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm
+      - run: wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm@8.15.4
 
       # This is where our testing starts
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
