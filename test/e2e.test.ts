@@ -21,12 +21,16 @@ const helper = (
         | "bundled-wireguard-go+bundled-wg-quick" // done
 ) =>
     Effect.gen(function* (λ) {
-        const host = yield* λ(Config.string("WIREGUARD_DEMO_HOST").pipe(Config.withDefault("demo.wireguard.com")));
         const port = yield* λ(Config.number("WIREGUARD_DEMO_PORT").pipe(Config.withDefault(42912)));
+        const host = yield* λ(Config.string("WIREGUARD_DEMO_HOST").pipe(Config.withDefault("demo.wireguard.com")));
+        const hiddenPageUrl = yield* λ(Config.string("HIDDEN_PAGE").pipe(Config.withDefault("http://192.168.4.1:80")));
         const config = yield* λ(DemoUtils.requestWireguardDemoConfig({ host, port }));
         yield* λ(config.upScoped({ how: Function.unsafeCoerce(how), sudo: true }));
-        yield* λ(DemoUtils.requestGoogle);
-        const hiddenPage = yield* λ(DemoUtils.requestHiddenPage);
+        // TODO: fix this on self hosted test server
+        if (host === "demo.wireguard.com") {
+            yield* λ(DemoUtils.requestGoogle);
+        }
+        const hiddenPage = yield* λ(DemoUtils.requestHiddenPage(hiddenPageUrl));
         expect(hiddenPage).toMatchSnapshot();
     })
         .pipe(Effect.provide(NodeContext.layer))

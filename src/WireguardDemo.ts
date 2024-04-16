@@ -17,7 +17,6 @@ import * as Option from "effect/Option";
 import * as Schedule from "effect/Schedule";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
-import * as net from "node:net";
 
 import * as InternetSchemas from "./InternetSchemas.js";
 import * as WireguardConfig from "./WireguardConfig.js";
@@ -79,7 +78,7 @@ export const WireguardDemoSchema: $WireguardDemoSchema = Schema.transform(
  * @since 1.0.0
  */
 export const requestWireguardDemoConfig = (
-    connectOptions: net.NetConnectOpts = { port: 42912, host: "demo.wireguard.com" },
+    connectOptions = { port: 42912, host: "demo.wireguard.com" },
     { privateKey, publicKey } = WireguardKey.generateKeyPair()
 ): Effect.Effect<WireguardConfig.WireguardConfig, Socket.SocketError | ParseResult.ParseError, never> =>
     Function.pipe(
@@ -99,7 +98,7 @@ export const requestWireguardDemoConfig = (
                 Peers: [
                     {
                         PublicKey: serverResponse.serverPublicKey,
-                        Endpoint: `demo.wireguard.com:${serverResponse.serverPort}`,
+                        Endpoint: `${connectOptions.host}:${serverResponse.serverPort}`,
                         AllowedIPs: ["0.0.0.0/0"],
                         PersistentKeepalive: 25,
                     },
@@ -117,16 +116,15 @@ export const retryPolicy = Schedule.recurs(4).pipe(Schedule.addDelay(() => "3 se
  *
  * @since 1.0.0
  */
-export const requestHiddenPage: Effect.Effect<
-    string,
-    HttpClient.error.HttpClientError | Cause.TimeoutException,
-    HttpClient.client.Client.Default
-> = Effect.gen(function* (λ) {
-    const defaultClient = yield* λ(HttpClient.client.Client);
-    const client = defaultClient.pipe(HttpClient.client.filterStatusOk);
-    const request = HttpClient.request.get("http://192.168.4.1");
-    return yield* λ(client(request).pipe(HttpClient.response.text, Effect.timeout("3 seconds")));
-}).pipe(Effect.retry(retryPolicy));
+export const requestHiddenPage = (
+    hiddenPageLocation: string
+): Effect.Effect<string, HttpClient.error.HttpClientError | Cause.TimeoutException, HttpClient.client.Client.Default> =>
+    Effect.gen(function* (λ) {
+        const defaultClient = yield* λ(HttpClient.client.Client);
+        const client = defaultClient.pipe(HttpClient.client.filterStatusOk);
+        const request = HttpClient.request.get(hiddenPageLocation);
+        return yield* λ(client(request).pipe(HttpClient.response.text, Effect.timeout("3 seconds")));
+    }).pipe(Effect.retry(retryPolicy));
 
 /**
  * Attempts to connect to https://www.google.com to ensure that dns is still
