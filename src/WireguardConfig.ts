@@ -263,7 +263,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
     public up: {
         (
             options: {
-                how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;
+                how: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api";
                 sudo?: boolean | "ask" | undefined;
             },
             interfaceObject?: WireguardInterface.WireguardInterface | undefined
@@ -277,13 +277,14 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
         >;
         (
             options: {
-                how:
+                how?:
                     | "system-wireguard+system-wg-quick"
                     | "system-wireguard+bundled-wg-quick"
                     | "system-wireguard-go+system-wg-quick"
                     | "bundled-wireguard-go+system-wg-quick"
                     | "system-wireguard-go+bundled-wg-quick"
-                    | "bundled-wireguard-go+bundled-wg-quick";
+                    | "bundled-wireguard-go+bundled-wg-quick"
+                    | undefined;
                 sudo?: boolean | "ask" | undefined;
             },
             interfaceObject?: WireguardInterface.WireguardInterface | undefined
@@ -306,7 +307,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             | "bundled-wireguard-go+system-wg-quick"
             | "system-wireguard-go+bundled-wg-quick"
             | "bundled-wireguard-go+bundled-wg-quick",
-        Ret extends How extends "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined
+        Ret extends How extends "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api"
             ? Effect.Effect<
                   void,
                   | WireguardErrors.WireguardError
@@ -331,11 +332,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
         interfaceObject?: WireguardInterface.WireguardInterface | undefined
     ): Ret => {
         const how = options.how;
-        if (
-            Predicate.isUndefined(how) ||
-            how === "bundled-wireguard-go+userspace-api" ||
-            how === "system-wireguard-go+userspace-api"
-        ) {
+        if (how === "bundled-wireguard-go+userspace-api" || how === "system-wireguard-go+userspace-api") {
             return internal.up({ how, sudo: options.sudo }, interfaceObject)(this) as Ret;
         } else {
             return internal.up({ how, sudo: options.sudo }, interfaceObject)(this) as Ret;
@@ -356,7 +353,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
     public upScoped: {
         (
             options: {
-                how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;
+                how: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api";
                 sudo?: boolean | "ask" | undefined;
             },
             interfaceObject?: WireguardInterface.WireguardInterface | undefined
@@ -370,13 +367,14 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
         >;
         (
             options: {
-                how:
+                how?:
                     | "system-wireguard+system-wg-quick"
                     | "system-wireguard+bundled-wg-quick"
                     | "system-wireguard-go+system-wg-quick"
                     | "bundled-wireguard-go+system-wg-quick"
                     | "system-wireguard-go+bundled-wg-quick"
-                    | "bundled-wireguard-go+bundled-wg-quick";
+                    | "bundled-wireguard-go+bundled-wg-quick"
+                    | undefined;
                 sudo?: boolean | "ask" | undefined;
             },
             interfaceObject?: WireguardInterface.WireguardInterface | undefined
@@ -399,7 +397,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             | "bundled-wireguard-go+system-wg-quick"
             | "system-wireguard-go+bundled-wg-quick"
             | "bundled-wireguard-go+bundled-wg-quick",
-        Ret extends How extends "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined
+        Ret extends How extends "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api"
             ? Effect.Effect<
                   void,
                   | WireguardErrors.WireguardError
@@ -424,11 +422,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
         interfaceObject?: WireguardInterface.WireguardInterface | undefined
     ): Ret => {
         const how = options.how;
-        if (
-            Predicate.isUndefined(how) ||
-            how === "bundled-wireguard-go+userspace-api" ||
-            how === "system-wireguard-go+userspace-api"
-        ) {
+        if (how === "bundled-wireguard-go+userspace-api" || how === "system-wireguard-go+userspace-api") {
             return internal.upScoped({ how, sudo: options.sudo }, interfaceObject)(this) as Ret;
         } else {
             return internal.upScoped({ how, sudo: options.sudo }, interfaceObject)(this) as Ret;

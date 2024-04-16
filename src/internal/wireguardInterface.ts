@@ -70,7 +70,6 @@ export const WireguardGoExecutablePath: Effect.Effect<
     return pathString;
 });
 
-// FIXME: maybe this doesn't need to be "string | undefined" for windows
 /** @internal */
 export const WgQuickExecutablePath: Effect.Effect<
     string | undefined,
@@ -81,6 +80,21 @@ export const WgQuickExecutablePath: Effect.Effect<
     const fs = yield* λ(FileSystem.FileSystem);
     if (process.platform === "win32") return undefined;
     const url = new URL(`./${process.platform}-wg-quick`, import.meta.url);
+    const pathString = yield* λ(path.fromFileUrl(url));
+    yield* λ(fs.access(pathString, { ok: true }));
+    return pathString;
+});
+
+/** @internal */
+export const WireguardExeExecutablePath: Effect.Effect<
+    string | undefined,
+    PlatformError.PlatformError,
+    FileSystem.FileSystem | Path.Path
+> = Effect.gen(function* (λ) {
+    const path = yield* λ(Path.Path);
+    const fs = yield* λ(FileSystem.FileSystem);
+    if (process.platform !== "win32") return undefined;
+    const url = new URL(`./win32-amd64-wireguard.exe`, import.meta.url);
     const pathString = yield* λ(path.fromFileUrl(url));
     yield* λ(fs.access(pathString, { ok: true }));
     return pathString;
@@ -192,7 +206,7 @@ export const upScoped: {
     (
         config: WireguardConfig.WireguardConfig,
         options: {
-            how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;
+            how: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api";
             sudo?: boolean | "ask" | undefined;
         }
     ): (
@@ -205,13 +219,14 @@ export const upScoped: {
     (
         config: WireguardConfig.WireguardConfig,
         options: {
-            how:
+            how?:
                 | "system-wireguard+system-wg-quick"
                 | "system-wireguard+bundled-wg-quick"
                 | "system-wireguard-go+system-wg-quick"
                 | "bundled-wireguard-go+system-wg-quick"
                 | "system-wireguard-go+bundled-wg-quick"
-                | "bundled-wireguard-go+bundled-wg-quick";
+                | "bundled-wireguard-go+bundled-wg-quick"
+                | undefined;
             sudo?: boolean | "ask" | undefined;
         }
     ): (
@@ -225,7 +240,7 @@ export const upScoped: {
         interfaceObject: WireguardInterface.WireguardInterface,
         config: WireguardConfig.WireguardConfig,
         options: {
-            how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;
+            how: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api";
             sudo?: boolean | "ask" | undefined;
         }
     ): Effect.Effect<
@@ -237,13 +252,14 @@ export const upScoped: {
         interfaceObject: WireguardInterface.WireguardInterface,
         config: WireguardConfig.WireguardConfig,
         options: {
-            how:
+            how?:
                 | "system-wireguard+system-wg-quick"
                 | "system-wireguard+bundled-wg-quick"
                 | "system-wireguard-go+system-wg-quick"
                 | "bundled-wireguard-go+system-wg-quick"
                 | "system-wireguard-go+bundled-wg-quick"
-                | "bundled-wireguard-go+bundled-wg-quick";
+                | "bundled-wireguard-go+bundled-wg-quick"
+                | undefined;
             sudo?: boolean | "ask" | undefined;
         }
     ): Effect.Effect<
@@ -264,7 +280,7 @@ export const upScoped: {
             | "system-wireguard-go+bundled-wg-quick"
             | "bundled-wireguard-go+bundled-wg-quick"
             | undefined,
-        Ret extends How extends undefined | "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api"
+        Ret extends How extends "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api"
             ? Effect.Effect<
                   void,
                   | WireguardErrors.WireguardError
@@ -301,14 +317,10 @@ export const upScoped: {
                 | "bundled-wireguard-go+bundled-wg-quick"
                 | undefined
             >(),
-            Match.whenOr(
-                Predicate.isUndefined,
-                "bundled-wireguard-go+userspace-api",
-                "system-wireguard-go+userspace-api",
-                (how) =>
-                    Effect.acquireRelease(up(interfaceObject, config, { how, sudo: options.sudo }), () =>
-                        down(interfaceObject, { how: "userspace-api", sudo: options.sudo }).pipe(Effect.orDie)
-                    )
+            Match.whenOr("bundled-wireguard-go+userspace-api", "system-wireguard-go+userspace-api", (how) =>
+                Effect.acquireRelease(up(interfaceObject, config, { how, sudo: options.sudo }), () =>
+                    down(interfaceObject, { how: "userspace-api", sudo: options.sudo }).pipe(Effect.orDie)
+                )
             ),
             Match.whenOr(
                 "bundled-wireguard-go+bundled-wg-quick",
@@ -320,6 +332,7 @@ export const upScoped: {
                     )
             ),
             Match.whenOr(
+                Predicate.isUndefined,
                 "bundled-wireguard-go+system-wg-quick",
                 "system-wireguard+system-wg-quick",
                 "system-wireguard-go+system-wg-quick",
@@ -337,7 +350,7 @@ export const up: {
     (
         config: WireguardConfig.WireguardConfig,
         options: {
-            how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;
+            how: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api";
             sudo?: boolean | "ask" | undefined;
         }
     ): (
@@ -350,13 +363,14 @@ export const up: {
     (
         config: WireguardConfig.WireguardConfig,
         options: {
-            how:
+            how?:
                 | "system-wireguard+system-wg-quick"
                 | "system-wireguard+bundled-wg-quick"
                 | "system-wireguard-go+system-wg-quick"
                 | "bundled-wireguard-go+system-wg-quick"
                 | "system-wireguard-go+bundled-wg-quick"
-                | "bundled-wireguard-go+bundled-wg-quick";
+                | "bundled-wireguard-go+bundled-wg-quick"
+                | undefined;
             sudo?: boolean | "ask" | undefined;
         }
     ): (
@@ -370,7 +384,7 @@ export const up: {
         interfaceObject: WireguardInterface.WireguardInterface,
         config: WireguardConfig.WireguardConfig,
         options: {
-            how?: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api" | undefined;
+            how: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api";
             sudo?: boolean | "ask" | undefined;
         }
     ): Effect.Effect<
@@ -382,13 +396,14 @@ export const up: {
         interfaceObject: WireguardInterface.WireguardInterface,
         config: WireguardConfig.WireguardConfig,
         options: {
-            how:
+            how?:
                 | "system-wireguard+system-wg-quick"
                 | "system-wireguard+bundled-wg-quick"
                 | "system-wireguard-go+system-wg-quick"
                 | "bundled-wireguard-go+system-wg-quick"
                 | "system-wireguard-go+bundled-wg-quick"
-                | "bundled-wireguard-go+bundled-wg-quick";
+                | "bundled-wireguard-go+bundled-wg-quick"
+                | undefined;
             sudo?: boolean | "ask" | undefined;
         }
     ): Effect.Effect<
@@ -409,7 +424,7 @@ export const up: {
             | "system-wireguard-go+bundled-wg-quick"
             | "bundled-wireguard-go+bundled-wg-quick"
             | undefined,
-        Ret extends How extends undefined | "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api"
+        Ret extends How extends "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api"
             ? void
             : string,
     >(
@@ -436,29 +451,15 @@ export const up: {
             // Find bundled executables and scripts
             const bundledWgQuickExecutablePath = yield* λ(WgQuickExecutablePath);
             const bundledWireguardGoExecutablePath = yield* λ(WireguardGoExecutablePath);
+            const bundledWireguardExeExecutablePath = yield* λ(WireguardExeExecutablePath);
 
             switch (options.how) {
                 // Bring up the interface using the bundled wireguard-go and userspace API
-                case undefined:
                 case "bundled-wireguard-go+userspace-api":
                     const command2_1 = `${bundledWireguardGoExecutablePath} ${interfaceObject.Name}`;
                     yield* λ(execCommand(options?.sudo ?? "ask", command2_1));
                     yield* λ(setConfig(config, interfaceObject));
                     return undefined as Ret;
-
-                // Bring up the interface using the bundled wireguard-go and the bundled wg-quick script
-                case "bundled-wireguard-go+bundled-wg-quick":
-                    const env3 = { WG_QUICK_USERSPACE_IMPLEMENTATION: bundledWireguardGoExecutablePath };
-                    const command3 = `${bundledWgQuickExecutablePath} up ${file}`;
-                    yield* λ(execCommand(options.sudo ?? "ask", command3, env3));
-                    return file as Ret;
-
-                // Bring up the interface using the bundled wireguard-go and the system wg-quick script
-                case "bundled-wireguard-go+system-wg-quick":
-                    const env4 = { WG_QUICK_USERSPACE_IMPLEMENTATION: bundledWireguardGoExecutablePath };
-                    const command4 = `wg-quick up ${file}`;
-                    yield* λ(execCommand(options.sudo ?? "ask", command4, env4));
-                    return file as Ret;
 
                 // Bring up the interface using the system wireguard-go and the userspace API
                 case "system-wireguard-go+userspace-api":
@@ -467,31 +468,57 @@ export const up: {
                     yield* λ(setConfig(config, interfaceObject));
                     return undefined as Ret;
 
+                // Bring up the interface using the bundled wireguard-go and the bundled wg-quick script
+                case "bundled-wireguard-go+bundled-wg-quick":
+                    const env3 = { WG_QUICK_USERSPACE_IMPLEMENTATION: bundledWireguardGoExecutablePath };
+                    const command3_1 = `${bundledWgQuickExecutablePath} up ${file}`;
+                    const command3_2 = `${bundledWireguardExeExecutablePath} /installtunnelservice ${file}`;
+                    const command3 = process.platform === "win32" ? command3_2 : command3_1;
+                    yield* λ(execCommand(options.sudo ?? "ask", command3, env3));
+                    return file as Ret;
+
+                // Bring up the interface using the bundled wireguard-go and the system wg-quick script
+                case "bundled-wireguard-go+system-wg-quick":
+                    const env4 = { WG_QUICK_USERSPACE_IMPLEMENTATION: bundledWireguardGoExecutablePath };
+                    const command4_1 = `wg-quick up ${file}`;
+                    const command4_2 = `wireguard.exe /installtunnelservice ${file}`;
+                    const command4 = process.platform === "win32" ? command4_2 : command4_1;
+                    yield* λ(execCommand(options.sudo ?? "ask", command4, env4));
+                    return file as Ret;
+
                 // Bring up the interface using the system wireguard-go and the bundled wg-quick script
                 case "system-wireguard-go+bundled-wg-quick":
                     const env6 = { WG_QUICK_USERSPACE_IMPLEMENTATION: "wireguard-go" };
-                    const command6 = `${bundledWgQuickExecutablePath} up ${file}`;
+                    const command6_1 = `${bundledWgQuickExecutablePath} up ${file}`;
+                    const command6_2 = `${bundledWireguardExeExecutablePath} /installtunnelservice ${file}`;
+                    const command6 = process.platform === "win32" ? command6_2 : command6_1;
                     yield* λ(execCommand(options.sudo ?? "ask", command6, env6));
                     return file as Ret;
 
                 // Bring up the interface using the system wireguard-go and the system wg-quick script
                 case "system-wireguard-go+system-wg-quick":
                     const env7 = { WG_QUICK_USERSPACE_IMPLEMENTATION: "wireguard-go" };
-                    const command7 = `wg-quick up ${file}`;
+                    const command7_1 = `wg-quick up ${file}`;
+                    const command7_2 = `wireguard.exe /installtunnelservice ${file}`;
+                    const command7 = process.platform === "win32" ? command7_2 : command7_1;
                     yield* λ(execCommand(options.sudo ?? "ask", command7, env7));
                     return file as Ret;
 
                 // Bring up the interface using the system wireguard and the bundled wg-quick script
                 case "system-wireguard+bundled-wg-quick":
-                    const command8 = `${bundledWgQuickExecutablePath} up ${file}`;
+                    const command8_1 = `${bundledWgQuickExecutablePath} up ${file}`;
+                    const command8_2 = `${bundledWireguardExeExecutablePath} /installtunnelservice ${file}`;
+                    const command8 = process.platform === "win32" ? command8_2 : command8_1;
                     yield* λ(execCommand(options.sudo ?? "ask", command8));
                     return file as Ret;
 
                 // Bring up the interface using the system wireguard and the system wg quick script
+                case undefined:
                 case "system-wireguard+system-wg-quick":
-                    const command9 = `wg-quick up ${file}`;
-                    const command10 = `wireguard.exe /installtunnelservice ${file}`;
-                    yield* λ(execCommand(options.sudo ?? "ask", process.platform === "win32" ? command10 : command9));
+                    const command9_1 = `wg-quick up ${file}`;
+                    const command9_2 = `wireguard.exe /installtunnelservice ${file}`;
+                    const command9 = process.platform === "win32" ? command9_2 : command9_1;
+                    yield* λ(execCommand(options.sudo ?? "ask", command9));
                     return file as Ret;
 
                 // Nothing else should be possible
@@ -509,7 +536,7 @@ export const down: {
             sudo?: boolean | "ask" | undefined;
             how: "userspace-api";
         }
-    ): Effect.Effect<void, Cause.UnknownException, FileSystem.FileSystem>;
+    ): Effect.Effect<void, PlatformError.PlatformError | Cause.UnknownException, Path.Path | FileSystem.FileSystem>;
     (
         interfaceObject: WireguardInterface.WireguardInterface,
         options: {
@@ -517,7 +544,7 @@ export const down: {
             how: "bundled-wg-quick" | "system-wg-quick";
             file: string;
         }
-    ): Effect.Effect<void, Cause.UnknownException, FileSystem.FileSystem>;
+    ): Effect.Effect<void, PlatformError.PlatformError | Cause.UnknownException, Path.Path | FileSystem.FileSystem>;
 } = (
     interfaceObject: WireguardInterface.WireguardInterface,
     options:
@@ -530,22 +557,29 @@ export const down: {
               how: "bundled-wg-quick" | "system-wg-quick";
               file: string;
           }
-): Effect.Effect<void, Cause.UnknownException, FileSystem.FileSystem> => {
-    const how = options.how;
-    switch (how) {
-        case "userspace-api":
-            return Effect.map(FileSystem.FileSystem, (fs) => fs.remove(socketLocation(interfaceObject)));
-        case "bundled-wg-quick":
-            // FIXME: this needs to be updated for windows
-            return execCommand(options.sudo ?? "ask", `wg-quick down ${options.file}`);
-        case "system-wg-quick":
-            const command1 = `wg-quick down ${options.file}`;
-            const command2 = `wireguard.exe /uninstalltunnelservice ${interfaceObject.Name}`;
-            return execCommand(options.sudo ?? "ask", process.platform === "win32" ? command2 : command1);
-        default:
-            return Function.absurd(how);
-    }
-};
+): Effect.Effect<void, PlatformError.PlatformError | Cause.UnknownException, Path.Path | FileSystem.FileSystem> =>
+    Effect.gen(function* (λ) {
+        const how = options.how;
+        switch (how) {
+            case "userspace-api":
+                const fs = yield* λ(FileSystem.FileSystem);
+                return yield* λ(fs.remove(socketLocation(interfaceObject)));
+            case "bundled-wg-quick":
+                const bundledWgQuickExecutablePath = yield* λ(WgQuickExecutablePath);
+                const bundledWireguardExeExecutablePath = yield* λ(WireguardExeExecutablePath);
+                const command1_1 = `${bundledWgQuickExecutablePath} down ${options.file}`;
+                const command1_2 = `${bundledWireguardExeExecutablePath} /uninstalltunnelservice ${interfaceObject.Name}`;
+                const command1 = process.platform === "win32" ? command1_2 : command1_1;
+                return yield* λ(execCommand(options.sudo ?? "ask", command1));
+            case "system-wg-quick":
+                const command2_1 = `wg-quick down ${options.file}`;
+                const command2_2 = `wireguard.exe /uninstalltunnelservice ${interfaceObject.Name}`;
+                const command2 = process.platform === "win32" ? command2_2 : command2_1;
+                return yield* λ(execCommand(options.sudo ?? "ask", command2));
+            default:
+                return Function.absurd(how);
+        }
+    });
 
 /** @internal */
 export const setConfig = (

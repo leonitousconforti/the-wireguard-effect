@@ -1,6 +1,96 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`wireguard e2e test using demo.wireguard.com > Should be able to connect to the demo server 1`] = `
+exports[`wireguard e2e test using demo.wireguard.com > Should be able to connect to the demo server using bundled-wireguard-go+bundled-wg-quick 1`] = `
+"<title>WireGuard Demo Configuration: Success!</title>
+<body bgcolor="#444444">
+<script src="snowstorm.js"></script>
+<script src="trail.js"></script>
+<center>
+<blink>
+<marquee width="100%" behavior="alternate" direction="right" scrollamount="10">
+<marquee height="100%" behavior="alternate" direction="down">
+<marquee width="100%" bgcolor="#33aadd" direction="right" behavior="alternate"><font face="comic sans ms" size="7" style="font-size: 3vw" color="#ddaa33">Congrats! You've successfully configured WireGuard!</font><br><marquee scrollamount="30"><img src="emblem.svg" width="20%"></marquee><br><marquee direction="left" scrollamount="40" behavior="alternate"><script>document.write('<iframe frameborder="0" height="80%" width="70%" src="/?' + (((document.location.search.substring(1)|0) + 1) % 4) + '"></iframe>');</script></marquee><br><br></marquee>
+</marquee>
+</marquee>
+</blink>
+</center>
+</body>
+"
+`;
+
+exports[`wireguard e2e test using demo.wireguard.com > Should be able to connect to the demo server using bundled-wireguard-go+system-wg-quick 1`] = `
+"<title>WireGuard Demo Configuration: Success!</title>
+<body bgcolor="#444444">
+<script src="snowstorm.js"></script>
+<script src="trail.js"></script>
+<center>
+<blink>
+<marquee width="100%" behavior="alternate" direction="right" scrollamount="10">
+<marquee height="100%" behavior="alternate" direction="down">
+<marquee width="100%" bgcolor="#33aadd" direction="right" behavior="alternate"><font face="comic sans ms" size="7" style="font-size: 3vw" color="#ddaa33">Congrats! You've successfully configured WireGuard!</font><br><marquee scrollamount="30"><img src="emblem.svg" width="20%"></marquee><br><marquee direction="left" scrollamount="40" behavior="alternate"><script>document.write('<iframe frameborder="0" height="80%" width="70%" src="/?' + (((document.location.search.substring(1)|0) + 1) % 4) + '"></iframe>');</script></marquee><br><br></marquee>
+</marquee>
+</marquee>
+</blink>
+</center>
+</body>
+"
+`;
+
+exports[`wireguard e2e test using demo.wireguard.com > Should be able to connect to the demo server using system-wireguard+bundled-wg-quick 1`] = `
+"<title>WireGuard Demo Configuration: Success!</title>
+<body bgcolor="#444444">
+<script src="snowstorm.js"></script>
+<script src="trail.js"></script>
+<center>
+<blink>
+<marquee width="100%" behavior="alternate" direction="right" scrollamount="10">
+<marquee height="100%" behavior="alternate" direction="down">
+<marquee width="100%" bgcolor="#33aadd" direction="right" behavior="alternate"><font face="comic sans ms" size="7" style="font-size: 3vw" color="#ddaa33">Congrats! You've successfully configured WireGuard!</font><br><marquee scrollamount="30"><img src="emblem.svg" width="20%"></marquee><br><marquee direction="left" scrollamount="40" behavior="alternate"><script>document.write('<iframe frameborder="0" height="80%" width="70%" src="/?' + (((document.location.search.substring(1)|0) + 1) % 4) + '"></iframe>');</script></marquee><br><br></marquee>
+</marquee>
+</marquee>
+</blink>
+</center>
+</body>
+"
+`;
+
+exports[`wireguard e2e test using demo.wireguard.com > Should be able to connect to the demo server using system-wireguard+system-wg-quick 1`] = `
+"<title>WireGuard Demo Configuration: Success!</title>
+<body bgcolor="#444444">
+<script src="snowstorm.js"></script>
+<script src="trail.js"></script>
+<center>
+<blink>
+<marquee width="100%" behavior="alternate" direction="right" scrollamount="10">
+<marquee height="100%" behavior="alternate" direction="down">
+<marquee width="100%" bgcolor="#33aadd" direction="right" behavior="alternate"><font face="comic sans ms" size="7" style="font-size: 3vw" color="#ddaa33">Congrats! You've successfully configured WireGuard!</font><br><marquee scrollamount="30"><img src="emblem.svg" width="20%"></marquee><br><marquee direction="left" scrollamount="40" behavior="alternate"><script>document.write('<iframe frameborder="0" height="80%" width="70%" src="/?' + (((document.location.search.substring(1)|0) + 1) % 4) + '"></iframe>');</script></marquee><br><br></marquee>
+</marquee>
+</marquee>
+</blink>
+</center>
+</body>
+"
+`;
+
+exports[`wireguard e2e test using demo.wireguard.com > Should be able to connect to the demo server using system-wireguard-go+bundled-wg-quick 1`] = `
+"<title>WireGuard Demo Configuration: Success!</title>
+<body bgcolor="#444444">
+<script src="snowstorm.js"></script>
+<script src="trail.js"></script>
+<center>
+<blink>
+<marquee width="100%" behavior="alternate" direction="right" scrollamount="10">
+<marquee height="100%" behavior="alternate" direction="down">
+<marquee width="100%" bgcolor="#33aadd" direction="right" behavior="alternate"><font face="comic sans ms" size="7" style="font-size: 3vw" color="#ddaa33">Congrats! You've successfully configured WireGuard!</font><br><marquee scrollamount="30"><img src="emblem.svg" width="20%"></marquee><br><marquee direction="left" scrollamount="40" behavior="alternate"><script>document.write('<iframe frameborder="0" height="80%" width="70%" src="/?' + (((document.location.search.substring(1)|0) + 1) % 4) + '"></iframe>');</script></marquee><br><br></marquee>
+</marquee>
+</marquee>
+</blink>
+</center>
+</body>
+"
+`;
+
+exports[`wireguard e2e test using demo.wireguard.com > Should be able to connect to the demo server using system-wireguard-go+system-wg-quick 1`] = `
 "<title>WireGuard Demo Configuration: Success!</title>
 <body bgcolor="#444444">
 <script src="snowstorm.js"></script>
