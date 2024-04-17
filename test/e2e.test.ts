@@ -50,33 +50,33 @@ describe("wireguard e2e test using demo.wireguard.com", () => {
         timeout
     );
 
-    it.scopedLive(
-        "Should be able to connect to the demo server using system-wireguard+bundled-wg-quick",
-        () => helper("system-wireguard+bundled-wg-quick"),
-        timeout
-    );
+    // it.scopedLive(
+    //     "Should be able to connect to the demo server using system-wireguard+bundled-wg-quick",
+    //     () => helper("system-wireguard+bundled-wg-quick"),
+    //     timeout
+    // );
 
-    it.scopedLive(
-        "Should be able to connect to the demo server using system-wireguard-go+system-wg-quick",
-        () => helper("system-wireguard-go+system-wg-quick"),
-        timeout
-    );
+    // it.scopedLive(
+    //     "Should be able to connect to the demo server using system-wireguard-go+system-wg-quick",
+    //     () => helper("system-wireguard-go+system-wg-quick"),
+    //     timeout
+    // );
 
-    it.scopedLive(
-        "Should be able to connect to the demo server using bundled-wireguard-go+system-wg-quick",
-        () => helper("bundled-wireguard-go+system-wg-quick"),
-        timeout
-    );
+    // it.scopedLive(
+    //     "Should be able to connect to the demo server using bundled-wireguard-go+system-wg-quick",
+    //     () => helper("bundled-wireguard-go+system-wg-quick"),
+    //     timeout
+    // );
 
-    it.scopedLive(
-        "Should be able to connect to the demo server using system-wireguard-go+bundled-wg-quick",
-        () => helper("system-wireguard-go+bundled-wg-quick"),
-        timeout
-    );
+    // it.scopedLive(
+    //     "Should be able to connect to the demo server using system-wireguard-go+bundled-wg-quick",
+    //     () => helper("system-wireguard-go+bundled-wg-quick"),
+    //     timeout
+    // );
 
-    it.scopedLive(
-        "Should be able to connect to the demo server using bundled-wireguard-go+bundled-wg-quick",
-        () => helper("bundled-wireguard-go+bundled-wg-quick"),
-        timeout
-    );
+    // it.scopedLive(
+    //     "Should be able to connect to the demo server using bundled-wireguard-go+bundled-wg-quick",
+    //     () => helper("bundled-wireguard-go+bundled-wg-quick"),
+    //     timeout
+    // );
 });

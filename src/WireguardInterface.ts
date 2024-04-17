@@ -31,7 +31,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             Function.pipe(
                 internal.InterfaceRegExpForPlatform,
                 Effect.mapError((error) => new ParseResult.Type(ast, s, error.message)),
-                Effect.flatMap((x) =>
+                Effect.andThen((x) =>
                     x.test(s)
                         ? Effect.succeed(s)
                         : Effect.fail(new ParseResult.Type(ast, s, `Expected interface name to match ${x}`))
