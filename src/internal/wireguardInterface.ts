@@ -602,7 +602,7 @@ export const setConfig = (
             Stream.run(Sink.last()),
             Effect.map(Option.getOrThrow),
             Effect.map(String.trimEnd),
-            Effect.flatMap(Schema.decodeUnknown(WireguardErrors.SuccessErrno)),
+            Effect.andThen(Schema.decodeUnknown(WireguardErrors.SuccessErrno)),
             Effect.catchAll((error) => Effect.fail(new WireguardErrors.WireguardError({ message: error.message })))
         );
     });
@@ -628,7 +628,7 @@ export const getConfig = (
         Effect.tap(Function.flow(Chunk.last, Option.getOrThrow, Schema.decodeUnknown(WireguardErrors.SuccessErrno))),
         Effect.map(Chunk.join("\n")),
         Effect.map((uapiData) => Tuple.make(uapiData, address)),
-        Effect.flatMap(Schema.encode(WireguardConfig.WireguardUapiConfig)),
-        Effect.flatMap(Schema.decode(WireguardConfig.WireguardConfig)),
+        Effect.andThen(Schema.encode(WireguardConfig.WireguardUapiConfig)),
+        Effect.andThen(Schema.decode(WireguardConfig.WireguardConfig)),
         Effect.catchAll((error) => Effect.fail(new WireguardErrors.WireguardError({ message: error.message })))
     );
