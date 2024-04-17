@@ -5,6 +5,7 @@ import * as Path from "@effect/platform/Path";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as sudoPrompt from "@vscode/sudo-prompt";
+import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
 import * as Effect from "effect/Effect";
@@ -13,8 +14,7 @@ import * as Match from "effect/Match";
 import * as Number from "effect/Number";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
-import * as ReadonlyArray from "effect/ReadonlyArray";
-import * as ReadonlyRecord from "effect/ReadonlyRecord";
+import * as Record from "effect/Record";
 import * as Scope from "effect/Scope";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
@@ -103,9 +103,8 @@ export const WireguardExeExecutablePath: Effect.Effect<
 /** @internal */
 export const InterfaceRegExpForPlatform: Effect.Effect<RegExp, WireguardErrors.WireguardError, never> = Function.pipe(
     Match.value(`${process.arch}:${process.platform}`),
-    Match.not(
-        Predicate.some(ReadonlyArray.map(SupportedArchitectures, (arch) => String.startsWith(`${arch}:`))),
-        (bad) => Effect.fail(new WireguardErrors.WireguardError({ message: `Unsupported architecture ${bad}` }))
+    Match.not(Predicate.some(Array.map(SupportedArchitectures, (arch) => String.startsWith(`${arch}:`))), (bad) =>
+        Effect.fail(new WireguardErrors.WireguardError({ message: `Unsupported architecture ${bad}` }))
     ),
     Match.when(String.endsWith(":linux"), () => Effect.succeed(LinuxInterfaceNameRegExp)),
     Match.when(String.endsWith(":win32"), () => Effect.succeed(WindowsInterfaceNameRegExp)),
@@ -125,18 +124,18 @@ export const getNextAvailableInterface: Effect.Effect<
     const regex = yield* λ(InterfaceRegExpForPlatform);
     const usedInterfaceIndexes = Function.pipe(
         os.networkInterfaces(),
-        ReadonlyRecord.keys,
-        ReadonlyArray.filter((name) => regex.test(name)),
-        ReadonlyArray.map(String.replaceAll(/\D/g, "")),
-        ReadonlyArray.map(Number.parse),
-        ReadonlyArray.filterMap(Function.identity)
+        Record.keys,
+        Array.filter((name) => regex.test(name)),
+        Array.map(String.replaceAll(/\D/g, "")),
+        Array.map(Number.parse),
+        Array.filterMap(Function.identity)
     );
 
     // Find the next available interface index
     const nextAvailableInterfaceIndex = yield* λ(
         Function.pipe(
             Stream.iterate(0, (x) => x + 1),
-            Stream.find((x) => !ReadonlyArray.contains(usedInterfaceIndexes, x)),
+            Stream.find((x) => !Array.contains(usedInterfaceIndexes, x)),
             Stream.take(1),
             Stream.runCollect,
             Effect.map(Chunk.head),

@@ -5,12 +5,12 @@
  */
 
 import * as Schema from "@effect/schema/Schema";
+import * as Array from "effect/Array";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
-import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as ini from "ini";
 
 import * as InternetSchemas from "./InternetSchemas.js";
@@ -137,7 +137,7 @@ export const WireguardIniPeer: $WireguardIniPeer = Schema.transformOrFail(Wiregu
         const publicKey = `PublicKey = ${peer.PublicKey}\n`;
         const host = "address" in peer.Endpoint ? peer.Endpoint.address.ip : peer.Endpoint.host;
         const endpoint = `Endpoint = ${host}:${peer.Endpoint.natPort}\n`;
-        const aps = ReadonlyArray.map(peer.AllowedIPs, (ap) => `AllowedIPs = ${ap.ip.ip}/${ap.mask}\n`);
+        const aps = Array.map(peer.AllowedIPs, (ap) => `AllowedIPs = ${ap.ip.ip}/${ap.mask}\n`);
         const keepAlive = Function.pipe(
             peer.PersistentKeepalive,
             Option.map((keepalive) => `PersistentKeepalive = ${Duration.toSeconds(keepalive)}\n`),
@@ -234,9 +234,9 @@ export const WireguardUapiPeer: $WireguardUapiPeer = Schema.transformOrFail(Wire
 
         const allowedIps = Function.pipe(
             peer.AllowedIPs,
-            ReadonlyArray.map((ap) => `${ap.ip}/${ap.mask}`),
-            ReadonlyArray.map((ap) => `allowed_ip=${ap}`),
-            ReadonlyArray.join("\n")
+            Array.map((ap) => `${ap.ip}/${ap.mask}`),
+            Array.map((ap) => `allowed_ip=${ap}`),
+            Array.join("\n")
         );
 
         const endpoint = `endpoint=${endpointString}\n` as const;

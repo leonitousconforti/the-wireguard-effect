@@ -6,13 +6,13 @@
 
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
+import * as Array from "effect/Array";
 import * as Brand from "effect/Brand";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
-import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as net from "node:net";
@@ -151,10 +151,10 @@ export class IPv4 extends Schema.Class<IPv4>("IPv4")({
         return Function.pipe(
             this.ip,
             String.split("."),
-            ReadonlyArray.map((s) => Number.parseInt(s, 10)),
-            ReadonlyArray.map((n) => n.toString(16)),
-            ReadonlyArray.map(String.padStart(2, "0")),
-            ReadonlyArray.join(""),
+            Array.map((s) => Number.parseInt(s, 10)),
+            Array.map((n) => n.toString(16)),
+            Array.map(String.padStart(2, "0")),
+            Array.join(""),
             (hex) => BigInt(`0x${hex}`)
         );
     }

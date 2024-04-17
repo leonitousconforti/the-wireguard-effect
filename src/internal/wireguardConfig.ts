@@ -3,6 +3,7 @@ import * as FileSystem from "@effect/platform/FileSystem";
 import * as Path from "@effect/platform/Path";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
+import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
 import * as Effect from "effect/Effect";
@@ -11,7 +12,6 @@ import * as HashMap from "effect/HashMap";
 import * as Match from "effect/Match";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
-import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Scope from "effect/Scope";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
@@ -99,19 +99,19 @@ export const generateP2PConfigs: {
     never
 > => {
     const hub = options.aliceData;
-    const spokes = ReadonlyArray.make(options.bobData);
+    const spokes = Array.make(options.bobData);
     const configs = Predicate.isUndefined(options.cidrBlock)
         ? generate({
               preshareKeys: "generate" as const,
               trustMap: "trustAllPeers" as const,
               hubData: hub as InternetSchemas.SetupDataEncoded,
-              spokeData: spokes as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+              spokeData: spokes as Array.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
           })
         : generate({
               preshareKeys: "generate" as const,
               trustMap: "trustAllPeers" as const,
               hubData: hub as InternetSchemas.EndpointEncoded,
-              spokeData: spokes as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+              spokeData: spokes as Array.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
               cidrBlock: options.cidrBlock,
               addressStartingIndex: options.addressStartingIndex,
           });
@@ -132,7 +132,7 @@ export const generateStarConfigs: {
     }): Effect.Effect<
         readonly [
             hubConfig: WireguardConfig.WireguardConfig,
-            spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
+            spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
         ],
         ParseResult.ParseError | WireguardErrors.WireguardError,
         never
@@ -151,7 +151,7 @@ export const generateStarConfigs: {
     }): Effect.Effect<
         readonly [
             hubConfig: WireguardConfig.WireguardConfig,
-            spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
+            spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
         ],
         ParseResult.ParseError | WireguardErrors.WireguardError,
         never
@@ -187,7 +187,7 @@ export const generateStarConfigs: {
 }): Effect.Effect<
     readonly [
         hubConfig: WireguardConfig.WireguardConfig,
-        spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
+        spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
     ],
     ParseResult.ParseError | WireguardErrors.WireguardError,
     never
@@ -198,7 +198,7 @@ export const generateStarConfigs: {
               preshareKeys: "generate" as const,
               trustMap: "trustAllPeers" as const,
               hubData: firstNode as InternetSchemas.SetupDataEncoded,
-              spokeData: [secondNode, ...rest] as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+              spokeData: [secondNode, ...rest] as Array.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
           })
         : generate({
               preshareKeys: "generate" as const,
@@ -206,7 +206,7 @@ export const generateStarConfigs: {
               cidrBlock: options.cidrBlock,
               addressStartingIndex: options.addressStartingIndex,
               hubData: firstNode as InternetSchemas.EndpointEncoded,
-              spokeData: [secondNode, ...rest] as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+              spokeData: [secondNode, ...rest] as Array.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
           });
 };
 
@@ -215,14 +215,14 @@ export const generateHubSpokeConfigs: {
     // Overload for when cidrBlock is not provided
     <
         HubData extends InternetSchemas.SetupDataEncoded,
-        SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+        SpokeData extends Array.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
     >(options: {
         hubData: HubData;
         spokeData: SpokeData;
     }): Effect.Effect<
         readonly [
             hubConfig: WireguardConfig.WireguardConfig,
-            spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
+            spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
         ],
         ParseResult.ParseError | WireguardErrors.WireguardError,
         never
@@ -230,7 +230,7 @@ export const generateHubSpokeConfigs: {
     // Overload for when cidrBlock is provided
     <
         HubData extends InternetSchemas.EndpointEncoded,
-        SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+        SpokeData extends Array.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
     >(options: {
         hubData: HubData;
         spokeData: SpokeData;
@@ -239,7 +239,7 @@ export const generateHubSpokeConfigs: {
     }): Effect.Effect<
         readonly [
             hubConfig: WireguardConfig.WireguardConfig,
-            spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
+            spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
         ],
         ParseResult.ParseError | WireguardErrors.WireguardError,
         never
@@ -247,8 +247,8 @@ export const generateHubSpokeConfigs: {
 } = <
     HubData extends InternetSchemas.SetupDataEncoded | InternetSchemas.EndpointEncoded,
     SpokeData extends HubData extends InternetSchemas.SetupDataEncoded
-        ? ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>
-        : ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+        ? Array.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>
+        : Array.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
 >(options: {
     hubData: HubData;
     spokeData: SpokeData;
@@ -257,7 +257,7 @@ export const generateHubSpokeConfigs: {
 }): Effect.Effect<
     readonly [
         hubConfig: WireguardConfig.WireguardConfig,
-        spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
+        spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
     ],
     ParseResult.ParseError | WireguardErrors.WireguardError,
     never
@@ -267,7 +267,7 @@ export const generateHubSpokeConfigs: {
               preshareKeys: "generate" as const,
               trustMap: "trustNoPeers" as const,
               hubData: options.hubData as InternetSchemas.SetupDataEncoded,
-              spokeData: options.spokeData as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+              spokeData: options.spokeData as Array.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
           })
         : generate({
               preshareKeys: "generate" as const,
@@ -275,7 +275,7 @@ export const generateHubSpokeConfigs: {
               cidrBlock: options.cidrBlock,
               addressStartingIndex: options.addressStartingIndex,
               hubData: options.hubData as InternetSchemas.EndpointEncoded,
-              spokeData: options.spokeData as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+              spokeData: options.spokeData as Array.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
           });
 };
 
@@ -284,20 +284,20 @@ export const generate: {
     // Overload for when cidrBlock is not provided
     <
         HubData extends InternetSchemas.SetupDataEncoded,
-        SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+        SpokeData extends Array.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
     >(options: {
         hubData: HubData;
         spokeData: SpokeData;
         preshareKeys?: HashMap.HashMap<SpokeData[number] | HubData, WireguardKey.WireguardKey> | "generate" | undefined;
         trustMap?:
-            | HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>
+            | HashMap.HashMap<SpokeData[number], Array.NonEmptyReadonlyArray<SpokeData[number]>>
             | "trustAllPeers"
             | "trustNoPeers"
             | undefined;
     }): Effect.Effect<
         readonly [
             hubConfig: WireguardConfig.WireguardConfig,
-            spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
+            spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
         ],
         ParseResult.ParseError | WireguardErrors.WireguardError,
         never
@@ -305,7 +305,7 @@ export const generate: {
     // Overload for when cidrBlock is provided
     <
         HubData extends InternetSchemas.EndpointEncoded,
-        SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+        SpokeData extends Array.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
     >(options: {
         hubData: HubData;
         spokeData: SpokeData;
@@ -313,14 +313,14 @@ export const generate: {
         addressStartingIndex?: number | undefined;
         preshareKeys?: HashMap.HashMap<SpokeData[number] | HubData, WireguardKey.WireguardKey> | "generate" | undefined;
         trustMap?:
-            | HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>
+            | HashMap.HashMap<SpokeData[number], Array.NonEmptyReadonlyArray<SpokeData[number]>>
             | "trustAllPeers"
             | "trustNoPeers"
             | undefined;
     }): Effect.Effect<
         readonly [
             hubConfig: WireguardConfig.WireguardConfig,
-            spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
+            spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
         ],
         ParseResult.ParseError | WireguardErrors.WireguardError,
         never
@@ -328,8 +328,8 @@ export const generate: {
 } = <
     HubData extends InternetSchemas.SetupDataEncoded | InternetSchemas.EndpointEncoded,
     SpokeData extends HubData extends InternetSchemas.SetupDataEncoded
-        ? ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>
-        : ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+        ? Array.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>
+        : Array.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
 >(options: {
     hubData: HubData;
     spokeData: SpokeData;
@@ -337,14 +337,14 @@ export const generate: {
     addressStartingIndex?: number | undefined;
     preshareKeys?: HashMap.HashMap<SpokeData[number] | HubData, WireguardKey.WireguardKey> | "generate" | undefined;
     trustMap?:
-        | HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>
+        | HashMap.HashMap<SpokeData[number], Array.NonEmptyReadonlyArray<SpokeData[number]>>
         | "trustAllPeers"
         | "trustNoPeers"
         | undefined;
 }): Effect.Effect<
     readonly [
         hubConfig: WireguardConfig.WireguardConfig,
-        spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
+        spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>,
     ],
     ParseResult.ParseError | WireguardErrors.WireguardError,
     never
@@ -352,8 +352,8 @@ export const generate: {
     Effect.gen(function* (λ) {
         const inputIsSetupData = Array.isArray(options.hubData);
         const ipsNeeded =
-            ReadonlyArray.length(
-                options.spokeData as ReadonlyArray.NonEmptyReadonlyArray<
+            Array.length(
+                options.spokeData as Array.NonEmptyReadonlyArray<
                     InternetSchemas.SetupDataEncoded | InternetSchemas.EndpointEncoded
                 >
             ) + 1;
@@ -378,7 +378,7 @@ export const generate: {
                       Effect.map(Chunk.toArray)
                   )
               )
-            : yield* λ(Effect.succeed(ReadonlyArray.empty()));
+            : yield* λ(Effect.succeed(Array.empty()));
 
         // Convert the trustMap to a HashMap if it's not already
         type TrustMap = Exclude<typeof options.trustMap, "trustAllPeers" | "trustNoPeers" | undefined>;
@@ -387,7 +387,7 @@ export const generate: {
             Match.when("trustAllPeers", () =>
                 Function.pipe(
                     options.spokeData,
-                    ReadonlyArray.map((spoke) => Tuple.make(spoke, options.spokeData)),
+                    Array.map((spoke) => Tuple.make(spoke, options.spokeData)),
                     HashMap.fromIterable
                 )
             ),
@@ -403,7 +403,7 @@ export const generate: {
             Match.when("generate", () =>
                 Function.pipe(
                     options.spokeData,
-                    ReadonlyArray.map((spoke) => Tuple.make(spoke, WireguardKey.generatePreshareKey())),
+                    Array.map((spoke) => Tuple.make(spoke, WireguardKey.generatePreshareKey())),
                     HashMap.fromIterable
                 )
             ),
@@ -416,21 +416,18 @@ export const generate: {
         const hubSetupDataEncoded: InternetSchemas.SetupDataEncoded = inputIsSetupData
             ? (options.hubData as InternetSchemas.SetupDataEncoded)
             : Tuple.make(options.hubData as InternetSchemas.EndpointEncoded, ips.at(0)?.ip ?? "");
-        const spokeSetupDataEncoded: ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded> =
-            inputIsSetupData
-                ? (options.spokeData as ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>)
-                : ReadonlyArray.map(options.spokeData, (spoke, index) =>
-                      Tuple.make(spoke as InternetSchemas.EndpointEncoded, ips.at(index + 1)?.ip ?? "")
-                  );
+        const spokeSetupDataEncoded: Array.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded> = inputIsSetupData
+            ? (options.spokeData as Array.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>)
+            : Array.map(options.spokeData, (spoke, index) =>
+                  Tuple.make(spoke as InternetSchemas.EndpointEncoded, ips.at(index + 1)?.ip ?? "")
+              );
 
         // Decode all SetupData inputs
         const hubSetupData = yield* λ(Schema.decode(InternetSchemas.SetupData)(hubSetupDataEncoded));
         const spokeSetupData = yield* λ(
-            Effect.all(
-                ReadonlyArray.map(spokeSetupDataEncoded, (spoke) => Schema.decode(InternetSchemas.SetupData)(spoke))
-            )
+            Effect.all(Array.map(spokeSetupDataEncoded, (spoke) => Schema.decode(InternetSchemas.SetupData)(spoke)))
         );
-        const spokeSetupDataBoth = ReadonlyArray.zip(spokeSetupDataEncoded, spokeSetupData);
+        const spokeSetupDataBoth = Array.zip(spokeSetupDataEncoded, spokeSetupData);
 
         // Generate the keys for the hub
         const hubKeys = WireguardKey.generateKeyPair();
@@ -445,7 +442,7 @@ export const generate: {
         };
 
         // All these spoke peer configs will be added to the hub interface config
-        const spokePeerConfigs = ReadonlyArray.map(spokeSetupDataBoth, ([spokeEncoded, spokeDecoded]) => {
+        const spokePeerConfigs = Array.map(spokeSetupDataBoth, ([spokeEncoded, spokeDecoded]) => {
             const keys = WireguardKey.generateKeyPair();
             const preshareKey = HashMap.get(preshareKeys, spokeEncoded).pipe(Option.getOrUndefined);
 
@@ -468,7 +465,7 @@ export const generate: {
         // The hub will get all the peers added to it
         const spokePeerConfigsBySetupData = Function.pipe(
             spokePeerConfigs,
-            ReadonlyArray.map((peer) => Tuple.make(peer.setupDataEncoded, peer)),
+            Array.map((peer) => Tuple.make(peer.setupDataEncoded, peer)),
             HashMap.fromIterable
         );
 
@@ -477,7 +474,7 @@ export const generate: {
             Schema.decode(WireguardConfig.WireguardConfig)({
                 PrivateKey: hubKeys.privateKey,
                 ListenPort: Tuple.getFirst(hubSetupData).listenPort,
-                Peers: ReadonlyArray.map(spokePeerConfigs, ({ peerConfig }) => peerConfig),
+                Peers: Array.map(spokePeerConfigs, ({ peerConfig }) => peerConfig),
                 Address: `${Tuple.getSecond(hubSetupDataEncoded)}/${options.cidrBlock?.mask ?? 24}`,
             })
         );
@@ -486,14 +483,14 @@ export const generate: {
         const spokeConfigs = yield* λ(
             Function.pipe(
                 spokePeerConfigs,
-                ReadonlyArray.map(({ keys: { privateKey }, setupDataDecoded, setupDataEncoded }) => {
+                Array.map(({ keys: { privateKey }, setupDataDecoded, setupDataEncoded }) => {
                     const friends = Function.pipe(
                         trustMap,
                         HashMap.get(setupDataEncoded),
-                        Option.getOrElse(() => ReadonlyArray.empty()),
-                        ReadonlyArray.map((friend) => HashMap.get(spokePeerConfigsBySetupData, friend)),
-                        ReadonlyArray.map(Option.getOrThrow),
-                        ReadonlyArray.map(({ peerConfig }) => peerConfig)
+                        Option.getOrElse(() => Array.empty()),
+                        Array.map((friend) => HashMap.get(spokePeerConfigsBySetupData, friend)),
+                        Array.map(Option.getOrThrow),
+                        Array.map(({ peerConfig }) => peerConfig)
                     );
 
                     return Schema.decode(WireguardConfig.WireguardConfig)({

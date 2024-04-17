@@ -54,16 +54,16 @@
         "@babel/plugin-transform-export-namespace-from": "7.24.1",
         "@babel/plugin-transform-modules-commonjs": "7.24.1",
         "@effect/build-utils": "0.7.6",
-        "@effect/docgen": "0.4.2",
+        "@effect/docgen": "0.4.3",
         "@effect/eslint-plugin": "0.1.2",
         "@effect/language-service": "0.1.0",
-        "@effect/platform": "0.48.29",
-        "@effect/platform-node": "0.45.31",
-        "@effect/printer": "0.32.4",
-        "@effect/printer-ansi": "0.32.28",
-        "@effect/schema": "0.65.0",
-        "@effect/typeclass": "0.23.19",
-        "@effect/vitest": "0.2.7",
+        "@effect/platform": "0.49.0",
+        "@effect/platform-node": "0.46.0",
+        "@effect/printer": "0.33.0",
+        "@effect/printer-ansi": "0.33.0",
+        "@effect/schema": "0.66.0",
+        "@effect/typeclass": "0.24.0",
+        "@effect/vitest": "0.3.0",
         "@rollup/wasm-node": "4.14.3",
         "@types/ini": "4.1.0",
         "@types/node": "20.12.7",
@@ -72,7 +72,7 @@
         "@typescript-eslint/utils": "7.7.0",
         "@vitest/coverage-v8": "1.5.0",
         "babel-plugin-annotate-pure-calls": "0.4.0",
-        "effect": "2.4.19",
+        "effect": "3.0.0",
         "eslint": "8.57.0",
         "eslint-config-prettier": "9.1.0",
         "eslint-import-resolver-typescript": "3.6.1",
@@ -98,10 +98,10 @@
         "ws": "8.16.0"
     },
     "peerDependencies": {
-        "@effect/platform": "0.48.29",
-        "@effect/platform-node": "0.45.31",
-        "@effect/schema": "0.65.0",
-        "effect": "2.4.19"
+        "@effect/platform": "0.49.0",
+        "@effect/platform-node": "0.46.0",
+        "@effect/schema": "0.66.0",
+        "effect": "^3.0.0"
     },
     "packageManager": "pnpm@8.15.4",
     "engines": {
@@ -120,8 +120,7 @@
     },
     "pnpm": {
         "patchedDependencies": {
-            "@effect/build-utils@0.7.6": "patches/@effect__build-utils@0.7.6.patch",
-            "@effect/docgen@0.4.2": "patches/@effect__docgen@0.4.2.patch"
+            "@effect/build-utils@0.7.6": "patches/@effect__build-utils@0.7.6.patch"
         }
     }
 }

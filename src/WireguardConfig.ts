@@ -9,6 +9,7 @@ import * as FileSystem from "@effect/platform/FileSystem";
 import * as Path from "@effect/platform/Path";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
+import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import * as Either from "effect/Either";
@@ -17,7 +18,6 @@ import * as HashMap from "effect/HashMap";
 import * as Number from "effect/Number";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
-import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Scope from "effect/Scope";
 import * as Tuple from "effect/Tuple";
 import * as ini from "ini";
@@ -116,20 +116,20 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
      */
     public static generateStarConfigs: {
         // Overload for when cidrBlock is not provided
-        <Nodes extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>>(options: {
+        <Nodes extends Array.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>>(options: {
             nodes: Nodes;
         }): Effect.Effect<
-            readonly [hubConfig: WireguardConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig>],
+            readonly [hubConfig: WireguardConfig, spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig>],
             ParseResult.ParseError | WireguardErrors.WireguardError,
             never
         >;
         // Overload for when cidrBlock is provided
-        <Nodes extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>>(options: {
+        <Nodes extends Array.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>>(options: {
             nodes: Nodes;
             cidrBlock: InternetSchemas.CidrBlock;
             addressStartingIndex?: number | undefined;
         }): Effect.Effect<
-            readonly [hubConfig: WireguardConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig>],
+            readonly [hubConfig: WireguardConfig, spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig>],
             ParseResult.ParseError | WireguardErrors.WireguardError,
             never
         >;
@@ -149,26 +149,26 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
         // Overload for when cidrBlock is not provided
         <
             HubData extends InternetSchemas.SetupDataEncoded,
-            SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+            SpokeData extends Array.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
         >(options: {
             hubData: HubData;
             spokeData: SpokeData;
         }): Effect.Effect<
-            readonly [hubConfig: WireguardConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig>],
+            readonly [hubConfig: WireguardConfig, spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig>],
             ParseResult.ParseError | WireguardErrors.WireguardError,
             never
         >;
         // Overload for when cidrBlock is provided
         <
             HubData extends InternetSchemas.EndpointEncoded,
-            SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+            SpokeData extends Array.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
         >(options: {
             hubData: HubData;
             spokeData: SpokeData;
             cidrBlock: InternetSchemas.CidrBlock;
             addressStartingIndex?: number | undefined;
         }): Effect.Effect<
-            readonly [hubConfig: WireguardConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig>],
+            readonly [hubConfig: WireguardConfig, spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig>],
             ParseResult.ParseError | WireguardErrors.WireguardError,
             never
         >;
@@ -184,8 +184,8 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
         // Overload for when cidrBlock is not provided
         <
             HubData extends InternetSchemas.SetupDataEncoded,
-            SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
-            TrustMap extends HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>,
+            SpokeData extends Array.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
+            TrustMap extends HashMap.HashMap<SpokeData[number], Array.NonEmptyReadonlyArray<SpokeData[number]>>,
             PreshareKeysMap extends HashMap.HashMap<
                 keyof SpokeData | HubData,
                 { readonly privateKey: WireguardKey.WireguardKey; readonly publicKey: WireguardKey.WireguardKey }
@@ -196,15 +196,15 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             preshareKeys?: PreshareKeysMap | "generate" | undefined;
             trustMap?: TrustMap | "trustAllPeers" | "trustNoPeers" | undefined;
         }): Effect.Effect<
-            readonly [hubConfig: WireguardConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig>],
+            readonly [hubConfig: WireguardConfig, spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig>],
             ParseResult.ParseError | WireguardErrors.WireguardError,
             never
         >;
         // Overload for when cidrBlock is provided
         <
             HubData extends InternetSchemas.EndpointEncoded,
-            SpokeData extends ReadonlyArray.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
-            TrustMap extends HashMap.HashMap<SpokeData[number], ReadonlyArray.NonEmptyReadonlyArray<SpokeData[number]>>,
+            SpokeData extends Array.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
+            TrustMap extends HashMap.HashMap<SpokeData[number], Array.NonEmptyReadonlyArray<SpokeData[number]>>,
             PreshareKeysMap extends HashMap.HashMap<
                 keyof SpokeData | HubData,
                 { readonly privateKey: WireguardKey.WireguardKey; readonly publicKey: WireguardKey.WireguardKey }
@@ -217,7 +217,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             preshareKeys?: PreshareKeysMap | "generate" | undefined;
             trustMap?: TrustMap | "trustAllPeers" | "trustNoPeers" | undefined;
         }): Effect.Effect<
-            readonly [hubConfig: WireguardConfig, spokeConfigs: ReadonlyArray.NonEmptyReadonlyArray<WireguardConfig>],
+            readonly [hubConfig: WireguardConfig, spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig>],
             ParseResult.ParseError | WireguardErrors.WireguardError,
             never
         >;
@@ -458,10 +458,10 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(Wi
             const peersConfig = yield* λ(
                 Function.pipe(
                     config.Peers,
-                    ReadonlyArray.map((peer) => Schema.encode(WireguardPeer.WireguardPeer)(peer)),
-                    ReadonlyArray.map(Effect.flatMap(Schema.decode(WireguardPeer.WireguardIniPeer))),
+                    Array.map((peer) => Schema.encode(WireguardPeer.WireguardPeer)(peer)),
+                    Array.map(Effect.flatMap(Schema.decode(WireguardPeer.WireguardIniPeer))),
                     Effect.allWith(),
-                    Effect.map(ReadonlyArray.join("\n"))
+                    Effect.map(Array.join("\n"))
                 )
             );
 
@@ -472,7 +472,7 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(Wi
     encode: (iniConfig, _options, _ast) =>
         Effect.gen(function* (λ) {
             const sections = iniConfig.split(/(?=\[Peer\])/g);
-            const maybeInterfaceSection = ReadonlyArray.findFirst(sections, (text) => text.startsWith("[Interface]"));
+            const maybeInterfaceSection = Array.findFirst(sections, (text) => text.startsWith("[Interface]"));
             const interfaceSection = Option.getOrThrowWith(
                 maybeInterfaceSection,
                 () => new WireguardErrors.WireguardError({ message: "No [Interface] section found" })
@@ -480,14 +480,14 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(Wi
 
             const peerSections = Function.pipe(
                 sections,
-                ReadonlyArray.filter((text) => text.startsWith("[Peer]")),
-                ReadonlyArray.map((text) => text.replace("[Peer]", ""))
+                Array.filter((text) => text.startsWith("[Peer]")),
+                Array.map((text) => text.replace("[Peer]", ""))
             );
 
             const parsePeers = yield* λ(
                 Function.pipe(
                     peerSections,
-                    ReadonlyArray.map((peer) => Schema.encode(WireguardPeer.WireguardIniPeer)(peer)),
+                    Array.map((peer) => Schema.encode(WireguardPeer.WireguardIniPeer)(peer)),
                     Effect.allWith()
                 )
             );
@@ -550,10 +550,10 @@ export const WireguardUapiConfig: $WireguardUapiConfig = Schema.transformOrFail(
                 const peers = yield* λ(
                     Function.pipe(
                         config.Peers,
-                        ReadonlyArray.map((peer) => Schema.encode(WireguardPeer.WireguardPeer)(peer)),
-                        ReadonlyArray.map(Effect.flatMap(Schema.decode(WireguardPeer.WireguardUapiPeer))),
+                        Array.map((peer) => Schema.encode(WireguardPeer.WireguardPeer)(peer)),
+                        Array.map(Effect.flatMap(Schema.decode(WireguardPeer.WireguardUapiPeer))),
                         Effect.allWith(),
-                        Effect.map(ReadonlyArray.join("\n"))
+                        Effect.map(Array.join("\n"))
                     )
                 );
 
@@ -571,7 +571,7 @@ export const WireguardUapiConfig: $WireguardUapiConfig = Schema.transformOrFail(
                 const peerConfigs = yield* λ(
                     Function.pipe(
                         peers,
-                        ReadonlyArray.map((peer) => Schema.encode(WireguardPeer.WireguardUapiPeer)(peer)),
+                        Array.map((peer) => Schema.encode(WireguardPeer.WireguardUapiPeer)(peer)),
                         Effect.allWith()
                     )
                 );
