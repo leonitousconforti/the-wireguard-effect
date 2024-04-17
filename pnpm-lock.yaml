@@ -52,11 +52,11 @@ devDependencies:
     specifier: 0.1.0
     version: 0.1.0
   '@effect/platform':
-    specifier: 0.48.28
-    version: 0.48.28(@effect/schema@0.65.0)(effect@2.4.19)(ws@8.16.0)
+    specifier: 0.48.29
+    version: 0.48.29(@effect/schema@0.65.0)(effect@2.4.19)(ws@8.16.0)
   '@effect/platform-node':
     specifier: 0.45.30
-    version: 0.45.30(@effect/platform@0.48.28)(effect@2.4.19)
+    version: 0.45.30(@effect/platform@0.48.29)(effect@2.4.19)
   '@effect/printer':
     specifier: 0.32.4
     version: 0.32.4(@effect/typeclass@0.23.19)(effect@2.4.19)
@@ -488,26 +488,26 @@ packages:
     resolution: {integrity: sha512-BnlM8LlaqCAYgdRfxlbR7gXGh/FD1scL1fPgNVJEPoOM08od1jtJz+iKhwfaud8TPnnhZR+TED2h5ynjanLeCQ==}
     dev: true
 
-  /@effect/platform-node-shared@0.3.28(@effect/platform@0.48.28)(effect@2.4.19):
+  /@effect/platform-node-shared@0.3.28(@effect/platform@0.48.29)(effect@2.4.19):
     resolution: {integrity: sha512-7OBftCRgRSp5y2A0vUTaN4XsIpKRGbU10JPrv8oX29ppOe6K3xupCAu+vehkhfRxr2fWr5PhUb4F4K/xuptizA==}
     peerDependencies:
       '@effect/platform': ^0.48.28
       effect: ^2.4.19
     dependencies:
-      '@effect/platform': 0.48.28(@effect/schema@0.65.0)(effect@2.4.19)(ws@8.16.0)
+      '@effect/platform': 0.48.29(@effect/schema@0.65.0)(effect@2.4.19)(ws@8.16.0)
       '@parcel/watcher': 2.4.1
       effect: 2.4.19
       multipasta: 0.2.0
     dev: true
 
-  /@effect/platform-node@0.45.30(@effect/platform@0.48.28)(effect@2.4.19):
+  /@effect/platform-node@0.45.30(@effect/platform@0.48.29)(effect@2.4.19):
     resolution: {integrity: sha512-qY1SB0Fj8xvOv49WxjSTREb/V3IwirdF3/Fe2fW0Ua/ssoZUTR9jMM+FofVi9J195H9lhoNNjEiY6QIlWRQUAQ==}
     peerDependencies:
       '@effect/platform': ^0.48.28
       effect: ^2.4.19
     dependencies:
-      '@effect/platform': 0.48.28(@effect/schema@0.65.0)(effect@2.4.19)(ws@8.16.0)
-      '@effect/platform-node-shared': 0.3.28(@effect/platform@0.48.28)(effect@2.4.19)
+      '@effect/platform': 0.48.29(@effect/schema@0.65.0)(effect@2.4.19)(ws@8.16.0)
+      '@effect/platform-node-shared': 0.3.28(@effect/platform@0.48.29)(effect@2.4.19)
       effect: 2.4.19
       mime: 3.0.0
       undici: 6.13.0
@@ -517,8 +517,8 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@effect/platform@0.48.28(@effect/schema@0.65.0)(effect@2.4.19)(ws@8.16.0):
-    resolution: {integrity: sha512-B6Ety8m7yPxxl5+yNF/qXZWy9sSirfTAPpOrhoZ9ZoYsSiZQJUaKE35wD0JUB+3EHFWR1l5Qn1g/3F+PVfK6SA==}
+  /@effect/platform@0.48.29(@effect/schema@0.65.0)(effect@2.4.19)(ws@8.16.0):
+    resolution: {integrity: sha512-vLggES/7inE2BA1OCMjrLPPgp57k3RrZDeWybN55u82jmNeo2rJMQJ7z4QTTdM6r3Y/WLniEMoMmWhtLWo00IA==}
     peerDependencies:
       '@effect/schema': ^0.65.0
       effect: ^2.4.19
