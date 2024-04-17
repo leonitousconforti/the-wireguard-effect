@@ -86,11 +86,9 @@ only be able to see it when connected as a peer.
 **Signature**
 
 ```ts
-export declare const requestHiddenPage: Effect.Effect<
-  string,
-  HttpClient.error.HttpClientError | Cause.TimeoutException,
-  HttpClient.client.Client.Default
->
+export declare const requestHiddenPage: (
+  hiddenPageLocation: string
+) => Effect.Effect<string, HttpClient.error.HttpClientError | Cause.TimeoutException, HttpClient.client.Client.Default>
 ```
 
 Added in v1.0.0
@@ -103,13 +101,13 @@ connected, you should be able to see the hidden page at 192.168.4.1
 **Signature**
 
 ```ts
-export declare const requestWireguardDemoConfig: ({
-  privateKey,
-  publicKey
-}?: {
-  readonly privateKey: string & Brand<"WireguardKey">
-  readonly publicKey: string & Brand<"WireguardKey">
-}) => Effect.Effect<WireguardConfig.WireguardConfig, Socket.SocketError | ParseResult.ParseError, never>
+export declare const requestWireguardDemoConfig: (
+  connectOptions?: { port: number; host: string },
+  {
+    privateKey,
+    publicKey
+  }?: { readonly privateKey: string & Brand<"WireguardKey">; readonly publicKey: string & Brand<"WireguardKey"> }
+) => Effect.Effect<WireguardConfig.WireguardConfig, Socket.SocketError | ParseResult.ParseError, never>
 ```
 
 Added in v1.0.0
