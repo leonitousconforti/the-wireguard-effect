@@ -88,8 +88,8 @@ export const requestWireguardDemoConfig = (
         Stream.decodeText(),
         Stream.run(Sink.head()),
         Effect.map(Option.getOrUndefined),
-        Effect.flatMap(Schema.decodeUnknown(WireguardDemoSchema)),
-        Effect.flatMap((serverResponse) =>
+        Effect.andThen(Schema.decodeUnknown(WireguardDemoSchema)),
+        Effect.andThen((serverResponse) =>
             Schema.decode(WireguardConfig.WireguardConfig)({
                 Dns: "1.1.1.1",
                 PrivateKey: privateKey,
