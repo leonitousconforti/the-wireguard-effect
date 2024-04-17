@@ -67,7 +67,7 @@
         "@rollup/wasm-node": "4.14.3",
         "@types/ini": "4.1.0",
         "@types/node": "20.12.7",
-        "@typescript-eslint/eslint-plugin": "7.6.0",
+        "@typescript-eslint/eslint-plugin": "7.7.0",
         "@typescript-eslint/parser": "7.7.0",
         "@typescript-eslint/utils": "7.7.0",
         "@vitest/coverage-v8": "1.5.0",
