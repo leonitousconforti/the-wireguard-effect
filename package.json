@@ -57,7 +57,7 @@
         "@effect/docgen": "0.4.2",
         "@effect/eslint-plugin": "0.1.2",
         "@effect/language-service": "0.1.0",
-        "@effect/platform": "0.48.28",
+        "@effect/platform": "0.48.29",
         "@effect/platform-node": "0.45.30",
         "@effect/printer": "0.32.4",
         "@effect/printer-ansi": "0.32.28",
@@ -98,7 +98,7 @@
         "ws": "8.16.0"
     },
     "peerDependencies": {
-        "@effect/platform": "0.48.28",
+        "@effect/platform": "0.48.29",
         "@effect/platform-node": "0.45.30",
         "@effect/schema": "0.65.0",
         "effect": "2.4.19"
