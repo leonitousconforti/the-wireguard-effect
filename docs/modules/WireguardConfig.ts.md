@@ -27,14 +27,6 @@ Added in v1.0.0
     - [writeToFile (property)](#writetofile-property)
     - [up (property)](#up-property)
     - [upScoped (property)](#upscoped-property)
-- [Requests](#requests)
-  - [WireguardGetConfigRequest (class)](#wireguardgetconfigrequest-class)
-  - [WireguardSetConfigRequest (class)](#wireguardsetconfigrequest-class)
-- [Resolvers](#resolvers)
-  - [WireguardGetConfigResolver](#wireguardgetconfigresolver)
-  - [WireguardSetConfigResolver](#wireguardsetconfigresolver)
-- [Responses](#responses)
-  - [WireguardGetConfigResponse (class)](#wireguardgetconfigresponse-class)
 - [Transformations](#transformations)
   - [WireguardIniConfig](#wireguardiniconfig)
 
@@ -557,7 +549,15 @@ even after the nodejs process exits.
 
 ```ts
 up: (interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>
-  Effect.Effect<void, WireguardErrors.WireguardError, WireguardControl.WireguardControl>
+  Effect.Effect<
+    void,
+    | Socket.SocketError
+    | ParseResult.ParseError
+    | Cause.UnknownException
+    | PlatformError.PlatformError
+    | WireguardErrors.WireguardError,
+    FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
+  >
 ```
 
 Added in v1.0.0
@@ -571,63 +571,15 @@ serving traffic once the scope is closed.
 
 ```ts
 upScoped: (interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>
-  Effect.Effect<void, WireguardErrors.WireguardError, WireguardControl.WireguardControl | Scope.Scope>
-```
-
-Added in v1.0.0
-
-# Requests
-
-## WireguardGetConfigRequest (class)
-
-**Signature**
-
-```ts
-export declare class WireguardGetConfigRequest
-```
-
-Added in v1.0.0
-
-## WireguardSetConfigRequest (class)
-
-**Signature**
-
-```ts
-export declare class WireguardSetConfigRequest
-```
-
-Added in v1.0.0
-
-# Resolvers
-
-## WireguardGetConfigResolver
-
-**Signature**
-
-```ts
-export declare const WireguardGetConfigResolver: Resolver.RequestResolver<WireguardGetConfigRequest, never>
-```
-
-Added in v1.0.0
-
-## WireguardSetConfigResolver
-
-**Signature**
-
-```ts
-export declare const WireguardSetConfigResolver: Resolver.RequestResolver<WireguardSetConfigRequest, never>
-```
-
-Added in v1.0.0
-
-# Responses
-
-## WireguardGetConfigResponse (class)
-
-**Signature**
-
-```ts
-export declare class WireguardGetConfigResponse
+  Effect.Effect<
+    void,
+    | Socket.SocketError
+    | ParseResult.ParseError
+    | Cause.UnknownException
+    | PlatformError.PlatformError
+    | WireguardErrors.WireguardError,
+    FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl | Scope.Scope
+  >
 ```
 
 Added in v1.0.0
