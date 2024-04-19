@@ -13,7 +13,7 @@ export const program: Effect.Effect<
     ParseResult.ParseError | Platform.Error.PlatformError | WireguardError.WireguardError | Cause.UnknownException,
     Platform.FileSystem.FileSystem | Platform.Path.Path
 > = Effect.gen(function* (λ) {
-    const config = yield* λ(WireguardConfig.WireguardConfig.fromConfigFile("examples/wireguard-config.conf"));
+    const config = yield* λ(WireguardConfig.fromConfigFile("examples/wireguard-config.conf"));
     yield* λ(Console.log(config));
 });
 

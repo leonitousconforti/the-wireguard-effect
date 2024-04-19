@@ -13,10 +13,15 @@ export * as InternetSchemas from "./InternetSchemas.js"
 export * as WireguardConfig from "./WireguardConfig.js"
 
 /**
+ * @since 1.0.0
+ * @category Models
+ */
+export * as WireguardControl from "./WireguardControl.js"
+
+/**
  * Utilities for connecting to the Wireguard demo server at demo.wireguard.com
  *
  * @since 1.0.0
- * @see https://git.zx2c4.com/wireguard-tools/plain/contrib/ncat-client-server/client.sh
  */
 export * as WireguardDemo from "./WireguardDemo.js"
 

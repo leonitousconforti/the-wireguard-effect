@@ -555,6 +555,8 @@ export class CidrBlock extends Schema.Class<CidrBlock>("CidrBlock")({
     /**
      * The first address in the range given by this address' subnet, often
      * referred to as the Network Address.
+     *
+     * @since 1.0.0
      */
     private get networkAddressAsBigint(): bigint {
         const bits = this.family === "ipv4" ? 32 : 128;
@@ -568,6 +570,8 @@ export class CidrBlock extends Schema.Class<CidrBlock>("CidrBlock")({
     /**
      * The first address in the range given by this address' subnet, often
      * referred to as the Network Address.
+     *
+     * @since 1.0.0
      */
     public get networkAddress(): Effect.Effect<Address, ParseResult.ParseError, never> {
         return this.family === "ipv4"
@@ -578,6 +582,8 @@ export class CidrBlock extends Schema.Class<CidrBlock>("CidrBlock")({
     /**
      * The last address in the range given by this address' subnet, often
      * referred to as the Broadcast Address.
+     *
+     * @since 1.0.0
      */
     private get broadcastAddressAsBigint(): bigint {
         const bits = this.family === "ipv4" ? 32 : 128;
@@ -591,6 +597,8 @@ export class CidrBlock extends Schema.Class<CidrBlock>("CidrBlock")({
     /**
      * The last address in the range given by this address' subnet, often
      * referred to as the Broadcast Address.
+     *
+     * @since 1.0.0
      */
     public get broadcastAddress(): Effect.Effect<Address, ParseResult.ParseError, never> {
         return this.family === "ipv4"
@@ -619,6 +627,11 @@ export class CidrBlock extends Schema.Class<CidrBlock>("CidrBlock")({
         return stream;
     }
 
+    /**
+     * The total number of addresses in the range given by this address' subnet.
+     *
+     * @since 1.0.0
+     */
     public get total(): bigint {
         const minValue = this.networkAddressAsBigint;
         const maxValue = this.broadcastAddressAsBigint;

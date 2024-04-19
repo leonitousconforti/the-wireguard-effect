@@ -28,7 +28,7 @@ export const program: Effect.Effect<
             ],
         })
     );
-    yield* λ(config.upScoped({ how: "system-wireguard+system-wg-quick" }));
+    yield* λ(config.upScoped());
     const peer1Endpoint = config.Peers[0].Endpoint;
     yield* λ(Console.log(peer1Endpoint));
 }).pipe(Effect.scoped);

@@ -56,6 +56,7 @@
         "@effect/build-utils": "0.7.6",
         "@effect/docgen": "0.4.3",
         "@effect/eslint-plugin": "0.1.2",
+        "@effect/experimental": "^0.15.0",
         "@effect/language-service": "0.1.0",
         "@effect/platform": "0.49.0",
         "@effect/platform-node": "0.46.0",

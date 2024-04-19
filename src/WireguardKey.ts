@@ -6,8 +6,7 @@
 
 import * as Schema from "@effect/schema/Schema";
 import * as Function from "effect/Function";
-
-import * as internal from "./internal/wireguardKey.js";
+import * as crypto from "node:crypto";
 
 /**
  * A wireguard key, which is a 44 character base64 string.
@@ -41,9 +40,16 @@ export type WireguardKey = Schema.Schema.Type<typeof WireguardKey>;
  *     import { generateKeyPair } from "the-wireguard-effect/WireguardKey";
  *     const { privateKey, publicKey } = generateKeyPair();
  */
-export const generateKeyPair: {
-    (): { readonly privateKey: WireguardKey; readonly publicKey: WireguardKey };
-} = internal.generateKeyPair;
+export const generateKeyPair = (): { readonly privateKey: WireguardKey; readonly publicKey: WireguardKey } => {
+    const keys = crypto.generateKeyPairSync("x25519", {
+        publicKeyEncoding: { format: "der", type: "spki" },
+        privateKeyEncoding: { format: "der", type: "pkcs8" },
+    });
+    return {
+        publicKey: WireguardKey(keys.publicKey.subarray(12).toString("base64")),
+        privateKey: WireguardKey(keys.privateKey.subarray(16).toString("base64")),
+    };
+};
 
 /**
  * Generates a wireguard preshare key.
@@ -54,8 +60,9 @@ export const generateKeyPair: {
  *     import { generatePreshareKey } from "the-wireguard-effect/WireguardKey";
  *     const preshareKey = generatePreshareKey();
  */
-export const generatePreshareKey: {
-    (): WireguardKey;
-} = internal.generatePreshareKey;
+export const generatePreshareKey = (): WireguardKey => {
+    const key = crypto.generateKeySync("hmac", { length: 256 });
+    return WireguardKey(key.export().toString("base64"));
+};
 
 export default WireguardKey;
