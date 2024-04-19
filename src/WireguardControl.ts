@@ -29,7 +29,6 @@ import * as String from "effect/String";
 import * as execa from "execa";
 import * as ini from "ini";
 
-import { arch } from "os";
 import * as InternetSchemas from "./InternetSchemas.js";
 import * as WireguardConfig from "./WireguardConfig.js";
 import * as WireguardErrors from "./WireguardErrors.js";
@@ -41,11 +40,21 @@ import * as WireguardPeer from "./WireguardPeer.js";
  * @category Responses
  * @see https://www.wireguard.com/xplatform/
  */
-export class WireguardGetConfigResponse extends WireguardConfig.WireguardConfig.extend<WireguardGetConfigResponse>(
-    "WireguardGetConfigResponse"
-)({
-    Peers: Schema.optional(Schema.Array(WireguardPeer.WireguardGetPeerResponse), { default: () => [], nullable: true }),
-}) {}
+export const WireguardGetConfigResponse = Function.pipe(
+    WireguardConfig.WireguardConfig,
+    Schema.omit("Peers"),
+    Schema.extend(
+        Schema.Struct({
+            Peers: Schema.optional(Schema.Array(WireguardPeer.WireguardGetPeerResponse), {
+                default: () => [],
+                nullable: true,
+            }),
+        })
+    )
+).annotations({
+    identifier: "WireguardGetConfigResponse",
+    description: "The response of a WireguardGetConfigRequest",
+});
 
 /**
  * @since 1.0.0
@@ -113,6 +122,7 @@ export const WireguardGetConfigResolver: Resolver.RequestResolver<WireguardGetCo
             const peerConfigs = yield* λ(
                 Function.pipe(
                     peers,
+                    Array.map((peer) => `public_key=${peer}`),
                     Array.map((peer) => new WireguardPeer.WireguardGetPeerRequest({ input: peer })),
                     Array.map(Effect.request(WireguardPeer.WireguardGetPeerResolver)),
                     Array.map(Effect.flatMap(Schema.encode(WireguardPeer.WireguardGetPeerResponse))),
@@ -139,7 +149,7 @@ export const WireguardGetConfigResolver: Resolver.RequestResolver<WireguardGetCo
 export const WireguardSetConfigResolver: Resolver.RequestResolver<WireguardSetConfigRequest, never> =
     Resolver.fromEffect<never, WireguardSetConfigRequest>(({ config, peerRequestMapper, wireguardInterface }) =>
         Effect.gen(function* (λ) {
-            const fwmark = `fwmark=${config.FirewallMark}\n` as const;
+            // const fwmark = `fwmark=${config.FirewallMark}\n` as const;
             const listenPort = `listen_port=${config.ListenPort}\n` as const;
             const privateKeyHex = Buffer.from(config.PrivateKey, "base64").toString("hex");
             const privateKey = `private_key=${privateKeyHex}\n` as const;
@@ -155,9 +165,9 @@ export const WireguardSetConfigResolver: Resolver.RequestResolver<WireguardSetCo
                 )
             );
 
-            const uapiConfig = `${fwmark}${listenPort}${privateKey}${peers}\n` as const;
+            const uapiConfig = `${listenPort}${privateKey}${peers}\n` as const;
             const set = Function.pipe(
-                Stream.make(`set=1\n\n${uapiConfig}`),
+                Stream.make(`set=1\n${uapiConfig}`),
                 Stream.encodeText,
                 Stream.pipeThroughChannelOrFail(
                     NodeSocket.makeNetChannel({
@@ -320,6 +330,7 @@ export const makeWgQuickLayer = (options: { sudo: boolean | "ask" }): WireguardC
             const file = path.join(tempDirectory, `${wireguardInterface.Name}.conf`);
             yield* λ(wireguardConfig.writeToFile(file));
 
+            const arch = process.arch === "x64" ? "amd64" : process.arch;
             const wgQuickUrl = new URL(`./${process.platform}-wg-quick`, import.meta.url);
             const bundledWgQuickExecutablePath = yield* λ(path.fromFileUrl(wgQuickUrl));
             if (process.platform !== "win32") yield* λ(fs.access(bundledWgQuickExecutablePath, { ok: true }));

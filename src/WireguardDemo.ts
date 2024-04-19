@@ -103,7 +103,7 @@ export const requestWireguardDemoConfig = (
                 Peers: [
                     {
                         PublicKey: serverResponse.serverPublicKey,
-                        Endpoint: `${connectOptions.host}:${serverResponse.serverPort}`,
+                        Endpoint: `172.245.26.38:${serverResponse.serverPort}`,
                         AllowedIPs: ["0.0.0.0/0"],
                         PersistentKeepalive: 25,
                     },

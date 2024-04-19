@@ -263,24 +263,27 @@ export const WireguardGetPeerResolver: Resolver.RequestResolver<WireguardGetPeer
         tx_bytes,
     } = ini.decode(request.input);
 
+    const publicKey = Buffer.from(public_key, "hex").toString("base64");
     const presharedKey = Function.pipe(
         preshared_key,
+        (x) => (x === "0000000000000000000000000000000000000000000000000000000000000000" ? undefined : x),
         Option.fromNullable,
-        Option.map((hex) => Buffer.from(hex, "hex").toString("base64"))
+        Option.map((hex) => Buffer.from(hex, "hex").toString("base64")),
+        Option.getOrUndefined
     );
 
     const data = {
         rxBytes: rx_bytes,
         txBytes: tx_bytes,
         Endpoint: endpoint,
-        PublicKey: public_key,
-        AllowedIPs: allowed_ip,
+        PublicKey: publicKey,
         PresharedKey: presharedKey,
         lastHandshakeTimeSeconds: last_handshake_time_sec,
-        PersistentKeepalive: Duration.seconds(persistent_keepalive_interval),
+        AllowedIPs: Array.isArray(allowed_ip) ? allowed_ip : [allowed_ip],
+        PersistentKeepalive: Number.parseInt(persistent_keepalive_interval),
     };
 
-    return Schema.decodeUnknown(Schema.parseJson(WireguardGetPeerResponse))(data);
+    return Schema.decodeUnknown(WireguardGetPeerResponse)(data);
 });
 
 /**
@@ -299,7 +302,7 @@ export const WireguardSetPeerResolver: Resolver.RequestResolver<WireguardSetPeer
 
     const publicKeyHex = Buffer.from(peer.PublicKey, "base64").toString("hex");
     const host = "address" in peer.Endpoint ? peer.Endpoint.address.ip : peer.Endpoint.host;
-    const endpointString = `Endpoint = ${host}:${peer.Endpoint.natPort}\n`;
+    const endpointString = `${host}:${peer.Endpoint.natPort}`;
 
     const durationSeconds = Function.pipe(
         peer.PersistentKeepalive,
@@ -316,7 +319,7 @@ export const WireguardSetPeerResolver: Resolver.RequestResolver<WireguardSetPeer
 
     const allowedIps = Function.pipe(
         peer.AllowedIPs,
-        Array.map((ap) => `${ap.ip}/${ap.mask}`),
+        Array.map((ap) => `${ap.ip.ip}/${ap.mask}`),
         Array.map((ap) => `allowed_ip=${ap}`),
         Array.join("\n")
     );
