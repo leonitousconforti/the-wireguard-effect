@@ -94,7 +94,7 @@ jobs:
           version: 8
       - run: pnpm install
       - run: sudo apt-get install -y wireguard openresolv
-      - run: chmod +x ./src/internal/*
+      - run: chmod +x ./src/*
       - run: pnpm test
         env:
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
@@ -117,7 +117,7 @@ jobs:
           version: 8
       - run: pnpm install
       - run: brew install wireguard-tools
-      - run: chmod +x ./src/internal/*
+      - run: chmod +x ./src/*
       - run: pnpm test
         env:
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
@@ -145,7 +145,7 @@ jobs:
             npm install -g pnpm@8.15.4
           run: |
             pnpm install
-            chmod +x ./src/internal/*
+            chmod +x ./src/*
             WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test
 
   openbsd-test:
@@ -169,7 +169,7 @@ jobs:
             npm install -g pnpm@8.15.4
           run: |
             pnpm install
-            chmod +x ./src/internal/*
+            chmod +x ./src/*
             WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test
 
   windows-test:
@@ -236,6 +236,6 @@ jobs:
 
       # This is where our testing starts
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
-      - run: wsl --distribution Ubuntu22.04 --user root -- chmod +x ./src/internal/*
-      - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/internal/
+      - run: wsl --distribution Ubuntu22.04 --user root -- chmod +x ./src/*
+      - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/
       - run: wsl --distribution Ubuntu22.04 --user root -- WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test -- --run

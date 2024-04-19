@@ -1,6 +1,6 @@
 ---
 title: WireguardPeer.ts
-nav_order: 8
+nav_order: 9
 parent: Modules
 ---
 
@@ -16,12 +16,18 @@ Added in v1.0.0
 
 - [Api interface](#api-interface)
   - [$WireguardIniPeer (interface)](#wireguardinipeer-interface)
-  - [$WireguardUapiPeer (interface)](#wireguarduapipeer-interface)
 - [Datatypes](#datatypes)
   - [WireguardPeer (class)](#wireguardpeer-class)
+- [Requests](#requests)
+  - [WireguardGetPeerRequest (class)](#wireguardgetpeerrequest-class)
+  - [WireguardSetPeerRequest (class)](#wireguardsetpeerrequest-class)
+- [Resolvers](#resolvers)
+  - [WireguardGetPeerResolver](#wireguardgetpeerresolver)
+  - [WireguardSetPeerResolver](#wireguardsetpeerresolver)
+- [Responses](#responses)
+  - [WireguardGetPeerResponse (class)](#wireguardgetpeerresponse-class)
 - [Transformations](#transformations)
   - [WireguardIniPeer](#wireguardinipeer)
-  - [WireguardUapiPeer](#wireguarduapipeer)
 
 ---
 
@@ -34,17 +40,6 @@ Added in v1.0.0
 ```ts
 export interface $WireguardIniPeer
   extends Schema.Annotable<$WireguardIniPeer, string, Schema.Schema.Encoded<typeof WireguardPeer>, never> {}
-```
-
-Added in v1.0.0
-
-## $WireguardUapiPeer (interface)
-
-**Signature**
-
-```ts
-export interface $WireguardUapiPeer
-  extends Schema.Annotable<$WireguardUapiPeer, string, Schema.Schema.Encoded<typeof WireguardPeer>, never> {}
 ```
 
 Added in v1.0.0
@@ -105,6 +100,65 @@ const peerSchemaInstantiation = Schema.decode(WireguardPeer)({
 
 Added in v1.0.0
 
+# Requests
+
+## WireguardGetPeerRequest (class)
+
+**Signature**
+
+```ts
+export declare class WireguardGetPeerRequest
+```
+
+Added in v1.0.0
+
+## WireguardSetPeerRequest (class)
+
+**Signature**
+
+```ts
+export declare class WireguardSetPeerRequest
+```
+
+Added in v1.0.0
+
+# Resolvers
+
+## WireguardGetPeerResolver
+
+**Signature**
+
+```ts
+export declare const WireguardGetPeerResolver: Resolver.RequestResolver<WireguardGetPeerRequest, never>
+```
+
+Added in v1.0.0
+
+## WireguardSetPeerResolver
+
+**Signature**
+
+```ts
+export declare const WireguardSetPeerResolver: Resolver.RequestResolver<WireguardSetPeerRequest, never>
+```
+
+Added in v1.0.0
+
+# Responses
+
+## WireguardGetPeerResponse (class)
+
+A wireguard peer from an interface inspection request contains three
+additional fields.
+
+**Signature**
+
+```ts
+export declare class WireguardGetPeerResponse
+```
+
+Added in v1.0.0
+
 # Transformations
 
 ## WireguardIniPeer
@@ -139,43 +193,6 @@ const iniPeer = Function.pipe(
   peer,
   Effect.flatMap(Schema.encode(WireguardPeer.WireguardPeer)),
   Effect.flatMap(Schema.decode(WireguardPeer.WireguardIniPeer))
-)
-```
-
-Added in v1.0.0
-
-## WireguardUapiPeer
-
-A wireguard peer configuration encoded in the userspace api format.
-
-**Signature**
-
-```ts
-export declare const WireguardUapiPeer: $WireguardUapiPeer
-```
-
-**Example**
-
-```ts
-import * as Effect from "effect/Effect"
-import * as Function from "effect/Function"
-import * as Schema from "@effect/schema/Schema"
-import * as WireguardKey from "the-wireguard-effect/WireguardKey"
-import * as WireguardPeer from "the-wireguard-effect/WireguardPeer"
-
-const { publicKey, privateKey: _privateKey } = WireguardKey.generateKeyPair()
-
-const peer = Schema.decode(WireguardPeer.WireguardPeer)({
-  PublicKey: publicKey,
-  AllowedIPs: ["192.168.0.0/24"],
-  Endpoint: "192.168.0.1:51820",
-  PersistentKeepalive: 20
-})
-
-const uapiPeer = Function.pipe(
-  peer,
-  Effect.flatMap(Schema.encode(WireguardPeer.WireguardPeer)),
-  Effect.flatMap(Schema.decode(WireguardPeer.WireguardUapiPeer))
 )
 ```
 

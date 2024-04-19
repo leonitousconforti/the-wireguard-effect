@@ -13,8 +13,9 @@ export * as InternetSchemas from "./InternetSchemas.js"
 export * as WireguardConfig from "./WireguardConfig.js"
 
 /**
+ * Wireguard control mechanisms.
+ *
  * @since 1.0.0
- * @category Models
  */
 export * as WireguardControl from "./WireguardControl.js"
 

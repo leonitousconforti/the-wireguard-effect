@@ -1,3 +1,9 @@
+/**
+ * Wireguard control mechanisms.
+ *
+ * @since 1.0.0
+ */
+
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
