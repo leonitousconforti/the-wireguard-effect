@@ -16,6 +16,7 @@ import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
 import * as Context from "effect/Context";
+import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
@@ -36,6 +37,161 @@ import * as WireguardInterface from "./WireguardInterface.js";
 import * as WireguardPeer from "./WireguardPeer.js";
 
 /**
+ * A wireguard peer from an interface inspection request contains three
+ * additional fields.
+ *
+ * @since 1.0.0
+ * @category Responses
+ * @see https://www.wireguard.com/xplatform/
+ */
+export class WireguardGetPeerResponse extends WireguardPeer.WireguardPeer.extend<WireguardGetPeerResponse>(
+    "WireguardGetPeerResponse"
+)({
+    /** The number of received bytes. */
+    rxBytes: Schema.NumberFromString,
+
+    /** The number of transmitted bytes. */
+    txBytes: Schema.NumberFromString,
+
+    /**
+     * The number of seconds since the most recent handshake, expressed relative
+     * to the Unix epoch.
+     */
+    lastHandshakeTimeSeconds: Schema.NumberFromString,
+}) {}
+
+/**
+ * @since 1.0.0
+ * @category Requests
+ */
+export class WireguardGetPeerRequest extends Request.TaggedClass("WireguardGetPeerRequest")<
+    WireguardGetPeerResponse,
+    ParseResult.ParseError,
+    {
+        readonly input: string;
+    }
+> {}
+
+/**
+ * @since 1.0.0
+ * @category Requests
+ * @see https://www.wireguard.com/xplatform/
+ */
+export class WireguardSetPeerRequest extends Request.TaggedClass("WireguardSetPeerRequest")<
+    string,
+    never,
+    {
+        /** The peer to encode. */
+        readonly peer: WireguardPeer.WireguardPeer;
+
+        /** Indicates that the peer entry should be removed from the interface. */
+        readonly remove?: boolean | undefined;
+
+        /**
+         * Causes the operation to occur only if the peer already exists as part
+         * of the interface.
+         */
+        readonly updateOnly?: boolean | undefined;
+
+        /**
+         * Indicates that the subsequent allowed IPs (perhaps an empty list)
+         * should replace any existing ones of the previously added peer entry,
+         * rather than append to the existing allowed IPs list.
+         */
+        readonly replaceAllowedIps?: boolean | undefined;
+    }
+> {}
+
+/**
+ * @since 1.0.0
+ * @category Resolvers
+ */
+export const WireguardGetPeerResolver: Resolver.RequestResolver<WireguardGetPeerRequest, never> = Resolver.fromEffect<
+    never,
+    WireguardGetPeerRequest
+>((request) => {
+    const {
+        allowed_ip,
+        endpoint,
+        last_handshake_time_sec,
+        persistent_keepalive_interval,
+        preshared_key,
+        public_key,
+        rx_bytes,
+        tx_bytes,
+    } = ini.decode(request.input);
+
+    const publicKey = Buffer.from(public_key, "hex").toString("base64");
+    const presharedKey = Function.pipe(
+        preshared_key,
+        (x) => (x === "0000000000000000000000000000000000000000000000000000000000000000" ? undefined : x),
+        Option.fromNullable,
+        Option.map((hex) => Buffer.from(hex, "hex").toString("base64")),
+        Option.getOrUndefined
+    );
+
+    const data = {
+        rxBytes: rx_bytes,
+        txBytes: tx_bytes,
+        Endpoint: endpoint,
+        PublicKey: publicKey,
+        PresharedKey: presharedKey,
+        lastHandshakeTimeSeconds: last_handshake_time_sec,
+        AllowedIPs: Array.isArray(allowed_ip) ? allowed_ip : [allowed_ip],
+        PersistentKeepalive: Number.parseInt(persistent_keepalive_interval),
+    };
+
+    return Schema.decodeUnknown(WireguardGetPeerResponse)(data);
+});
+
+/**
+ * @since 1.0.0
+ * @category Resolvers
+ */
+export const WireguardSetPeerResolver: Resolver.RequestResolver<WireguardSetPeerRequest, never> = Resolver.fromEffect<
+    never,
+    WireguardSetPeerRequest
+>((request) => {
+    const { peer, remove, replaceAllowedIps, updateOnly } = request;
+
+    const shouldRemove = remove === true ? "remove=true\n" : "";
+    const shouldUpdateOnly = updateOnly === true ? "update-only=true\n" : "";
+    const shouldReplaceAllowedIps = replaceAllowedIps === true ? "replace-allowed-ips=true\n" : "";
+
+    const publicKeyHex = Buffer.from(peer.PublicKey, "base64").toString("hex");
+    const host = "address" in peer.Endpoint ? peer.Endpoint.address.ip : peer.Endpoint.host;
+    const endpointString = `${host}:${peer.Endpoint.natPort}`;
+
+    const durationSeconds = Function.pipe(
+        peer.PersistentKeepalive,
+        Option.map(Duration.toSeconds),
+        Option.getOrElse(() => 0)
+    );
+
+    const presharedKeyHex = Function.pipe(
+        peer.PresharedKey,
+        Option.map((key) => Buffer.from(key, "base64").toString("hex")),
+        Option.map((hex) => `preshared_key=${hex}\n`),
+        Option.getOrElse(() => "")
+    );
+
+    const allowedIps = Function.pipe(
+        peer.AllowedIPs,
+        Array.map((ap) => `${ap.ip.ip}/${ap.mask}`),
+        Array.map((ap) => `allowed_ip=${ap}`),
+        Array.join("\n")
+    );
+
+    const endpoint = `endpoint=${endpointString}\n` as const;
+    const publicKey = `public_key=${publicKeyHex}\n` as const;
+    const keepAlive = `persistent_keepalive_interval=${durationSeconds}\n` as const;
+
+    return Effect.succeed(
+        `${publicKey}${shouldRemove}${shouldUpdateOnly}${shouldReplaceAllowedIps}${endpoint}${keepAlive}${presharedKeyHex}${allowedIps}\n`
+    );
+});
+
+/**
  * @since 1.0.0
  * @category Responses
  * @see https://www.wireguard.com/xplatform/
@@ -45,7 +201,7 @@ export const WireguardGetConfigResponse = Function.pipe(
     Schema.omit("Peers"),
     Schema.extend(
         Schema.Struct({
-            Peers: Schema.optional(Schema.Array(WireguardPeer.WireguardGetPeerResponse), {
+            Peers: Schema.optional(Schema.Array(WireguardGetPeerResponse), {
                 default: () => [],
                 nullable: true,
             }),
@@ -123,9 +279,9 @@ export const WireguardGetConfigResolver: Resolver.RequestResolver<WireguardGetCo
                 Function.pipe(
                     peers,
                     Array.map((peer) => `public_key=${peer}`),
-                    Array.map((peer) => new WireguardPeer.WireguardGetPeerRequest({ input: peer })),
-                    Array.map(Effect.request(WireguardPeer.WireguardGetPeerResolver)),
-                    Array.map(Effect.flatMap(Schema.encode(WireguardPeer.WireguardGetPeerResponse))),
+                    Array.map((peer) => new WireguardGetPeerRequest({ input: peer })),
+                    Array.map(Effect.request(WireguardGetPeerResolver)),
+                    Array.map(Effect.flatMap(Schema.encode(WireguardGetPeerResponse))),
                     Effect.allWith()
                 )
             );
@@ -158,8 +314,8 @@ export const WireguardSetConfigResolver: Resolver.RequestResolver<WireguardSetCo
                 Function.pipe(
                     config.Peers,
                     Array.map((peer) => ({ peer, ...(peerRequestMapper?.(peer) ?? {}) })),
-                    Array.map((peerRequestOptions) => new WireguardPeer.WireguardSetPeerRequest(peerRequestOptions)),
-                    Array.map(Effect.request(WireguardPeer.WireguardSetPeerResolver)),
+                    Array.map((peerRequestOptions) => new WireguardSetPeerRequest(peerRequestOptions)),
+                    Array.map(Effect.request(WireguardSetPeerResolver)),
                     Effect.allWith(),
                     Effect.map(Array.join("\n"))
                 )
@@ -269,7 +425,7 @@ export const makeUserspaceLayer = (): WireguardControlImpl => {
  * @since 1.0.0
  * @category Constructors
  */
-export const makeWgQuickLayer = (options: { sudo: boolean | "ask" }): WireguardControlImpl => {
+export const makeBundledWgQuickLayer = (options: { sudo: boolean | "ask" }): WireguardControlImpl => {
     const execCommand = (command: string): Effect.Effect<void, Cause.UnknownException, never> =>
         options.sudo === "ask"
             ? Effect.try(() => sudoPrompt.exec(`${command}`, { name: "The-WireGuard-Effect" }))
@@ -361,6 +517,78 @@ export const makeWgQuickLayer = (options: { sudo: boolean | "ask" }): WireguardC
 
 /**
  * @since 1.0.0
+ * @category Constructors
+ */
+export const makeSystemWgQuickLayer = (options: { sudo: boolean | "ask" }): WireguardControlImpl => {
+    const execCommand = (command: string): Effect.Effect<void, Cause.UnknownException, never> =>
+        options.sudo === "ask"
+            ? Effect.try(() => sudoPrompt.exec(`${command}`, { name: "The-WireGuard-Effect" }))
+            : Effect.tryPromise(() => {
+                  const subprocess = execa.execaCommand(
+                      `${options.sudo === true && process.platform !== "win32" ? "sudo " : ""}${command}`,
+                      {
+                          stdio: "ignore",
+                          cleanup: !command.includes("wireguard-go"),
+                          detached: command.includes("wireguard-go"),
+                      }
+                  );
+                  if (command.includes("wireguard-go")) subprocess.unref();
+                  return subprocess;
+              });
+
+    const up: WireguardControlImpl["up"] = (wireguardConfig, wireguardInterface) =>
+        Effect.gen(function* (λ) {
+            const path = yield* λ(Path.Path);
+            const fs = yield* λ(FileSystem.FileSystem);
+            const tempDirectory = yield* λ(fs.makeTempDirectory());
+            const file = path.join(tempDirectory, `${wireguardInterface.Name}.conf`);
+            yield* λ(wireguardConfig.writeToFile(file));
+
+            const wgQuickCommandWin = `wireguard.exe /installtunnelservice ${file}`;
+            const wgQuickCommandNix = `wg-quick up ${file}`;
+            const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
+            const wireguardGoCommand = `wireguard-go ${wireguardInterface.Name}`;
+
+            yield* λ(execCommand(wireguardGoCommand));
+            yield* λ(
+                Effect.request(
+                    new WireguardSetConfigRequest({ config: wireguardConfig, wireguardInterface }),
+                    WireguardSetConfigResolver
+                )
+            );
+            yield* λ(execCommand(wgQuickCommand));
+        });
+
+    const down: WireguardControlImpl["down"] = (wireguardConfig, wireguardInterface) =>
+        Effect.gen(function* (λ) {
+            const path = yield* λ(Path.Path);
+            const fs = yield* λ(FileSystem.FileSystem);
+            const tempDirectory = yield* λ(fs.makeTempDirectory());
+            const file = path.join(tempDirectory, `${wireguardInterface.Name}.conf`);
+            yield* λ(wireguardConfig.writeToFile(file));
+
+            const wgQuickCommandWin = `wireguard.exe /uninstalltunnelservice ${file}`;
+            const wgQuickCommandNix = `wg-quick down ${file}`;
+            const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
+            yield* λ(execCommand(wgQuickCommand));
+        });
+
+    const upScoped: WireguardControlImpl["upScoped"] = (wireguardConfig, wireguardInterface) =>
+        Effect.acquireRelease(up(wireguardConfig, wireguardInterface), () =>
+            down(wireguardConfig, wireguardInterface).pipe(Effect.orDie)
+        );
+
+    return WireguardControl.of({
+        up,
+        down,
+        upScoped,
+        getConfig: WireguardGetConfigResolver,
+        setConfig: WireguardSetConfigResolver,
+    });
+};
+
+/**
+ * @since 1.0.0
  * @category Layers
  */
 export const UserspaceLayer = Layer.sync(WireguardControl, makeUserspaceLayer);
@@ -369,4 +597,10 @@ export const UserspaceLayer = Layer.sync(WireguardControl, makeUserspaceLayer);
  * @since 1.0.0
  * @category Layers
  */
-export const WgQuickLayer = Layer.sync(WireguardControl, () => makeWgQuickLayer({ sudo: true }));
+export const BundledWgQuickLayer = Layer.sync(WireguardControl, () => makeBundledWgQuickLayer({ sudo: true }));
+
+/**
+ * @since 1.0.0
+ * @category Layers
+ */
+export const SystemWgQuickLayer = Layer.sync(WireguardControl, () => makeSystemWgQuickLayer({ sudo: true }));
