@@ -7,13 +7,12 @@
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Array from "effect/Array";
+import * as Brand from "effect/Brand";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
+import * as Number from "effect/Number";
 import * as Option from "effect/Option";
-import * as Predicate from "effect/Predicate";
-import * as Request from "effect/Request";
-import * as Resolver from "effect/RequestResolver";
 import * as ini from "ini";
 
 import * as InternetSchemas from "./InternetSchemas.js";
@@ -33,6 +32,7 @@ import * as WireguardKey from "./WireguardKey.js";
  *
  *     import { WireguardPeer } from "the-wireguard-effect/WireguardPeer";
  *
+ *     const preshareKey = WireguardKey.generatePreshareKey();
  *     const { publicKey, privateKey: _privateKey } =
  *         WireguardKey.generateKeyPair();
  *
@@ -59,41 +59,57 @@ import * as WireguardKey from "./WireguardKey.js";
  *     // Effect.Effect<WireguardPeer, ParseResult.ParseError, never>
  *     const peerSchemaInstantiation = Schema.decode(WireguardPeer)({
  *         PublicKey: publicKey,
- *         AllowedIPs: ["192.168.0.0/24"],
+ *         PresharedKey: preshareKey,
  *         Endpoint: "192.168.0.1:51820",
+ *         AllowedIPs: ["192.168.0.0/24"],
  *         PersistentKeepalive: Duration.seconds(20),
  *     });
  */
 export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")({
-    /** The persistent keepalive interval in seconds, 0 disables it. */
+    /**
+     * The persistent keepalive interval in seconds, 0 disables it. The
+     * difference between Option.none and Option.some(0) is important when
+     * performing something like a config update operation on an interface
+     * because Option.none will not include the keep alive setting in the update
+     * request, so it will remain the same as it was before the update, whereas
+     * Option.some(0) will disable the keep alive setting.
+     */
     PersistentKeepalive: Schema.optional(InternetSchemas.DurationFromSeconds, {
         as: "Option",
         nullable: true,
     }),
 
     /**
-     * The value for this is IP/cidr, indicating a new added allowed IP entry
-     * for the previously added peer entry. If an identical value already exists
-     * as part of a prior peer, the allowed IP entry will be removed from that
-     * peer and added to this peer.
+     * The collection of IPs/masks that will be accepted from this peer. If an
+     * identical value already exists as part of a prior peer, the allowed IP
+     * entry will be removed from that peer and added to this peer.
      */
-    AllowedIPs: Schema.optional(Schema.Array(InternetSchemas.CidrBlockFromString), {
+    AllowedIPs: Schema.optional(Schema.ReadonlySetFromSelf(InternetSchemas.CidrBlockFromString), {
         nullable: true,
-        default: () => [],
+        default: () => new Set([]),
     }),
 
     /**
-     * The value for this key is either IP:port for IPv4 or [IP]:port for IPv6,
-     * indicating the endpoint of the previously added peer entry.
+     * The value for this key is either IP:port for IPv4 or [IP]:port for IPv6
+     * or some.hostname.com:port for a hostname endpoint. The endpoint is
+     * optional and, if not supplied, the remote peer must connect first (so
+     * they should have the endpoint set to know where to connect to) and this
+     * client will just send requests back to the remote peer's source IP and
+     * port.
+     *
+     * TODO: fact check my understanding of the wireguard protocol when endpoint
+     * is not supplied.
      */
-    Endpoint: InternetSchemas.Endpoint,
+    Endpoint: Schema.optional(InternetSchemas.Endpoint, { nullable: true }),
 
-    /**
-     * The value for this key should be a lowercase hex-encoded public key of a
-     * new peer entry.
-     */
+    /** Lowercase hex-encoded public key of the new peer entry. */
     PublicKey: WireguardKey.WireguardKey,
 
+    /**
+     * The preshared key is optional and is a lowercase hex-encoded key. The
+     * value may be an all zero string in the case of a set operation, in which
+     * case it indicates that the preshared-key should be removed.
+     */
     PresharedKey: Schema.optional(WireguardKey.WireguardKey, { nullable: true, as: "Option" }),
 }) {}
 
@@ -135,42 +151,77 @@ export interface $WireguardIniPeer
  * @see {@link WireguardPeer}
  */
 export const WireguardIniPeer: $WireguardIniPeer = Schema.transformOrFail(WireguardPeer, Schema.String, {
-    // Encoding is trivial using the ini library.
+    // The types really help make sure that everything in the output will be in the right format
     decode: (peer, _options, _ast) => {
-        const publicKey = `PublicKey = ${peer.PublicKey}\n`;
-        const host = "address" in peer.Endpoint ? peer.Endpoint.address.ip : peer.Endpoint.host;
-        const endpoint = `Endpoint = ${host}:${peer.Endpoint.natPort}\n`;
-        const aps = Array.map(peer.AllowedIPs, (ap) => `AllowedIPs = ${ap.ip.ip}/${ap.mask}\n`);
-        const keepAlive = Function.pipe(
-            peer.PersistentKeepalive,
-            Option.map((keepalive) => `PersistentKeepalive = ${Duration.toSeconds(keepalive)}\n`),
-            Option.getOrElse(() => "")
-        );
-        const presharedKey = Function.pipe(
-            peer.PresharedKey,
-            Option.map((key) => `PresharedKey = ${key}\n`),
-            Option.getOrElse(() => "")
-        );
-        return Effect.succeed(`[Peer]\n${publicKey}${endpoint}${keepAlive}${presharedKey}${aps.join("\n")}` as const);
-    },
+        const publicKey: `PublicKey = ${string & Brand.Brand<"WireguardKey">}\n` =
+            `PublicKey = ${peer.PublicKey}\n` as const;
 
-    // Decoding is likewise trivial using the ini library.
+        const presharedKey: "" | `PresharedKey = ${string & Brand.Brand<"WireguardKey">}\n` = Function.pipe(
+            peer.PresharedKey,
+            Option.map((key) => `PresharedKey = ${key}\n` as const),
+            Option.getOrElse(() => "" as const)
+        );
+
+        const endpoint: "" | `Endpoint = ${string}:${InternetSchemas.PortBrand}\n` = Function.pipe(
+            peer.Endpoint,
+            Option.fromNullable,
+            Option.map((endpoint) => {
+                const host = "address" in endpoint ? endpoint.address.ip : endpoint.host;
+                return `Endpoint = ${host}:${endpoint.natPort}\n` as const;
+            }),
+            Option.getOrElse(() => "" as const)
+        );
+
+        const keepAlive: "" | `PersistentKeepalive = ${number}\n` = Function.pipe(
+            peer.PersistentKeepalive,
+            Option.map((keepalive) => `PersistentKeepalive = ${Duration.toSeconds(keepalive)}\n` as const),
+            Option.getOrElse(() => "" as const)
+        );
+
+        const aps: Array<`AllowedIPs = ${string}/${number}`> = Function.pipe(
+            peer.AllowedIPs,
+            Array.fromIterable,
+            Array.map((ap) => `${ap.ip.ip}/${ap.mask}` as const),
+            Array.map((ap) => `AllowedIPs = ${ap}` as const)
+        );
+
+        return Effect.succeed(`[Peer]\n${publicKey}${presharedKey}${endpoint}${keepAlive}${aps.join("\n")}` as const);
+    },
+    // Encoding is trivial using the ini library
     encode: (iniPeer, _options, _ast) =>
         Function.pipe(
             iniPeer,
             ini.decode,
+            (data) =>
+                data as {
+                    PublicKey: string;
+                    PresharedKey?: string | undefined | null;
+                    PersistentKeepalive?: string | undefined | null;
+                    Endpoint?: InternetSchemas.EndpointEncoded | undefined | null;
+                    AllowedIPs?:
+                        | Array<InternetSchemas.CidrBlockFromStringEncoded>
+                        | InternetSchemas.CidrBlockFromStringEncoded
+                        | undefined
+                        | null;
+                },
             ({ AllowedIPs, Endpoint, PersistentKeepalive, PresharedKey, PublicKey }) => ({
-                Endpoint,
                 PublicKey,
                 PresharedKey,
-                PersistentKeepalive,
-                AllowedIPs: Predicate.isNotNullable(AllowedIPs)
-                    ? !Array.isArray(AllowedIPs)
-                        ? [AllowedIPs]
-                        : AllowedIPs
-                    : [],
+                Endpoint,
+                PersistentKeepalive: Function.pipe(
+                    PersistentKeepalive,
+                    Option.fromNullable,
+                    Option.flatMap(Number.parse),
+                    Option.getOrUndefined
+                ),
+                AllowedIPs: Function.pipe(
+                    AllowedIPs,
+                    Option.fromNullable,
+                    Option.map((aps) => new Set(Array.isArray(aps) ? aps : [aps])),
+                    Option.getOrUndefined
+                ),
             }),
-            Schema.decodeUnknown(WireguardPeer),
+            Schema.decode(WireguardPeer, { onExcessProperty: "error" }),
             Effect.mapError(({ error }) => error)
         ),
 }).annotations({
@@ -178,7 +229,57 @@ export const WireguardIniPeer: $WireguardIniPeer = Schema.transformOrFail(Wiregu
     description: "A wireguard ini peer configuration",
 });
 
-export default WireguardPeer;
+/**
+ * Creates a wireguard userspace api set peer request from a wireguard peer.
+ * This is a one way transformation (hence why schema is not involved), and you
+ * are not expected to need to decode this back into a wireguard peer. Instead,
+ * you should use the request resolver on the wireguard control interface to
+ * "transform" this into a response.
+ *
+ * @since 1.0.0
+ * @category Requests
+ * @see https://www.wireguard.com/xplatform/
+ */
+export const makeWireguardUApiSetPeerRequest = (peer: WireguardPeer): string => {
+    const publicKey: `public_key=${string}\n` = Function.pipe(
+        peer.PublicKey,
+        (key) => Buffer.from(key, "base64").toString("hex"),
+        (hex) => `public_key=${hex}\n` as const
+    );
+
+    const presharedKeyHex: "" | `preshared_key=${string}\n` = Function.pipe(
+        peer.PresharedKey,
+        Option.map((key) => Buffer.from(key, "base64").toString("hex")),
+        Option.map((hex) => `preshared_key=${hex}\n` as const),
+        Option.getOrElse(() => "" as const)
+    );
+
+    const endpoint: "" | `endpoint=${string}:${InternetSchemas.PortBrand}\n` = Function.pipe(
+        peer.Endpoint,
+        Option.fromNullable,
+        Option.map((endpoint) => {
+            const host = "address" in endpoint ? endpoint.address.ip : endpoint.host;
+            return `endpoint=${host}:${endpoint.natPort}\n` as const;
+        }),
+        Option.getOrElse(() => "" as const)
+    );
+
+    const keepAlive: "" | `persistent_keepalive_interval=${number}\n` = Function.pipe(
+        peer.PersistentKeepalive,
+        Option.map(Duration.toSeconds),
+        Option.map((seconds) => `persistent_keepalive_interval=${seconds}\n` as const),
+        Option.getOrElse(() => "" as const)
+    );
+
+    const aps: Array<`allowed_ip=${string}/${number}`> = Function.pipe(
+        peer.AllowedIPs,
+        Array.fromIterable,
+        Array.map((ap) => `${ap.ip.ip}/${ap.mask}` as const),
+        Array.map((ap) => `allowed_ip=${ap}` as const)
+    );
+
+    return `${publicKey}${presharedKeyHex}${endpoint}${keepAlive}${aps.join("\n")}\n`;
+};
 
 /**
  * A wireguard peer from an interface inspection request contains three
@@ -188,8 +289,8 @@ export default WireguardPeer;
  * @category Responses
  * @see https://www.wireguard.com/xplatform/
  */
-export class WireguardGetPeerResponse extends WireguardPeer.extend<WireguardGetPeerResponse>(
-    "WireguardGetPeerResponse"
+export class WireguardUApiGetPeerResponse extends WireguardPeer.extend<WireguardUApiGetPeerResponse>(
+    "WireguardUApiGetPeerResponse"
 )({
     /** The number of received bytes. */
     rxBytes: Schema.NumberFromString,
@@ -205,55 +306,18 @@ export class WireguardGetPeerResponse extends WireguardPeer.extend<WireguardGetP
 }) {}
 
 /**
+ * Parses a wireguard userspace api get peer response from a wireguard control
+ * request resolver into a wireguard peer.
+ *
  * @since 1.0.0
- * @category Requests
- */
-export class WireguardGetPeerRequest extends Request.TaggedClass("WireguardGetPeerRequest")<
-    WireguardGetPeerResponse,
-    ParseResult.ParseError,
-    {
-        readonly input: string;
-    }
-> {}
-
-/**
- * @since 1.0.0
- * @category Requests
+ * @category Responses
  * @see https://www.wireguard.com/xplatform/
  */
-export class WireguardSetPeerRequest extends Request.TaggedClass("WireguardSetPeerRequest")<
-    string,
-    never,
-    {
-        /** The peer to encode. */
-        readonly peer: WireguardPeer;
+export const parseWireguardUApiGetPeerResponse = (
+    input: string
+): Effect.Effect<WireguardUApiGetPeerResponse, ParseResult.ParseError, never> => {
+    const data = ini.decode(input);
 
-        /** Indicates that the peer entry should be removed from the interface. */
-        readonly remove?: boolean | undefined;
-
-        /**
-         * Causes the operation to occur only if the peer already exists as part
-         * of the interface.
-         */
-        readonly updateOnly?: boolean | undefined;
-
-        /**
-         * Indicates that the subsequent allowed IPs (perhaps an empty list)
-         * should replace any existing ones of the previously added peer entry,
-         * rather than append to the existing allowed IPs list.
-         */
-        readonly replaceAllowedIps?: boolean | undefined;
-    }
-> {}
-
-/**
- * @since 1.0.0
- * @category Resolvers
- */
-export const WireguardGetPeerResolver: Resolver.RequestResolver<WireguardGetPeerRequest, never> = Resolver.fromEffect<
-    never,
-    WireguardGetPeerRequest
->((request) => {
     const {
         allowed_ip,
         endpoint,
@@ -263,74 +327,52 @@ export const WireguardGetPeerResolver: Resolver.RequestResolver<WireguardGetPeer
         public_key,
         rx_bytes,
         tx_bytes,
-    } = ini.decode(request.input);
+    } = data as {
+        allowed_ip:
+            | InternetSchemas.CidrBlockFromStringEncoded
+            | Array<InternetSchemas.CidrBlockFromStringEncoded>
+            | undefined
+            | null;
+        endpoint: InternetSchemas.EndpointEncoded | undefined | null;
+        last_handshake_time_sec: string;
+        persistent_keepalive_interval: string | undefined | null;
+        preshared_key: string | undefined | null;
+        public_key: string;
+        rx_bytes: string;
+        tx_bytes: string;
+    };
 
     const publicKey = Buffer.from(public_key, "hex").toString("base64");
     const presharedKey = Function.pipe(
         preshared_key,
-        (x) => (x === "0000000000000000000000000000000000000000000000000000000000000000" ? undefined : x),
         Option.fromNullable,
         Option.map((hex) => Buffer.from(hex, "hex").toString("base64")),
         Option.getOrUndefined
     );
 
-    const data = {
+    const allowedIps = Function.pipe(
+        allowed_ip,
+        Option.fromNullable,
+        Option.map((aps) => new Set(Array.isArray(aps) ? aps : [aps])),
+        Option.getOrUndefined
+    );
+    const keepAlive = Function.pipe(
+        persistent_keepalive_interval,
+        Option.fromNullable,
+        Option.flatMap(Number.parse),
+        Option.getOrUndefined
+    );
+
+    return Schema.decode(WireguardUApiGetPeerResponse)({
         rxBytes: rx_bytes,
         txBytes: tx_bytes,
         Endpoint: endpoint,
         PublicKey: publicKey,
         PresharedKey: presharedKey,
         lastHandshakeTimeSeconds: last_handshake_time_sec,
-        AllowedIPs: Array.isArray(allowed_ip) ? allowed_ip : [allowed_ip],
-        PersistentKeepalive: Number.parseInt(persistent_keepalive_interval),
-    };
+        AllowedIPs: allowedIps,
+        PersistentKeepalive: keepAlive,
+    });
+};
 
-    return Schema.decodeUnknown(WireguardGetPeerResponse)(data);
-});
-
-/**
- * @since 1.0.0
- * @category Resolvers
- */
-export const WireguardSetPeerResolver: Resolver.RequestResolver<WireguardSetPeerRequest, never> = Resolver.fromEffect<
-    never,
-    WireguardSetPeerRequest
->((request) => {
-    const { peer, remove, replaceAllowedIps, updateOnly } = request;
-
-    const shouldRemove = remove === true ? "remove=true\n" : "";
-    const shouldUpdateOnly = updateOnly === true ? "update-only=true\n" : "";
-    const shouldReplaceAllowedIps = replaceAllowedIps === true ? "replace-allowed-ips=true\n" : "";
-
-    const publicKeyHex = Buffer.from(peer.PublicKey, "base64").toString("hex");
-    const host = "address" in peer.Endpoint ? peer.Endpoint.address.ip : peer.Endpoint.host;
-    const endpointString = `${host}:${peer.Endpoint.natPort}`;
-
-    const durationSeconds = Function.pipe(
-        peer.PersistentKeepalive,
-        Option.map(Duration.toSeconds),
-        Option.getOrElse(() => 0)
-    );
-
-    const presharedKeyHex = Function.pipe(
-        peer.PresharedKey,
-        Option.map((key) => Buffer.from(key, "base64").toString("hex")),
-        Option.map((hex) => `preshared_key=${hex}\n`),
-        Option.getOrElse(() => "")
-    );
-
-    const allowedIps = Function.pipe(
-        peer.AllowedIPs,
-        Array.map((ap) => `${ap.ip.ip}/${ap.mask}`),
-        Array.map((ap) => `allowed_ip=${ap}`),
-        Array.join("\n")
-    );
-
-    const endpoint = `endpoint=${endpointString}\n` as const;
-    const publicKey = `public_key=${publicKeyHex}\n` as const;
-    const keepAlive = `persistent_keepalive_interval=${durationSeconds}\n` as const;
-
-    return Effect.succeed(
-        `${publicKey}${shouldRemove}${shouldUpdateOnly}${shouldReplaceAllowedIps}${endpoint}${keepAlive}${presharedKeyHex}${allowedIps}\n`
-    );
-});
+export default WireguardPeer;

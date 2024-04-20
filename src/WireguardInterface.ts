@@ -64,7 +64,12 @@ export const FreeBSDInterfaceNameRegExp: RegExp = /^eth\d+$/;
  * @category Datatypes
  */
 export class WireguardInterface extends Schema.Class<WireguardInterface>("WireguardInterface")({
-    /** Ensures the interface name matches the platform's interface name regex. */
+    /**
+     * Ensures the interface name matches the platform's interface name regex.
+     * These functions need to be fully typed as we are accessing a static
+     * method on this same class and otherwise typescript really complains about
+     * inference.
+     */
     Name: Schema.transformOrFail(Schema.String, Schema.String, {
         decode: (
             s: string,
@@ -175,7 +180,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         (
             config: WireguardConfig.WireguardConfig
         ): Effect.Effect<
-            void,
+            WireguardInterface,
             Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
             FileSystem.FileSystem | Path.Path | Scope.Scope | WireguardControl.WireguardControl
         >;
@@ -192,7 +197,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         (
             config: WireguardConfig.WireguardConfig
         ): Effect.Effect<
-            void,
+            WireguardInterface,
             Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
             FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
         >;
@@ -208,7 +213,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         (
             config: WireguardConfig.WireguardConfig
         ): Effect.Effect<
-            void,
+            WireguardInterface,
             PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException,
             FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
         >;

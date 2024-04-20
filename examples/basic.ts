@@ -28,7 +28,7 @@ export const program: Effect.Effect<
             Peers: [
                 {
                     PublicKey: "",
-                    AllowedIPs: [],
+                    AllowedIPs: new Set(),
                     Endpoint: "2.2.2.2:51820" as const,
                 },
             ],

@@ -45,7 +45,10 @@ import * as WireguardPeer from "./WireguardPeer.js";
  * @category Datatypes
  */
 export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIniConfig")({
+    /** TODO: Document */
     Address: InternetSchemas.CidrBlockFromString,
+
+    /** TODO: Document */
     Dns: Schema.optional(InternetSchemas.AddressFromString),
 
     /**
@@ -112,7 +115,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
         (
             interfaceObject?: WireguardInterface.WireguardInterface | undefined
         ): Effect.Effect<
-            void,
+            WireguardInterface.WireguardInterface,
             | Socket.SocketError
             | ParseResult.ParseError
             | Cause.UnknownException
@@ -133,7 +136,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             );
 
             const wireguardControl = yield* λ(WireguardControl.WireguardControl);
-            yield* λ(wireguardControl.up(self, io));
+            return yield* λ(wireguardControl.up(self, io));
         });
     };
 
@@ -148,7 +151,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
         (
             interfaceObject?: WireguardInterface.WireguardInterface | undefined
         ): Effect.Effect<
-            void,
+            WireguardInterface.WireguardInterface,
             | Socket.SocketError
             | ParseResult.ParseError
             | Cause.UnknownException
@@ -169,7 +172,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             );
 
             const wireguardControl = yield* λ(WireguardControl.WireguardControl);
-            yield* λ(wireguardControl.upScoped(self, io));
+            return yield* λ(wireguardControl.upScoped(self, io));
         });
     };
 }
@@ -640,7 +643,7 @@ export const generate: {
             PresharedKey: hubPreshareKey,
             PublicKey: hubKeys.publicKey,
             Endpoint: Tuple.getFirst(hubSetupDataEncoded),
-            AllowedIPs: [`${Tuple.getSecond(hubSetupDataEncoded)}/32`] as const,
+            AllowedIPs: new Set([`${Tuple.getSecond(hubSetupDataEncoded)}/32`] as const),
         };
 
         // All these spoke peer configs will be added to the hub interface config
@@ -659,7 +662,7 @@ export const generate: {
                     PresharedKey: preshareKey,
                     PublicKey: keys.publicKey,
                     Endpoint: Tuple.getFirst(spokeEncoded),
-                    AllowedIPs: [`${Tuple.getSecond(spokeEncoded)}/32`] as const,
+                    AllowedIPs: new Set([`${Tuple.getSecond(spokeEncoded)}/32`] as const),
                 },
             };
         });
@@ -739,7 +742,7 @@ export const WireguardGetConfigResponse = Function.pipe(
     Schema.omit("Peers"),
     Schema.extend(
         Schema.Struct({
-            Peers: Schema.optional(Schema.Array(WireguardPeer.WireguardGetPeerResponse), {
+            Peers: Schema.optional(Schema.Array(WireguardPeer.WireguardUApiGetPeerResponse), {
                 default: () => [],
                 nullable: true,
             }),
@@ -755,7 +758,7 @@ export const WireguardGetConfigResponse = Function.pipe(
  * @category Requests
  */
 export class WireguardGetConfigRequest extends Request.TaggedClass("WireguardGetConfigRequest")<
-    WireguardConfig,
+    Schema.Schema.Type<typeof WireguardGetConfigResponse>,
     ParseResult.ParseError | Socket.SocketError,
     {
         readonly address: InternetSchemas.CidrBlockFromStringEncoded;
@@ -768,7 +771,7 @@ export class WireguardGetConfigRequest extends Request.TaggedClass("WireguardGet
  * @category Requests
  */
 export class WireguardSetConfigRequest extends Request.TaggedClass("WireguardSetConfigRequest")<
-    void,
+    WireguardInterface.WireguardInterface,
     ParseResult.ParseError | Socket.SocketError,
     {
         readonly config: WireguardConfig;
@@ -817,9 +820,8 @@ export const WireguardGetConfigResolver: Resolver.RequestResolver<WireguardGetCo
                 Function.pipe(
                     peers,
                     Array.map((peer) => `public_key=${peer}`),
-                    Array.map((peer) => new WireguardPeer.WireguardGetPeerRequest({ input: peer })),
-                    Array.map(Effect.request(WireguardPeer.WireguardGetPeerResolver)),
-                    Array.map(Effect.flatMap(Schema.encode(WireguardPeer.WireguardGetPeerResponse))),
+                    Array.map((peer) => WireguardPeer.parseWireguardUApiGetPeerResponse(peer)),
+                    Array.map(Effect.flatMap(Schema.encode(WireguardPeer.WireguardUApiGetPeerResponse))),
                     Effect.allWith()
                 )
             );
@@ -827,9 +829,9 @@ export const WireguardGetConfigResolver: Resolver.RequestResolver<WireguardGetCo
             return yield* λ(
                 Schema.decode(WireguardGetConfigResponse)({
                     Address: address,
-                    FirewallMark: fwmark,
                     ListenPort: listen_port,
                     PrivateKey: Buffer.from(private_key, "hex").toString("base64"),
+                    FirewallMark: Number.parse(fwmark).pipe(Option.getOrUndefined),
                     Peers: peerConfigs,
                 })
             );
@@ -841,22 +843,17 @@ export const WireguardGetConfigResolver: Resolver.RequestResolver<WireguardGetCo
  * @category Resolvers
  */
 export const WireguardSetConfigResolver: Resolver.RequestResolver<WireguardSetConfigRequest, never> =
-    Resolver.fromEffect<never, WireguardSetConfigRequest>(({ config, peerRequestMapper, wireguardInterface }) =>
+    Resolver.fromEffect<never, WireguardSetConfigRequest>(({ config, wireguardInterface }) =>
         Effect.gen(function* (λ) {
             // const fwmark = `fwmark=${config.FirewallMark}\n` as const;
             const listenPort = `listen_port=${config.ListenPort}\n` as const;
             const privateKeyHex = Buffer.from(config.PrivateKey, "base64").toString("hex");
             const privateKey = `private_key=${privateKeyHex}\n` as const;
 
-            const peers = yield* λ(
-                Function.pipe(
-                    config.Peers,
-                    Array.map((peer) => ({ peer, ...(peerRequestMapper?.(peer) ?? {}) })),
-                    Array.map((peerRequestOptions) => new WireguardPeer.WireguardSetPeerRequest(peerRequestOptions)),
-                    Array.map(Effect.request(WireguardPeer.WireguardSetPeerResolver)),
-                    Effect.allWith(),
-                    Effect.map(Array.join("\n"))
-                )
+            const peers = Function.pipe(
+                config.Peers,
+                Array.map((peer) => WireguardPeer.makeWireguardUApiSetPeerRequest(peer)),
+                Array.join("\n")
             );
 
             const uapiConfig = `${listenPort}${privateKey}${peers}\n` as const;
@@ -875,6 +872,7 @@ export const WireguardSetConfigResolver: Resolver.RequestResolver<WireguardSetCo
                 Effect.andThen(Schema.decodeUnknown(WireguardErrors.SuccessErrno))
             );
 
-            return yield* λ(set);
+            yield* λ(set);
+            return wireguardInterface;
         })
     );

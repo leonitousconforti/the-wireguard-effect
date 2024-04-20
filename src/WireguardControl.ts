@@ -13,6 +13,7 @@ import * as sudoPrompt from "@vscode/sudo-prompt";
 import * as Cause from "effect/Cause";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
+import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Resolver from "effect/RequestResolver";
 import * as Scope from "effect/Scope";
@@ -30,7 +31,7 @@ export interface WireguardControlImpl {
         wireguardConfig: WireguardConfig.WireguardConfig,
         wireguardInterface: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
-        void,
+        WireguardInterface.WireguardInterface,
         Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
         FileSystem.FileSystem | Path.Path
     >;
@@ -39,7 +40,7 @@ export interface WireguardControlImpl {
         wireguardConfig: WireguardConfig.WireguardConfig,
         wireguardInterface: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
-        void,
+        WireguardInterface.WireguardInterface,
         PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException,
         FileSystem.FileSystem | Path.Path
     >;
@@ -48,13 +49,13 @@ export interface WireguardControlImpl {
         wireguardConfig: WireguardConfig.WireguardConfig,
         wireguardInterface: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
-        void,
+        WireguardInterface.WireguardInterface,
         Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
         FileSystem.FileSystem | Path.Path | Scope.Scope
     >;
 
-    readonly getConfig: Resolver.RequestResolver<WireguardConfig.WireguardGetConfigRequest, never>;
-    readonly setConfig: Resolver.RequestResolver<WireguardConfig.WireguardSetConfigRequest, never>;
+    readonly getConfigRequestResolver: Resolver.RequestResolver<WireguardConfig.WireguardGetConfigRequest, never>;
+    readonly setConfigRequestResolver: Resolver.RequestResolver<WireguardConfig.WireguardSetConfigRequest, never>;
 }
 
 /**
@@ -85,7 +86,9 @@ export const makeUserspaceLayer = (): WireguardControlImpl => {
         );
 
     const down: WireguardControlImpl["down"] = (_wireguardConfig, wireguardInterface) =>
-        Effect.flatMap(FileSystem.FileSystem, (fs) => fs.remove(wireguardInterface.SocketLocation));
+        Effect.flatMap(FileSystem.FileSystem, (fs) => fs.remove(wireguardInterface.SocketLocation)).pipe(
+            Effect.map(Function.constant(wireguardInterface))
+        );
 
     const upScoped: WireguardControlImpl["upScoped"] = (wireguardConfig, wireguardInterface) =>
         Effect.acquireRelease(up(wireguardConfig, wireguardInterface), () =>
@@ -96,8 +99,8 @@ export const makeUserspaceLayer = (): WireguardControlImpl => {
         up,
         down,
         upScoped,
-        getConfig: WireguardConfig.WireguardGetConfigResolver,
-        setConfig: WireguardConfig.WireguardSetConfigResolver,
+        getConfigRequestResolver: WireguardConfig.WireguardGetConfigResolver,
+        setConfigRequestResolver: WireguardConfig.WireguardSetConfigResolver,
     });
 };
 
@@ -156,6 +159,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean | "ask" }): Wir
                 )
             );
             yield* λ(execCommand(wgQuickCommand));
+            return wireguardInterface;
         });
 
     const down: WireguardControlImpl["down"] = (wireguardConfig, wireguardInterface) =>
@@ -179,6 +183,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean | "ask" }): Wir
             const wgQuickCommandNix = `${bundledWgQuickExecutablePath} down ${file}`;
             const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
             yield* λ(execCommand(wgQuickCommand));
+            return wireguardInterface;
         });
 
     const upScoped: WireguardControlImpl["upScoped"] = (wireguardConfig, wireguardInterface) =>
@@ -190,8 +195,8 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean | "ask" }): Wir
         up,
         down,
         upScoped,
-        getConfig: WireguardConfig.WireguardGetConfigResolver,
-        setConfig: WireguardConfig.WireguardSetConfigResolver,
+        getConfigRequestResolver: WireguardConfig.WireguardGetConfigResolver,
+        setConfigRequestResolver: WireguardConfig.WireguardSetConfigResolver,
     });
 };
 
@@ -237,6 +242,7 @@ export const makeSystemWgQuickLayer = (options: { sudo: boolean | "ask" }): Wire
                 )
             );
             yield* λ(execCommand(wgQuickCommand));
+            return wireguardInterface;
         });
 
     const down: WireguardControlImpl["down"] = (wireguardConfig, wireguardInterface) =>
@@ -251,6 +257,7 @@ export const makeSystemWgQuickLayer = (options: { sudo: boolean | "ask" }): Wire
             const wgQuickCommandNix = `wg-quick down ${file}`;
             const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
             yield* λ(execCommand(wgQuickCommand));
+            return wireguardInterface;
         });
 
     const upScoped: WireguardControlImpl["upScoped"] = (wireguardConfig, wireguardInterface) =>
@@ -262,8 +269,8 @@ export const makeSystemWgQuickLayer = (options: { sudo: boolean | "ask" }): Wire
         up,
         down,
         upScoped,
-        getConfig: WireguardConfig.WireguardGetConfigResolver,
-        setConfig: WireguardConfig.WireguardSetConfigResolver,
+        getConfigRequestResolver: WireguardConfig.WireguardGetConfigResolver,
+        setConfigRequestResolver: WireguardConfig.WireguardSetConfigResolver,
     });
 };
 
