@@ -4,7 +4,6 @@
  * @since 1.0.0
  */
 
-import * as NodeSocket from "@effect/platform-node/NodeSocket";
 import * as PlatformError from "@effect/platform/Error";
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as Path from "@effect/platform/Path";
@@ -27,7 +26,6 @@ import * as Resolver from "effect/RequestResolver";
 import * as Scope from "effect/Scope";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
-import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
 import * as ini from "ini";
 
@@ -793,26 +791,7 @@ export class WireguardSetConfigRequest extends Request.TaggedClass("WireguardSet
 export const WireguardGetConfigResolver: Resolver.RequestResolver<WireguardGetConfigRequest, never> =
     Resolver.fromEffect<never, WireguardGetConfigRequest>(({ address, wireguardInterface }) =>
         Effect.gen(function* (λ) {
-            const get = Function.pipe(
-                Stream.make("get=1\n\n"),
-                Stream.encodeText,
-                Stream.pipeThroughChannelOrFail(
-                    NodeSocket.makeNetChannel({
-                        path: wireguardInterface.SocketLocation,
-                    })
-                ),
-                Stream.decodeText(),
-                Stream.flatMap(Function.compose(String.linesIterator, Stream.fromIterable)),
-                Stream.map(String.trimEnd),
-                Stream.filter(String.isNonEmpty),
-                Stream.run(Sink.collectAll()),
-                Effect.tap(
-                    Function.flow(Chunk.last, Option.getOrThrow, Schema.decodeUnknown(WireguardErrors.SuccessErrno))
-                ),
-                Effect.map(Chunk.join("\n"))
-            );
-
-            const uapiConfig = yield* λ(get);
+            const uapiConfig = yield* λ(WireguardControl.userspaceContact(wireguardInterface, "get=1\n\n"));
             const [interfaceConfig, ...peers] = uapiConfig.split("public_key=");
             const { fwmark, listen_port, private_key } = ini.decode(interfaceConfig);
 
@@ -857,22 +836,7 @@ export const WireguardSetConfigResolver: Resolver.RequestResolver<WireguardSetCo
             );
 
             const uapiConfig = `${listenPort}${privateKey}${peers}\n` as const;
-            const set = Function.pipe(
-                Stream.make(`set=1\n${uapiConfig}`),
-                Stream.encodeText,
-                Stream.pipeThroughChannelOrFail(
-                    NodeSocket.makeNetChannel({
-                        path: wireguardInterface.SocketLocation,
-                    })
-                ),
-                Stream.decodeText(),
-                Stream.run(Sink.last()),
-                Effect.map(Option.getOrThrow),
-                Effect.map(String.trimEnd),
-                Effect.andThen(Schema.decodeUnknown(WireguardErrors.SuccessErrno))
-            );
-
-            yield* λ(set);
+            yield* λ(WireguardControl.userspaceContact(wireguardInterface, `set=1\n${uapiConfig}\n`));
             return wireguardInterface;
         })
     );

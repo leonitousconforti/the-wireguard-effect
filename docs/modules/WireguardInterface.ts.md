@@ -20,6 +20,8 @@ Added in v1.0.0
     - [upScoped (property)](#upscoped-property)
     - [up (property)](#up-property)
     - [down (property)](#down-property)
+    - [addPeer (property)](#addpeer-property)
+    - [removePeer (property)](#removepeer-property)
 
 ---
 
@@ -96,6 +98,32 @@ down: (config: WireguardConfig.WireguardConfig) =>
     PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException,
     FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
   >
+```
+
+Added in v1.0.0
+
+### addPeer (property)
+
+Adds a peer to this interface.
+
+**Signature**
+
+```ts
+addPeer: (peer: WireguardPeer.WireguardPeer) =>
+  Effect.Effect<void, Socket.SocketError | ParseResult.ParseError, WireguardControl.WireguardControl>
+```
+
+Added in v1.0.0
+
+### removePeer (property)
+
+Removes a peer from this interface.
+
+**Signature**
+
+```ts
+removePeer: (peer: WireguardPeer.WireguardPeer) =>
+  Effect.Effect<void, Socket.SocketError | ParseResult.ParseError, WireguardControl.WireguardControl>
 ```
 
 Added in v1.0.0

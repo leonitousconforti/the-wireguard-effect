@@ -4,22 +4,30 @@
  * @since 1.0.0
  */
 
+import * as NodeSocket from "@effect/platform-node/NodeSocket";
 import * as PlatformError from "@effect/platform/Error";
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as Path from "@effect/platform/Path";
 import * as Socket from "@effect/platform/Socket";
 import * as ParseResult from "@effect/schema/ParseResult";
+import * as Schema from "@effect/schema/Schema";
 import * as sudoPrompt from "@vscode/sudo-prompt";
 import * as Cause from "effect/Cause";
+import * as Chunk from "effect/Chunk";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
+import * as Option from "effect/Option";
 import * as Resolver from "effect/RequestResolver";
 import * as Scope from "effect/Scope";
+import * as Sink from "effect/Sink";
+import * as Stream from "effect/Stream";
+import * as String from "effect/String";
 import * as execa from "execa";
 
 import * as WireguardConfig from "./WireguardConfig.js";
+import * as WireguardErrors from "./WireguardErrors.js";
 import type * as WireguardInterface from "./WireguardInterface.js";
 
 /**
@@ -73,6 +81,27 @@ export interface WireguardControl {
 export const WireguardControl = Context.GenericTag<WireguardControl, WireguardControlImpl>(
     "@leonitousconforti/the-wireguard-effect/WireguardControl"
 );
+
+/** @internal */
+export const userspaceContact = (
+    wireguardInterface: WireguardInterface.WireguardInterface,
+    content: string
+): Effect.Effect<string, Socket.SocketError | ParseResult.ParseError, never> =>
+    Function.pipe(
+        Stream.make(content),
+        Stream.pipeThroughChannelOrFail(
+            NodeSocket.makeNetChannel({
+                path: wireguardInterface.SocketLocation,
+            })
+        ),
+        Stream.decodeText(),
+        Stream.flatMap(Function.compose(String.linesIterator, Stream.fromIterable)),
+        Stream.map(String.trimEnd),
+        Stream.filter(String.isNonEmpty),
+        Stream.run(Sink.collectAll()),
+        Effect.tap(Function.flow(Chunk.last, Option.getOrThrow, Schema.decodeUnknown(WireguardErrors.SuccessErrno))),
+        Effect.map(Chunk.join("\n"))
+    );
 
 /**
  * @since 1.0.0
