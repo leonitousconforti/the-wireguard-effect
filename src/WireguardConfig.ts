@@ -4,6 +4,7 @@
  * @since 1.0.0
  */
 
+import * as NodeSocket from "@effect/platform-node/NodeSocket";
 import * as PlatformError from "@effect/platform/Error";
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as Path from "@effect/platform/Path";
@@ -21,9 +22,12 @@ import * as Match from "effect/Match";
 import * as Number from "effect/Number";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
+import * as Request from "effect/Request";
+import * as Resolver from "effect/RequestResolver";
 import * as Scope from "effect/Scope";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
+import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
 import * as ini from "ini";
 
@@ -724,3 +728,153 @@ export const fromConfigFile: {
         const config = yield* λ(Schema.decode(WireguardConfig)(iniConfigEncoded));
         return config;
     });
+
+/**
+ * @since 1.0.0
+ * @category Responses
+ * @see https://www.wireguard.com/xplatform/
+ */
+export const WireguardGetConfigResponse = Function.pipe(
+    WireguardConfig,
+    Schema.omit("Peers"),
+    Schema.extend(
+        Schema.Struct({
+            Peers: Schema.optional(Schema.Array(WireguardPeer.WireguardGetPeerResponse), {
+                default: () => [],
+                nullable: true,
+            }),
+        })
+    )
+).annotations({
+    identifier: "WireguardGetConfigResponse",
+    description: "The response of a WireguardGetConfigRequest",
+});
+
+/**
+ * @since 1.0.0
+ * @category Requests
+ */
+export class WireguardGetConfigRequest extends Request.TaggedClass("WireguardGetConfigRequest")<
+    WireguardConfig,
+    ParseResult.ParseError | Socket.SocketError,
+    {
+        readonly address: InternetSchemas.CidrBlockFromStringEncoded;
+        readonly wireguardInterface: WireguardInterface.WireguardInterface;
+    }
+> {}
+
+/**
+ * @since 1.0.0
+ * @category Requests
+ */
+export class WireguardSetConfigRequest extends Request.TaggedClass("WireguardSetConfigRequest")<
+    void,
+    ParseResult.ParseError | Socket.SocketError,
+    {
+        readonly config: WireguardConfig;
+        readonly wireguardInterface: WireguardInterface.WireguardInterface;
+        readonly peerRequestMapper?: (peer: WireguardPeer.WireguardPeer) =>
+            | {
+                  readonly remove?: boolean | undefined;
+                  readonly updateOnly?: boolean | undefined;
+                  readonly replaceAllowedIps?: boolean | undefined;
+              }
+            | undefined;
+    }
+> {}
+
+/**
+ * @since 1.0.0
+ * @category Resolvers
+ */
+export const WireguardGetConfigResolver: Resolver.RequestResolver<WireguardGetConfigRequest, never> =
+    Resolver.fromEffect<never, WireguardGetConfigRequest>(({ address, wireguardInterface }) =>
+        Effect.gen(function* (λ) {
+            const get = Function.pipe(
+                Stream.make("get=1\n\n"),
+                Stream.encodeText,
+                Stream.pipeThroughChannelOrFail(
+                    NodeSocket.makeNetChannel({
+                        path: wireguardInterface.SocketLocation,
+                    })
+                ),
+                Stream.decodeText(),
+                Stream.flatMap(Function.compose(String.linesIterator, Stream.fromIterable)),
+                Stream.map(String.trimEnd),
+                Stream.filter(String.isNonEmpty),
+                Stream.run(Sink.collectAll()),
+                Effect.tap(
+                    Function.flow(Chunk.last, Option.getOrThrow, Schema.decodeUnknown(WireguardErrors.SuccessErrno))
+                ),
+                Effect.map(Chunk.join("\n"))
+            );
+
+            const uapiConfig = yield* λ(get);
+            const [interfaceConfig, ...peers] = uapiConfig.split("public_key=");
+            const { fwmark, listen_port, private_key } = ini.decode(interfaceConfig);
+
+            const peerConfigs = yield* λ(
+                Function.pipe(
+                    peers,
+                    Array.map((peer) => `public_key=${peer}`),
+                    Array.map((peer) => new WireguardPeer.WireguardGetPeerRequest({ input: peer })),
+                    Array.map(Effect.request(WireguardPeer.WireguardGetPeerResolver)),
+                    Array.map(Effect.flatMap(Schema.encode(WireguardPeer.WireguardGetPeerResponse))),
+                    Effect.allWith()
+                )
+            );
+
+            return yield* λ(
+                Schema.decode(WireguardGetConfigResponse)({
+                    Address: address,
+                    FirewallMark: fwmark,
+                    ListenPort: listen_port,
+                    PrivateKey: Buffer.from(private_key, "hex").toString("base64"),
+                    Peers: peerConfigs,
+                })
+            );
+        })
+    );
+
+/**
+ * @since 1.0.0
+ * @category Resolvers
+ */
+export const WireguardSetConfigResolver: Resolver.RequestResolver<WireguardSetConfigRequest, never> =
+    Resolver.fromEffect<never, WireguardSetConfigRequest>(({ config, peerRequestMapper, wireguardInterface }) =>
+        Effect.gen(function* (λ) {
+            // const fwmark = `fwmark=${config.FirewallMark}\n` as const;
+            const listenPort = `listen_port=${config.ListenPort}\n` as const;
+            const privateKeyHex = Buffer.from(config.PrivateKey, "base64").toString("hex");
+            const privateKey = `private_key=${privateKeyHex}\n` as const;
+
+            const peers = yield* λ(
+                Function.pipe(
+                    config.Peers,
+                    Array.map((peer) => ({ peer, ...(peerRequestMapper?.(peer) ?? {}) })),
+                    Array.map((peerRequestOptions) => new WireguardPeer.WireguardSetPeerRequest(peerRequestOptions)),
+                    Array.map(Effect.request(WireguardPeer.WireguardSetPeerResolver)),
+                    Effect.allWith(),
+                    Effect.map(Array.join("\n"))
+                )
+            );
+
+            const uapiConfig = `${listenPort}${privateKey}${peers}\n` as const;
+            const set = Function.pipe(
+                Stream.make(`set=1\n${uapiConfig}`),
+                Stream.encodeText,
+                Stream.pipeThroughChannelOrFail(
+                    NodeSocket.makeNetChannel({
+                        path: wireguardInterface.SocketLocation,
+                    })
+                ),
+                Stream.decodeText(),
+                Stream.run(Sink.last()),
+                Effect.map(Option.getOrThrow),
+                Effect.map(String.trimEnd),
+                Effect.andThen(Schema.decodeUnknown(WireguardErrors.SuccessErrno))
+            );
+
+            return yield* λ(set);
+        })
+    );

@@ -27,6 +27,14 @@ Added in v1.0.0
     - [writeToFile (property)](#writetofile-property)
     - [up (property)](#up-property)
     - [upScoped (property)](#upscoped-property)
+- [Requests](#requests)
+  - [WireguardGetConfigRequest (class)](#wireguardgetconfigrequest-class)
+  - [WireguardSetConfigRequest (class)](#wireguardsetconfigrequest-class)
+- [Resolvers](#resolvers)
+  - [WireguardGetConfigResolver](#wireguardgetconfigresolver)
+  - [WireguardSetConfigResolver](#wireguardsetconfigresolver)
+- [Responses](#responses)
+  - [WireguardGetConfigResponse](#wireguardgetconfigresponse)
 - [Transformations](#transformations)
   - [WireguardIniConfig](#wireguardiniconfig)
 
@@ -580,6 +588,127 @@ upScoped: (interfaceObject?: WireguardInterface.WireguardInterface | undefined) 
     | WireguardErrors.WireguardError,
     FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl | Scope.Scope
   >
+```
+
+Added in v1.0.0
+
+# Requests
+
+## WireguardGetConfigRequest (class)
+
+**Signature**
+
+```ts
+export declare class WireguardGetConfigRequest
+```
+
+Added in v1.0.0
+
+## WireguardSetConfigRequest (class)
+
+**Signature**
+
+```ts
+export declare class WireguardSetConfigRequest
+```
+
+Added in v1.0.0
+
+# Resolvers
+
+## WireguardGetConfigResolver
+
+**Signature**
+
+```ts
+export declare const WireguardGetConfigResolver: Resolver.RequestResolver<WireguardGetConfigRequest, never>
+```
+
+Added in v1.0.0
+
+## WireguardSetConfigResolver
+
+**Signature**
+
+```ts
+export declare const WireguardSetConfigResolver: Resolver.RequestResolver<WireguardSetConfigRequest, never>
+```
+
+Added in v1.0.0
+
+# Responses
+
+## WireguardGetConfigResponse
+
+**Signature**
+
+```ts
+export declare const WireguardGetConfigResponse: Schema.Schema<
+  {
+    readonly Address: InternetSchemas.CidrBlock
+    readonly Dns?: InternetSchemas.IPv4 | InternetSchemas.IPv6 | undefined
+    readonly ListenPort: InternetSchemas.PortBrand
+    readonly FirewallMark?: number | undefined
+    readonly PrivateKey: string & Brand<"WireguardKey">
+    writeToFile: (
+      file: string
+    ) => Effect.Effect<void, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem | Path.Path>
+    up: (
+      interfaceObject?: WireguardInterface.WireguardInterface | undefined
+    ) => Effect.Effect<
+      void,
+      | Socket.SocketError
+      | ParseResult.ParseError
+      | PlatformError.PlatformError
+      | Cause.UnknownException
+      | WireguardErrors.WireguardError,
+      FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
+    >
+    upScoped: (
+      interfaceObject?: WireguardInterface.WireguardInterface | undefined
+    ) => Effect.Effect<
+      void,
+      | Socket.SocketError
+      | ParseResult.ParseError
+      | PlatformError.PlatformError
+      | Cause.UnknownException
+      | WireguardErrors.WireguardError,
+      FileSystem.FileSystem | Path.Path | Scope.Scope | WireguardControl.WireguardControl
+    >
+    readonly Peers: readonly WireguardPeer.WireguardGetPeerResponse[]
+  },
+  {
+    readonly Address: `${string}/${number}`
+    readonly Dns?: string | undefined
+    readonly ListenPort: string | number
+    readonly FirewallMark?: number | null | undefined
+    readonly PrivateKey: string
+    readonly Peers?:
+      | readonly {
+          readonly Endpoint:
+            | `${string}:${number}`
+            | `${string}:${number}:${number}`
+            | { readonly ip: string; readonly port: number }
+            | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
+            | `[${string}]:${number}`
+            | `[${string}]:${number}:${number}`
+            | { readonly ip: string; readonly port: number }
+            | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
+            | { readonly host: string; readonly port: number }
+            | { readonly host: string; readonly natPort: number; readonly listenPort: number }
+          readonly PublicKey: string
+          readonly PersistentKeepalive?: number | null | undefined
+          readonly AllowedIPs?: readonly `${string}/${number}`[] | null | undefined
+          readonly PresharedKey?: string | null | undefined
+          readonly rxBytes: string
+          readonly txBytes: string
+          readonly lastHandshakeTimeSeconds: string
+        }[]
+      | null
+      | undefined
+  },
+  never
+>
 ```
 
 Added in v1.0.0

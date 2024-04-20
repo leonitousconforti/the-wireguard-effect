@@ -18,6 +18,14 @@ Added in v1.0.0
   - [$WireguardIniPeer (interface)](#wireguardinipeer-interface)
 - [Datatypes](#datatypes)
   - [WireguardPeer (class)](#wireguardpeer-class)
+- [Requests](#requests)
+  - [WireguardGetPeerRequest (class)](#wireguardgetpeerrequest-class)
+  - [WireguardSetPeerRequest (class)](#wireguardsetpeerrequest-class)
+- [Resolvers](#resolvers)
+  - [WireguardGetPeerResolver](#wireguardgetpeerresolver)
+  - [WireguardSetPeerResolver](#wireguardsetpeerresolver)
+- [Responses](#responses)
+  - [WireguardGetPeerResponse (class)](#wireguardgetpeerresponse-class)
 - [Transformations](#transformations)
   - [WireguardIniPeer](#wireguardinipeer)
 
@@ -88,6 +96,65 @@ const peerSchemaInstantiation = Schema.decode(WireguardPeer)({
   Endpoint: "192.168.0.1:51820",
   PersistentKeepalive: Duration.seconds(20)
 })
+```
+
+Added in v1.0.0
+
+# Requests
+
+## WireguardGetPeerRequest (class)
+
+**Signature**
+
+```ts
+export declare class WireguardGetPeerRequest
+```
+
+Added in v1.0.0
+
+## WireguardSetPeerRequest (class)
+
+**Signature**
+
+```ts
+export declare class WireguardSetPeerRequest
+```
+
+Added in v1.0.0
+
+# Resolvers
+
+## WireguardGetPeerResolver
+
+**Signature**
+
+```ts
+export declare const WireguardGetPeerResolver: Resolver.RequestResolver<WireguardGetPeerRequest, never>
+```
+
+Added in v1.0.0
+
+## WireguardSetPeerResolver
+
+**Signature**
+
+```ts
+export declare const WireguardSetPeerResolver: Resolver.RequestResolver<WireguardSetPeerRequest, never>
+```
+
+Added in v1.0.0
+
+# Responses
+
+## WireguardGetPeerResponse (class)
+
+A wireguard peer from an interface inspection request contains three
+additional fields.
+
+**Signature**
+
+```ts
+export declare class WireguardGetPeerResponse
 ```
 
 Added in v1.0.0
