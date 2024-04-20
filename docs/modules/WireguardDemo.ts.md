@@ -21,7 +21,6 @@ Added in v1.0.0
 - [Unbranded types](#unbranded-types)
   - [WireguardDemoSchema (type alias)](#wireguarddemoschema-type-alias)
 - [utils](#utils)
-  - [WireguardDemoServer](#wireguarddemoserver)
   - [requestGoogle](#requestgoogle)
   - [requestHiddenPage](#requesthiddenpage)
   - [requestWireguardDemoConfig](#requestwireguarddemoconfig)
@@ -72,22 +71,6 @@ export type WireguardDemoSchema = Schema.Schema.Type<typeof WireguardDemoSchema>
 Added in v1.0.0
 
 # utils
-
-## WireguardDemoServer
-
-Mock implementation of the Wireguard demo server at demo.wireguard.com
-
-**Signature**
-
-```ts
-export declare const WireguardDemoServer: (options: {
-  serverPort: number
-  wireguardPort: number
-  wireguardNetwork: `${string}/${number}`
-}) => Effect.Effect<void, ParseResult.ParseError | SocketServerNode.SocketServerError, Scope>
-```
-
-Added in v1.0.0
 
 ## requestGoogle
 

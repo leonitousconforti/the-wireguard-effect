@@ -132,12 +132,14 @@ export interface $WireguardIniPeer
  *     import * as WireguardKey from "the-wireguard-effect/WireguardKey";
  *     import * as WireguardPeer from "the-wireguard-effect/WireguardPeer";
  *
+ *     const preshareKey = WireguardKey.generatePreshareKey();
  *     const { publicKey, privateKey: _privateKey } =
  *         WireguardKey.generateKeyPair();
  *
  *     const peer = Schema.decode(WireguardPeer.WireguardPeer)({
  *         PublicKey: publicKey,
- *         AllowedIPs: ["192.168.0.0/24"],
+ *         PresharedKey: preshareKey,
+ *         AllowedIPs: new Set(["192.168.0.0/24"]),
  *         Endpoint: "192.168.0.1:51820",
  *         PersistentKeepalive: 20,
  *     });

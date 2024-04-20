@@ -19,13 +19,10 @@ Added in v1.0.0
 - [Datatypes](#datatypes)
   - [WireguardPeer (class)](#wireguardpeer-class)
 - [Requests](#requests)
-  - [WireguardGetPeerRequest (class)](#wireguardgetpeerrequest-class)
-  - [WireguardSetPeerRequest (class)](#wireguardsetpeerrequest-class)
-- [Resolvers](#resolvers)
-  - [WireguardGetPeerResolver](#wireguardgetpeerresolver)
-  - [WireguardSetPeerResolver](#wireguardsetpeerresolver)
+  - [makeWireguardUApiSetPeerRequest](#makewireguarduapisetpeerrequest)
 - [Responses](#responses)
-  - [WireguardGetPeerResponse (class)](#wireguardgetpeerresponse-class)
+  - [WireguardUApiGetPeerResponse (class)](#wireguarduapigetpeerresponse-class)
+  - [parseWireguardUApiGetPeerResponse](#parsewireguarduapigetpeerresponse)
 - [Transformations](#transformations)
   - [WireguardIniPeer](#wireguardinipeer)
 
@@ -67,6 +64,7 @@ import * as WireguardKey from "the-wireguard-effect/WireguardKey"
 
 import { WireguardPeer } from "the-wireguard-effect/WireguardPeer"
 
+const preshareKey = WireguardKey.generatePreshareKey()
 const { publicKey, privateKey: _privateKey } = WireguardKey.generateKeyPair()
 
 // WireguardPeer
@@ -92,8 +90,9 @@ const peerDirectInstantiation = new WireguardPeer({
 // Effect.Effect<WireguardPeer, ParseResult.ParseError, never>
 const peerSchemaInstantiation = Schema.decode(WireguardPeer)({
   PublicKey: publicKey,
-  AllowedIPs: ["192.168.0.0/24"],
+  PresharedKey: preshareKey,
   Endpoint: "192.168.0.1:51820",
+  AllowedIPs: ["192.168.0.0/24"],
   PersistentKeepalive: Duration.seconds(20)
 })
 ```
@@ -102,51 +101,25 @@ Added in v1.0.0
 
 # Requests
 
-## WireguardGetPeerRequest (class)
+## makeWireguardUApiSetPeerRequest
+
+Creates a wireguard userspace api set peer request from a wireguard peer.
+This is a one way transformation (hence why schema is not involved), and you
+are not expected to need to decode this back into a wireguard peer. Instead,
+you should use the request resolver on the wireguard control interface to
+"transform" this into a response.
 
 **Signature**
 
 ```ts
-export declare class WireguardGetPeerRequest
-```
-
-Added in v1.0.0
-
-## WireguardSetPeerRequest (class)
-
-**Signature**
-
-```ts
-export declare class WireguardSetPeerRequest
-```
-
-Added in v1.0.0
-
-# Resolvers
-
-## WireguardGetPeerResolver
-
-**Signature**
-
-```ts
-export declare const WireguardGetPeerResolver: Resolver.RequestResolver<WireguardGetPeerRequest, never>
-```
-
-Added in v1.0.0
-
-## WireguardSetPeerResolver
-
-**Signature**
-
-```ts
-export declare const WireguardSetPeerResolver: Resolver.RequestResolver<WireguardSetPeerRequest, never>
+export declare const makeWireguardUApiSetPeerRequest: (peer: WireguardPeer) => string
 ```
 
 Added in v1.0.0
 
 # Responses
 
-## WireguardGetPeerResponse (class)
+## WireguardUApiGetPeerResponse (class)
 
 A wireguard peer from an interface inspection request contains three
 additional fields.
@@ -154,7 +127,22 @@ additional fields.
 **Signature**
 
 ```ts
-export declare class WireguardGetPeerResponse
+export declare class WireguardUApiGetPeerResponse
+```
+
+Added in v1.0.0
+
+## parseWireguardUApiGetPeerResponse
+
+Parses a wireguard userspace api get peer response from a wireguard control
+request resolver into a wireguard peer.
+
+**Signature**
+
+```ts
+export declare const parseWireguardUApiGetPeerResponse: (
+  input: string
+) => Effect.Effect<WireguardUApiGetPeerResponse, ParseResult.ParseError, never>
 ```
 
 Added in v1.0.0
@@ -180,11 +168,13 @@ import * as Schema from "@effect/schema/Schema"
 import * as WireguardKey from "the-wireguard-effect/WireguardKey"
 import * as WireguardPeer from "the-wireguard-effect/WireguardPeer"
 
+const preshareKey = WireguardKey.generatePreshareKey()
 const { publicKey, privateKey: _privateKey } = WireguardKey.generateKeyPair()
 
 const peer = Schema.decode(WireguardPeer.WireguardPeer)({
   PublicKey: publicKey,
-  AllowedIPs: ["192.168.0.0/24"],
+  PresharedKey: preshareKey,
+  AllowedIPs: new Set(["192.168.0.0/24"]),
   Endpoint: "192.168.0.1:51820",
   PersistentKeepalive: 20
 })

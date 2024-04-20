@@ -106,7 +106,7 @@ export interface WireguardControlImpl {
     wireguardConfig: WireguardConfig.WireguardConfig,
     wireguardInterface: WireguardInterface.WireguardInterface
   ) => Effect.Effect<
-    void,
+    WireguardInterface.WireguardInterface,
     Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
     FileSystem.FileSystem | Path.Path
   >
@@ -115,7 +115,7 @@ export interface WireguardControlImpl {
     wireguardConfig: WireguardConfig.WireguardConfig,
     wireguardInterface: WireguardInterface.WireguardInterface
   ) => Effect.Effect<
-    void,
+    WireguardInterface.WireguardInterface,
     PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException,
     FileSystem.FileSystem | Path.Path
   >
@@ -124,13 +124,13 @@ export interface WireguardControlImpl {
     wireguardConfig: WireguardConfig.WireguardConfig,
     wireguardInterface: WireguardInterface.WireguardInterface
   ) => Effect.Effect<
-    void,
+    WireguardInterface.WireguardInterface,
     Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
     FileSystem.FileSystem | Path.Path | Scope.Scope
   >
 
-  readonly getConfig: Resolver.RequestResolver<WireguardConfig.WireguardGetConfigRequest, never>
-  readonly setConfig: Resolver.RequestResolver<WireguardConfig.WireguardSetConfigRequest, never>
+  readonly getConfigRequestResolver: Resolver.RequestResolver<WireguardConfig.WireguardGetConfigRequest, never>
+  readonly setConfigRequestResolver: Resolver.RequestResolver<WireguardConfig.WireguardSetConfigRequest, never>
 }
 ```
 

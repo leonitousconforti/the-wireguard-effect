@@ -57,7 +57,7 @@ serving traffic once the scope is closed.
 ```ts
 upScoped: (config: WireguardConfig.WireguardConfig) =>
   Effect.Effect<
-    void,
+    WireguardInterface,
     Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
     FileSystem.FileSystem | Path.Path | Scope.Scope | WireguardControl.WireguardControl
   >
@@ -75,7 +75,7 @@ even after the nodejs process exits.
 ```ts
 up: (config: WireguardConfig.WireguardConfig) =>
   Effect.Effect<
-    void,
+    WireguardInterface,
     Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
     FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
   >
@@ -92,7 +92,7 @@ Stops a previously started wireguard tunnel.
 ```ts
 down: (config: WireguardConfig.WireguardConfig) =>
   Effect.Effect<
-    void,
+    WireguardInterface,
     PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException,
     FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
   >

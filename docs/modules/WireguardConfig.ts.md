@@ -558,7 +558,7 @@ even after the nodejs process exits.
 ```ts
 up: (interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>
   Effect.Effect<
-    void,
+    WireguardInterface.WireguardInterface,
     | Socket.SocketError
     | ParseResult.ParseError
     | Cause.UnknownException
@@ -580,7 +580,7 @@ serving traffic once the scope is closed.
 ```ts
 upScoped: (interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>
   Effect.Effect<
-    void,
+    WireguardInterface.WireguardInterface,
     | Socket.SocketError
     | ParseResult.ParseError
     | Cause.UnknownException
@@ -656,9 +656,9 @@ export declare const WireguardGetConfigResponse: Schema.Schema<
     up: (
       interfaceObject?: WireguardInterface.WireguardInterface | undefined
     ) => Effect.Effect<
-      void,
-      | Socket.SocketError
+      WireguardInterface.WireguardInterface,
       | ParseResult.ParseError
+      | Socket.SocketError
       | PlatformError.PlatformError
       | Cause.UnknownException
       | WireguardErrors.WireguardError,
@@ -667,15 +667,15 @@ export declare const WireguardGetConfigResponse: Schema.Schema<
     upScoped: (
       interfaceObject?: WireguardInterface.WireguardInterface | undefined
     ) => Effect.Effect<
-      void,
-      | Socket.SocketError
+      WireguardInterface.WireguardInterface,
       | ParseResult.ParseError
+      | Socket.SocketError
       | PlatformError.PlatformError
       | Cause.UnknownException
       | WireguardErrors.WireguardError,
       FileSystem.FileSystem | Path.Path | Scope.Scope | WireguardControl.WireguardControl
     >
-    readonly Peers: readonly WireguardPeer.WireguardGetPeerResponse[]
+    readonly Peers: readonly WireguardPeer.WireguardUApiGetPeerResponse[]
   },
   {
     readonly Address: `${string}/${number}`
@@ -685,7 +685,10 @@ export declare const WireguardGetConfigResponse: Schema.Schema<
     readonly PrivateKey: string
     readonly Peers?:
       | readonly {
-          readonly Endpoint:
+          readonly PublicKey: string
+          readonly PersistentKeepalive?: number | null | undefined
+          readonly AllowedIPs?: ReadonlySet<`${string}/${number}`> | null | undefined
+          readonly Endpoint?:
             | `${string}:${number}`
             | `${string}:${number}:${number}`
             | { readonly ip: string; readonly port: number }
@@ -696,9 +699,8 @@ export declare const WireguardGetConfigResponse: Schema.Schema<
             | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
             | { readonly host: string; readonly port: number }
             | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-          readonly PublicKey: string
-          readonly PersistentKeepalive?: number | null | undefined
-          readonly AllowedIPs?: readonly `${string}/${number}`[] | null | undefined
+            | null
+            | undefined
           readonly PresharedKey?: string | null | undefined
           readonly rxBytes: string
           readonly txBytes: string
