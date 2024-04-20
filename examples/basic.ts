@@ -39,6 +39,6 @@ export const program: Effect.Effect<
     yield* λ(Console.log(peer1Endpoint));
 })
     .pipe(Effect.scoped)
-    .pipe(Effect.provide(WireguardControl.WgQuickLayer));
+    .pipe(Effect.provide(WireguardControl.BundledWgQuickLayer));
 
 Effect.suspend(() => program).pipe(Effect.provide(PlatformNode.NodeContext.layer), PlatformNode.NodeRuntime.runMain);
