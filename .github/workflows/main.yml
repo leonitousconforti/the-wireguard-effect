@@ -115,6 +115,8 @@ jobs:
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
           WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
           WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
 
   macos-test:
     runs-on: macos-latest
@@ -143,6 +145,8 @@ jobs:
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
           WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
           WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
 
   freebsd-test:
     runs-on: ubuntu-latest
@@ -171,6 +175,8 @@ jobs:
             sudo mkdir -p /var/run/wireguard/
             sudo chown -R root:wireguard-control /var/run/wireguard/
             WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
 
   openbsd-test:
     runs-on: ubuntu-latest
@@ -199,6 +205,8 @@ jobs:
             sudo mkdir -p /var/run/wireguard/
             sudo chown -R root_wireguard-control /var/run/wireguard/
             WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
 
   windows-test:
     runs-on: windows-latest
@@ -223,6 +231,8 @@ jobs:
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
           WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
           WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
 
   windows-wsl2-test:
     runs-on: windows-latest
@@ -264,3 +274,6 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- chmod +x ./src/*
       - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/
       - run: wsl --distribution Ubuntu22.04 --user root -- WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test -- --run
+
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
