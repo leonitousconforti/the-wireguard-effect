@@ -14,7 +14,14 @@ export default defineConfig({
     },
     server: {
         watch: {
-            ignored: ["**/node_modules/**", "**/.git/**", "**/submodules/**"],
+            ignored: [
+                "**/node_modules/**",
+                "**/.git/**",
+                "**/submodules/**",
+                "**/patches/**",
+                "**/dist/**",
+                "**/build/**",
+            ],
         },
     },
     resolve: {
