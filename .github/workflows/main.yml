@@ -105,7 +105,7 @@ jobs:
       - run: pnpm install
       - run: sudo apt-get install -y wireguard openresolv
       - run: chmod +x ./src/*
-      - run: pnpm test
+      - run: sudo pnpm test
         env:
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
           WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
