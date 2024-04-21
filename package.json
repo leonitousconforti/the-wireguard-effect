@@ -112,7 +112,17 @@
             "prebuilds/linux-wg-quick",
             "prebuilds/darwin-wg-quick",
             "prebuilds/freebsd-wg-quick",
-            "prebuilds/openbsd-wg-quick"
+            "prebuilds/openbsd-wg-quick",
+            "prebuilds/darwin-amd64-wireguard-go",
+            "prebuilds/darwin-arm64-wireguard-go",
+            "prebuilds/freebsd-amd64-wireguard-go",
+            "prebuilds/freebsd-arm64-wireguard-go",
+            "prebuilds/linux-amd64-wireguard-go",
+            "prebuilds/linux-arm64-wireguard-go",
+            "prebuilds/openbsd-amd64-wireguard-go",
+            "prebuilds/openbsd-arm64-wireguard-go",
+            "prebuilds/win32-amd64-wireguard-go",
+            "prebuilds/win32-arm64-wireguard-go"
         ],
         "provenance": true
     },
