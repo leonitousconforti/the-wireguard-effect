@@ -55,10 +55,8 @@ jobs:
           restore-keys: |
             wsl2-linux-kernel-ccache-
 
-      # https://github.com/dependabot/dependabot-core/issues/7258
-      # https://github.com/pnpm/pnpm/issues/6530
-      # https://github.com/pnpm/pnpm/issues/3948
-      # - run: git config --global url."https://".insteadOf git+ssh://git@
+      - run: ls -la
+      - run: ls -la /home/runner/.cache/ccache
 
       - run: pnpm install
       - run: pnpm check
