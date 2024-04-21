@@ -64,8 +64,9 @@ jobs:
           restore-keys: |
             wireguard-windows-dist-
 
+      - run: mkdir -p submodules/wireguard-windows-distfiles/.distfiles/
       - run: cp -r submodules/wireguard-windows-distfiles/.distfiles/ submodules/wireguard-windows/.distfiles
-      - run: submodules/wireguard-windows/.distfiles
+      - run: ls -la submodules/wireguard-windows/.distfiles
 
       - run: pnpm install
       - run: pnpm check
