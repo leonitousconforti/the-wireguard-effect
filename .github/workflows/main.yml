@@ -56,6 +56,7 @@ jobs:
           restore-keys: |
             wsl2-linux-kernel-ccache-
 
+      - run: mkdir -p /home/runner/work/the-wireguard-effect/the-wireguard-effect/submodules/wireguard-windows/.distfiles
       - name: "Setup wireguard windows dist cache"
         uses: actions/cache@v4
         with:
