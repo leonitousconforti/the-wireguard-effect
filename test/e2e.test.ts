@@ -14,7 +14,7 @@ const hostConfig = Config.string("WIREGUARD_DEMO_HOST").pipe(Config.withDefault(
 const hiddenPageUrlConfig = Config.string("HIDDEN_PAGE").pipe(Config.withDefault("http://192.168.4.1:80"));
 
 const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
-    WireguardControl.makeBundledWgQuickLayer({ sudo: false })
+    WireguardControl.makeBundledWgQuickLayer({ sudo: process.platform !== "linux" })
 );
 
 describe("wireguard e2e test using demo.wireguard.com", () => {
