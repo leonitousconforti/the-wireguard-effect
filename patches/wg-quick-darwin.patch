@@ -1,0 +1,203 @@
+diff --git a/src/wg-quick/darwin.bash b/src/wg-quick/darwin.bash
+index c938112..64ab645 100755
+--- a/src/wg-quick/darwin.bash
++++ b/src/wg-quick/darwin.bash
+@@ -24,7 +24,6 @@ PRE_UP=( )
+ POST_UP=( )
+ PRE_DOWN=( )
+ POST_DOWN=( )
+-SAVE_CONFIG=0
+ CONFIG_FILE=""
+ PROGRAM="${0##*/}"
+ ARGS=( "$@" )
+@@ -76,7 +75,6 @@ parse_options() {
+ 			PreDown) PRE_DOWN+=( "$value" ); continue ;;
+ 			PostUp) POST_UP+=( "$value" ); continue ;;
+ 			PostDown) POST_DOWN+=( "$value" ); continue ;;
+-			SaveConfig) read_bool SAVE_CONFIG "$value"; continue ;;
+ 			esac
+ 		fi
+ 		WG_CONFIG+="$line"$'\n'
+@@ -84,25 +82,6 @@ parse_options() {
+ 	shopt -u nocasematch
+ }
+
+-detect_launchd() {
+-	unset LAUNCHED_BY_LAUNCHD
+-	local line
+-	while read -r line; do
+-		if [[ $line =~ ^\s*domain\ =\  ]]; then
+-			LAUNCHED_BY_LAUNCHD=1
+-			break
+-		fi
+-	done < <(launchctl procinfo $$ 2>/dev/null)
+-}
+-
+-read_bool() {
+-	case "$2" in
+-	true) printf -v "$1" 1 ;;
+-	false) printf -v "$1" 0 ;;
+-	*) die "\`$2' is neither true nor false"
+-	esac
+-}
+-
+ auto_su() {
+ 	[[ $UID == 0 ]] || exec sudo -p "$PROGRAM must be run as root. Please enter the password for %u to continue: " -- "$BASH" -- "$SELF" "${ARGS[@]}"
+ }
+@@ -120,13 +99,6 @@ get_real_interface() {
+ 	return 0
+ }
+
+-add_if() {
+-	export WG_TUN_NAME_FILE="/var/run/wireguard/$INTERFACE.name"
+-	mkdir -p "/var/run/wireguard/"
+-	cmd "${WG_QUICK_USERSPACE_IMPLEMENTATION:-wireguard-go}" utun
+-	get_real_interface
+-}
+-
+ del_routes() {
+ 	[[ -n $REAL_INTERFACE ]] || return 0
+ 	local todelete=( ) destination gateway netif
+@@ -342,7 +314,6 @@ monitor_daemon() {
+ 		fi
+ 	done
+ 	kill $mpid) &
+-	[[ -n $LAUNCHED_BY_LAUNCHD ]] || disown
+ }
+
+ add_route() {
+@@ -368,46 +339,6 @@ add_route() {
+ 	fi
+ }
+
+-set_config() {
+-	cmd wg setconf "$REAL_INTERFACE" <(echo "$WG_CONFIG")
+-}
+-
+-save_config() {
+-	local old_umask new_config current_config address cmd
+-	new_config=$'[Interface]\n'
+-	while read -r address; do
+-		[[ $address =~ inet6?\ ([^ ]+) ]] && new_config+="Address = ${BASH_REMATCH[1]}"$'\n'
+-	done < <(ifconfig "$REAL_INTERFACE")
+-	# TODO: actually determine current DNS for interface
+-	for address in "${DNS[@]}"; do
+-		new_config+="DNS = $address"$'\n'
+-	done
+-	[[ -n $MTU ]] && new_config+="MTU = $MTU"$'\n'
+-	[[ -n $TABLE ]] && new_config+="Table = $TABLE"$'\n'
+-	[[ $SAVE_CONFIG -eq 0 ]] || new_config+=$'SaveConfig = true\n'
+-	for cmd in "${PRE_UP[@]}"; do
+-		new_config+="PreUp = $cmd"$'\n'
+-	done
+-	for cmd in "${POST_UP[@]}"; do
+-		new_config+="PostUp = $cmd"$'\n'
+-	done
+-	for cmd in "${PRE_DOWN[@]}"; do
+-		new_config+="PreDown = $cmd"$'\n'
+-	done
+-	for cmd in "${POST_DOWN[@]}"; do
+-		new_config+="PostDown = $cmd"$'\n'
+-	done
+-	old_umask="$(umask)"
+-	umask 077
+-	current_config="$(cmd wg showconf "$REAL_INTERFACE")"
+-	trap 'rm -f "$CONFIG_FILE.tmp"; exit' INT TERM EXIT
+-	echo "${current_config/\[Interface\]$'\n'/$new_config}" > "$CONFIG_FILE.tmp" || die "Could not write configuration file"
+-	sync "$CONFIG_FILE.tmp"
+-	mv "$CONFIG_FILE.tmp" "$CONFIG_FILE" || die "Could not move configuration file"
+-	trap - INT TERM EXIT
+-	umask "$old_umask"
+-}
+-
+ execute_hooks() {
+ 	local hook
+ 	for hook in "$@"; do
+@@ -418,43 +349,11 @@ execute_hooks() {
+ 	done
+ }
+
+-cmd_usage() {
+-	cat >&2 <<-_EOF
+-	Usage: $PROGRAM [ up | down | save | strip ] [ CONFIG_FILE | INTERFACE ]
+-
+-	  CONFIG_FILE is a configuration file, whose filename is the interface name
+-	  followed by \`.conf'. Otherwise, INTERFACE is an interface name, with
+-	  configuration found at:
+-	  ${CONFIG_SEARCH_PATHS[@]/%//INTERFACE.conf}.
+-	  It is to be readable by wg(8)'s \`setconf' sub-command, with the exception
+-	  of the following additions to the [Interface] section, which are handled
+-	  by $PROGRAM:
+-
+-	  - Address: may be specified one or more times and contains one or more
+-	    IP addresses (with an optional CIDR mask) to be set for the interface.
+-	  - DNS: an optional DNS server to use while the device is up.
+-	  - MTU: an optional MTU for the interface; if unspecified, auto-calculated.
+-	  - Table: an optional routing table to which routes will be added; if
+-	    unspecified or \`auto', the default table is used. If \`off', no routes
+-	    are added. Besides \`auto' and \`off', only \`main' is supported on
+-	    this platform.
+-	  - PreUp, PostUp, PreDown, PostDown: script snippets which will be executed
+-	    by bash(1) at the corresponding phases of the link, most commonly used
+-	    to configure DNS. The string \`%i' is expanded to INTERFACE.
+-	  - SaveConfig: if set to \`true', the configuration is saved from the current
+-	    state of the interface upon shutdown.
+-
+-	See wg-quick(8) for more info and examples.
+-	_EOF
+-}
+-
+ cmd_up() {
+ 	local i
+ 	get_real_interface && die "\`$INTERFACE' already exists as \`$REAL_INTERFACE'"
+ 	trap 'del_if; del_routes; exit' INT TERM EXIT
+-	add_if
+ 	execute_hooks "${PRE_UP[@]}"
+-	set_config
+ 	for i in "${ADDRESSES[@]}"; do
+ 		add_addr "$i"
+ 	done
+@@ -480,43 +379,20 @@ cmd_down() {
+ 	execute_hooks "${POST_DOWN[@]}"
+ }
+
+-cmd_save() {
+-	if ! get_real_interface || [[ " $(wg show interfaces) " != *" $REAL_INTERFACE "* ]]; then
+-		die "\`$INTERFACE' is not a WireGuard interface"
+-	fi
+-	save_config
+-}
+-
+-cmd_strip() {
+-	echo "$WG_CONFIG"
+-}
+-
+ # ~~ function override insertion point ~~
+
+ if [[ $# -eq 1 && ( $1 == --help || $1 == -h || $1 == help ) ]]; then
+ 	cmd_usage
+ elif [[ $# -eq 2 && $1 == up ]]; then
+ 	auto_su
+-	detect_launchd
+ 	parse_options "$2"
+ 	cmd_up
+ elif [[ $# -eq 2 && $1 == down ]]; then
+ 	auto_su
+ 	parse_options "$2"
+ 	cmd_down
+-elif [[ $# -eq 2 && $1 == save ]]; then
+-	auto_su
+-	parse_options "$2"
+-	cmd_save
+-elif [[ $# -eq 2 && $1 == strip ]]; then
+-	auto_su
+-	parse_options "$2"
+-	cmd_strip
+ else
+-	cmd_usage
+ 	exit 1
+ fi
+
+-[[ -n $LAUNCHED_BY_LAUNCHD ]] && wait
+-
+ exit 0
