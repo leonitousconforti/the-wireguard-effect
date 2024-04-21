@@ -164,7 +164,12 @@ jobs:
             npm install -g pnpm
           run: |
             pnpm install
-            chmod +x ./src/*
+            sudo chmod +x ./src/*
+            sudo pw groupadd wireguard-control
+            sudo pw usermod root -G wireguard-control
+            sudo pw usermod runner -G wireguard-control
+            sudo mkdir -p /var/run/wireguard/
+            sudo chown -R root:wireguard-control /var/run/wireguard/
             WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test
 
   openbsd-test:
@@ -187,7 +192,12 @@ jobs:
             npm install -g pnpm
           run: |
             pnpm install
-            chmod +x ./src/*
+            sudo chmod +x ./src/*
+            sudo groupadd wireguard-control
+            sudo usermod -G wireguard-control root
+            sudo usermod -G wireguard-control runner
+            sudo mkdir -p /var/run/wireguard/
+            sudo chown -R root_wireguard-control /var/run/wireguard/
             WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test
 
   windows-test:
