@@ -48,3 +48,7 @@ mkdir -p ../dist/prebuilds
 (cd ./wintun && cp ./LICENSE.txt ../../dist/prebuilds/LICENSE-wintun)
 (cd ./wireguard-go && cp ./LICENSE ../../dist/prebuilds/LICENSE-wireguard-go)
 (cd ./wireguard-tools && cp ./COPYING ../../dist/prebuilds/LICENSE-wireguard-tools)
+
+# For testing locally in the devcontainer
+sudo setcap "all=ep" ../dist/prebuilds/linux-amd64-wireguard-go
+sudo setcap "all=ep" ../dist/prebuilds/linux-arm64-wireguard-go

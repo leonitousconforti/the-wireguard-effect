@@ -18,6 +18,13 @@ npm install -g @devcontainers/cli npm-check-updates pnpm@8
 echo "📦 Installing repo dependencies..."
 pnpm install
 
+echo "🔧 Setting up groups and permissions for \"sudo-less\" testing"
+sudo groupadd wireguard-control
+sudo usermod -a -G wireguard-control vscode
+sudo usermod -a -G wireguard-control root
+sudo mkdir -p /var/run/wireguard/
+sudo chown -R root:wireguard-control /var/run/wireguard/
+
 echo "✅ Devcontainer setup complete! You should run \"pnpm build\" and \"pnpm test\" now"
 echo "🙏 Thank you for contributing to the-wireguard-effect!"
 echo "📝 P.S Don't forget to configure your git credentials with 'git config --global user.name you' and 'git config --global user.email you@z.com'"

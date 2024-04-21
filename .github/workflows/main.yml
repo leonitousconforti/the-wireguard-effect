@@ -104,8 +104,14 @@ jobs:
         with:
           version: 8
       - run: pnpm install
-      - run: sudo apt-get install -y wireguard openresolv
-      - run: chmod +x ./src/*
+      - run: sudo apt-get install -y openresolv
+      - run: |
+          sudo chmod +x ./src/*
+          sudo groupadd wireguard-control
+          sudo usermod -a -G wireguard-control root
+          sudo usermod -a -G wireguard-control vscode
+          sudo mkdir -p /var/run/wireguard/
+          sudo chown -R root:wireguard-control /var/run/wireguard/
       - run: pnpm test
         env:
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
@@ -127,8 +133,13 @@ jobs:
         with:
           version: 8
       - run: pnpm install
-      - run: brew install wireguard-tools
-      - run: chmod +x ./src/*
+      - run: |
+          sudo chmod +x ./src/*
+          sudo groupadd wireguard-control
+          sudo usermod -a -G wireguard-control root
+          sudo usermod -a -G wireguard-control vscode
+          sudo mkdir -p /var/run/wireguard/
+          sudo chown -R root:wireguard-control /var/run/wireguard/
       - run: pnpm test
         env:
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
@@ -149,10 +160,9 @@ jobs:
           sync: rsync
           copyback: false
           prepare: |
-            pkg install -y sudo node npm wireguard-tools-1.0.20210914_3
+            pkg install -y sudo node npm
             npm -v
             node -v
-            wg-quick --help
             npm install -g pnpm@8.15.4
           run: |
             pnpm install
@@ -173,10 +183,9 @@ jobs:
           sync: rsync
           copyback: false
           prepare: |
-            pkg_add sudo-1.9.15.5 node wireguard-tools-1.0.20210914p2v0
+            pkg_add sudo-1.9.15.5 node
             npm -v
             node -v
-            wg-quick --help
             npm install -g pnpm@8.15.4
           run: |
             pnpm install
@@ -201,9 +210,6 @@ jobs:
         with:
           version: 8
       - run: pnpm install
-      - run: choco install wireguard
-      - run: echo "C:\Program Files\WireGuard" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-      - run: wireguard.exe
       - run: pnpm test
         env:
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
@@ -239,7 +245,7 @@ jobs:
       # Install dependencies
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get upgrade -y
-      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y wireguard openresolv
+      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y openresolv
       - run: wsl --distribution Ubuntu22.04 --user root -- curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo bash nodesource_setup.sh
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y nodejs
