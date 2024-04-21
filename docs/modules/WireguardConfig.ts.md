@@ -35,6 +35,7 @@ Added in v1.0.0
   - [WireguardSetConfigResolver](#wireguardsetconfigresolver)
 - [Responses](#responses)
   - [WireguardGetConfigResponse](#wireguardgetconfigresponse)
+  - [WireguardGetConfigResponse (type alias)](#wireguardgetconfigresponse-type-alias)
 - [Transformations](#transformations)
   - [WireguardIniConfig](#wireguardiniconfig)
 
@@ -711,6 +712,16 @@ export declare const WireguardGetConfigResponse: Schema.Schema<
   },
   never
 >
+```
+
+Added in v1.0.0
+
+## WireguardGetConfigResponse (type alias)
+
+**Signature**
+
+```ts
+export type WireguardGetConfigResponse = Schema.Schema.Type<typeof WireguardGetConfigResponse>
 ```
 
 Added in v1.0.0

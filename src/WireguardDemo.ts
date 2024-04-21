@@ -13,9 +13,11 @@ import * as Path from "@effect/platform/Path";
 import * as Socket from "@effect/platform/Socket";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
+import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
+import * as HashMap from "effect/MutableHashMap";
 import * as Option from "effect/Option";
 import * as Queue from "effect/Queue";
 import * as Schedule from "effect/Schedule";
@@ -148,10 +150,10 @@ export const requestWireguardDemoConfig = (
                 ListenPort: 0,
                 Peers: [
                     {
-                        PublicKey: serverResponse.serverPublicKey,
-                        Endpoint: `${""}:${serverResponse.serverPort}`,
-                        AllowedIPs: new Set(["0.0.0.0/0"]),
                         PersistentKeepalive: 25,
+                        AllowedIPs: new Set(["0.0.0.0/0"]),
+                        PublicKey: serverResponse.serverPublicKey,
+                        Endpoint: `${serverResponse.dnsLookup}:${serverResponse.serverPort}`,
                     },
                 ],
             })
@@ -216,8 +218,10 @@ export const WireguardDemoServer = (options: {
                 Stream.run(Sink.fromQueue(serverWireguardAddressPool))
             )
         );
+        const addressReservationLookup = HashMap.empty<WireguardKey.WireguardKey, InternetSchemas.Address>();
 
         // Setup the wireguard interface and wireguard server config
+        const wireguardControl = yield* λ(WireguardControl.WireguardControl);
         const serverWireguardInterface = yield* λ(WireguardInterface.WireguardInterface.getNextAvailableInterface);
         const serverWireguardConfig = yield* λ(
             Schema.decode(WireguardConfig.WireguardConfig)({
@@ -247,6 +251,46 @@ export const WireguardDemoServer = (options: {
                             AllowedIPs: new Set(["0.0.0.0/0"]),
                         })
                     ),
+                    // Prune the oldest peer if we run out of addresses in the queue
+                    Stream.mapEffect((peer) =>
+                        Effect.gen(function* (λ) {
+                            const size = yield* λ(Queue.size(serverWireguardAddressPool));
+                            if (size > 0) return peer;
+
+                            const config = yield* λ(
+                                Effect.request(
+                                    new WireguardConfig.WireguardGetConfigRequest({
+                                        address: options.wireguardNetwork,
+                                        wireguardInterface: serverWireguardInterface,
+                                    }),
+                                    wireguardControl.getConfigRequestResolver
+                                )
+                            );
+                            const lastPeer = Function.pipe(
+                                config.Peers,
+                                Array.sort(
+                                    (
+                                        a: WireguardPeer.WireguardUApiGetPeerResponse,
+                                        b: WireguardPeer.WireguardUApiGetPeerResponse
+                                    ) => {
+                                        if (a.lastHandshakeTimeSeconds - b.lastHandshakeTimeSeconds <= -1) return -1;
+                                        else if (a.lastHandshakeTimeSeconds - b.lastHandshakeTimeSeconds >= 1) return 1;
+                                        else return 0;
+                                    }
+                                ),
+                                Array.head,
+                                Option.getOrThrow
+                            );
+
+                            yield* λ(serverWireguardInterface.removePeer(lastPeer));
+                            const freedAddress = HashMap.get(addressReservationLookup, lastPeer.PublicKey).pipe(
+                                Option.getOrThrow
+                            );
+                            yield* λ(Queue.offer(serverWireguardAddressPool, freedAddress));
+                            HashMap.remove(addressReservationLookup, lastPeer.PublicKey);
+                            return peer;
+                        })
+                    ),
                     Stream.mapEffect((peer) =>
                         Function.pipe(
                             serverWireguardAddressPool,
@@ -256,13 +300,14 @@ export const WireguardDemoServer = (options: {
                                 serverPort: wireguardPort,
                                 serverPublicKey: serverWireguardKeys.publicKey,
                             })),
-                            Effect.flatMap(Schema.encode(WireguardDemoSchema)),
                             Effect.map((response) => Tuple.make(peer, response))
                         )
                     ),
                     Stream.runForEach(([peer, res]) =>
                         Effect.gen(function* (λ) {
-                            yield* λ(responses.offer(res));
+                            const encoded = yield* λ(Schema.encode(WireguardDemoSchema)(res));
+                            yield* λ(responses.offer(encoded));
+                            HashMap.set(addressReservationLookup, peer.PublicKey, res.yourWireguardAddress);
                             yield* λ(serverWireguardInterface.addPeer(peer));
                         })
                     )

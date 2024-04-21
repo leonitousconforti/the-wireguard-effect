@@ -753,6 +753,12 @@ export const WireguardGetConfigResponse = Function.pipe(
 
 /**
  * @since 1.0.0
+ * @category Responses
+ */
+export type WireguardGetConfigResponse = Schema.Schema.Type<typeof WireguardGetConfigResponse>;
+
+/**
+ * @since 1.0.0
  * @category Requests
  */
 export class WireguardGetConfigRequest extends Request.TaggedClass("WireguardGetConfigRequest")<
