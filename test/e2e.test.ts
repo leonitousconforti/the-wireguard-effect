@@ -1,7 +1,3 @@
-// On your digital ocean test server:
-// sudo nohup ./the-wireguard-effect-ci.sh &
-// sudo nohup python3 -m http.server 8080 --bind 192.168.4.1 &
-
 import { describe, expect, it } from "@effect/vitest";
 
 import * as NodeContext from "@effect/platform-node/NodeContext";
@@ -35,7 +31,7 @@ describe("wireguard e2e test using demo.wireguard.com", () => {
             })
                 .pipe(Effect.provide(NodeContext.layer))
                 .pipe(Effect.provide(NodeHttp.layer))
-                .pipe(Effect.provide(WireguardControl.WgQuickLayer)),
-        Duration.seconds(60).pipe(Duration.toMillis)
+                .pipe(Effect.provide(WireguardControl.BundledWgQuickLayer)),
+        Duration.seconds(300).pipe(Duration.toMillis)
     );
 });
