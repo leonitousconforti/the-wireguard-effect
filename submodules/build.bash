@@ -22,27 +22,29 @@ mkdir -p ../dist/prebuilds
 (cd ./wintun && cp wintun-arm64.dll ../../dist/prebuilds/win32-arm64-wintun.dll)
 
 # wg-quick prebuilds
-(cd ./wireguard-tools && cp src/wg-quick/linux.bash ../../dist/prebuilds/linux-wg-quick && chmod +x ../../dist/prebuilds/linux-wg-quick)
-(cd ./wireguard-tools && cp src/wg-quick/darwin.bash ../../dist/prebuilds/darwin-wg-quick && chmod +x ../../dist/prebuilds/darwin-wg-quick)
-(cd ./wireguard-tools && cp src/wg-quick/freebsd.bash ../../dist/prebuilds/freebsd-wg-quick && chmod +x ../../dist/prebuilds/freebsd-wg-quick)
-(cd ./wireguard-tools && cp src/wg-quick/openbsd.bash ../../dist/prebuilds/openbsd-wg-quick && chmod +x ../../dist/prebuilds/openbsd-wg-quick)
+(cd ./wireguard-tools/src && make clean && make && cp ./wg ../../../dist/prebuilds/wg && chmod +x ../../../dist/prebuilds/wg)
+(cd ./wireguard-tools && git apply ../../patches/wg-quick-linux.patch && cp src/wg-quick/linux.bash ../../dist/prebuilds/linux-wg-quick && chmod +x ../../dist/prebuilds/linux-wg-quick)
+(cd ./wireguard-tools && git apply ../../patches/wg-quick-darwin.patch && cp src/wg-quick/darwin.bash ../../dist/prebuilds/darwin-wg-quick && chmod +x ../../dist/prebuilds/darwin-wg-quick)
+(cd ./wireguard-tools && git apply ../../patches/wg-quick-freebsd.patch && cp src/wg-quick/freebsd.bash ../../dist/prebuilds/freebsd-wg-quick && chmod +x ../../dist/prebuilds/freebsd-wg-quick)
+(cd ./wireguard-tools && git apply ../../patches/wg-quick-openbsd.patch && cp src/wg-quick/openbsd.bash ../../dist/prebuilds/openbsd-wg-quick && chmod +x ../../dist/prebuilds/openbsd-wg-quick)
+(cd ./wireguard-tools && git reset --hard)
 
-# Wireguard-windows prebuilds
+# Wireguard-windows prebuilds (TODO: arm64)
 (cd ./wireguard-windows && unset GOROOT && make clean && make amd64/wireguard.exe && cp amd64/wireguard.exe ../../dist/prebuilds/win32-amd64-wireguard.exe)
 
 # Windows WSL2 modified linux kernel (https://github.com/microsoft/WSL/issues/7547)
-(cd ./WSL2-Linux-Kernel && git apply ../WSL2-modified.patch)
+(cd ./WSL2-Linux-Kernel && git apply ../../patches/WSL2-linux-kernel.patch)
 (cd ./WSL2-Linux-Kernel && make -j $(nproc) KCONFIG_CONFIG=Microsoft/config-wsl CC="ccache gcc")
 (cd ./WSL2-Linux-Kernel && cp arch/x86/boot/bzImage ../../dist/prebuilds/win32-amd64-wsl2-linux-kernel-bzImage)
 (cd ./WSL2-Linux-Kernel && rm -f Microsoft/*.old)
 (cd ./WSL2-Linux-Kernel && git reset --hard)
 
 # Symlink prebuilds
-(cd ../src/internal && ln -s ../../dist/prebuilds/* .)
-(cd ../dist/dist/cjs/internal && ln -s ../../../prebuilds/* .)
-(cd ../dist/dist/esm/internal && ln -s ../../../prebuilds/* .)
+(cd ../src && ln -s ../dist/prebuilds/* .)
+(cd ../dist/dist/cjs && ln -s ../../prebuilds/* .)
+(cd ../dist/dist/esm && ln -s ../../prebuilds/* .)
 
 # Copy licenses
-# (cd ./wintun && cp ./LICENSE.txt ../../dist/prebuilds/LICENSE-wintun)
+(cd ./wintun && cp ./LICENSE.txt ../../dist/prebuilds/LICENSE-wintun)
 (cd ./wireguard-go && cp ./LICENSE ../../dist/prebuilds/LICENSE-wireguard-go)
 (cd ./wireguard-tools && cp ./COPYING ../../dist/prebuilds/LICENSE-wireguard-tools)

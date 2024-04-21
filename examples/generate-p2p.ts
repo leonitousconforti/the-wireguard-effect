@@ -13,7 +13,7 @@ const bobSetupData = Tuple.make("10.0.2.1:51820" as const, "2.2.2.2:51280:41280"
 const program: Effect.Effect<void, ParseResult.ParseError | WireguardErrors.WireguardError, never> = Effect.gen(
     function* (λ) {
         const [aliceConfig, bobConfig] = yield* λ(
-            WireguardConfig.WireguardConfig.generateP2PConfigs({
+            WireguardConfig.generateP2PConfigs({
                 aliceData: aliceSetupData,
                 bobData: bobSetupData,
             })

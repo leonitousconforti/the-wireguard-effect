@@ -47,6 +47,7 @@ jobs:
 
       - run: sudo apt-get update
       - run: sudo apt-get install mingw-w64 imagemagick libarchive-tools build-essential flex bison dwarves libssl-dev libelf-dev bc ccache librsvg2-bin -y
+
       - name: "Setup ccache"
         uses: actions/cache@v4
         with:
@@ -55,15 +56,25 @@ jobs:
           restore-keys: |
             wsl2-linux-kernel-ccache-
 
-      # https://github.com/dependabot/dependabot-core/issues/7258
-      # https://github.com/pnpm/pnpm/issues/6530
-      # https://github.com/pnpm/pnpm/issues/3948
-      # - run: git config --global url."https://".insteadOf git+ssh://git@
+      - name: "Setup wireguard windows dist cache"
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/work/the-wireguard-effect/the-wireguard-effect/submodules/wireguard-windows-distfiles
+          key: wireguard-windows-dist-${{ hashFiles('submodules/wireguard-windows/.distfiles/wireguard-nt.zip') }}
+          restore-keys: |
+            wireguard-windows-dist-
+
+      - run: mkdir -p submodules/wireguard-windows-distfiles/.distfiles/
+      - run: cp -r submodules/wireguard-windows-distfiles/.distfiles/ submodules/wireguard-windows/.distfiles
+      - run: ls -la submodules/wireguard-windows/.distfiles
 
       - run: pnpm install
       - run: pnpm check
       - run: pnpm lint
       - run: pnpm build
+
+      - run: cp -r submodules/wireguard-windows/.distfiles/ submodules/wireguard-windows-distfiles
+      - run: ls -la submodules/wireguard-windows-distfiles
 
       - run: rm -rf .git/
       - run: rm -rf node_modules/
@@ -94,7 +105,7 @@ jobs:
           version: 8
       - run: pnpm install
       - run: sudo apt-get install -y wireguard openresolv
-      - run: chmod +x ./src/internal/*
+      - run: chmod +x ./src/*
       - run: pnpm test
         env:
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
@@ -117,7 +128,7 @@ jobs:
           version: 8
       - run: pnpm install
       - run: brew install wireguard-tools
-      - run: chmod +x ./src/internal/*
+      - run: chmod +x ./src/*
       - run: pnpm test
         env:
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
@@ -145,7 +156,7 @@ jobs:
             npm install -g pnpm@8.15.4
           run: |
             pnpm install
-            chmod +x ./src/internal/*
+            chmod +x ./src/*
             WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test
 
   openbsd-test:
@@ -169,7 +180,7 @@ jobs:
             npm install -g pnpm@8.15.4
           run: |
             pnpm install
-            chmod +x ./src/internal/*
+            chmod +x ./src/*
             WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test
 
   windows-test:
@@ -236,6 +247,6 @@ jobs:
 
       # This is where our testing starts
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
-      - run: wsl --distribution Ubuntu22.04 --user root -- chmod +x ./src/internal/*
-      - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/internal/
+      - run: wsl --distribution Ubuntu22.04 --user root -- chmod +x ./src/*
+      - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/
       - run: wsl --distribution Ubuntu22.04 --user root -- WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test -- --run

@@ -1,6 +1,6 @@
 ---
 title: WireguardPeer.ts
-nav_order: 8
+nav_order: 9
 parent: Modules
 ---
 
@@ -16,12 +16,15 @@ Added in v1.0.0
 
 - [Api interface](#api-interface)
   - [$WireguardIniPeer (interface)](#wireguardinipeer-interface)
-  - [$WireguardUapiPeer (interface)](#wireguarduapipeer-interface)
 - [Datatypes](#datatypes)
   - [WireguardPeer (class)](#wireguardpeer-class)
+- [Requests](#requests)
+  - [makeWireguardUApiSetPeerRequest](#makewireguarduapisetpeerrequest)
+- [Responses](#responses)
+  - [WireguardUApiGetPeerResponse (class)](#wireguarduapigetpeerresponse-class)
+  - [parseWireguardUApiGetPeerResponse](#parsewireguarduapigetpeerresponse)
 - [Transformations](#transformations)
   - [WireguardIniPeer](#wireguardinipeer)
-  - [WireguardUapiPeer](#wireguarduapipeer)
 
 ---
 
@@ -34,17 +37,6 @@ Added in v1.0.0
 ```ts
 export interface $WireguardIniPeer
   extends Schema.Annotable<$WireguardIniPeer, string, Schema.Schema.Encoded<typeof WireguardPeer>, never> {}
-```
-
-Added in v1.0.0
-
-## $WireguardUapiPeer (interface)
-
-**Signature**
-
-```ts
-export interface $WireguardUapiPeer
-  extends Schema.Annotable<$WireguardUapiPeer, string, Schema.Schema.Encoded<typeof WireguardPeer>, never> {}
 ```
 
 Added in v1.0.0
@@ -72,6 +64,7 @@ import * as WireguardKey from "the-wireguard-effect/WireguardKey"
 
 import { WireguardPeer } from "the-wireguard-effect/WireguardPeer"
 
+const preshareKey = WireguardKey.generatePreshareKey()
 const { publicKey, privateKey: _privateKey } = WireguardKey.generateKeyPair()
 
 // WireguardPeer
@@ -97,10 +90,59 @@ const peerDirectInstantiation = new WireguardPeer({
 // Effect.Effect<WireguardPeer, ParseResult.ParseError, never>
 const peerSchemaInstantiation = Schema.decode(WireguardPeer)({
   PublicKey: publicKey,
-  AllowedIPs: ["192.168.0.0/24"],
+  PresharedKey: preshareKey,
   Endpoint: "192.168.0.1:51820",
+  AllowedIPs: ["192.168.0.0/24"],
   PersistentKeepalive: Duration.seconds(20)
 })
+```
+
+Added in v1.0.0
+
+# Requests
+
+## makeWireguardUApiSetPeerRequest
+
+Creates a wireguard userspace api set peer request from a wireguard peer.
+This is a one way transformation (hence why schema is not involved), and you
+are not expected to need to decode this back into a wireguard peer. Instead,
+you should use the request resolver on the wireguard control interface to
+"transform" this into a response.
+
+**Signature**
+
+```ts
+export declare const makeWireguardUApiSetPeerRequest: (peer: WireguardPeer) => string
+```
+
+Added in v1.0.0
+
+# Responses
+
+## WireguardUApiGetPeerResponse (class)
+
+A wireguard peer from an interface inspection request contains three
+additional fields.
+
+**Signature**
+
+```ts
+export declare class WireguardUApiGetPeerResponse
+```
+
+Added in v1.0.0
+
+## parseWireguardUApiGetPeerResponse
+
+Parses a wireguard userspace api get peer response from a wireguard control
+request resolver into a wireguard peer.
+
+**Signature**
+
+```ts
+export declare const parseWireguardUApiGetPeerResponse: (
+  input: string
+) => Effect.Effect<WireguardUApiGetPeerResponse, ParseResult.ParseError, never>
 ```
 
 Added in v1.0.0
@@ -126,11 +168,13 @@ import * as Schema from "@effect/schema/Schema"
 import * as WireguardKey from "the-wireguard-effect/WireguardKey"
 import * as WireguardPeer from "the-wireguard-effect/WireguardPeer"
 
+const preshareKey = WireguardKey.generatePreshareKey()
 const { publicKey, privateKey: _privateKey } = WireguardKey.generateKeyPair()
 
 const peer = Schema.decode(WireguardPeer.WireguardPeer)({
   PublicKey: publicKey,
-  AllowedIPs: ["192.168.0.0/24"],
+  PresharedKey: preshareKey,
+  AllowedIPs: new Set(["192.168.0.0/24"]),
   Endpoint: "192.168.0.1:51820",
   PersistentKeepalive: 20
 })
@@ -139,43 +183,6 @@ const iniPeer = Function.pipe(
   peer,
   Effect.flatMap(Schema.encode(WireguardPeer.WireguardPeer)),
   Effect.flatMap(Schema.decode(WireguardPeer.WireguardIniPeer))
-)
-```
-
-Added in v1.0.0
-
-## WireguardUapiPeer
-
-A wireguard peer configuration encoded in the userspace api format.
-
-**Signature**
-
-```ts
-export declare const WireguardUapiPeer: $WireguardUapiPeer
-```
-
-**Example**
-
-```ts
-import * as Effect from "effect/Effect"
-import * as Function from "effect/Function"
-import * as Schema from "@effect/schema/Schema"
-import * as WireguardKey from "the-wireguard-effect/WireguardKey"
-import * as WireguardPeer from "the-wireguard-effect/WireguardPeer"
-
-const { publicKey, privateKey: _privateKey } = WireguardKey.generateKeyPair()
-
-const peer = Schema.decode(WireguardPeer.WireguardPeer)({
-  PublicKey: publicKey,
-  AllowedIPs: ["192.168.0.0/24"],
-  Endpoint: "192.168.0.1:51820",
-  PersistentKeepalive: 20
-})
-
-const uapiPeer = Function.pipe(
-  peer,
-  Effect.flatMap(Schema.encode(WireguardPeer.WireguardPeer)),
-  Effect.flatMap(Schema.decode(WireguardPeer.WireguardUapiPeer))
 )
 ```
 

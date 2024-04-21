@@ -16,9 +16,7 @@ const nodesSetupData = [aliceSetupData, bobSetupData, charlieSetupData, daveSetu
 
 const program: Effect.Effect<void, ParseResult.ParseError | WireguardErrors.WireguardError, never> = Effect.gen(
     function* (λ) {
-        const [hubConfig, spokeConfigs] = yield* λ(
-            WireguardConfig.WireguardConfig.generateStarConfigs({ nodes: nodesSetupData })
-        );
+        const [hubConfig, spokeConfigs] = yield* λ(WireguardConfig.generateStarConfigs({ nodes: nodesSetupData }));
 
         // Distribute these configs somehow
         yield* λ(Console.log(hubConfig));

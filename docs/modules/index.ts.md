@@ -17,6 +17,7 @@ Added in v1.0.0
 - [exports](#exports)
   - [From "./InternetSchemas.js"](#from-internetschemasjs)
   - [From "./WireguardConfig.js"](#from-wireguardconfigjs)
+  - [From "./WireguardControl.js"](#from-wireguardcontroljs)
   - [From "./WireguardDemo.js"](#from-wireguarddemojs)
   - [From "./WireguardErrors.js"](#from-wireguarderrorsjs)
   - [From "./WireguardInterface.js"](#from-wireguardinterfacejs)
@@ -47,6 +48,18 @@ Wireguard config schema definitions
 
 ```ts
 export * as WireguardConfig from "./WireguardConfig.js"
+```
+
+Added in v1.0.0
+
+## From "./WireguardControl.js"
+
+Wireguard control mechanisms.
+
+**Signature**
+
+```ts
+export * as WireguardControl from "./WireguardControl.js"
 ```
 
 Added in v1.0.0

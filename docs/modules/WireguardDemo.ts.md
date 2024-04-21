@@ -1,6 +1,6 @@
 ---
 title: WireguardDemo.ts
-nav_order: 4
+nav_order: 5
 parent: Modules
 ---
 
@@ -14,35 +14,28 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [Api interface](#api-interface)
-  - [$WireguardDemoSchema (interface)](#wireguarddemoschema-interface)
+- [Encoded types](#encoded-types)
+  - [WireguardDemoSchemaEncoded (type alias)](#wireguarddemoschemaencoded-type-alias)
 - [Schema](#schema)
   - [WireguardDemoSchema](#wireguarddemoschema)
+- [Unbranded types](#unbranded-types)
+  - [WireguardDemoSchema (type alias)](#wireguarddemoschema-type-alias)
 - [utils](#utils)
+  - [WireguardDemoServer](#wireguarddemoserver)
   - [requestGoogle](#requestgoogle)
   - [requestHiddenPage](#requesthiddenpage)
   - [requestWireguardDemoConfig](#requestwireguarddemoconfig)
 
 ---
 
-# Api interface
+# Encoded types
 
-## $WireguardDemoSchema (interface)
+## WireguardDemoSchemaEncoded (type alias)
 
 **Signature**
 
 ```ts
-export interface $WireguardDemoSchema
-  extends Schema.Annotable<
-    $WireguardDemoSchema,
-    {
-      readonly serverPort: InternetSchemas.PortBrand
-      readonly serverPublicKey: WireguardKey.WireguardKey
-      readonly internalAddress: InternetSchemas.Address
-    },
-    `OK:${string}:${number}:${string}\n`,
-    never
-  > {}
+export type WireguardDemoSchemaEncoded = Schema.Schema.Encoded<typeof WireguardDemoSchema>
 ```
 
 Added in v1.0.0
@@ -54,12 +47,55 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const WireguardDemoSchema: $WireguardDemoSchema
+export declare const WireguardDemoSchema: Schema.transform<
+  Schema.Schema<`OK:${string}:${number}:${string}\n`, `OK:${string}:${number}:${string}\n`, never>,
+  Schema.Struct<{
+    serverPort: InternetSchemas.$Port
+    serverPublicKey: Schema.brand<Schema.Schema<string, string, never>, "WireguardKey">
+    yourWireguardAddress: InternetSchemas.$AddressFromString
+  }>
+>
+```
+
+Added in v1.0.0
+
+# Unbranded types
+
+## WireguardDemoSchema (type alias)
+
+**Signature**
+
+```ts
+export type WireguardDemoSchema = Schema.Schema.Type<typeof WireguardDemoSchema>
 ```
 
 Added in v1.0.0
 
 # utils
+
+## WireguardDemoServer
+
+Mock implementation of the Wireguard demo server at demo.wireguard.com
+
+**Signature**
+
+```ts
+export declare const WireguardDemoServer: (options: {
+  wireguardPort: number
+  wireguardNetwork: InternetSchemas.CidrBlockFromStringEncoded
+}) => Effect.Effect<
+  void,
+  | Socket.SocketError
+  | ParseResult.ParseError
+  | Cause.UnknownException
+  | WireguardErrors.WireguardError
+  | PlatformError.PlatformError
+  | SocketServer.SocketServerError,
+  Scope.Scope | FileSystem.FileSystem | Path.Path | SocketServer.SocketServer | WireguardControl.WireguardControl
+>
+```
+
+Added in v1.0.0
 
 ## requestGoogle
 

@@ -7,9 +7,10 @@
 /node_modules/
 /docs/examples/
 
-src/internal/*-wireguard-go
-src/internal/*-wg-quick
-src/internal/LICENSE-*
-src/internal/*-wintun.dll
-src/internal/*.exe
-src/internal/*-bzImage
+src/*-wireguard-go
+src/*-wg-quick
+src/LICENSE-*
+src/*-wintun.dll
+src/*.exe
+src/*-bzImage
+src/wg

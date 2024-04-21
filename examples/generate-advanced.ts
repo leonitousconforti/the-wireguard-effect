@@ -27,7 +27,7 @@ const eveTrustsBobAndCharlie = [eveSetupData, [bobSetupData, charlieSetupData]] 
 const program: Effect.Effect<void, ParseResult.ParseError | WireguardErrors.WireguardError, never> = Effect.gen(
     function* (λ) {
         const [hubConfig, spokeConfigs] = yield* λ(
-            WireguardConfig.WireguardConfig.generate({
+            WireguardConfig.generate({
                 hubData: aliceSetupData,
                 spokeData: spokesSetupData,
                 preshareKeys: "generate",

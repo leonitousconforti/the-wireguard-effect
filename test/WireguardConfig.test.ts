@@ -34,7 +34,7 @@ describe("WireguardConfig", () => {
             const bobSetupData = Tuple.make(bobEndpoint, ips[1]);
 
             yield* λ(
-                WireguardConfig.WireguardConfig.generateP2PConfigs({
+                WireguardConfig.generateP2PConfigs({
                     aliceData: aliceSetupData,
                     bobData: bobSetupData,
                 })
@@ -77,7 +77,7 @@ describe("WireguardConfig", () => {
             const eveTrustsBobAndCharlie = [eveSetupData, [bobSetupData, charlieSetupData]] as const;
 
             yield* λ(
-                WireguardConfig.WireguardConfig.generate({
+                WireguardConfig.generate({
                     hubData: aliceSetupData,
                     spokeData: spokesSetupData,
                     preshareKeys: "generate",

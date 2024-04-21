@@ -1,6 +1,6 @@
 ---
 title: WireguardInterface.ts
-nav_order: 6
+nav_order: 7
 parent: Modules
 ---
 
@@ -16,9 +16,12 @@ Added in v1.0.0
 
 - [Datatypes](#datatypes)
   - [WireguardInterface (class)](#wireguardinterface-class)
+    - [SocketLocation (property)](#socketlocation-property)
     - [upScoped (property)](#upscoped-property)
     - [up (property)](#up-property)
     - [down (property)](#down-property)
+    - [addPeer (property)](#addpeer-property)
+    - [removePeer (property)](#removepeer-property)
 
 ---
 
@@ -36,17 +39,30 @@ export declare class WireguardInterface
 
 Added in v1.0.0
 
-### upScoped (property)
-
-Starts a wireguard tunnel that will be gracefully shutdown and stop
-serving traffic once the scope is closed. If no how options is specified,
-then the interface will be brought up using the
-bundled-wireguard-go+userspace-api method.
+### SocketLocation (property)
 
 **Signature**
 
 ```ts
-upScoped: { (config: WireguardConfig.WireguardConfig, options: {    how: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api";    sudo?: boolean | "ask" | undefined;}): Effect.Effect<void, WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException, FileSystem.FileSystem | Path.Path | Scope.Scope>; (config: WireguardConfig.WireguardConfig, options: {    how?: "system-wireguard+system-wg-quick" | "system-wireguard+bundled-wg-quick" | "system-wireguard-go+system-wg-quick" | "bundled-wireguard-go+system-wg-quick" | "system-wireguard-go+bundled-wg-quick" | "bundled-wireguard-go+bundled-wg-quick" | undefined;    sudo?: boolean | "ask" | undefined;}): Effect.Effect<string, WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException, FileSystem.FileSystem | Path.Path | Scope.Scope>; }
+readonly SocketLocation: string
+```
+
+Added in v1.0.0
+
+### upScoped (property)
+
+Starts a wireguard tunnel that will be gracefully shutdown and stop
+serving traffic once the scope is closed.
+
+**Signature**
+
+```ts
+upScoped: (config: WireguardConfig.WireguardConfig) =>
+  Effect.Effect<
+    WireguardInterface,
+    Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+    FileSystem.FileSystem | Path.Path | Scope.Scope | WireguardControl.WireguardControl
+  >
 ```
 
 Added in v1.0.0
@@ -54,14 +70,17 @@ Added in v1.0.0
 ### up (property)
 
 Starts a wireguard tunnel that will continue to run and serve traffic
-even after the nodejs process exits. If no how options is specified, then
-the interface will be brought up using the
-bundled-wireguard-go+userspace-api method.
+even after the nodejs process exits.
 
 **Signature**
 
 ```ts
-up: { (config: WireguardConfig.WireguardConfig, options: {    how: "bundled-wireguard-go+userspace-api" | "system-wireguard-go+userspace-api";    sudo?: boolean | "ask" | undefined;}): Effect.Effect<void, WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException, FileSystem.FileSystem | Path.Path>; (config: WireguardConfig.WireguardConfig, options: {    how?: "system-wireguard+system-wg-quick" | "system-wireguard+bundled-wg-quick" | "system-wireguard-go+system-wg-quick" | "bundled-wireguard-go+system-wg-quick" | "system-wireguard-go+bundled-wg-quick" | "bundled-wireguard-go+bundled-wg-quick" | undefined;    sudo?: boolean | "ask" | undefined;}): Effect.Effect<string, WireguardErrors.WireguardError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException, FileSystem.FileSystem | Path.Path>; }
+up: (config: WireguardConfig.WireguardConfig) =>
+  Effect.Effect<
+    WireguardInterface,
+    Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+    FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
+  >
 ```
 
 Added in v1.0.0
@@ -73,7 +92,38 @@ Stops a previously started wireguard tunnel.
 **Signature**
 
 ```ts
-down: { (options: {    sudo?: boolean | "ask" | undefined;    how: "userspace-api";}): Effect.Effect<void, PlatformError.PlatformError | Cause.UnknownException, Path.Path | FileSystem.FileSystem>; (options: {    sudo?: boolean | "ask" | undefined;    how: "bundled-wg-quick" | "system-wg-quick";    file: string;}): Effect.Effect<void, PlatformError.PlatformError | Cause.UnknownException, Path.Path | FileSystem.FileSystem>; }
+down: (config: WireguardConfig.WireguardConfig) =>
+  Effect.Effect<
+    WireguardInterface,
+    PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException,
+    FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
+  >
+```
+
+Added in v1.0.0
+
+### addPeer (property)
+
+Adds a peer to this interface.
+
+**Signature**
+
+```ts
+addPeer: (peer: WireguardPeer.WireguardPeer) =>
+  Effect.Effect<void, Socket.SocketError | ParseResult.ParseError, WireguardControl.WireguardControl>
+```
+
+Added in v1.0.0
+
+### removePeer (property)
+
+Removes a peer from this interface.
+
+**Signature**
+
+```ts
+removePeer: (peer: WireguardPeer.WireguardPeer) =>
+  Effect.Effect<void, Socket.SocketError | ParseResult.ParseError, WireguardControl.WireguardControl>
 ```
 
 Added in v1.0.0
