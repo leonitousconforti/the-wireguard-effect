@@ -32,7 +32,7 @@ jobs:
       - name: "Install pnpm"
         uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9
           run_install: false
       - name: "Get pnpm store"
         run: |
@@ -99,7 +99,7 @@ jobs:
           node-version: "18.x"
       - uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9
       - run: pnpm install
       - run: sudo apt-get install -y openresolv
       - run: |
@@ -128,7 +128,7 @@ jobs:
           node-version: "18.x"
       - uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9
       - run: pnpm install
       - run: |
           sudo chmod +x ./src/*
@@ -160,7 +160,7 @@ jobs:
             pkg install -y sudo node npm
             npm -v
             node -v
-            npm install -g pnpm@8.15.4
+            npm install -g pnpm
           run: |
             pnpm install
             chmod +x ./src/*
@@ -183,7 +183,7 @@ jobs:
             pkg_add sudo-1.9.15.5 node
             npm -v
             node -v
-            npm install -g pnpm@8.15.4
+            npm install -g pnpm
           run: |
             pnpm install
             chmod +x ./src/*
@@ -205,7 +205,7 @@ jobs:
           node-version: "18.x"
       - uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9
       - run: pnpm install
       - run: pnpm test
         env:
@@ -246,7 +246,7 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo bash nodesource_setup.sh
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y nodejs
-      - run: wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm@8.15.4
+      - run: wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm
 
       # This is where our testing starts
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
