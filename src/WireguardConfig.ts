@@ -810,7 +810,7 @@ export const WireguardGetConfigResolver: Resolver.RequestResolver<WireguardGetCo
                     Address: address,
                     ListenPort: listen_port,
                     PrivateKey: Buffer.from(private_key, "hex").toString("base64"),
-                    FirewallMark: Number.parse(fwmark).pipe(Option.getOrUndefined),
+                    FirewallMark: Number.parse(fwmark || "").pipe(Option.getOrUndefined),
                     Peers: peerConfigs,
                 })
             );

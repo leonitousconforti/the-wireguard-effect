@@ -24,7 +24,7 @@ import * as Record from "effect/Record";
 import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
-import * as assert from "node:assert/strict";
+import * as assert from "node:assert";
 import * as os from "node:os";
 
 import * as WireguardConfig from "./WireguardConfig.js";
@@ -242,7 +242,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
 
             // Get the config before adding this peer and ensure this peer is not present
             const configBefore = yield* λ(Effect.request(request, control.getConfigRequestResolver));
-            assert(configBefore.Peers.find((p) => p.PublicKey === peer.PublicKey) === undefined);
+            assert.ok(configBefore.Peers.find((p) => p.PublicKey === peer.PublicKey) === undefined);
 
             // Add the peer to the interface
             const peerUApiRequest = WireguardPeer.makeWireguardUApiSetPeerRequest(peer);
@@ -251,7 +251,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
 
             // Get the config after adding this peer and ensure this peer is present
             const configAfter = yield* λ(Effect.request(request, control.getConfigRequestResolver));
-            assert(configAfter.Peers.find((p) => p.PublicKey === peer.PublicKey) !== undefined);
+            assert.ok(configAfter.Peers.find((p) => p.PublicKey === peer.PublicKey) !== undefined);
         });
     };
 
@@ -276,7 +276,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
 
             // Get the config before removing this peer and ensure this peer is present
             const configBefore = yield* λ(Effect.request(request, control.getConfigRequestResolver));
-            assert(configBefore.Peers.find((p) => p.PublicKey === peer.PublicKey) !== undefined);
+            assert.ok(configBefore.Peers.find((p) => p.PublicKey === peer.PublicKey) !== undefined);
 
             // Remove the peer from the interface
             const peerUApiRequest = WireguardPeer.makeWireguardUApiSetPeerRequest(peer);
@@ -285,7 +285,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
 
             // Get the config after removing this peer and ensure this peer is not present
             const configAfter = yield* λ(Effect.request(request, control.getConfigRequestResolver));
-            assert(configAfter.Peers.find((p) => p.PublicKey === peer.PublicKey) === undefined);
+            assert.ok(configAfter.Peers.find((p) => p.PublicKey === peer.PublicKey) === undefined);
         });
     };
 }

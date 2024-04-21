@@ -21,6 +21,7 @@ Added in v1.0.0
 - [Unbranded types](#unbranded-types)
   - [WireguardDemoSchema (type alias)](#wireguarddemoschema-type-alias)
 - [utils](#utils)
+  - [WireguardDemoServer](#wireguarddemoserver)
   - [requestGoogle](#requestgoogle)
   - [requestHiddenPage](#requesthiddenpage)
   - [requestWireguardDemoConfig](#requestwireguarddemoconfig)
@@ -71,6 +72,30 @@ export type WireguardDemoSchema = Schema.Schema.Type<typeof WireguardDemoSchema>
 Added in v1.0.0
 
 # utils
+
+## WireguardDemoServer
+
+Mock implementation of the Wireguard demo server at demo.wireguard.com
+
+**Signature**
+
+```ts
+export declare const WireguardDemoServer: (options: {
+  wireguardPort: number
+  wireguardNetwork: InternetSchemas.CidrBlockFromStringEncoded
+}) => Effect.Effect<
+  void,
+  | Socket.SocketError
+  | ParseResult.ParseError
+  | Cause.UnknownException
+  | WireguardErrors.WireguardError
+  | PlatformError.PlatformError
+  | SocketServer.SocketServerError,
+  Scope.Scope | FileSystem.FileSystem | Path.Path | SocketServer.SocketServer | WireguardControl.WireguardControl
+>
+```
+
+Added in v1.0.0
 
 ## requestGoogle
 
