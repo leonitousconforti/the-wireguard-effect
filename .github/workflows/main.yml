@@ -56,22 +56,24 @@ jobs:
           restore-keys: |
             wsl2-linux-kernel-ccache-
 
-      - run: mkdir -p /home/runner/work/the-wireguard-effect/the-wireguard-effect/submodules/wireguard-windows/.distfiles
       - name: "Setup wireguard windows dist cache"
         uses: actions/cache@v4
         with:
-          path: /home/runner/work/the-wireguard-effect/the-wireguard-effect/submodules/wireguard-windows/.distfiles
+          path: /home/runner/work/the-wireguard-effect/the-wireguard-effect/submodules/wireguard-windows-distfiles
           key: wireguard-windows-dist-${{ hashFiles('submodules/wireguard-windows/.distfiles/wireguard-nt.zip') }}
           restore-keys: |
             wireguard-windows-dist-
 
-      - run: ls -la
-      - run: ls -la /home/runner/.cache/ccache
+      - run: cp -r submodules/wireguard-windows-distfiles/.distfiles/ submodules/wireguard-windows/.distfiles
+      - run: submodules/wireguard-windows/.distfiles
 
       - run: pnpm install
       - run: pnpm check
       - run: pnpm lint
       - run: pnpm build
+
+      - run: cp -r submodules/wireguard-windows/.distfiles/ submodules/wireguard-windows-distfiles
+      - run: ls -la submodules/wireguard-windows-distfiles
 
       - run: rm -rf .git/
       - run: rm -rf node_modules/
