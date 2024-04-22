@@ -138,7 +138,7 @@ export const makeUserspaceLayer = (): WireguardControlImpl => {
  */
 export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardControlImpl => {
     const execWireguardGoCommand = (command: string): Effect.Effect<void, Cause.UnknownException, never> =>
-        Effect.tryPromise(() => {
+        Effect.try(() => {
             const subprocess = execa.execaCommand(
                 `${options.sudo === true && process.platform !== "win32" ? "sudo " : ""}${command}`,
                 {
@@ -148,7 +148,6 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                 }
             );
             subprocess.unref();
-            return process.platform === "win32" ? subprocess : Promise.resolve({});
         });
 
     const execWgQuickCommand = (command: string): Effect.Effect<void, Cause.UnknownException, never> =>
