@@ -134,6 +134,7 @@ jobs:
           version: 9
       - run: pnpm install
       - run: |
+          brew upgrade bash
           sudo chmod +x ./src/*
       - run: sudo -E pnpm test
         env:
