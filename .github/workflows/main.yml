@@ -116,8 +116,6 @@ jobs:
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
           WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
           WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
-      - uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
 
   macos-test:
     runs-on: macos-latest
@@ -261,6 +259,3 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- chmod +x ./src/*
       - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/
       - run: wsl --distribution Ubuntu22.04 --user root -- WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test -- --run
-
-      - uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
