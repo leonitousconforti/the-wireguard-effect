@@ -1,5 +1,5 @@
 diff --git a/src/wg-quick/freebsd.bash b/src/wg-quick/freebsd.bash
-index f72daf6..a2188cf 100755
+index f72daf6..0e3dcd6 100755
 --- a/src/wg-quick/freebsd.bash
 +++ b/src/wg-quick/freebsd.bash
 @@ -23,7 +23,6 @@ PRE_UP=( )
@@ -51,6 +51,24 @@ index f72daf6..a2188cf 100755
  del_routes() {
  	local todelete=( ) destination gateway netif
  	while read -r destination _ _ _ _ netif _; do
+@@ -192,7 +168,7 @@ set_mtu() {
+ 		[[ ${BASH_REMATCH[1]} == *:* ]] && family=inet6
+ 		output="$(route -n get "-$family" "${BASH_REMATCH[1]}" || true)"
+ 		[[ $output =~ interface:\ ([^ ]+)$'\n' && $(ifconfig "${BASH_REMATCH[1]}") =~ mtu\ ([0-9]+) && ${BASH_REMATCH[1]} -gt $mtu ]] && mtu="${BASH_REMATCH[1]}"
+-	done < <(wg show "$INTERFACE" endpoints)
++	done < <(freebsd-wg show "$INTERFACE" endpoints)
+ 	if [[ $mtu -eq 0 ]]; then
+ 		read -r output < <(route -n get default || true) || true
+ 		[[ $output =~ interface:\ ([^ ]+)$'\n' && $(ifconfig "${BASH_REMATCH[1]}") =~ mtu\ ([0-9]+) && ${BASH_REMATCH[1]} -gt $mtu ]] && mtu="${BASH_REMATCH[1]}"
+@@ -225,7 +201,7 @@ collect_endpoints() {
+ 	while read -r _ endpoint; do
+ 		[[ $endpoint =~ ^\[?([a-z0-9:.]+)\]?:[0-9]+$ ]] || continue
+ 		ENDPOINTS+=( "${BASH_REMATCH[1]}" )
+-	done < <(wg show "$INTERFACE" endpoints)
++	done < <(freebsd-wg show "$INTERFACE" endpoints)
+ }
+
+ set_endpoint_direct_route() {
 @@ -336,48 +312,6 @@ add_route() {
  	fi
  }
@@ -100,7 +118,7 @@ index f72daf6..a2188cf 100755
  execute_hooks() {
  	local hook
  	for hook in "$@"; do
-@@ -387,42 +321,10 @@ execute_hooks() {
+@@ -387,49 +321,17 @@ execute_hooks() {
  	done
  }
 
@@ -143,6 +161,23 @@ index f72daf6..a2188cf 100755
  	for i in "${ADDRESSES[@]}"; do
  		add_addr "$i"
  	done
+ 	set_mtu
+ 	up_if
+ 	set_dns
+-	for i in $(while read -r _ i; do for i in $i; do [[ $i =~ ^[0-9a-z:.]+/[0-9]+$ ]] && echo "$i"; done; done < <(wg show "$INTERFACE" allowed-ips) | sort -nr -k 2 -t /); do
++	for i in $(while read -r _ i; do for i in $i; do [[ $i =~ ^[0-9a-z:.]+/[0-9]+$ ]] && echo "$i"; done; done < <(freebsd-wg show "$INTERFACE" allowed-ips) | sort -nr -k 2 -t /); do
+ 		add_route "$i"
+ 	done
+ 	[[ $AUTO_ROUTE4 -eq 1 || $AUTO_ROUTE6 -eq 1 ]] && set_endpoint_direct_route
+@@ -439,7 +341,7 @@ cmd_up() {
+ }
+
+ cmd_down() {
+-	[[ " $(wg show interfaces) " == *" $INTERFACE "* ]] || die "\`$INTERFACE' is not a WireGuard interface"
++	[[ " $(freebsd-wg show interfaces) " == *" $INTERFACE "* ]] || die "\`$INTERFACE' is not a WireGuard interface"
+ 	execute_hooks "${PRE_DOWN[@]}"
+ 	[[ $SAVE_CONFIG -eq 0 ]] || save_config
+ 	del_if
 @@ -447,15 +349,6 @@ cmd_down() {
  	execute_hooks "${POST_DOWN[@]}"
  }

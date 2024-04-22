@@ -1,5 +1,5 @@
 diff --git a/src/wg-quick/darwin.bash b/src/wg-quick/darwin.bash
-index c938112..64ab645 100755
+index c938112..4c13b33 100755
 --- a/src/wg-quick/darwin.bash
 +++ b/src/wg-quick/darwin.bash
 @@ -24,7 +24,6 @@ PRE_UP=( )
@@ -18,7 +18,7 @@ index c938112..64ab645 100755
  			esac
  		fi
  		WG_CONFIG+="$line"$'\n'
-@@ -84,25 +82,6 @@ parse_options() {
+@@ -84,32 +82,13 @@ parse_options() {
  	shopt -u nocasematch
  }
 
@@ -44,6 +44,14 @@ index c938112..64ab645 100755
  auto_su() {
  	[[ $UID == 0 ]] || exec sudo -p "$PROGRAM must be run as root. Please enter the password for %u to continue: " -- "$BASH" -- "$SELF" "${ARGS[@]}"
  }
+
+ get_real_interface() {
+ 	local interface diff
+-	wg show interfaces >/dev/null
++	darwin-wg show interfaces >/dev/null
+ 	[[ -f "/var/run/wireguard/$INTERFACE.name" ]] || return 1
+ 	interface="$(< "/var/run/wireguard/$INTERFACE.name")"
+ 	[[ -n $interface && -S "/var/run/wireguard/$interface.sock" ]] || return 1
 @@ -120,13 +99,6 @@ get_real_interface() {
  	return 0
  }
@@ -58,6 +66,15 @@ index c938112..64ab645 100755
  del_routes() {
  	[[ -n $REAL_INTERFACE ]] || return 0
  	local todelete=( ) destination gateway netif
+@@ -212,7 +184,7 @@ collect_endpoints() {
+ 	while read -r _ endpoint; do
+ 		[[ $endpoint =~ ^\[?([a-z0-9:.]+)\]?:[0-9]+$ ]] || continue
+ 		ENDPOINTS+=( "${BASH_REMATCH[1]}" )
+-	done < <(wg show "$REAL_INTERFACE" endpoints)
++	done < <(darwin-wg show "$REAL_INTERFACE" endpoints)
+ }
+
+ declare -A SERVICE_DNS
 @@ -342,7 +314,6 @@ monitor_daemon() {
  		fi
  	done
@@ -113,7 +130,7 @@ index c938112..64ab645 100755
  execute_hooks() {
  	local hook
  	for hook in "$@"; do
-@@ -418,43 +349,11 @@ execute_hooks() {
+@@ -418,49 +349,17 @@ execute_hooks() {
  	done
  }
 
@@ -157,6 +174,22 @@ index c938112..64ab645 100755
  	for i in "${ADDRESSES[@]}"; do
  		add_addr "$i"
  	done
+ 	set_mtu
+ 	up_if
+-	for i in $(while read -r _ i; do for i in $i; do [[ $i =~ ^[0-9a-z:.]+/[0-9]+$ ]] && echo "$i"; done; done < <(wg show "$REAL_INTERFACE" allowed-ips) | sort -nr -k 2 -t /); do
++	for i in $(while read -r _ i; do for i in $i; do [[ $i =~ ^[0-9a-z:.]+/[0-9]+$ ]] && echo "$i"; done; done < <(darwin-wg show "$REAL_INTERFACE" allowed-ips) | sort -nr -k 2 -t /); do
+ 		add_route "$i"
+ 	done
+ 	[[ $AUTO_ROUTE4 -eq 1 || $AUTO_ROUTE6 -eq 1 ]] && set_endpoint_direct_route
+@@ -471,7 +370,7 @@ cmd_up() {
+ }
+
+ cmd_down() {
+-	if ! get_real_interface || [[ " $(wg show interfaces) " != *" $REAL_INTERFACE "* ]]; then
++	if ! get_real_interface || [[ " $(darwin-wg show interfaces) " != *" $REAL_INTERFACE "* ]]; then
+ 		die "\`$INTERFACE' is not a WireGuard interface"
+ 	fi
+ 	execute_hooks "${PRE_DOWN[@]}"
 @@ -480,43 +379,20 @@ cmd_down() {
  	execute_hooks "${POST_DOWN[@]}"
  }

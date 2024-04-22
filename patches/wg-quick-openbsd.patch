@@ -1,5 +1,5 @@
 diff --git a/src/wg-quick/openbsd.bash b/src/wg-quick/openbsd.bash
-index b58ecf5..626b159 100755
+index b58ecf5..15c9bed 100755
 --- a/src/wg-quick/openbsd.bash
 +++ b/src/wg-quick/openbsd.bash
 @@ -23,7 +23,6 @@ PRE_UP=( )
@@ -55,6 +55,24 @@ index b58ecf5..626b159 100755
  del_routes() {
  	local todelete=( ) destination gateway netif
  	[[ -n $REAL_INTERFACE ]] || return 0
+@@ -175,7 +150,7 @@ set_mtu() {
+ 		[[ ${BASH_REMATCH[1]} == *:* ]] && family=inet6
+ 		output="$(route -n get "-$family" "${BASH_REMATCH[1]}" || true)"
+ 		[[ $output =~ interface:\ ([^ ]+)$'\n' && $(ifconfig "${BASH_REMATCH[1]}") =~ mtu\ ([0-9]+) && ${BASH_REMATCH[1]} -gt $mtu ]] && mtu="${BASH_REMATCH[1]}"
+-	done < <(wg show "$REAL_INTERFACE" endpoints)
++	done < <(openbsd-wg show "$REAL_INTERFACE" endpoints)
+ 	if [[ $mtu -eq 0 ]]; then
+ 		read -r output < <(route -n get default || true) || true
+ 		[[ $output =~ interface:\ ([^ ]+)$'\n' && $(ifconfig "${BASH_REMATCH[1]}") =~ mtu\ ([0-9]+) && ${BASH_REMATCH[1]} -gt $mtu ]] && mtu="${BASH_REMATCH[1]}"
+@@ -208,7 +183,7 @@ collect_endpoints() {
+ 	while read -r _ endpoint; do
+ 		[[ $endpoint =~ ^\[?([a-z0-9:.]+)\]?:[0-9]+$ ]] || continue
+ 		ENDPOINTS+=( "${BASH_REMATCH[1]}" )
+-	done < <(wg show "$REAL_INTERFACE" endpoints)
++	done < <(openbsd-wg show "$REAL_INTERFACE" endpoints)
+ }
+
+ set_endpoint_direct_route() {
 @@ -336,46 +311,6 @@ add_route() {
  	fi
  }
@@ -136,6 +154,15 @@ index b58ecf5..626b159 100755
  cmd_up() {
  	local i
  	get_real_interface && die "\`$INTERFACE' already exists as \`$REAL_INTERFACE'"
+@@ -426,7 +334,7 @@ cmd_up() {
+ 	set_mtu
+ 	up_if
+ 	set_dns
+-	for i in $(while read -r _ i; do for i in $i; do [[ $i =~ ^[0-9a-z:.]+/[0-9]+$ ]] && echo "$i"; done; done < <(wg show "$REAL_INTERFACE" allowed-ips) | sort -nr -k 2 -t /); do
++	for i in $(while read -r _ i; do for i in $i; do [[ $i =~ ^[0-9a-z:.]+/[0-9]+$ ]] && echo "$i"; done; done < <(openbsd-wg show "$REAL_INTERFACE" allowed-ips) | sort -nr -k 2 -t /); do
+ 		add_route "$i"
+ 	done
+ 	[[ $AUTO_ROUTE4 -eq 1 || $AUTO_ROUTE6 -eq 1 ]] && set_endpoint_direct_route
 @@ -438,21 +346,11 @@ cmd_up() {
  cmd_down() {
  	get_real_interface || die "\`$INTERFACE' is not a WireGuard interface"
