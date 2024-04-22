@@ -37,7 +37,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const makeBundledWgQuickLayer: (options: { sudo: boolean | "ask" }) => WireguardControlImpl
+export declare const makeBundledWgQuickLayer: (options: { sudo: boolean }) => WireguardControlImpl
 ```
 
 Added in v1.0.0
@@ -47,7 +47,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const makeSystemWgQuickLayer: (options: { sudo: boolean | "ask" }) => WireguardControlImpl
+export declare const makeSystemWgQuickLayer: (options: { sudo: boolean }) => WireguardControlImpl
 ```
 
 Added in v1.0.0
