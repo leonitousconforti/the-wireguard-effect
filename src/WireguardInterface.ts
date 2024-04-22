@@ -167,7 +167,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         Match.when("darwin", () => `/var/run/wireguard/${this.Name}.sock`),
         Match.when("freebsd", () => `/var/run/wireguard/${this.Name}.sock`),
         Match.when("openbsd", () => `/var/run/wireguard/${this.Name}.sock`),
-        Match.when("win32", () => `\\\\.\\\\pipe\\\\ProtectedPrefix\\Administrators\\WireGuard\\${this.Name}`),
+        Match.when("win32", () => `\\\\.\\pipe\\ProtectedPrefix\\Administrators\\WireGuard\\${this.Name}`),
         Match.exhaustive
     )(Function.unsafeCoerce(process.platform));
 
