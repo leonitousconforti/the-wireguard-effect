@@ -117,8 +117,34 @@ jobs:
           WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
           WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
 
-  macos-test:
-    runs-on: macos-latest
+  macos-intel-test:
+    runs-on: macos-13
+    timeout-minutes: 10
+    needs: [build]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: the-wireguard-effect
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - run: pnpm install
+      - run: |
+          brew install bash
+          sudo chmod +x ./src/*
+      - run: sudo -E pnpm test
+        env:
+          HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
+          WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
+          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
+
+  macos-apple-silicon-test:
+    runs-on: macos-14
     timeout-minutes: 10
     needs: [build]
     steps:
