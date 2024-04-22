@@ -11,7 +11,6 @@ import * as Path from "@effect/platform/Path";
 import * as Socket from "@effect/platform/Socket";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
-import * as sudoPrompt from "@vscode/sudo-prompt";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
 import * as Context from "effect/Context";
@@ -137,22 +136,21 @@ export const makeUserspaceLayer = (): WireguardControlImpl => {
  * @since 1.0.0
  * @category Constructors
  */
-export const makeBundledWgQuickLayer = (options: { sudo: boolean | "ask" }): WireguardControlImpl => {
+export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardControlImpl => {
     const execCommand = (command: string): Effect.Effect<void, Cause.UnknownException, never> =>
-        options.sudo === "ask"
-            ? Effect.try(() => sudoPrompt.exec(`${command}`, { name: "The-WireGuard-Effect" }))
-            : Effect.tryPromise(() => {
-                  const subprocess = execa.execaCommand(
-                      `${options.sudo === true && process.platform !== "win32" ? "sudo " : ""}${command}`,
-                      {
-                          stdio: "ignore",
-                          cleanup: !command.includes("wireguard-go"),
-                          detached: command.includes("wireguard-go"),
-                      }
-                  );
-                  if (command.includes("wireguard-go")) subprocess.unref();
-                  return subprocess;
-              });
+        Effect.tryPromise((): execa.ExecaChildProcess<string> => {
+            const subprocess = execa.execaCommand(
+                `${options.sudo === true && process.platform !== "win32" ? "sudo " : ""}${command}`,
+                {
+                    stdio: "ignore",
+                    cleanup: !command.includes("wireguard-go"),
+                    detached: command.includes("wireguard-go"),
+                }
+            );
+            if (command.includes("wireguard-go")) subprocess.unref();
+            if (!command.includes("wireguard-go")) return subprocess;
+            else return Function.unsafeCoerce(Promise.resolve({}));
+        });
 
     const up: WireguardControlImpl["up"] = (wireguardConfig, wireguardInterface) =>
         Effect.gen(function* (λ) {
@@ -234,22 +232,20 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean | "ask" }): Wir
  * @since 1.0.0
  * @category Constructors
  */
-export const makeSystemWgQuickLayer = (options: { sudo: boolean | "ask" }): WireguardControlImpl => {
+export const makeSystemWgQuickLayer = (options: { sudo: boolean }): WireguardControlImpl => {
     const execCommand = (command: string): Effect.Effect<void, Cause.UnknownException, never> =>
-        options.sudo === "ask"
-            ? Effect.try(() => sudoPrompt.exec(`${command}`, { name: "The-WireGuard-Effect" }))
-            : Effect.tryPromise(() => {
-                  const subprocess = execa.execaCommand(
-                      `${options.sudo === true && process.platform !== "win32" ? "sudo " : ""}${command}`,
-                      {
-                          stdio: "ignore",
-                          cleanup: !command.includes("wireguard-go"),
-                          detached: command.includes("wireguard-go"),
-                      }
-                  );
-                  if (command.includes("wireguard-go")) subprocess.unref();
-                  return subprocess;
-              });
+        Effect.tryPromise(() => {
+            const subprocess = execa.execaCommand(
+                `${options.sudo === true && process.platform !== "win32" ? "sudo " : ""}${command}`,
+                {
+                    stdio: "ignore",
+                    cleanup: !command.includes("wireguard-go"),
+                    detached: command.includes("wireguard-go"),
+                }
+            );
+            if (command.includes("wireguard-go")) subprocess.unref();
+            return subprocess;
+        });
 
     const up: WireguardControlImpl["up"] = (wireguardConfig, wireguardInterface) =>
         Effect.gen(function* (λ) {
