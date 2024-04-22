@@ -866,6 +866,11 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
+  '@rollup/wasm-node@4.16.2':
+    resolution: {integrity: sha512-cdZzfKWqFc3TjZom7+qHEFqQagBTbk9is7XwWSyes0nnreuJan4MRdbxzDYBqYBcwOAao+H5qjcyZria3SEfNg==}
+    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
+    hasBin: true
+
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
@@ -1376,8 +1381,8 @@ packages:
   effect@3.0.3:
     resolution: {integrity: sha512-mgG+FoWrM4sny8OxDFWCpq+6LwGf9cK/JztVhxZQeZM9ZMXY+lKbdMEQmemNYce0QVAz2+YqUKwhKzOidwbZzg==}
 
-  electron-to-chromium@1.4.745:
-    resolution: {integrity: sha512-tRbzkaRI5gbUn5DEvF0dV4TQbMZ5CLkWeTAXmpC9IrYT+GE+x76i9p+o3RJ5l9XmdQlI1pPhVtE9uNcJJ0G0EA==}
+  electron-to-chromium@1.4.746:
+    resolution: {integrity: sha512-jeWaIta2rIG2FzHaYIhSuVWqC6KJYo7oSBX4Jv7g+aVujKztfvdpf+n6MGwZdC5hQXbax4nntykLH2juIQrfPg==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -2869,9 +2874,9 @@ packages:
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
-  undici@6.13.0:
-    resolution: {integrity: sha512-Q2rtqmZWrbP8nePMq7mOJIN98M0fYvSgV89vwl/BQRT4mDOeY2GXZngfGpcBBhtky3woM7G24wZV3Q304Bv6cw==}
-    engines: {node: '>=18.0'}
+  undici@6.14.0:
+    resolution: {integrity: sha512-esJ/x2QU5boTG6thdA0o4qP3cv/oPx9mcQGcp8TAHI+ZBTa0EvM9Jiyp0ILdPGLGxs5HATTKrJqAK+YhrSFicg==}
+    engines: {node: '>=18.17'}
 
   unist-util-stringify-position@2.0.3:
     resolution: {integrity: sha512-3faScn5I+hy9VleOq/qNbAd6pAx7iH5jYBMS9I1HgQVijz/4mv5Bvw5iw1sC/90CODiKo81G/ps8AJrISn687g==}
@@ -3250,7 +3255,7 @@ snapshots:
       '@effect/platform-node-shared': 0.4.8(@effect/platform@0.50.3(@effect/schema@0.66.6(effect@3.0.3)(fast-check@3.17.2))(effect@3.0.3)(ws@8.16.0))(effect@3.0.3)
       effect: 3.0.3
       mime: 3.0.0
-      undici: 6.13.0
+      undici: 6.14.0
       ws: 8.16.0
     transitivePeerDependencies:
       - bufferutil
@@ -3607,6 +3612,12 @@ snapshots:
   '@pnpm/deps.graph-sequencer@1.0.0': {}
 
   '@rollup/wasm-node@4.16.1':
+    dependencies:
+      '@types/estree': 1.0.5
+    optionalDependencies:
+      fsevents: 2.3.3
+
+  '@rollup/wasm-node@4.16.2':
     dependencies:
       '@types/estree': 1.0.5
     optionalDependencies:
@@ -3993,7 +4004,7 @@ snapshots:
   browserslist@4.23.0:
     dependencies:
       caniuse-lite: 1.0.30001612
-      electron-to-chromium: 1.4.745
+      electron-to-chromium: 1.4.746
       node-releases: 2.0.14
       update-browserslist-db: 1.0.13(browserslist@4.23.0)
 
@@ -4186,7 +4197,7 @@ snapshots:
 
   effect@3.0.3: {}
 
-  electron-to-chromium@1.4.745: {}
+  electron-to-chromium@1.4.746: {}
 
   emoji-regex@8.0.0: {}
 
@@ -5957,7 +5968,7 @@ snapshots:
 
   undici-types@5.26.5: {}
 
-  undici@6.13.0: {}
+  undici@6.14.0: {}
 
   unist-util-stringify-position@2.0.3:
     dependencies:
@@ -6005,7 +6016,7 @@ snapshots:
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.38
-      rollup: '@rollup/wasm-node@4.16.1'
+      rollup: '@rollup/wasm-node@4.16.2'
     optionalDependencies:
       '@types/node': 20.12.7
       fsevents: 2.3.3
