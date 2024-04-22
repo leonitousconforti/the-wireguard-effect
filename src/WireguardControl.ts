@@ -148,8 +148,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                 }
             );
             if (command.includes("wireguard-go")) subprocess.unref();
-            if (!command.includes("wireguard-go")) return subprocess;
-            else return Function.unsafeCoerce(Promise.resolve({}));
+            return subprocess;
         });
 
     const up: WireguardControlImpl["up"] = (wireguardConfig, wireguardInterface) =>
