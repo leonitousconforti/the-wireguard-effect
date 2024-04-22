@@ -42,11 +42,12 @@
         "**/node_modules": true,
         "**/bower_components": true,
         "**/*.code-search": true,
+        "submodules/nvlist/**": true,
         "submodules/wintun/**": true,
+        "submodules/wireguard-apple/**": true,
         "submodules/wireguard-go/**": true,
         "submodules/wireguard-tools/**": true,
         "submodules/wireguard-windows/**": true,
-        "submodules/wireguard-apple/**": true,
         "submodules/WSL2-Linux-Kernel/**": true
     }
 }
