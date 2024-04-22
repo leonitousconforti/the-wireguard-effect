@@ -18,8 +18,9 @@ mkdir -p ../dist/prebuilds
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=openbsd GOARCH=arm64 make && mv wireguard-go ../../dist/prebuilds/openbsd-arm64-wireguard-go && chmod +x ../../dist/prebuilds/openbsd-arm64-wireguard-go)
 
 # wintun prebuilds (TODO: aquire these from a public source and check hashes)
-(cd ./wintun && cp wintun-amd64.dll ../../dist/prebuilds/win32-amd64-wintun.dll)
-(cd ./wintun && cp wintun-arm64.dll ../../dist/prebuilds/win32-arm64-wintun.dll)
+# (cd ./wintun && cp wintun-amd64.dll ../../dist/prebuilds/win32-amd64-wintun.dll)
+# (cd ./wintun && cp wintun-arm64.dll ../../dist/prebuilds/win32-arm64-wintun.dll)
+(cd ./wintun && cp wintun-amd64.dll ../../dist/prebuilds/wintun.dll)
 
 # nvlist prebuilds (for wg-quick freebsd)
 (cd ./nvlist && git reset --hard && git apply ../../patches/nvlist.patch && cd pkg && make deb && make clean)

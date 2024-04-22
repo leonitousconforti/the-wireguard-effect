@@ -14,3 +14,4 @@ src/*-wintun.dll
 src/*.exe
 src/*-bzImage
 src/*-wg
+src/wintun.dll
