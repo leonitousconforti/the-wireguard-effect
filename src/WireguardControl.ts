@@ -178,7 +178,10 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean | "ask" }): Wir
             const wgQuickCommandWin = `${bundledWgWindowsExecutablePath} /installtunnelservice ${file}`;
             const wgQuickCommandNix = `${bundledWgQuickExecutablePath} up ${file}`;
             const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
-            const wireguardGoCommand = `${bundledWireguardGoExecutablePath} ${wireguardInterface.Name}`;
+
+            const wireguardGoCommandWin = `"${bundledWireguardGoExecutablePath}" ${wireguardInterface.Name}`;
+            const wireguardGoCommandNix = `${bundledWireguardGoExecutablePath} ${wireguardInterface.Name}`;
+            const wireguardGoCommand = process.platform === "win32" ? wireguardGoCommandWin : wireguardGoCommandNix;
 
             yield* λ(execCommand(wireguardGoCommand));
             yield* λ(
