@@ -45,7 +45,6 @@
         "rollup": "npm:@rollup/wasm-node"
     },
     "dependencies": {
-        "@vscode/sudo-prompt": "^9.3.1",
         "execa": "^8.0.1",
         "ini": "^4.1.2"
     },

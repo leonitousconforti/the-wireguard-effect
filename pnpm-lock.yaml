@@ -16,9 +16,6 @@ importers:
 
   .:
     dependencies:
-      '@vscode/sudo-prompt':
-        specifier: ^9.3.1
-        version: 9.3.1
       execa:
         specifier: ^8.0.1
         version: 8.0.1
@@ -1056,9 +1053,6 @@ packages:
 
   '@vitest/utils@1.5.0':
     resolution: {integrity: sha512-BDU0GNL8MWkRkSRdNFvCUCAVOeHaUlVJ9Tx0TYBZyXaaOTmGtUFObzchCivIBrIwKzvZA7A9sCejVhXM2aY98A==}
-
-  '@vscode/sudo-prompt@9.3.1':
-    resolution: {integrity: sha512-9ORTwwS74VaTn38tNbQhsA5U44zkJfcb0BdTSyyG6frP4e8KMtHuTXYmwefe5dpL8XB1aGSIVTaLjD3BbWb5iA==}
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -3871,8 +3865,6 @@ snapshots:
       estree-walker: 3.0.3
       loupe: 2.3.7
       pretty-format: 29.7.0
-
-  '@vscode/sudo-prompt@9.3.1': {}
 
   acorn-jsx@5.3.2(acorn@8.11.3):
     dependencies:
