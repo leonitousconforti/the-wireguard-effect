@@ -35,7 +35,7 @@
         "build-esm": "tsc -b tsconfig.build.json",
         "build-submodules": "./submodules/build.mjs",
         "check": "tsc -b tsconfig.json",
-        "clean": "rimraf .tsbuildinfo docs build dist coverage && rimraf --glob src/*-wireguard-go src/*-wg-quick src/*-wintun.dll src/LICENSE-* src/*.exe src/*-bzImage src/wg",
+        "clean": "rimraf .tsbuildinfo docs build dist coverage && rimraf --glob src/*-wireguard-go src/*-wg-quick src/*-wintun.dll src/LICENSE-* src/*.exe src/*-bzImage src/*-wg",
         "codegen": "build-utils prepare-v2",
         "coverage": "vitest --coverage",
         "lint": "eslint .",
