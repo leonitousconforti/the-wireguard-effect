@@ -14,3 +14,6 @@
 	path = submodules/WSL2-Linux-Kernel
 	url = https://github.com/microsoft/WSL2-Linux-Kernel.git
 	branch = linux-msft-wsl-5.15.y
+[submodule "submodules/nvlist"]
+	path = submodules/nvlist
+	url = https://github.com/fudosecurity/nvlist.git
