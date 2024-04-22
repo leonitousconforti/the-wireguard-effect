@@ -4,14 +4,14 @@ set -euxo pipefail
 mkdir -p ../dist/prebuilds
 
 # amd64 wireguard-go prebuilds
-(cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=windows GOARCH=amd64 make && mv wireguard-go ../../dist/prebuilds/win32-amd64-wireguard-go && chmod +x ../../dist/prebuilds/win32-amd64-wireguard-go)
+(cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=windows GOARCH=amd64 make && mv wireguard-go ../../dist/prebuilds/win32-amd64-wireguard-go.exe && chmod +x ../../dist/prebuilds/win32-amd64-wireguard-go.exe)
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=linux GOARCH=amd64 make && mv wireguard-go ../../dist/prebuilds/linux-amd64-wireguard-go && chmod +x ../../dist/prebuilds/linux-amd64-wireguard-go)
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=darwin GOARCH=amd64 make && mv wireguard-go ../../dist/prebuilds/darwin-amd64-wireguard-go && chmod +x ../../dist/prebuilds/darwin-amd64-wireguard-go)
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=freebsd GOARCH=amd64 make && mv wireguard-go ../../dist/prebuilds/freebsd-amd64-wireguard-go && chmod +x ../../dist/prebuilds/freebsd-amd64-wireguard-go)
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=openbsd GOARCH=amd64 make && mv wireguard-go ../../dist/prebuilds/openbsd-amd64-wireguard-go && chmod +x ../../dist/prebuilds/openbsd-amd64-wireguard-go)
 
 # arm64 wireguard-go prebuilds
-(cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=windows GOARCH=arm64 make && mv wireguard-go ../../dist/prebuilds/win32-arm64-wireguard-go && chmod +x ../../dist/prebuilds/win32-arm64-wireguard-go)
+(cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=windows GOARCH=arm64 make && mv wireguard-go ../../dist/prebuilds/win32-arm64-wireguard-go.exe && chmod +x ../../dist/prebuilds/win32-arm64-wireguard-go.exe)
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=linux GOARCH=arm64 make && mv wireguard-go ../../dist/prebuilds/linux-arm64-wireguard-go && chmod +x ../../dist/prebuilds/linux-arm64-wireguard-go)
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=darwin GOARCH=arm64 make && mv wireguard-go ../../dist/prebuilds/darwin-arm64-wireguard-go && chmod +x ../../dist/prebuilds/darwin-arm64-wireguard-go)
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=freebsd GOARCH=arm64 make && mv wireguard-go ../../dist/prebuilds/freebsd-arm64-wireguard-go && chmod +x ../../dist/prebuilds/freebsd-arm64-wireguard-go)

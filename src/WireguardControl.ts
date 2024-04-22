@@ -163,7 +163,8 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean | "ask" }): Wir
             yield* λ(wireguardConfig.writeToFile(file));
 
             const arch = process.arch === "x64" ? "amd64" : process.arch;
-            const wireguardGoUrl = new URL(`./${process.platform}-${arch}-wireguard-go`, import.meta.url);
+            const extension = process.platform === "win32" ? ".exe" : "";
+            const wireguardGoUrl = new URL(`./${process.platform}-${arch}-wireguard-go${extension}`, import.meta.url);
             const bundledWireguardGoExecutablePath = yield* λ(path.fromFileUrl(wireguardGoUrl));
             yield* λ(fs.access(bundledWireguardGoExecutablePath, { ok: true }));
 
@@ -178,10 +179,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean | "ask" }): Wir
             const wgQuickCommandWin = `${bundledWgWindowsExecutablePath} /installtunnelservice ${file}`;
             const wgQuickCommandNix = `${bundledWgQuickExecutablePath} up ${file}`;
             const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
-
-            const wireguardGoCommandWin = `"${bundledWireguardGoExecutablePath}" ${wireguardInterface.Name}`;
-            const wireguardGoCommandNix = `${bundledWireguardGoExecutablePath} ${wireguardInterface.Name}`;
-            const wireguardGoCommand = process.platform === "win32" ? wireguardGoCommandWin : wireguardGoCommandNix;
+            const wireguardGoCommand = `${bundledWireguardGoExecutablePath} ${wireguardInterface.Name}`;
 
             yield* λ(execCommand(wireguardGoCommand));
             yield* λ(
