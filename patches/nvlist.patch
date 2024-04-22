@@ -1,0 +1,12 @@
+diff --git a/src/GNUmakefile b/src/GNUmakefile
+index 2b883fe..fac2c5c 100644
+--- a/src/GNUmakefile
++++ b/src/GNUmakefile
+@@ -8,6 +8,7 @@ CFLAGS+=	-std=c99 -O2 -g -Wall -Wextra -Werror
+ CFLAGS+=	-D_POSIX_C_SOURCE=200809L
+ CFLAGS+=	-D_GNU_SOURCE -D_DEFAULT_SOURCE
+ CFLAGS+=	-DWITH_MSGIO -D__FBSDID\(x\)=
++CFLAGS+=    -fcommon
+
+ #
+ # Extended warning flags.

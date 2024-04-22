@@ -21,8 +21,18 @@ mkdir -p ../dist/prebuilds
 (cd ./wintun && cp wintun-amd64.dll ../../dist/prebuilds/win32-amd64-wintun.dll)
 (cd ./wintun && cp wintun-arm64.dll ../../dist/prebuilds/win32-arm64-wintun.dll)
 
+# nvlist prebuilds (for wg-quick freebsd)
+(cd ./nvlist && git reset --hard && git apply ../../patches/nvlist.patch && cd pkg && make deb && make clean)
+sudo apt-get install ./nvlist/libnv1_0.0.1_amd64.deb
+sudo apt-get install ./nvlist/libnv-dev_0.0.1_amd64.deb
+sudo ldconfig
+(cd ./nvlist && git reset --hard && git clean --force -d)
+
 # wg-quick prebuilds
-(cd ./wireguard-tools/src && make clean && make && cp ./wg ../../../dist/prebuilds/wg && chmod +x ../../../dist/prebuilds/wg)
+(cd ./wireguard-tools/src && make clean && make PLATFORM=linux && cp ./wg ../../../dist/prebuilds/linux-wg && chmod +x ../../../dist/prebuilds/linux-wg)
+(cd ./wireguard-tools/src && make clean && make PLATFORM=darwin && cp ./wg ../../../dist/prebuilds/darwin-wg && chmod +x ../../../dist/prebuilds/darwin-wg)
+(cd ./wireguard-tools/src && make clean && make PLATFORM=freebsd && cp ./wg ../../../dist/prebuilds/freebsd-wg && chmod +x ../../../dist/prebuilds/freebsd-wg)
+(cd ./wireguard-tools/src && make clean && make PLATFORM=openbsd && cp ./wg ../../../dist/prebuilds/openbsd-wg && chmod +x ../../../dist/prebuilds/openbsd-wg)
 (cd ./wireguard-tools && git apply ../../patches/wg-quick-linux.patch && cp src/wg-quick/linux.bash ../../dist/prebuilds/linux-wg-quick && chmod +x ../../dist/prebuilds/linux-wg-quick)
 (cd ./wireguard-tools && git apply ../../patches/wg-quick-darwin.patch && cp src/wg-quick/darwin.bash ../../dist/prebuilds/darwin-wg-quick && chmod +x ../../dist/prebuilds/darwin-wg-quick)
 (cd ./wireguard-tools && git apply ../../patches/wg-quick-freebsd.patch && cp src/wg-quick/freebsd.bash ../../dist/prebuilds/freebsd-wg-quick && chmod +x ../../dist/prebuilds/freebsd-wg-quick)
