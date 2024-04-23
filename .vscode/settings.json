@@ -43,6 +43,7 @@
         "**/bower_components": true,
         "**/*.code-search": true,
         "submodules/nvlist/**": true,
+        "submodules/osxcross/**": true,
         "submodules/wintun/**": true,
         "submodules/wireguard-apple/**": true,
         "submodules/wireguard-go/**": true,
