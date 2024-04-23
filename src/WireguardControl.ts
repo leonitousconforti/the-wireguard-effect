@@ -19,7 +19,6 @@ import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as Resolver from "effect/RequestResolver";
-import * as Schedule from "effect/Schedule";
 import * as Scope from "effect/Scope";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
@@ -100,8 +99,7 @@ export const userspaceContact = (
         Stream.filter(String.isNonEmpty),
         Stream.run(Sink.collectAll()),
         Effect.tap(Function.flow(Chunk.last, Option.getOrThrow, Schema.decodeUnknown(WireguardErrors.SuccessErrno))),
-        Effect.map(Chunk.join("\n")),
-        Effect.retry(Schedule.recurs(3).pipe(Schedule.addDelay(() => "10 seconds")))
+        Effect.map(Chunk.join("\n"))
     );
 
 /**
