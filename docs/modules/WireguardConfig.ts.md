@@ -22,11 +22,6 @@ Added in v1.0.0
   - [generateHubSpokeConfigs](#generatehubspokeconfigs)
   - [generateP2PConfigs](#generatep2pconfigs)
   - [generateStarConfigs](#generatestarconfigs)
-- [Datatypes](#datatypes)
-  - [WireguardConfig (class)](#wireguardconfig-class)
-    - [writeToFile (property)](#writetofile-property)
-    - [up (property)](#up-property)
-    - [upScoped (property)](#upscoped-property)
 - [Requests](#requests)
   - [WireguardGetConfigRequest (class)](#wireguardgetconfigrequest-class)
   - [WireguardSetConfigRequest (class)](#wireguardsetconfigrequest-class)
@@ -36,8 +31,13 @@ Added in v1.0.0
 - [Responses](#responses)
   - [WireguardGetConfigResponse](#wireguardgetconfigresponse)
   - [WireguardGetConfigResponse (type alias)](#wireguardgetconfigresponse-type-alias)
-- [Transformations](#transformations)
+- [Schema Transformations](#schema-transformations)
   - [WireguardIniConfig](#wireguardiniconfig)
+- [Schemas](#schemas)
+  - [WireguardConfig (class)](#wireguardconfig-class)
+    - [writeToFile (property)](#writetofile-property)
+    - [up (property)](#up-property)
+    - [upScoped (property)](#upscoped-property)
 
 ---
 
@@ -522,77 +522,6 @@ export declare const generateStarConfigs: {
 
 Added in v1.0.0
 
-# Datatypes
-
-## WireguardConfig (class)
-
-A wireguard configuration.
-
-**Signature**
-
-```ts
-export declare class WireguardConfig
-```
-
-Added in v1.0.0
-
-### writeToFile (property)
-
-Writes a wireguard interface configuration to an INI file.
-
-**Signature**
-
-```ts
-writeToFile: (file: string) =>
-  Effect.Effect<void, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem | Path.Path>
-```
-
-Added in v1.0.0
-
-### up (property)
-
-Starts a wireguard tunnel that will continue to run and serve traffic
-even after the nodejs process exits.
-
-**Signature**
-
-```ts
-up: (interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>
-  Effect.Effect<
-    WireguardInterface.WireguardInterface,
-    | Socket.SocketError
-    | ParseResult.ParseError
-    | Cause.UnknownException
-    | PlatformError.PlatformError
-    | WireguardErrors.WireguardError,
-    FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
-  >
-```
-
-Added in v1.0.0
-
-### upScoped (property)
-
-Starts a wireguard tunnel that will be gracefully shutdown and stop
-serving traffic once the scope is closed.
-
-**Signature**
-
-```ts
-upScoped: (interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>
-  Effect.Effect<
-    WireguardInterface.WireguardInterface,
-    | Socket.SocketError
-    | ParseResult.ParseError
-    | Cause.UnknownException
-    | PlatformError.PlatformError
-    | WireguardErrors.WireguardError,
-    FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl | Scope.Scope
-  >
-```
-
-Added in v1.0.0
-
 # Requests
 
 ## WireguardGetConfigRequest (class)
@@ -726,7 +655,7 @@ export type WireguardGetConfigResponse = Schema.Schema.Type<typeof WireguardGetC
 
 Added in v1.0.0
 
-# Transformations
+# Schema Transformations
 
 ## WireguardIniConfig
 
@@ -736,6 +665,77 @@ A wireguard configuration encoded in the INI format.
 
 ```ts
 export declare const WireguardIniConfig: $WireguardIniConfig
+```
+
+Added in v1.0.0
+
+# Schemas
+
+## WireguardConfig (class)
+
+A wireguard configuration.
+
+**Signature**
+
+```ts
+export declare class WireguardConfig
+```
+
+Added in v1.0.0
+
+### writeToFile (property)
+
+Writes a wireguard interface configuration to an INI file.
+
+**Signature**
+
+```ts
+writeToFile: (file: string) =>
+  Effect.Effect<void, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem | Path.Path>
+```
+
+Added in v1.0.0
+
+### up (property)
+
+Starts a wireguard tunnel that will continue to run and serve traffic
+even after the nodejs process exits.
+
+**Signature**
+
+```ts
+up: (interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>
+  Effect.Effect<
+    WireguardInterface.WireguardInterface,
+    | Socket.SocketError
+    | ParseResult.ParseError
+    | Cause.UnknownException
+    | PlatformError.PlatformError
+    | WireguardErrors.WireguardError,
+    FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
+  >
+```
+
+Added in v1.0.0
+
+### upScoped (property)
+
+Starts a wireguard tunnel that will be gracefully shutdown and stop
+serving traffic once the scope is closed.
+
+**Signature**
+
+```ts
+upScoped: (interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>
+  Effect.Effect<
+    WireguardInterface.WireguardInterface,
+    | Socket.SocketError
+    | ParseResult.ParseError
+    | Cause.UnknownException
+    | PlatformError.PlatformError
+    | WireguardErrors.WireguardError,
+    FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl | Scope.Scope
+  >
 ```
 
 Added in v1.0.0

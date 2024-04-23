@@ -26,6 +26,7 @@ import * as Resolver from "effect/RequestResolver";
 import * as Scope from "effect/Scope";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
+import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
 import * as ini from "ini";
 
@@ -40,7 +41,7 @@ import * as WireguardPeer from "./WireguardPeer.js";
  * A wireguard configuration.
  *
  * @since 1.0.0
- * @category Datatypes
+ * @category Schemas
  */
 export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIniConfig")({
     /** TODO: Document */
@@ -186,7 +187,7 @@ export interface $WireguardIniConfig
  * A wireguard configuration encoded in the INI format.
  *
  * @since 1.0.0
- * @category Transformations
+ * @category Schema Transformations
  * @see {@link WireguardConfig}
  */
 export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(WireguardConfig, Schema.String, {
@@ -471,15 +472,15 @@ export const generateHubSpokeConfigs: {
 > => {
     return Predicate.isUndefined(options.cidrBlock)
         ? generate({
-              preshareKeys: "generate" as const,
               trustMap: "trustNoPeers" as const,
+              preshareKeys: "generate" as const,
               hubData: options.hubData as InternetSchemas.SetupDataEncoded,
               spokeData: options.spokeData as Array.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded>,
           })
         : generate({
-              preshareKeys: "generate" as const,
-              trustMap: "trustNoPeers" as const,
               cidrBlock: options.cidrBlock,
+              trustMap: "trustNoPeers" as const,
+              preshareKeys: "generate" as const,
               addressStartingIndex: options.addressStartingIndex,
               hubData: options.hubData as InternetSchemas.EndpointEncoded,
               spokeData: options.spokeData as Array.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
@@ -830,10 +831,13 @@ export const WireguardGetConfigResolver: Resolver.RequestResolver<WireguardGetCo
 export const WireguardSetConfigResolver: Resolver.RequestResolver<WireguardSetConfigRequest, never> =
     Resolver.fromEffect<never, WireguardSetConfigRequest>(({ config, wireguardInterface }) =>
         Effect.gen(function* (λ) {
-            // const fwmark = `fwmark=${config.FirewallMark}\n` as const;
             const listenPort = `listen_port=${config.ListenPort}\n` as const;
             const privateKeyHex = Buffer.from(config.PrivateKey, "base64").toString("hex");
             const privateKey = `private_key=${privateKeyHex}\n` as const;
+
+            const fwmark = Predicate.isNotUndefined(config.FirewallMark)
+                ? (`fwmark=${config.FirewallMark}\n` as const)
+                : String.empty;
 
             const peers = Function.pipe(
                 config.Peers,
@@ -841,7 +845,7 @@ export const WireguardSetConfigResolver: Resolver.RequestResolver<WireguardSetCo
                 Array.join("\n")
             );
 
-            const uapiConfig = `${listenPort}${privateKey}${peers}\n` as const;
+            const uapiConfig = `${privateKey}${listenPort}${fwmark}${peers}\n` as const;
             yield* λ(WireguardControl.userspaceContact(wireguardInterface, `set=1\n${uapiConfig}\n`));
             return wireguardInterface;
         })
