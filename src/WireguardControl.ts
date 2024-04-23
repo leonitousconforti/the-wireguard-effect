@@ -234,78 +234,6 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
 
 /**
  * @since 1.0.0
- * @category Constructors
- */
-export const makeSystemWgQuickLayer = (options: { sudo: boolean }): WireguardControlImpl => {
-    const execCommand = (command: string): Effect.Effect<void, Cause.UnknownException, never> =>
-        Effect.tryPromise(() => {
-            const subprocess = execa.execaCommand(
-                `${options.sudo === true && process.platform !== "win32" ? "sudo " : ""}${command}`,
-                {
-                    stdio: "ignore",
-                    cleanup: !command.includes("wireguard-go"),
-                    detached: command.includes("wireguard-go"),
-                }
-            );
-            if (command.includes("wireguard-go")) subprocess.unref();
-            return subprocess;
-        });
-
-    const up: WireguardControlImpl["up"] = (wireguardConfig, wireguardInterface) =>
-        Effect.gen(function* (λ) {
-            const path = yield* λ(Path.Path);
-            const fs = yield* λ(FileSystem.FileSystem);
-            const tempDirectory = yield* λ(fs.makeTempDirectory());
-            const file = path.join(tempDirectory, `${wireguardInterface.Name}.conf`);
-            yield* λ(wireguardConfig.writeToFile(file));
-
-            const wgQuickCommandWin = `wireguard.exe /installtunnelservice ${file}`;
-            const wgQuickCommandNix = `wg-quick up ${file}`;
-            const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
-            const wireguardGoCommand = `wireguard-go ${wireguardInterface.Name}`;
-
-            yield* λ(execCommand(wireguardGoCommand));
-            yield* λ(
-                Effect.request(
-                    new WireguardConfig.WireguardSetConfigRequest({ config: wireguardConfig, wireguardInterface }),
-                    WireguardConfig.WireguardSetConfigResolver
-                )
-            );
-            yield* λ(execCommand(wgQuickCommand));
-            return wireguardInterface;
-        });
-
-    const down: WireguardControlImpl["down"] = (wireguardConfig, wireguardInterface) =>
-        Effect.gen(function* (λ) {
-            const path = yield* λ(Path.Path);
-            const fs = yield* λ(FileSystem.FileSystem);
-            const tempDirectory = yield* λ(fs.makeTempDirectory());
-            const file = path.join(tempDirectory, `${wireguardInterface.Name}.conf`);
-            yield* λ(wireguardConfig.writeToFile(file));
-
-            const wgQuickCommandWin = `wireguard.exe /uninstalltunnelservice ${file}`;
-            const wgQuickCommandNix = `wg-quick down ${file}`;
-            const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
-            yield* λ(execCommand(wgQuickCommand));
-            return wireguardInterface;
-        });
-
-    const upScoped: WireguardControlImpl["upScoped"] = (wireguardConfig, wireguardInterface) =>
-        Effect.acquireRelease(up(wireguardConfig, wireguardInterface), () =>
-            down(wireguardConfig, wireguardInterface).pipe(Effect.orDie)
-        );
-
-    return WireguardControl.of({
-        up,
-        down,
-        upScoped,
-        getConfigRequestResolver: WireguardConfig.WireguardGetConfigResolver,
-        setConfigRequestResolver: WireguardConfig.WireguardSetConfigResolver,
-    });
-};
-
-/**
- * @since 1.0.0
  * @category Layers
  */
 export const UserspaceLayer = Layer.sync(WireguardControl, makeUserspaceLayer);
@@ -315,9 +243,3 @@ export const UserspaceLayer = Layer.sync(WireguardControl, makeUserspaceLayer);
  * @category Layers
  */
 export const BundledWgQuickLayer = Layer.sync(WireguardControl, () => makeBundledWgQuickLayer({ sudo: true }));
-
-/**
- * @since 1.0.0
- * @category Layers
- */
-export const SystemWgQuickLayer = Layer.sync(WireguardControl, () => makeSystemWgQuickLayer({ sudo: true }));

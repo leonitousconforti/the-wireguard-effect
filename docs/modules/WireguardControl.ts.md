@@ -16,11 +16,9 @@ Added in v1.0.0
 
 - [Constructors](#constructors)
   - [makeBundledWgQuickLayer](#makebundledwgquicklayer)
-  - [makeSystemWgQuickLayer](#makesystemwgquicklayer)
   - [makeUserspaceLayer](#makeuserspacelayer)
 - [Layers](#layers)
   - [BundledWgQuickLayer](#bundledwgquicklayer)
-  - [SystemWgQuickLayer](#systemwgquicklayer)
   - [UserspaceLayer](#userspacelayer)
 - [Models](#models)
   - [WireguardControlImpl (interface)](#wireguardcontrolimpl-interface)
@@ -38,16 +36,6 @@ Added in v1.0.0
 
 ```ts
 export declare const makeBundledWgQuickLayer: (options: { sudo: boolean }) => WireguardControlImpl
-```
-
-Added in v1.0.0
-
-## makeSystemWgQuickLayer
-
-**Signature**
-
-```ts
-export declare const makeSystemWgQuickLayer: (options: { sudo: boolean }) => WireguardControlImpl
 ```
 
 Added in v1.0.0
@@ -70,16 +58,6 @@ Added in v1.0.0
 
 ```ts
 export declare const BundledWgQuickLayer: Layer.Layer<WireguardControl, never, never>
-```
-
-Added in v1.0.0
-
-## SystemWgQuickLayer
-
-**Signature**
-
-```ts
-export declare const SystemWgQuickLayer: Layer.Layer<WireguardControl, never, never>
 ```
 
 Added in v1.0.0
