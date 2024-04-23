@@ -19,6 +19,7 @@ Added in v1.0.0
   - [$AddressFromString (interface)](#addressfromstring-interface)
   - [$CidrBlockFromString (interface)](#cidrblockfromstring-interface)
   - [$DurationFromSeconds (interface)](#durationfromseconds-interface)
+  - [$DurationFromSecondsString (interface)](#durationfromsecondsstring-interface)
   - [$Endpoint (interface)](#endpoint-interface)
   - [$HostnameEndpoint (interface)](#hostnameendpoint-interface)
   - [$IPv4CidrMask (interface)](#ipv4cidrmask-interface)
@@ -54,6 +55,7 @@ Added in v1.0.0
     - [family (property)](#family-property)
   - [CidrBlockFromString](#cidrblockfromstring)
   - [DurationFromSeconds](#durationfromseconds)
+  - [DurationFromSecondsString](#durationfromsecondsstring)
   - [Endpoint](#endpoint)
   - [HostnameEndpoint](#hostnameendpoint)
   - [IPv4 (class)](#ipv4-class)
@@ -121,6 +123,17 @@ Added in v1.0.0
 ```ts
 export interface $DurationFromSeconds
   extends Schema.Annotable<$DurationFromSeconds, DurationFromSecondsBrand, number, never> {}
+```
+
+Added in v1.0.0
+
+## $DurationFromSecondsString (interface)
+
+**Signature**
+
+```ts
+export interface $DurationFromSecondsString
+  extends Schema.Annotable<$DurationFromSecondsString, DurationFromSecondsBrand, string, never> {}
 ```
 
 Added in v1.0.0
@@ -512,6 +525,42 @@ Transforms a `number` of seconds into a `Duration`.
 
 ```ts
 export declare const DurationFromSeconds: $DurationFromSeconds
+```
+
+**Example**
+
+```ts
+import * as Duration from "effect/Duration"
+import * as Schema from "@effect/schema/Schema"
+import { DurationFromSeconds, DurationFromSecondsBrand } from "the-wireguard-effect/InternetSchemas"
+
+const decodeDuration = Schema.decodeSync(DurationFromSeconds)
+const duration = decodeDuration(11)
+assert.strictEqual(Duration.toSeconds(duration), 11)
+```
+
+Added in v1.0.0
+
+## DurationFromSecondsString
+
+Transforms a `string` of seconds into a `Duration`.
+
+**Signature**
+
+```ts
+export declare const DurationFromSecondsString: $DurationFromSecondsString
+```
+
+**Example**
+
+```ts
+import * as Duration from "effect/Duration"
+import * as Schema from "@effect/schema/Schema"
+import { DurationFromSecondsString } from "the-wireguard-effect/InternetSchemas"
+
+const decodeDurationString = Schema.decodeSync(DurationFromSecondsString)
+const duration = decodeDurationString("12")
+assert.strictEqual(Duration.toSeconds(duration), 12)
 ```
 
 Added in v1.0.0

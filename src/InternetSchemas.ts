@@ -57,6 +57,17 @@ export interface $DurationFromSeconds
  *
  * @since 1.0.0
  * @category Schemas
+ * @example
+ *     import * as Duration from "effect/Duration";
+ *     import * as Schema from "@effect/schema/Schema";
+ *     import {
+ *         DurationFromSeconds,
+ *         DurationFromSecondsBrand,
+ *     } from "the-wireguard-effect/InternetSchemas";
+ *
+ *     const decodeDuration = Schema.decodeSync(DurationFromSeconds);
+ *     const duration = decodeDuration(11);
+ *     assert.strictEqual(Duration.toSeconds(duration), 11);
  */
 export const DurationFromSeconds: $DurationFromSeconds = Schema.transform(Schema.Int, Schema.DurationFromSelf, {
     decode: (seconds) => Duration.seconds(seconds),
@@ -65,8 +76,43 @@ export const DurationFromSeconds: $DurationFromSeconds = Schema.transform(Schema
     .pipe(Schema.fromBrand(DurationFromSecondsBrand))
     .annotations({
         identifier: "DurationFromSeconds",
-        description: "A duration from seconds",
+        description: "A duration from a number of seconds",
     });
+
+/**
+ * @since 1.0.0
+ * @category Api interface
+ */
+export interface $DurationFromSecondsString
+    extends Schema.Annotable<$DurationFromSecondsString, DurationFromSecondsBrand, string, never> {}
+
+/**
+ * Transforms a `string` of seconds into a `Duration`.
+ *
+ * @since 1.0.0
+ * @category Schemas
+ * @example
+ *     import * as Duration from "effect/Duration";
+ *     import * as Schema from "@effect/schema/Schema";
+ *     import { DurationFromSecondsString } from "the-wireguard-effect/InternetSchemas";
+ *
+ *     const decodeDurationString = Schema.decodeSync(
+ *         DurationFromSecondsString
+ *     );
+ *     const duration = decodeDurationString("12");
+ *     assert.strictEqual(Duration.toSeconds(duration), 12);
+ */
+export const DurationFromSecondsString: $DurationFromSecondsString = Schema.transform(
+    Schema.NumberFromString,
+    DurationFromSeconds,
+    {
+        decode: Function.identity,
+        encode: Function.identity,
+    }
+).annotations({
+    identifier: "DurationFromSecondsString",
+    description: "A duration from a string of seconds",
+});
 
 /**
  * @since 1.0.0
@@ -137,6 +183,7 @@ export class IPv4 extends Schema.Class<IPv4>("IPv4")({
     /** @since 1.0.0 */
     public readonly family: "ipv4" = "ipv4" as const;
 
+    /** @since 1.0.0 */
     public static readonly FromBigint = (n: bigint): Effect.Effect<IPv4, ParseResult.ParseError, never> => {
         const padded = n.toString(16).replace(/:/g, "").padStart(8, "0");
         const groups: Array<number> = [];
@@ -147,6 +194,7 @@ export class IPv4 extends Schema.Class<IPv4>("IPv4")({
         return Schema.decode(IPv4)({ ip: groups.join(".") });
     };
 
+    /** @since 1.0.0 */
     public get asBigint(): bigint {
         return Function.pipe(
             this.ip,
@@ -239,6 +287,7 @@ export class IPv6 extends Schema.Class<IPv6>("IPv6")({
     /** @since 1.0.0 */
     public readonly family: "ipv6" = "ipv6" as const;
 
+    /** @since 1.0.0 */
     public static readonly FromBigint = (n: bigint): Effect.Effect<IPv6, ParseResult.ParseError, never> => {
         const hex = n.toString(16).padStart(32, "0");
         const groups = [];
@@ -248,6 +297,7 @@ export class IPv6 extends Schema.Class<IPv6>("IPv6")({
         return Schema.decode(IPv6)({ ip: groups.join(":") });
     };
 
+    /** @since 1.0.0 */
     public get asBigint(): bigint {
         function paddedHex(octet: string): string {
             return parseInt(octet, 16).toString(16).padStart(4, "0");
