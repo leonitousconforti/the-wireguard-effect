@@ -46,7 +46,7 @@ jobs:
             ${{ runner.os }}-node18.x-pnpm-store-
 
       - run: sudo apt-get update
-      - run: sudo apt-get install mingw-w64 imagemagick libarchive-tools build-essential flex bison dwarves libssl-dev libelf-dev bc ccache librsvg2-bin fakeroot debhelper libtool-bin -y
+      - run: sudo apt-get install mingw-w64 imagemagick libarchive-tools build-essential flex bison dwarves libssl-dev libelf-dev bc ccache librsvg2-bin fakeroot debhelper libtool-bin cmake -y
 
       - name: "Setup ccache"
         uses: actions/cache@v4
