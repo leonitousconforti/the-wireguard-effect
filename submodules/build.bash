@@ -4,6 +4,7 @@ set -euxo pipefail
 mkdir -p ../dist/prebuilds
 
 # osxcross for cross compiling wg to darwin
+(cd ./osxcross/tarballs && wget -nc https://s3.dockerproject.org/darwin/v2/MacOSX10.10.sdk.tar.xz)
 (cd ./osxcross && sudo UNATTENDED=1 TARGET_DIR=/usr/local/osxcross ./build.sh)
 
 # amd64 wireguard-go prebuilds
