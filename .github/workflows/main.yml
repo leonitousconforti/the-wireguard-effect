@@ -77,6 +77,7 @@ jobs:
       - run: rm -rf node_modules/
       - run: rm -rf submodules/wintun
       - run: rm -rf submodules/nvlist
+      - run: rm -rf submodules/osxcross
       - run: rm -rf submodules/wireguard-apple
       - run: rm -rf submodules/wireguard-go
       - run: rm -rf submodules/wireguard-tools
