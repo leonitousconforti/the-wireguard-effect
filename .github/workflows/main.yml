@@ -190,8 +190,9 @@ jobs:
             npm install -g pnpm
           run: |
             pnpm install
-            sudo chmod +x ./src/*
-            WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} sudo -E pnpm test
+            chmod +x ./src/*
+            kldload linux64
+            WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test
       - uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
 
@@ -215,8 +216,8 @@ jobs:
             npm install -g pnpm
           run: |
             pnpm install
-            sudo chmod +x ./src/*
-            WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} sudo -E pnpm test
+            chmod +x ./src/*
+            WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test
       - uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
 
