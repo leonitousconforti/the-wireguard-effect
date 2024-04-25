@@ -184,7 +184,7 @@ jobs:
           sync: rsync
           copyback: false
           prepare: |
-            pkg install -y sudo node npm
+            pkg install -y sudo node npm bash
             npm -v
             node -v
             npm install -g pnpm
@@ -209,7 +209,7 @@ jobs:
           sync: rsync
           copyback: false
           prepare: |
-            pkg_add sudo-1.9.15.5 node
+            pkg_add sudo-1.9.15.5 node bash
             npm -v
             node -v
             npm install -g pnpm
