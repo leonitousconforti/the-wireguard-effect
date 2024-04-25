@@ -73,16 +73,16 @@ jobs:
       - run: cp -r submodules/wireguard-windows/.distfiles/ /tmp/wireguard-windows-distfiles
       - run: ls -la /tmp/wireguard-windows-distfiles
 
-      - run: rm -rf .git/
-      - run: rm -rf node_modules/
-      - run: rm -rf submodules/wintun
-      - run: rm -rf submodules/nvlist
-      - run: rm -rf submodules/osxcross
-      - run: rm -rf submodules/wireguard-apple
-      - run: rm -rf submodules/wireguard-go
-      - run: rm -rf submodules/wireguard-tools
-      - run: rm -rf submodules/wireguard-windows
-      - run: rm -rf submodules/WSL2-Linux-Kernel
+      - run: sudo rm -rf .git/
+      - run: sudo rm -rf node_modules/
+      - run: sudo rm -rf submodules/wintun
+      - run: sudo rm -rf submodules/nvlist
+      - run: sudo rm -rf submodules/osxcross
+      - run: sudo rm -rf submodules/wireguard-apple
+      - run: sudo rm -rf submodules/wireguard-go
+      - run: sudo rm -rf submodules/wireguard-tools
+      - run: sudo rm -rf submodules/wireguard-windows
+      - run: sudo rm -rf submodules/WSL2-Linux-Kernel
       - uses: actions/upload-artifact@v4
         with:
           name: the-wireguard-effect
