@@ -148,8 +148,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                 }
             );
             subprocess.unref();
-            // return process.platform === "win32" ? new Promise((resolve) => setTimeout(resolve, 10000)) : subprocess;
-            return subprocess;
+            return process.platform === "win32" ? new Promise((resolve) => setTimeout(resolve, 10000)) : subprocess;
         });
 
     const execWgQuickCommand = (command: string): Effect.Effect<void, Cause.UnknownException, never> =>
