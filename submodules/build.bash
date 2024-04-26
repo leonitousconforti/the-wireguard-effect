@@ -3,10 +3,6 @@
 set -euxo pipefail
 mkdir -p ../dist/prebuilds
 
-# osxcross for cross compiling wg to darwin
-(cd ./osxcross/tarballs && wget -nc https://s3.dockerproject.org/darwin/v2/MacOSX10.10.sdk.tar.xz)
-(cd ./osxcross && sudo UNATTENDED=1 TARGET_DIR=/usr/local/osxcross ./build.sh)
-
 # amd64 wireguard-go prebuilds
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=windows GOARCH=amd64 make && mv wireguard-go ../../dist/prebuilds/win32-amd64-wireguard-go.exe && chmod +x ../../dist/prebuilds/win32-amd64-wireguard-go.exe)
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=linux GOARCH=amd64 make && mv wireguard-go ../../dist/prebuilds/linux-amd64-wireguard-go && chmod +x ../../dist/prebuilds/linux-amd64-wireguard-go)
@@ -32,6 +28,10 @@ sudo apt-get install ./nvlist/libnv1_0.0.1_amd64.deb
 sudo apt-get install ./nvlist/libnv-dev_0.0.1_amd64.deb
 sudo ldconfig
 (cd ./nvlist && git reset --hard && git clean --force -d)
+
+# osxcross for cross compiling wg to darwin
+(cd ./osxcross/tarballs && wget -nc https://s3.dockerproject.org/darwin/v2/MacOSX10.10.sdk.tar.xz)
+(cd ./osxcross && sudo UNATTENDED=1 TARGET_DIR=/usr/local/osxcross ./build.sh)
 
 # wg-quick prebuilds
 (cd ./wireguard-tools/src && make clean && PLATFORM=linux make && cp ./wg ../../../dist/prebuilds/linux-wg && chmod +x ../../../dist/prebuilds/linux-wg)
