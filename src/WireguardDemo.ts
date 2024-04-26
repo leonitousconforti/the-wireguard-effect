@@ -200,46 +200,41 @@ export const WireguardDemoServer = (options: {
     | SocketServer.SocketServerError,
     Scope.Scope | FileSystem.FileSystem | Path.Path | SocketServer.SocketServer | WireguardControl.WireguardControl
 > =>
-    Effect.gen(function* (λ) {
+    Effect.gen(function* () {
         // Parse parameters
-        const server = yield* λ(SocketServer.SocketServer);
+        const server = yield* SocketServer.SocketServer;
         const serverWireguardKeys = WireguardKey.generateKeyPair();
-        const wireguardPort = yield* λ(Schema.decode(InternetSchemas.Port)(options.wireguardPort));
-        const wireguardNetwork = yield* λ(Schema.decode(InternetSchemas.CidrBlockFromString)(options.wireguardNetwork));
+        const wireguardPort = yield* Schema.decode(InternetSchemas.Port)(options.wireguardPort);
+        const wireguardNetwork = yield* Schema.decode(InternetSchemas.CidrBlockFromString)(options.wireguardNetwork);
 
         // Setup the wireguard peer address pool
-        const serverWireguardAddressPool = yield* λ(
-            Queue.dropping<InternetSchemas.Address>(Math.min(256, Number(wireguardNetwork.total)))
+        const serverWireguardAddressPool = yield* Queue.dropping<InternetSchemas.Address>(
+            Math.min(256, Number(wireguardNetwork.total))
         );
-        yield* λ(
-            Function.pipe(
-                wireguardNetwork.range,
-                Stream.drop(2),
-                Stream.run(Sink.fromQueue(serverWireguardAddressPool))
-            )
+        yield* Function.pipe(
+            wireguardNetwork.range,
+            Stream.drop(2),
+            Stream.run(Sink.fromQueue(serverWireguardAddressPool))
         );
         const addressReservationLookup = HashMap.empty<WireguardKey.WireguardKey, InternetSchemas.Address>();
 
         // Setup the wireguard interface and wireguard server config
-        const wireguardControl = yield* λ(WireguardControl.WireguardControl);
-        const serverWireguardInterface = yield* λ(WireguardInterface.WireguardInterface.getNextAvailableInterface);
-        const serverWireguardConfig = yield* λ(
-            Schema.decode(WireguardConfig.WireguardConfig)({
-                ListenPort: wireguardPort,
-                Address: options.wireguardNetwork,
-                PrivateKey: serverWireguardKeys.privateKey,
-            })
-        );
-        yield* λ(serverWireguardInterface.upScoped(serverWireguardConfig));
+        const wireguardControl = yield* WireguardControl.WireguardControl;
+        const serverWireguardInterface = yield* WireguardInterface.WireguardInterface.getNextAvailableInterface;
+        const serverWireguardConfig = yield* Schema.decode(WireguardConfig.WireguardConfig)({
+            ListenPort: wireguardPort,
+            Address: options.wireguardNetwork,
+            PrivateKey: serverWireguardKeys.privateKey,
+        });
+        yield* serverWireguardInterface.upScoped(serverWireguardConfig);
 
         // Start the server
-        yield* λ(Effect.logInfo(`Server waiting for requests....`));
+        yield* Effect.logInfo(`Server waiting for requests....`);
         const socketHandler = server.run((socket) =>
-            Effect.gen(function* (λ) {
-                const responses = yield* λ(Queue.unbounded<WireguardDemoSchemaEncoded>());
+            Effect.gen(function* () {
+                const responses = yield* Queue.unbounded<WireguardDemoSchemaEncoded>();
 
-                yield* λ(
-                    Stream.fromQueue(responses),
+                yield* Stream.fromQueue(responses).pipe(
                     Stream.pipeThroughChannel(Socket.toChannel(socket)),
                     Stream.decodeText(),
                     Stream.map(String.replace("\n", "")),
@@ -253,18 +248,16 @@ export const WireguardDemoServer = (options: {
                     ),
                     // Prune the oldest peer if we run out of addresses in the queue
                     Stream.mapEffect((peer) =>
-                        Effect.gen(function* (λ) {
-                            const size = yield* λ(Queue.size(serverWireguardAddressPool));
+                        Effect.gen(function* () {
+                            const size = yield* Queue.size(serverWireguardAddressPool);
                             if (size > 0) return peer;
 
-                            const config = yield* λ(
-                                Effect.request(
-                                    new WireguardConfig.WireguardGetConfigRequest({
-                                        address: options.wireguardNetwork,
-                                        wireguardInterface: serverWireguardInterface,
-                                    }),
-                                    wireguardControl.getConfigRequestResolver
-                                )
+                            const config = yield* Effect.request(
+                                new WireguardConfig.WireguardGetConfigRequest({
+                                    address: options.wireguardNetwork,
+                                    wireguardInterface: serverWireguardInterface,
+                                }),
+                                wireguardControl.getConfigRequestResolver
                             );
                             const lastPeer = Function.pipe(
                                 config.Peers,
@@ -282,11 +275,11 @@ export const WireguardDemoServer = (options: {
                                 Option.getOrThrow
                             );
 
-                            yield* λ(serverWireguardInterface.removePeer(lastPeer));
+                            yield* serverWireguardInterface.removePeer(lastPeer);
                             const freedAddress = HashMap.get(addressReservationLookup, lastPeer.PublicKey).pipe(
                                 Option.getOrThrow
                             );
-                            yield* λ(Queue.offer(serverWireguardAddressPool, freedAddress));
+                            yield* Queue.offer(serverWireguardAddressPool, freedAddress);
                             HashMap.remove(addressReservationLookup, lastPeer.PublicKey);
                             return peer;
                         })
@@ -304,18 +297,18 @@ export const WireguardDemoServer = (options: {
                         )
                     ),
                     Stream.runForEach(([peer, res]) =>
-                        Effect.gen(function* (λ) {
-                            const encoded = yield* λ(Schema.encode(WireguardDemoSchema)(res));
-                            yield* λ(responses.offer(encoded));
+                        Effect.gen(function* () {
+                            const encoded = yield* Schema.encode(WireguardDemoSchema)(res);
+                            yield* responses.offer(encoded);
                             HashMap.set(addressReservationLookup, peer.PublicKey, res.yourWireguardAddress);
-                            yield* λ(serverWireguardInterface.addPeer(peer));
+                            yield* serverWireguardInterface.addPeer(peer);
                         })
                     )
                 );
             })
         );
 
-        yield* λ(socketHandler);
+        yield* socketHandler;
     });
 
 /** @internal */
@@ -330,11 +323,11 @@ export const retryPolicy = Schedule.recurs(4).pipe(Schedule.addDelay(() => "3 se
 export const requestHiddenPage = (
     hiddenPageLocation: string
 ): Effect.Effect<string, HttpClient.error.HttpClientError | Cause.TimeoutException, HttpClient.client.Client.Default> =>
-    Effect.gen(function* (λ) {
-        const defaultClient = yield* λ(HttpClient.client.Client);
+    Effect.gen(function* () {
+        const defaultClient = yield* HttpClient.client.Client;
         const client = defaultClient.pipe(HttpClient.client.filterStatusOk);
         const request = HttpClient.request.get(hiddenPageLocation);
-        return yield* λ(client(request).pipe(HttpClient.response.text, Effect.timeout("3 seconds")));
+        return yield* client(request).pipe(HttpClient.response.text, Effect.timeout("3 seconds"));
     }).pipe(Effect.retry(retryPolicy));
 
 /**
@@ -347,9 +340,9 @@ export const requestGoogle: Effect.Effect<
     void,
     HttpClient.error.HttpClientError | Cause.TimeoutException,
     HttpClient.client.Client.Default
-> = Effect.gen(function* (λ) {
-    const defaultClient = yield* λ(HttpClient.client.Client);
+> = Effect.gen(function* () {
+    const defaultClient = yield* HttpClient.client.Client;
     const client = defaultClient.pipe(HttpClient.client.filterStatusOk);
     const request = HttpClient.request.get("https://www.google.com");
-    return yield* λ(client(request).pipe(HttpClient.response.text, Effect.timeout("3 seconds")));
+    return yield* client(request).pipe(HttpClient.response.text, Effect.timeout("3 seconds"));
 }).pipe(Effect.retry(retryPolicy));

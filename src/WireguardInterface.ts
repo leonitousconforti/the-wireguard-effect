@@ -95,9 +95,9 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
      * @category Constructors
      */
     public static getNextAvailableInterface: Effect.Effect<WireguardInterface, WireguardErrors.WireguardError, never> =
-        Effect.gen(function* (λ) {
+        Effect.gen(function* () {
             // Determine all the used interface indexes
-            const regex = yield* λ(WireguardInterface.InterfaceRegExpForPlatform);
+            const regex = yield* WireguardInterface.InterfaceRegExpForPlatform;
             const usedInterfaceIndexes = Function.pipe(
                 os.networkInterfaces(),
                 Record.keys,
@@ -108,15 +108,13 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             );
 
             // Find the next available interface index
-            const nextAvailableInterfaceIndex = yield* λ(
-                Function.pipe(
-                    Stream.iterate(0, (x) => x + 1),
-                    Stream.find((x) => !Array.contains(usedInterfaceIndexes, x)),
-                    Stream.take(1),
-                    Stream.runCollect,
-                    Effect.map(Chunk.head),
-                    Effect.map(Option.getOrThrow)
-                )
+            const nextAvailableInterfaceIndex = yield* Function.pipe(
+                Stream.iterate(0, (x) => x + 1),
+                Stream.find((x) => !Array.contains(usedInterfaceIndexes, x)),
+                Stream.take(1),
+                Stream.runCollect,
+                Effect.map(Chunk.head),
+                Effect.map(Option.getOrThrow)
             );
 
             // We know this will be a supported platform now because otherwise
@@ -233,24 +231,24 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         ): Effect.Effect<void, Socket.SocketError | ParseResult.ParseError, WireguardControl.WireguardControl>;
     } = (peer) => {
         const self = this;
-        return Effect.gen(function* (λ) {
-            const control = yield* λ(WireguardControl.WireguardControl);
+        return Effect.gen(function* () {
+            const control = yield* WireguardControl.WireguardControl;
             const request = new WireguardConfig.WireguardGetConfigRequest({
                 address: "0.0.0.0/0",
                 wireguardInterface: self,
             });
 
             // Get the config before adding this peer and ensure this peer is not present
-            const configBefore = yield* λ(Effect.request(request, control.getConfigRequestResolver));
+            const configBefore = yield* Effect.request(request, control.getConfigRequestResolver);
             assert.ok(configBefore.Peers.find((p) => p.PublicKey === peer.PublicKey) === undefined);
 
             // Add the peer to the interface
             const peerUApiRequest = WireguardPeer.makeWireguardUApiSetPeerRequest(peer);
             const updateRequest = `set=1\n${peerUApiRequest}`;
-            yield* λ(WireguardControl.userspaceContact(self, updateRequest));
+            yield* WireguardControl.userspaceContact(self, updateRequest);
 
             // Get the config after adding this peer and ensure this peer is present
-            const configAfter = yield* λ(Effect.request(request, control.getConfigRequestResolver));
+            const configAfter = yield* Effect.request(request, control.getConfigRequestResolver);
             assert.ok(configAfter.Peers.find((p) => p.PublicKey === peer.PublicKey) !== undefined);
         });
     };
@@ -267,24 +265,24 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         ): Effect.Effect<void, Socket.SocketError | ParseResult.ParseError, WireguardControl.WireguardControl>;
     } = (peer) => {
         const self = this;
-        return Effect.gen(function* (λ) {
-            const control = yield* λ(WireguardControl.WireguardControl);
+        return Effect.gen(function* () {
+            const control = yield* WireguardControl.WireguardControl;
             const request = new WireguardConfig.WireguardGetConfigRequest({
                 address: "0.0.0.0/0",
                 wireguardInterface: self,
             });
 
             // Get the config before removing this peer and ensure this peer is present
-            const configBefore = yield* λ(Effect.request(request, control.getConfigRequestResolver));
+            const configBefore = yield* Effect.request(request, control.getConfigRequestResolver);
             assert.ok(configBefore.Peers.find((p) => p.PublicKey === peer.PublicKey) !== undefined);
 
             // Remove the peer from the interface
             const peerUApiRequest = WireguardPeer.makeWireguardUApiSetPeerRequest(peer);
             const updateRequest = `set=1\n${peerUApiRequest}remove=true\n`;
-            yield* λ(WireguardControl.userspaceContact(self, updateRequest));
+            yield* WireguardControl.userspaceContact(self, updateRequest);
 
             // Get the config after removing this peer and ensure this peer is not present
-            const configAfter = yield* λ(Effect.request(request, control.getConfigRequestResolver));
+            const configAfter = yield* Effect.request(request, control.getConfigRequestResolver);
             assert.ok(configAfter.Peers.find((p) => p.PublicKey === peer.PublicKey) === undefined);
         });
     };
