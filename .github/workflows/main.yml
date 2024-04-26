@@ -232,11 +232,14 @@ jobs:
         with:
           version: 9
       - run: pnpm install
-      - run: psexec.exe -s -i "pnpm" test
+      - run: C:\\msys64\\usr\\bin\\bash.exe -lc "pnpm test"
         env:
+          MSYSTEM: "MINGW64"
+          CHERE_INVOKING: "1"
+          MSYS2_PATH_TYPE: "inherit"
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
           WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
-          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
+          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }},
       - uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
 
