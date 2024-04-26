@@ -190,7 +190,7 @@ jobs:
             kldload linux64
             WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test
       - uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
+        if: ${{ always() }}
 
   openbsd-test:
     runs-on: ubuntu-latest
@@ -215,7 +215,7 @@ jobs:
             chmod +x ./src/*
             WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test
       - uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
+        if: ${{ always() }}
 
   windows-test:
     runs-on: windows-latest
