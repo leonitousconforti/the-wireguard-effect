@@ -91,17 +91,15 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
         (
             file: string
         ): Effect.Effect<void, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem | Path.Path>;
-    } = (file) => {
-        const self = this;
-        return Effect.gen(function* () {
+    } = (file) =>
+        Effect.gen(this, function* () {
             const path = yield* Path.Path;
             const fs = yield* FileSystem.FileSystem;
-            const configEncoded = yield* Schema.encode(WireguardConfig)(self);
+            const configEncoded = yield* Schema.encode(WireguardConfig)(this);
             const iniConfigDecoded = yield* Schema.decode(WireguardIniConfig)(configEncoded);
             yield* fs.makeDirectory(path.dirname(file), { recursive: true });
             yield* fs.writeFileString(file, iniConfigDecoded);
         });
-    };
 
     /**
      * Starts a wireguard tunnel that will continue to run and serve traffic
@@ -122,9 +120,8 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             | WireguardErrors.WireguardError,
             FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
         >;
-    } = (interfaceObject) => {
-        const self = this;
-        return Effect.gen(function* () {
+    } = (interfaceObject) =>
+        Effect.gen(this, function* () {
             const io = yield* Function.pipe(
                 interfaceObject,
                 Option.fromNullable,
@@ -133,9 +130,8 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             );
 
             const wireguardControl = yield* WireguardControl.WireguardControl;
-            return yield* wireguardControl.up(self, io);
+            return yield* wireguardControl.up(this, io);
         });
-    };
 
     /**
      * Starts a wireguard tunnel that will be gracefully shutdown and stop
@@ -156,9 +152,8 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             | WireguardErrors.WireguardError,
             FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl | Scope.Scope
         >;
-    } = (interfaceObject) => {
-        const self = this;
-        return Effect.gen(function* () {
+    } = (interfaceObject) =>
+        Effect.gen(this, function* () {
             const io = yield* Function.pipe(
                 interfaceObject,
                 Option.fromNullable,
@@ -167,9 +162,8 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             );
 
             const wireguardControl = yield* WireguardControl.WireguardControl;
-            return yield* wireguardControl.upScoped(self, io);
+            return yield* wireguardControl.upScoped(this, io);
         });
-    };
 }
 
 /**
