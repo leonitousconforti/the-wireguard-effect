@@ -24,7 +24,6 @@ import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as execa from "execa";
-import * as fs from "node:fs";
 
 import * as WireguardConfig from "./WireguardConfig.js";
 import * as WireguardErrors from "./WireguardErrors.js";
@@ -145,13 +144,11 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                 {
                     cleanup: false,
                     detached: true,
-                    stdio: ["ignore", fs.openSync("./out.log", "a"), fs.openSync("./err.log", "a")],
+                    stdio: "ignore",
                 }
             );
             subprocess.unref();
-            return process.platform === "win32" || process.platform === "freebsd"
-                ? new Promise((resolve) => setTimeout(resolve, 10000))
-                : subprocess;
+            return process.platform === "win32" ? new Promise((resolve) => setTimeout(resolve, 10000)) : subprocess;
         });
 
     const execWgQuickCommand = (command: string): Effect.Effect<void, Cause.UnknownException, never> =>
@@ -187,11 +184,14 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
             const wireguardGoCommand = `${bundledWireguardGoExecutablePath} ${wireguardInterface.Name}`;
 
             yield* execWireguardGoCommand(wireguardGoCommand);
+            yield* Effect.logInfo("WireguardGo command executed");
             yield* Effect.request(
                 new WireguardConfig.WireguardSetConfigRequest({ config: wireguardConfig, wireguardInterface }),
                 WireguardConfig.WireguardSetConfigResolver
             );
+            yield* Effect.logInfo("Wireguard config set");
             yield* execWgQuickCommand(wgQuickCommand);
+            yield* Effect.logInfo("Wireguard quick command executed");
             return wireguardInterface;
         });
 
