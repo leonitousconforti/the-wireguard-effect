@@ -120,7 +120,7 @@ jobs:
 
   macos-intel-test:
     runs-on: macos-13
-    # timeout-minutes: 10
+    timeout-minutes: 10
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
@@ -144,7 +144,7 @@ jobs:
 
   macos-apple-silicon-test:
     runs-on: macos-14
-    # timeout-minutes: 10
+    timeout-minutes: 10
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
@@ -219,7 +219,7 @@ jobs:
 
   windows-test:
     runs-on: windows-latest
-    # timeout-minutes: 10
+    timeout-minutes: 10
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
@@ -239,13 +239,11 @@ jobs:
           MSYS2_PATH_TYPE: "inherit"
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
           WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
-          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }},
-      - uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
+          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
 
   windows-wsl2-test:
     runs-on: windows-latest
-    # timeout-minutes: 10
+    timeout-minutes: 10
     needs: [build]
     defaults:
       run:
