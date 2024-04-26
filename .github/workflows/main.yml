@@ -141,8 +141,6 @@ jobs:
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
           WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
           WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
-      - uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
 
   macos-apple-silicon-test:
     runs-on: macos-14
@@ -167,8 +165,6 @@ jobs:
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
           WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
           WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
-      - uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
 
   freebsd-test:
     runs-on: ubuntu-latest
