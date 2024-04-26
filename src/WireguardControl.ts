@@ -24,6 +24,7 @@ import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as execa from "execa";
+import * as fs from "node:fs";
 
 import * as WireguardConfig from "./WireguardConfig.js";
 import * as WireguardErrors from "./WireguardErrors.js";
@@ -142,9 +143,9 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
             const subprocess = execa.execaCommand(
                 `${options.sudo === true && process.platform !== "win32" ? "sudo " : ""}${command}`,
                 {
-                    stdio: "ignore",
                     cleanup: false,
                     detached: true,
+                    stdio: ["ignore", fs.openSync("./out.log", "a"), fs.openSync("./err.log", "a")],
                 }
             );
             subprocess.unref();
