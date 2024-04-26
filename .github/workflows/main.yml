@@ -232,7 +232,7 @@ jobs:
         with:
           version: 9
       - run: pnpm install
-      - run: pnpm test
+      - run: psexec.exe -s -i "pnpm" test
         env:
           HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
           WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
