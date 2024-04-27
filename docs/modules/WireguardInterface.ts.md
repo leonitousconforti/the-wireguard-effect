@@ -61,7 +61,11 @@ upScoped: (config: WireguardConfig.WireguardConfig) =>
   Effect.Effect<
     WireguardInterface,
     Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
-    FileSystem.FileSystem | Path.Path | Scope.Scope | WireguardControl.WireguardControl
+    | FileSystem.FileSystem
+    | Path.Path
+    | Scope.Scope
+    | CommandExecutor.CommandExecutor
+    | WireguardControl.WireguardControl
   >
 ```
 
@@ -79,7 +83,7 @@ up: (config: WireguardConfig.WireguardConfig) =>
   Effect.Effect<
     WireguardInterface,
     Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
-    FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
+    FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
   >
 ```
 
@@ -96,7 +100,7 @@ down: (config: WireguardConfig.WireguardConfig) =>
   Effect.Effect<
     WireguardInterface,
     PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException,
-    FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
+    FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
   >
 ```
 
@@ -110,7 +114,11 @@ Adds a peer to this interface.
 
 ```ts
 addPeer: (peer: WireguardPeer.WireguardPeer) =>
-  Effect.Effect<void, Socket.SocketError | ParseResult.ParseError, WireguardControl.WireguardControl>
+  Effect.Effect<
+    void,
+    Socket.SocketError | ParseResult.ParseError,
+    WireguardControl.WireguardControl | CommandExecutor.CommandExecutor
+  >
 ```
 
 Added in v1.0.0
