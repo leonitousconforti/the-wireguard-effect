@@ -1,5 +1,6 @@
 import * as Platform from "@effect/platform";
 import * as PlatformNode from "@effect/platform-node";
+import * as CommandExecutor from "@effect/platform/CommandExecutor";
 import * as Socket from "@effect/platform/Socket";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
@@ -18,7 +19,7 @@ export const program: Effect.Effect<
     | ParseResult.ParseError
     | Platform.Error.PlatformError
     | WireguardError.WireguardError,
-    Platform.FileSystem.FileSystem | Platform.Path.Path
+    Platform.FileSystem.FileSystem | Platform.Path.Path | CommandExecutor.CommandExecutor
 > = Effect.gen(function* (λ) {
     const config = yield* λ(
         Schema.decode(WireguardConfig.WireguardConfig)({

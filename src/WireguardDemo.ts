@@ -6,6 +6,7 @@
 
 import * as SocketServer from "@effect/experimental/SocketServer";
 import * as NodeSocket from "@effect/platform-node/NodeSocket";
+import * as CommandExecutor from "@effect/platform/CommandExecutor";
 import * as PlatformError from "@effect/platform/Error";
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as HttpClient from "@effect/platform/HttpClient";
@@ -198,7 +199,12 @@ export const WireguardDemoServer = (options: {
     | WireguardErrors.WireguardError
     | PlatformError.PlatformError
     | SocketServer.SocketServerError,
-    Scope.Scope | FileSystem.FileSystem | Path.Path | SocketServer.SocketServer | WireguardControl.WireguardControl
+    | Scope.Scope
+    | FileSystem.FileSystem
+    | Path.Path
+    | SocketServer.SocketServer
+    | WireguardControl.WireguardControl
+    | CommandExecutor.CommandExecutor
 > =>
     Effect.gen(function* () {
         // Parse parameters
