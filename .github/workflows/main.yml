@@ -52,7 +52,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/.cache/ccache
-          key: wsl2-linux-kernel-ccache-${{ hashFiles('submodules/WSL2-modified.patch') }}
+          key: wsl2-linux-kernel-ccache-${{ hashFiles('patches/WSL2-linux-kernel.patch') }}
           restore-keys: |
             wsl2-linux-kernel-ccache-
 
