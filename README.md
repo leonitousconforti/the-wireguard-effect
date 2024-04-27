@@ -10,7 +10,7 @@ The motivation for this project came from wanting to create wireguard configurat
 
 - [x] - fully typed wireguard configurations (thanks to @effect/schema)
 - [x] - doesn't require wireguard to be installed (ships with most prebuilds)
-- [x] - cross platform (supports linux amd64, linux arm64, mac amd64, mac arm64, windows amd64, and windows arm64, freebsd amd64, freebsd arm64, openbsd amd64, and openbsd arm64)
+- [x] - cross platform (supports linux amd64, linux arm64, mac amd64, mac arm64, windows amd64, and windows arm64)
 - [x] - userspace api implementation (the [Wireguard cross platform docs](https://www.wireguard.com/xplatform/) have details about it.)
 - [x] - strong control over how the interface is managed across all platforms.
 
