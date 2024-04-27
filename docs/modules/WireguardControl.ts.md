@@ -86,7 +86,7 @@ export interface WireguardControlImpl {
   ) => Effect.Effect<
     WireguardInterface.WireguardInterface,
     Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
-    FileSystem.FileSystem | Path.Path
+    FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
   >
 
   readonly down: (
@@ -95,7 +95,7 @@ export interface WireguardControlImpl {
   ) => Effect.Effect<
     WireguardInterface.WireguardInterface,
     PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException,
-    FileSystem.FileSystem | Path.Path
+    FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
   >
 
   readonly upScoped: (
@@ -104,7 +104,7 @@ export interface WireguardControlImpl {
   ) => Effect.Effect<
     WireguardInterface.WireguardInterface,
     Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
-    FileSystem.FileSystem | Path.Path | Scope.Scope
+    FileSystem.FileSystem | Path.Path | Scope.Scope | CommandExecutor.CommandExecutor
   >
 
   readonly getConfigRequestResolver: Resolver.RequestResolver<WireguardConfig.WireguardGetConfigRequest, never>

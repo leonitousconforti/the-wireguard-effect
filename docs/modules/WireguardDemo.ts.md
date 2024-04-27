@@ -91,7 +91,12 @@ export declare const WireguardDemoServer: (options: {
   | WireguardErrors.WireguardError
   | PlatformError.PlatformError
   | SocketServer.SocketServerError,
-  Scope.Scope | FileSystem.FileSystem | Path.Path | SocketServer.SocketServer | WireguardControl.WireguardControl
+  | Scope.Scope
+  | FileSystem.FileSystem
+  | Path.Path
+  | SocketServer.SocketServer
+  | WireguardControl.WireguardControl
+  | CommandExecutor.CommandExecutor
 >
 ```
 
