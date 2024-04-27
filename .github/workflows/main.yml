@@ -9,8 +9,8 @@ on:
     - cron:  '30 * * * *'
 
 concurrency:
-  cancel-in-progress: false
-  group: ${{ github.workflow }}
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref == 'refs/heads/main' }}
 
 jobs:
   build:
