@@ -45,7 +45,6 @@
         "rollup": "npm:@rollup/wasm-node"
     },
     "dependencies": {
-        "execa": "^8.0.1",
         "ini": "^4.1.2"
     },
     "devDependencies": {

@@ -25,7 +25,7 @@ import * as Scope from "effect/Scope";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
-import * as execa from "execa";
+import * as exec from "node:child_process";
 
 import * as WireguardConfig from "./WireguardConfig.js";
 import * as WireguardErrors from "./WireguardErrors.js";
@@ -145,8 +145,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
     ): Effect.Effect<void, Cause.UnknownException | PlatformError.PlatformError, CommandExecutor.CommandExecutor> =>
         process.platform === "win32" && command.includes("-wireguard-go.exe")
             ? Effect.tryPromise(() => {
-                  const subprocess = execa.execa(command, args, {
-                      cleanup: false,
+                  const subprocess = exec.spawn(command, args, {
                       detached: true,
                       stdio: "ignore",
                   });
