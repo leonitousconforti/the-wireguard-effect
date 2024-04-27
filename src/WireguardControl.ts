@@ -154,7 +154,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                   return new Promise((resolve) => setTimeout(resolve, 10000));
               })
             : Effect.flatMap(CommandExecutor.CommandExecutor, (executor) =>
-                  executor.string(
+                  executor.exitCode(
                       options.sudo && process.platform !== "win32"
                           ? Command.make("sudo", command, ...args)
                           : Command.make(`${command}`, ...args)
