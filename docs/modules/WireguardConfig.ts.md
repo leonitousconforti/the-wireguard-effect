@@ -592,7 +592,7 @@ export declare const WireguardGetConfigResponse: Schema.Schema<
       | PlatformError.PlatformError
       | Cause.UnknownException
       | WireguardErrors.WireguardError,
-      FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
+      FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
     >
     upScoped: (
       interfaceObject?: WireguardInterface.WireguardInterface | undefined
@@ -603,7 +603,11 @@ export declare const WireguardGetConfigResponse: Schema.Schema<
       | PlatformError.PlatformError
       | Cause.UnknownException
       | WireguardErrors.WireguardError,
-      FileSystem.FileSystem | Path.Path | Scope.Scope | WireguardControl.WireguardControl
+      | FileSystem.FileSystem
+      | Path.Path
+      | Scope.Scope
+      | CommandExecutor.CommandExecutor
+      | WireguardControl.WireguardControl
     >
     readonly Peers: readonly WireguardPeer.WireguardUApiGetPeerResponse[]
   },
@@ -712,7 +716,7 @@ up: (interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>
     | Cause.UnknownException
     | PlatformError.PlatformError
     | WireguardErrors.WireguardError,
-    FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
+    FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
   >
 ```
 
@@ -734,7 +738,11 @@ upScoped: (interfaceObject?: WireguardInterface.WireguardInterface | undefined) 
     | Cause.UnknownException
     | PlatformError.PlatformError
     | WireguardErrors.WireguardError,
-    FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl | Scope.Scope
+    | FileSystem.FileSystem
+    | Path.Path
+    | CommandExecutor.CommandExecutor
+    | WireguardControl.WireguardControl
+    | Scope.Scope
   >
 ```
 
