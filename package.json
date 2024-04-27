@@ -93,11 +93,11 @@
         "ws": "8.16.0"
     },
     "peerDependencies": {
-        "@effect/experimental": "0.15.11",
-        "@effect/platform": "0.50.6",
-        "@effect/platform-node": "0.47.6",
-        "@effect/schema": "0.66.9",
-        "effect": "^3.0.6"
+        "@effect/experimental": "0.15.12",
+        "@effect/platform": "0.50.7",
+        "@effect/platform-node": "0.47.7",
+        "@effect/schema": "0.66.10",
+        "effect": "^3.0.7"
     },
     "engines": {
         "node": ">=18.0.0"
