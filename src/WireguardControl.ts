@@ -148,7 +148,9 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                   subprocess.unref();
                   return new Promise((resolve) => setTimeout(resolve, 10000));
               })
-            : Effect.try(() => execa.execaCommandSync(`${options.sudo ? "sudo " : ""}${command}`));
+            : Effect.try(() =>
+                  execa.execaCommandSync(`${options.sudo && process.platform === "win32" ? "sudo " : ""}${command}`)
+              );
 
     const up: WireguardControlImpl["up"] = (wireguardConfig, wireguardInterface) =>
         Effect.gen(function* () {
