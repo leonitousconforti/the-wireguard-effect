@@ -5,6 +5,8 @@
  */
 
 import * as NodeSocket from "@effect/platform-node/NodeSocket";
+import * as Command from "@effect/platform/Command";
+import * as CommandExecutor from "@effect/platform/CommandExecutor";
 import * as PlatformError from "@effect/platform/Error";
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as Path from "@effect/platform/Path";
@@ -40,7 +42,7 @@ export interface WireguardControlImpl {
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
         Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
-        FileSystem.FileSystem | Path.Path
+        FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
     >;
 
     readonly down: (
@@ -49,7 +51,7 @@ export interface WireguardControlImpl {
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
         PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException,
-        FileSystem.FileSystem | Path.Path
+        FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
     >;
 
     readonly upScoped: (
@@ -58,7 +60,7 @@ export interface WireguardControlImpl {
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
         Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
-        FileSystem.FileSystem | Path.Path | Scope.Scope
+        FileSystem.FileSystem | Path.Path | Scope.Scope | CommandExecutor.CommandExecutor
     >;
 
     readonly getConfigRequestResolver: Resolver.RequestResolver<WireguardConfig.WireguardGetConfigRequest, never>;
@@ -137,7 +139,9 @@ export const makeUserspaceLayer = (): WireguardControlImpl => {
  * @category Constructors
  */
 export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardControlImpl => {
-    const execCommand = (command: string): Effect.Effect<void, Cause.UnknownException, never> =>
+    const execCommand = (
+        command: string
+    ): Effect.Effect<void, Cause.UnknownException | PlatformError.PlatformError, CommandExecutor.CommandExecutor> =>
         process.platform === "win32" && command.includes("-wireguard-go.exe")
             ? Effect.tryPromise(() => {
                   const subprocess = execa.execaCommand(command, {
@@ -148,8 +152,10 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                   subprocess.unref();
                   return new Promise((resolve) => setTimeout(resolve, 10000));
               })
-            : Effect.try(() =>
-                  execa.execaCommandSync(`${options.sudo && process.platform === "win32" ? "sudo " : ""}${command}`)
+            : Effect.flatMap(CommandExecutor.CommandExecutor, (executor) =>
+                  executor.string(
+                      Command.make(`${options.sudo && process.platform !== "win32" ? "sudo " : ""}${command}`)
+                  )
               );
 
     const up: WireguardControlImpl["up"] = (wireguardConfig, wireguardInterface) =>
