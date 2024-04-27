@@ -155,7 +155,9 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
               })
             : Effect.flatMap(CommandExecutor.CommandExecutor, (executor) =>
                   executor.string(
-                      Command.make(`${options.sudo && process.platform !== "win32" ? "sudo " : ""}${command}`, ...args)
+                      options.sudo && process.platform !== "win32"
+                          ? Command.make("sudo", command, ...args)
+                          : Command.make(`${command}`, ...args)
                   )
               );
 
