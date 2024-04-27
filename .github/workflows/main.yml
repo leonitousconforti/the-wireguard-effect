@@ -154,6 +154,53 @@ jobs:
           sudo chmod +x ./src/*
       - run: sudo -E pnpm test
 
+  freebsd-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [build]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: the-wireguard-effect
+      - uses: vmactions/freebsd-vm@v1
+        with:
+          usesh: true
+          sync: rsync
+          copyback: false
+          prepare: |
+            pkg install -y sudo node npm bash
+            npm -v
+            node -v
+            npm install -g pnpm
+          run: |
+            pnpm install
+            chmod +x ./src/*
+            kldload linux64
+            pnpm test
+
+  openbsd-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [build]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: the-wireguard-effect
+      - uses: vmactions/openbsd-vm@v1
+        with:
+          usesh: true
+          sync: rsync
+          copyback: false
+          prepare: |
+            pkg_add sudo-1.9.15.5 node bash
+            npm -v
+            node -v
+            npm install -g pnpm
+          run: |
+            pnpm install
+            chmod +x ./src/*
+            pnpm test
+
   windows-test:
     runs-on: windows-latest
     timeout-minutes: 10

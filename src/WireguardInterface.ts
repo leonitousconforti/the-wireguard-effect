@@ -39,7 +39,7 @@ export const SupportedArchitectures = ["x64", "arm64"] as const;
 export type SupportedArchitecture = (typeof SupportedArchitectures)[number];
 
 /** @internal */
-export const SupportedPlatforms = ["linux", "darwin", "win32"] as const;
+export const SupportedPlatforms = ["linux", "darwin", "openbsd", "freebsd", "win32"] as const;
 
 /** @internal */
 export type SupportedPlatform = (typeof SupportedPlatforms)[number];
@@ -51,7 +51,13 @@ export const LinuxInterfaceNameRegExp: RegExp = /^wg\d+$/;
 export const DarwinInterfaceNameRegExp: RegExp = /^utun\d+$/;
 
 /** @internal */
+export const OpenBSDInterfaceNameRegExp: RegExp = /^tun\d+$/;
+
+/** @internal */
 export const WindowsInterfaceNameRegExp: RegExp = /^eth\d+$/;
+
+/** @internal */
+export const FreeBSDInterfaceNameRegExp: RegExp = /^eth\d+$/;
 
 /**
  * A wireguard interface name.
@@ -119,9 +125,12 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             const fromString = Schema.decodeSync(WireguardInterface);
             switch (platform) {
                 case "win32":
+                case "freebsd":
                     return fromString({ Name: `eth${nextAvailableInterfaceIndex}` });
                 case "linux":
                     return fromString({ Name: `wg${nextAvailableInterfaceIndex}` });
+                case "openbsd":
+                    return fromString({ Name: `tun${nextAvailableInterfaceIndex}` });
                 case "darwin":
                     return fromString({ Name: `utun${nextAvailableInterfaceIndex}` });
                 default:
@@ -139,6 +148,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             Match.when(String.endsWith(":linux"), () => Effect.succeed(LinuxInterfaceNameRegExp)),
             Match.when(String.endsWith(":win32"), () => Effect.succeed(WindowsInterfaceNameRegExp)),
             Match.when(String.endsWith(":darwin"), () => Effect.succeed(DarwinInterfaceNameRegExp)),
+            Match.when(String.endsWith(":openbsd"), () => Effect.succeed(OpenBSDInterfaceNameRegExp)),
+            Match.when(String.endsWith(":freebsd"), () => Effect.succeed(FreeBSDInterfaceNameRegExp)),
             Match.orElse((bad) =>
                 Effect.fail(new WireguardErrors.WireguardError({ message: `Unsupported platform ${bad}` }))
             )
@@ -152,6 +163,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         Match.type<(typeof SupportedPlatforms)[number]>(),
         Match.when("linux", () => `/var/run/wireguard/${this.Name}.sock`),
         Match.when("darwin", () => `/var/run/wireguard/${this.Name}.sock`),
+        Match.when("freebsd", () => `/var/run/wireguard/${this.Name}.sock`),
+        Match.when("openbsd", () => `/var/run/wireguard/${this.Name}.sock`),
         Match.when("win32", () => `\\\\.\\pipe\\ProtectedPrefix\\Administrators\\WireGuard\\${this.Name}`),
         Match.exhaustive
     )(Function.unsafeCoerce(process.platform));
