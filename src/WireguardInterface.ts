@@ -39,7 +39,7 @@ export const SupportedArchitectures = ["x64", "arm64"] as const;
 export type SupportedArchitecture = (typeof SupportedArchitectures)[number];
 
 /** @internal */
-export const SupportedPlatforms = ["linux", "darwin", "openbsd", "freebsd", "win32"] as const;
+export const SupportedPlatforms = ["linux", "darwin", "win32"] as const;
 
 /** @internal */
 export type SupportedPlatform = (typeof SupportedPlatforms)[number];
@@ -51,13 +51,7 @@ export const LinuxInterfaceNameRegExp: RegExp = /^wg\d+$/;
 export const DarwinInterfaceNameRegExp: RegExp = /^utun\d+$/;
 
 /** @internal */
-export const OpenBSDInterfaceNameRegExp: RegExp = /^tun\d+$/;
-
-/** @internal */
 export const WindowsInterfaceNameRegExp: RegExp = /^eth\d+$/;
-
-/** @internal */
-export const FreeBSDInterfaceNameRegExp: RegExp = /^eth\d+$/;
 
 /**
  * A wireguard interface name.
@@ -81,7 +75,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             Function.pipe(
                 WireguardInterface.InterfaceRegExpForPlatform,
                 Effect.mapError((error) => new ParseResult.Type(ast, s, error.message)),
-                Effect.andThen((x) =>
+                Effect.flatMap((x) =>
                     x.test(s)
                         ? Effect.succeed(s)
                         : Effect.fail(new ParseResult.Type(ast, s, `Expected interface name to match ${x}`))
@@ -95,9 +89,9 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
      * @category Constructors
      */
     public static getNextAvailableInterface: Effect.Effect<WireguardInterface, WireguardErrors.WireguardError, never> =
-        Effect.gen(function* (λ) {
+        Effect.gen(function* () {
             // Determine all the used interface indexes
-            const regex = yield* λ(WireguardInterface.InterfaceRegExpForPlatform);
+            const regex = yield* WireguardInterface.InterfaceRegExpForPlatform;
             const usedInterfaceIndexes = Function.pipe(
                 os.networkInterfaces(),
                 Record.keys,
@@ -108,15 +102,13 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             );
 
             // Find the next available interface index
-            const nextAvailableInterfaceIndex = yield* λ(
-                Function.pipe(
-                    Stream.iterate(0, (x) => x + 1),
-                    Stream.find((x) => !Array.contains(usedInterfaceIndexes, x)),
-                    Stream.take(1),
-                    Stream.runCollect,
-                    Effect.map(Chunk.head),
-                    Effect.map(Option.getOrThrow)
-                )
+            const nextAvailableInterfaceIndex = yield* Function.pipe(
+                Stream.iterate(0, (x) => x + 1),
+                Stream.find((x) => !Array.contains(usedInterfaceIndexes, x)),
+                Stream.take(1),
+                Stream.runCollect,
+                Effect.map(Chunk.head),
+                Effect.map(Option.getOrThrow)
             );
 
             // We know this will be a supported platform now because otherwise
@@ -127,12 +119,9 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             const fromString = Schema.decodeSync(WireguardInterface);
             switch (platform) {
                 case "win32":
-                case "freebsd":
                     return fromString({ Name: `eth${nextAvailableInterfaceIndex}` });
                 case "linux":
                     return fromString({ Name: `wg${nextAvailableInterfaceIndex}` });
-                case "openbsd":
-                    return fromString({ Name: `tun${nextAvailableInterfaceIndex}` });
                 case "darwin":
                     return fromString({ Name: `utun${nextAvailableInterfaceIndex}` });
                 default:
@@ -150,8 +139,6 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             Match.when(String.endsWith(":linux"), () => Effect.succeed(LinuxInterfaceNameRegExp)),
             Match.when(String.endsWith(":win32"), () => Effect.succeed(WindowsInterfaceNameRegExp)),
             Match.when(String.endsWith(":darwin"), () => Effect.succeed(DarwinInterfaceNameRegExp)),
-            Match.when(String.endsWith(":openbsd"), () => Effect.succeed(OpenBSDInterfaceNameRegExp)),
-            Match.when(String.endsWith(":freebsd"), () => Effect.succeed(FreeBSDInterfaceNameRegExp)),
             Match.orElse((bad) =>
                 Effect.fail(new WireguardErrors.WireguardError({ message: `Unsupported platform ${bad}` }))
             )
@@ -165,8 +152,6 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         Match.type<(typeof SupportedPlatforms)[number]>(),
         Match.when("linux", () => `/var/run/wireguard/${this.Name}.sock`),
         Match.when("darwin", () => `/var/run/wireguard/${this.Name}.sock`),
-        Match.when("freebsd", () => `/var/run/wireguard/${this.Name}.sock`),
-        Match.when("openbsd", () => `/var/run/wireguard/${this.Name}.sock`),
         Match.when("win32", () => `\\\\.\\pipe\\ProtectedPrefix\\Administrators\\WireGuard\\${this.Name}`),
         Match.exhaustive
     )(Function.unsafeCoerce(process.platform));
@@ -231,29 +216,27 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         (
             peer: WireguardPeer.WireguardPeer
         ): Effect.Effect<void, Socket.SocketError | ParseResult.ParseError, WireguardControl.WireguardControl>;
-    } = (peer) => {
-        const self = this;
-        return Effect.gen(function* (λ) {
-            const control = yield* λ(WireguardControl.WireguardControl);
+    } = (peer) =>
+        Effect.gen(this, function* () {
+            const control = yield* WireguardControl.WireguardControl;
             const request = new WireguardConfig.WireguardGetConfigRequest({
                 address: "0.0.0.0/0",
-                wireguardInterface: self,
+                wireguardInterface: this,
             });
 
             // Get the config before adding this peer and ensure this peer is not present
-            const configBefore = yield* λ(Effect.request(request, control.getConfigRequestResolver));
+            const configBefore = yield* Effect.request(request, control.getConfigRequestResolver);
             assert.ok(configBefore.Peers.find((p) => p.PublicKey === peer.PublicKey) === undefined);
 
             // Add the peer to the interface
             const peerUApiRequest = WireguardPeer.makeWireguardUApiSetPeerRequest(peer);
             const updateRequest = `set=1\n${peerUApiRequest}`;
-            yield* λ(WireguardControl.userspaceContact(self, updateRequest));
+            yield* WireguardControl.userspaceContact(this, updateRequest);
 
             // Get the config after adding this peer and ensure this peer is present
-            const configAfter = yield* λ(Effect.request(request, control.getConfigRequestResolver));
+            const configAfter = yield* Effect.request(request, control.getConfigRequestResolver);
             assert.ok(configAfter.Peers.find((p) => p.PublicKey === peer.PublicKey) !== undefined);
         });
-    };
 
     /**
      * Removes a peer from this interface.
@@ -265,29 +248,27 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         (
             peer: WireguardPeer.WireguardPeer
         ): Effect.Effect<void, Socket.SocketError | ParseResult.ParseError, WireguardControl.WireguardControl>;
-    } = (peer) => {
-        const self = this;
-        return Effect.gen(function* (λ) {
-            const control = yield* λ(WireguardControl.WireguardControl);
+    } = (peer) =>
+        Effect.gen(this, function* () {
+            const control = yield* WireguardControl.WireguardControl;
             const request = new WireguardConfig.WireguardGetConfigRequest({
                 address: "0.0.0.0/0",
-                wireguardInterface: self,
+                wireguardInterface: this,
             });
 
             // Get the config before removing this peer and ensure this peer is present
-            const configBefore = yield* λ(Effect.request(request, control.getConfigRequestResolver));
+            const configBefore = yield* Effect.request(request, control.getConfigRequestResolver);
             assert.ok(configBefore.Peers.find((p) => p.PublicKey === peer.PublicKey) !== undefined);
 
             // Remove the peer from the interface
             const peerUApiRequest = WireguardPeer.makeWireguardUApiSetPeerRequest(peer);
             const updateRequest = `set=1\n${peerUApiRequest}remove=true\n`;
-            yield* λ(WireguardControl.userspaceContact(self, updateRequest));
+            yield* WireguardControl.userspaceContact(this, updateRequest);
 
             // Get the config after removing this peer and ensure this peer is not present
-            const configAfter = yield* λ(Effect.request(request, control.getConfigRequestResolver));
+            const configAfter = yield* Effect.request(request, control.getConfigRequestResolver);
             assert.ok(configAfter.Peers.find((p) => p.PublicKey === peer.PublicKey) === undefined);
         });
-    };
 }
 
 export default WireguardInterface;

@@ -138,17 +138,17 @@ export const makeUserspaceLayer = (): WireguardControlImpl => {
  */
 export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardControlImpl => {
     const execWireguardGoCommand = (command: string): Effect.Effect<void, Cause.UnknownException, never> =>
-        Effect.tryPromise(() => {
+        Effect.tryPromise((): Promise<unknown> => {
             const subprocess = execa.execaCommand(
                 `${options.sudo === true && process.platform !== "win32" ? "sudo " : ""}${command}`,
                 {
-                    stdio: "ignore",
                     cleanup: false,
                     detached: true,
+                    stdio: "ignore",
                 }
             );
             subprocess.unref();
-            return subprocess;
+            return process.platform === "win32" ? new Promise((resolve) => setTimeout(resolve, 10000)) : subprocess;
         });
 
     const execWgQuickCommand = (command: string): Effect.Effect<void, Cause.UnknownException, never> =>
@@ -157,64 +157,65 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
         );
 
     const up: WireguardControlImpl["up"] = (wireguardConfig, wireguardInterface) =>
-        Effect.gen(function* (λ) {
-            const path = yield* λ(Path.Path);
-            const fs = yield* λ(FileSystem.FileSystem);
-            const tempDirectory = yield* λ(fs.makeTempDirectory());
+        Effect.gen(function* () {
+            const path = yield* Path.Path;
+            const fs = yield* FileSystem.FileSystem;
+            const tempDirectory = yield* fs.makeTempDirectory();
             const file = path.join(tempDirectory, `${wireguardInterface.Name}.conf`);
-            yield* λ(wireguardConfig.writeToFile(file));
+            yield* wireguardConfig.writeToFile(file);
 
             const arch = process.arch === "x64" ? "amd64" : process.arch;
             const extension = process.platform === "win32" ? ".exe" : "";
             const wireguardGoUrl = new URL(`./${process.platform}-${arch}-wireguard-go${extension}`, import.meta.url);
-            const bundledWireguardGoExecutablePath = yield* λ(path.fromFileUrl(wireguardGoUrl));
-            yield* λ(fs.access(bundledWireguardGoExecutablePath, { ok: true }));
+            const bundledWireguardGoExecutablePath = yield* path.fromFileUrl(wireguardGoUrl);
+            yield* fs.access(bundledWireguardGoExecutablePath, { ok: true });
 
             const wgQuickUrl = new URL(`./${process.platform}-wg-quick`, import.meta.url);
-            const bundledWgQuickExecutablePath = yield* λ(path.fromFileUrl(wgQuickUrl));
-            if (process.platform !== "win32") yield* λ(fs.access(bundledWgQuickExecutablePath, { ok: true }));
+            const bundledWgQuickExecutablePath = yield* path.fromFileUrl(wgQuickUrl);
+            if (process.platform !== "win32") yield* fs.access(bundledWgQuickExecutablePath, { ok: true });
 
             const wgWindowsUrl = new URL(`./win32-${arch}-wireguard.exe`, import.meta.url);
-            const bundledWgWindowsExecutablePath = yield* λ(path.fromFileUrl(wgWindowsUrl));
-            if (process.platform === "win32") yield* λ(fs.access(bundledWgWindowsExecutablePath, { ok: true }));
+            const bundledWgWindowsExecutablePath = yield* path.fromFileUrl(wgWindowsUrl);
+            if (process.platform === "win32") yield* fs.access(bundledWgWindowsExecutablePath, { ok: true });
 
             const wgQuickCommandWin = `${bundledWgWindowsExecutablePath} /installtunnelservice ${file}`;
             const wgQuickCommandNix = `${bundledWgQuickExecutablePath} up ${file}`;
             const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
             const wireguardGoCommand = `${bundledWireguardGoExecutablePath} ${wireguardInterface.Name}`;
 
-            yield* λ(execWireguardGoCommand(wireguardGoCommand));
-            yield* λ(
-                Effect.request(
-                    new WireguardConfig.WireguardSetConfigRequest({ config: wireguardConfig, wireguardInterface }),
-                    WireguardConfig.WireguardSetConfigResolver
-                )
+            yield* execWireguardGoCommand(wireguardGoCommand);
+            yield* Effect.logInfo("WireguardGo command executed");
+            yield* Effect.request(
+                new WireguardConfig.WireguardSetConfigRequest({ config: wireguardConfig, wireguardInterface }),
+                WireguardConfig.WireguardSetConfigResolver
             );
-            yield* λ(execWgQuickCommand(wgQuickCommand));
+            yield* Effect.logInfo("Wireguard config set");
+            yield* execWgQuickCommand(wgQuickCommand);
+            yield* Effect.logInfo("Wireguard quick command executed");
             return wireguardInterface;
         });
 
     const down: WireguardControlImpl["down"] = (wireguardConfig, wireguardInterface) =>
-        Effect.gen(function* (λ) {
-            const path = yield* λ(Path.Path);
-            const fs = yield* λ(FileSystem.FileSystem);
-            const tempDirectory = yield* λ(fs.makeTempDirectory());
+        Effect.gen(function* () {
+            const path = yield* Path.Path;
+            const fs = yield* FileSystem.FileSystem;
+            const tempDirectory = yield* fs.makeTempDirectory();
             const file = path.join(tempDirectory, `${wireguardInterface.Name}.conf`);
-            yield* λ(wireguardConfig.writeToFile(file));
+            yield* wireguardConfig.writeToFile(file);
 
             const arch = process.arch === "x64" ? "amd64" : process.arch;
             const wgQuickUrl = new URL(`./${process.platform}-wg-quick`, import.meta.url);
-            const bundledWgQuickExecutablePath = yield* λ(path.fromFileUrl(wgQuickUrl));
-            if (process.platform !== "win32") yield* λ(fs.access(bundledWgQuickExecutablePath, { ok: true }));
+            const bundledWgQuickExecutablePath = yield* path.fromFileUrl(wgQuickUrl);
+            if (process.platform !== "win32") yield* fs.access(bundledWgQuickExecutablePath, { ok: true });
 
             const wgWindowsUrl = new URL(`./win32-${arch}-wireguard.exe`, import.meta.url);
-            const bundledWgWindowsExecutablePath = yield* λ(path.fromFileUrl(wgWindowsUrl));
-            if (process.platform === "win32") yield* λ(fs.access(bundledWgWindowsExecutablePath, { ok: true }));
+            const bundledWgWindowsExecutablePath = yield* path.fromFileUrl(wgWindowsUrl);
+            if (process.platform === "win32") yield* fs.access(bundledWgWindowsExecutablePath, { ok: true });
 
-            const wgQuickCommandWin = `${bundledWgWindowsExecutablePath} /uninstalltunnelservice ${file}`;
+            const wgQuickCommandWin = `${bundledWgWindowsExecutablePath} /uninstalltunnelservice ${wireguardInterface.Name}`;
             const wgQuickCommandNix = `${bundledWgQuickExecutablePath} down ${file}`;
             const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
-            yield* λ(execWgQuickCommand(wgQuickCommand));
+            yield* execWgQuickCommand(wgQuickCommand);
             return wireguardInterface;
         });
 

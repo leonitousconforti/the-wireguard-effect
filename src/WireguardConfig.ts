@@ -91,17 +91,15 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
         (
             file: string
         ): Effect.Effect<void, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem | Path.Path>;
-    } = (file) => {
-        const self = this;
-        return Effect.gen(function* (λ) {
-            const path = yield* λ(Path.Path);
-            const fs = yield* λ(FileSystem.FileSystem);
-            const configEncoded = yield* λ(Schema.encode(WireguardConfig)(self));
-            const iniConfigDecoded = yield* λ(Schema.decode(WireguardIniConfig)(configEncoded));
-            yield* λ(fs.makeDirectory(path.dirname(file), { recursive: true }));
-            yield* λ(fs.writeFileString(file, iniConfigDecoded));
+    } = (file) =>
+        Effect.gen(this, function* () {
+            const path = yield* Path.Path;
+            const fs = yield* FileSystem.FileSystem;
+            const configEncoded = yield* Schema.encode(WireguardConfig)(this);
+            const iniConfigDecoded = yield* Schema.decode(WireguardIniConfig)(configEncoded);
+            yield* fs.makeDirectory(path.dirname(file), { recursive: true });
+            yield* fs.writeFileString(file, iniConfigDecoded);
         });
-    };
 
     /**
      * Starts a wireguard tunnel that will continue to run and serve traffic
@@ -122,22 +120,18 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             | WireguardErrors.WireguardError,
             FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
         >;
-    } = (interfaceObject) => {
-        const self = this;
-        return Effect.gen(function* (λ) {
-            const io = yield* λ(
-                Function.pipe(
-                    interfaceObject,
-                    Option.fromNullable,
-                    Option.map(Effect.succeed),
-                    Option.getOrElse(() => WireguardInterface.WireguardInterface.getNextAvailableInterface)
-                )
+    } = (interfaceObject) =>
+        Effect.gen(this, function* () {
+            const io = yield* Function.pipe(
+                interfaceObject,
+                Option.fromNullable,
+                Option.map(Effect.succeed),
+                Option.getOrElse(() => WireguardInterface.WireguardInterface.getNextAvailableInterface)
             );
 
-            const wireguardControl = yield* λ(WireguardControl.WireguardControl);
-            return yield* λ(wireguardControl.up(self, io));
+            const wireguardControl = yield* WireguardControl.WireguardControl;
+            return yield* wireguardControl.up(this, io);
         });
-    };
 
     /**
      * Starts a wireguard tunnel that will be gracefully shutdown and stop
@@ -158,22 +152,18 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             | WireguardErrors.WireguardError,
             FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl | Scope.Scope
         >;
-    } = (interfaceObject) => {
-        const self = this;
-        return Effect.gen(function* (λ) {
-            const io = yield* λ(
-                Function.pipe(
-                    interfaceObject,
-                    Option.fromNullable,
-                    Option.map(Effect.succeed),
-                    Option.getOrElse(() => WireguardInterface.WireguardInterface.getNextAvailableInterface)
-                )
+    } = (interfaceObject) =>
+        Effect.gen(this, function* () {
+            const io = yield* Function.pipe(
+                interfaceObject,
+                Option.fromNullable,
+                Option.map(Effect.succeed),
+                Option.getOrElse(() => WireguardInterface.WireguardInterface.getNextAvailableInterface)
             );
 
-            const wireguardControl = yield* λ(WireguardControl.WireguardControl);
-            return yield* λ(wireguardControl.upScoped(self, io));
+            const wireguardControl = yield* WireguardControl.WireguardControl;
+            return yield* wireguardControl.upScoped(this, io);
         });
-    };
 }
 
 /**
@@ -193,7 +183,7 @@ export interface $WireguardIniConfig
 export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(WireguardConfig, Schema.String, {
     // Encoding is non-trivial, as we need to handle all the peers individually.
     decode: (config, _options, _ast) =>
-        Effect.gen(function* (λ) {
+        Effect.gen(function* () {
             const listenPort = `ListenPort = ${config.ListenPort}\n`;
             const privateKey = `PrivateKey = ${config.PrivateKey}\n`;
             const address = `Address = ${config.Address.ip.ip}/${config.Address.mask}\n`;
@@ -201,14 +191,12 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(Wi
             const fwmark = Predicate.isNotUndefined(config.FirewallMark)
                 ? `FirewallMark = ${config.FirewallMark}\n`
                 : "";
-            const peersConfig = yield* λ(
-                Function.pipe(
-                    config.Peers,
-                    Array.map((peer) => Schema.encode(WireguardPeer.WireguardPeer)(peer)),
-                    Array.map(Effect.flatMap(Schema.decode(WireguardPeer.WireguardIniPeer))),
-                    Effect.allWith(),
-                    Effect.map(Array.join("\n"))
-                )
+            const peersConfig = yield* Function.pipe(
+                config.Peers,
+                Array.map((peer) => Schema.encode(WireguardPeer.WireguardPeer)(peer)),
+                Array.map(Effect.flatMap(Schema.decode(WireguardPeer.WireguardIniPeer))),
+                Effect.allWith(),
+                Effect.map(Array.join("\n"))
             );
 
             return `[Interface]\n${dns}${listenPort}${fwmark}${address}${privateKey}\n${peersConfig}`;
@@ -216,7 +204,7 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(Wi
 
     // Decoding is likewise non-trivial, as we need to parse all the peers from the ini config.
     encode: (iniConfig, _options, _ast) =>
-        Effect.gen(function* (λ) {
+        Effect.gen(function* () {
             const sections = iniConfig.split(/(?=\[Peer\])/g);
             const maybeInterfaceSection = Array.findFirst(sections, (text) => text.startsWith("[Interface]"));
             const interfaceSection = Option.getOrThrowWith(
@@ -230,12 +218,10 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(Wi
                 Array.map((text) => text.replace("[Peer]", ""))
             );
 
-            const parsePeers = yield* λ(
-                Function.pipe(
-                    peerSections,
-                    Array.map((peer) => Schema.encode(WireguardPeer.WireguardIniPeer)(peer)),
-                    Effect.allWith()
-                )
+            const parsePeers = yield* Function.pipe(
+                peerSections,
+                Array.map((peer) => Schema.encode(WireguardPeer.WireguardIniPeer)(peer)),
+                Effect.allWith()
             );
 
             const parseInterface = Function.pipe(
@@ -254,7 +240,7 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(Wi
                 Schema.decode(WireguardConfig)
             );
 
-            return yield* λ(parseInterface);
+            return yield* parseInterface;
         }).pipe(Effect.mapError(({ error }) => error)),
 }).annotations({
     identifier: "WireguardIniConfig",
@@ -553,7 +539,7 @@ export const generate: {
     ParseResult.ParseError | WireguardErrors.WireguardError,
     never
 > =>
-    Effect.gen(function* (λ) {
+    Effect.gen(function* () {
         const inputIsSetupData = Array.isArray(options.hubData);
         const ipsNeeded =
             Array.length(
@@ -564,25 +550,21 @@ export const generate: {
 
         // Bounds checking on the cidr block
         if (options.cidrBlock && options.cidrBlock.total < ipsNeeded) {
-            return yield* λ(
-                new WireguardErrors.WireguardError({
-                    message: `Not enough IPs in the CIDR block for ${ipsNeeded} nodes`,
-                })
-            );
+            return yield* new WireguardErrors.WireguardError({
+                message: `Not enough IPs in the CIDR block for ${ipsNeeded} nodes`,
+            });
         }
 
         // Generate some ip addresses to use if the input data was just an endpoint
         const ips = options.cidrBlock?.range
-            ? yield* λ(
-                  Function.pipe(
-                      options.cidrBlock?.range,
-                      Stream.drop(options.addressStartingIndex ?? 0),
-                      Stream.mapEffect(Schema.encode(InternetSchemas.Address)),
-                      Stream.run(Sink.collectAllN(ipsNeeded)),
-                      Effect.map(Chunk.toArray)
-                  )
+            ? yield* Function.pipe(
+                  options.cidrBlock?.range,
+                  Stream.drop(options.addressStartingIndex ?? 0),
+                  Stream.mapEffect(Schema.encode(InternetSchemas.Address)),
+                  Stream.run(Sink.collectAllN(ipsNeeded)),
+                  Effect.map(Chunk.toArray)
               )
-            : yield* λ(Effect.succeed(Array.empty()));
+            : yield* Effect.succeed(Array.empty());
 
         // Convert the trustMap to a HashMap if it's not already
         type TrustMap = Exclude<typeof options.trustMap, "trustAllPeers" | "trustNoPeers" | undefined>;
@@ -627,9 +609,9 @@ export const generate: {
               );
 
         // Decode all SetupData inputs
-        const hubSetupData = yield* λ(Schema.decode(InternetSchemas.SetupData)(hubSetupDataEncoded));
-        const spokeSetupData = yield* λ(
-            Effect.all(Array.map(spokeSetupDataEncoded, (spoke) => Schema.decode(InternetSchemas.SetupData)(spoke)))
+        const hubSetupData = yield* Schema.decode(InternetSchemas.SetupData)(hubSetupDataEncoded);
+        const spokeSetupData = yield* Effect.all(
+            Array.map(spokeSetupDataEncoded, (spoke) => Schema.decode(InternetSchemas.SetupData)(spoke))
         );
         const spokeSetupDataBoth = Array.zip(spokeSetupDataEncoded, spokeSetupData);
 
@@ -674,38 +656,34 @@ export const generate: {
         );
 
         // The hub interface config will have all the spoke peer configs
-        const hubConfig = yield* λ(
-            Schema.decode(WireguardConfig)({
-                PrivateKey: hubKeys.privateKey,
-                ListenPort: Tuple.getFirst(hubSetupData).listenPort,
-                Peers: Array.map(spokePeerConfigs, ({ peerConfig }) => peerConfig),
-                Address: `${Tuple.getSecond(hubSetupDataEncoded)}/${options.cidrBlock?.mask ?? 24}`,
-            })
-        );
+        const hubConfig = yield* Schema.decode(WireguardConfig)({
+            PrivateKey: hubKeys.privateKey,
+            ListenPort: Tuple.getFirst(hubSetupData).listenPort,
+            Peers: Array.map(spokePeerConfigs, ({ peerConfig }) => peerConfig),
+            Address: `${Tuple.getSecond(hubSetupDataEncoded)}/${options.cidrBlock?.mask ?? 24}`,
+        });
 
         // Each spoke interface config will have the hub peer config and the other peers from the trust map
-        const spokeConfigs = yield* λ(
-            Function.pipe(
-                spokePeerConfigs,
-                Array.map(({ keys: { privateKey }, setupDataDecoded, setupDataEncoded }) => {
-                    const friends = Function.pipe(
-                        trustMap,
-                        HashMap.get(setupDataEncoded),
-                        Option.getOrElse(() => Array.empty()),
-                        Array.map((friend) => HashMap.get(spokePeerConfigsBySetupData, friend)),
-                        Array.map(Option.getOrThrow),
-                        Array.map(({ peerConfig }) => peerConfig)
-                    );
+        const spokeConfigs = yield* Function.pipe(
+            spokePeerConfigs,
+            Array.map(({ keys: { privateKey }, setupDataDecoded, setupDataEncoded }) => {
+                const friends = Function.pipe(
+                    trustMap,
+                    HashMap.get(setupDataEncoded),
+                    Option.getOrElse(() => Array.empty()),
+                    Array.map((friend) => HashMap.get(spokePeerConfigsBySetupData, friend)),
+                    Array.map(Option.getOrThrow),
+                    Array.map(({ peerConfig }) => peerConfig)
+                );
 
-                    return Schema.decode(WireguardConfig)({
-                        PrivateKey: privateKey,
-                        Peers: [hubPeerConfig, ...friends],
-                        ListenPort: Tuple.getFirst(setupDataDecoded).listenPort,
-                        Address: `${Tuple.getSecond(setupDataEncoded)}/${options.cidrBlock?.mask ?? 24}`,
-                    });
-                }),
-                Effect.allWith()
-            )
+                return Schema.decode(WireguardConfig)({
+                    PrivateKey: privateKey,
+                    Peers: [hubPeerConfig, ...friends],
+                    ListenPort: Tuple.getFirst(setupDataDecoded).listenPort,
+                    Address: `${Tuple.getSecond(setupDataEncoded)}/${options.cidrBlock?.mask ?? 24}`,
+                });
+            }),
+            Effect.allWith()
         );
 
         return Tuple.make(hubConfig, spokeConfigs);
@@ -723,11 +701,11 @@ export const fromConfigFile: {
         file: string
     ): Effect.Effect<WireguardConfig, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem>;
 } = (file) =>
-    Effect.gen(function* (λ) {
-        const fs = yield* λ(FileSystem.FileSystem);
-        const fsConfig = yield* λ(fs.readFileString(file));
-        const iniConfigEncoded = yield* λ(Schema.encode(WireguardIniConfig)(fsConfig));
-        const config = yield* λ(Schema.decode(WireguardConfig)(iniConfigEncoded));
+    Effect.gen(function* () {
+        const fs = yield* FileSystem.FileSystem;
+        const fsConfig = yield* fs.readFileString(file);
+        const iniConfigEncoded = yield* Schema.encode(WireguardIniConfig)(fsConfig);
+        const config = yield* Schema.decode(WireguardConfig)(iniConfigEncoded);
         return config;
     });
 
@@ -797,30 +775,26 @@ export class WireguardSetConfigRequest extends Request.TaggedClass("WireguardSet
  */
 export const WireguardGetConfigResolver: Resolver.RequestResolver<WireguardGetConfigRequest, never> =
     Resolver.fromEffect<never, WireguardGetConfigRequest>(({ address, wireguardInterface }) =>
-        Effect.gen(function* (λ) {
-            const uapiConfig = yield* λ(WireguardControl.userspaceContact(wireguardInterface, "get=1\n\n"));
+        Effect.gen(function* () {
+            const uapiConfig = yield* WireguardControl.userspaceContact(wireguardInterface, "get=1\n\n");
             const [interfaceConfig, ...peers] = uapiConfig.split("public_key=");
             const { fwmark, listen_port, private_key } = ini.decode(interfaceConfig);
 
-            const peerConfigs = yield* λ(
-                Function.pipe(
-                    peers,
-                    Array.map((peer) => `public_key=${peer}`),
-                    Array.map((peer) => WireguardPeer.parseWireguardUApiGetPeerResponse(peer)),
-                    Array.map(Effect.flatMap(Schema.encode(WireguardPeer.WireguardUApiGetPeerResponse))),
-                    Effect.allWith()
-                )
+            const peerConfigs = yield* Function.pipe(
+                peers,
+                Array.map((peer) => `public_key=${peer}`),
+                Array.map((peer) => WireguardPeer.parseWireguardUApiGetPeerResponse(peer)),
+                Array.map(Effect.flatMap(Schema.encode(WireguardPeer.WireguardUApiGetPeerResponse))),
+                Effect.allWith()
             );
 
-            return yield* λ(
-                Schema.decode(WireguardGetConfigResponse)({
-                    Address: address,
-                    ListenPort: listen_port,
-                    PrivateKey: Buffer.from(private_key, "hex").toString("base64"),
-                    FirewallMark: Number.parse(fwmark || "").pipe(Option.getOrUndefined),
-                    Peers: peerConfigs,
-                })
-            );
+            return yield* Schema.decode(WireguardGetConfigResponse)({
+                Address: address,
+                ListenPort: listen_port,
+                PrivateKey: Buffer.from(private_key, "hex").toString("base64"),
+                FirewallMark: Number.parse(fwmark || "").pipe(Option.getOrUndefined),
+                Peers: peerConfigs,
+            });
         })
     );
 
@@ -830,7 +804,7 @@ export const WireguardGetConfigResolver: Resolver.RequestResolver<WireguardGetCo
  */
 export const WireguardSetConfigResolver: Resolver.RequestResolver<WireguardSetConfigRequest, never> =
     Resolver.fromEffect<never, WireguardSetConfigRequest>(({ config, wireguardInterface }) =>
-        Effect.gen(function* (λ) {
+        Effect.gen(function* () {
             const listenPort = `listen_port=${config.ListenPort}\n` as const;
             const privateKeyHex = Buffer.from(config.PrivateKey, "base64").toString("hex");
             const privateKey = `private_key=${privateKeyHex}\n` as const;
@@ -846,7 +820,7 @@ export const WireguardSetConfigResolver: Resolver.RequestResolver<WireguardSetCo
             );
 
             const uapiConfig = `${privateKey}${listenPort}${fwmark}${peers}\n` as const;
-            yield* λ(WireguardControl.userspaceContact(wireguardInterface, `set=1\n${uapiConfig}\n`));
+            yield* WireguardControl.userspaceContact(wireguardInterface, `set=1\n${uapiConfig}\n`);
             return wireguardInterface;
         })
     );

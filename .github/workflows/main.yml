@@ -9,8 +9,8 @@ on:
     - cron:  '30 * * * *'
 
 concurrency:
-  cancel-in-progress: false
-  group: ${{ github.workflow }}
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   build:
@@ -73,15 +73,16 @@ jobs:
       - run: cp -r submodules/wireguard-windows/.distfiles/ /tmp/wireguard-windows-distfiles
       - run: ls -la /tmp/wireguard-windows-distfiles
 
-      - run: rm -rf .git/
-      - run: rm -rf node_modules/
-      - run: rm -rf submodules/wintun
-      - run: rm -rf submodules/nvlist
-      - run: rm -rf submodules/wireguard-apple
-      - run: rm -rf submodules/wireguard-go
-      - run: rm -rf submodules/wireguard-tools
-      - run: rm -rf submodules/wireguard-windows
-      - run: rm -rf submodules/WSL2-Linux-Kernel
+      - run: sudo rm -rf .git/
+      - run: sudo rm -rf node_modules/
+      - run: sudo rm -rf submodules/wintun
+      - run: sudo rm -rf submodules/nvlist
+      - run: sudo rm -rf submodules/osxcross
+      - run: sudo rm -rf submodules/wireguard-apple
+      - run: sudo rm -rf submodules/wireguard-go
+      - run: sudo rm -rf submodules/wireguard-tools
+      - run: sudo rm -rf submodules/wireguard-windows
+      - run: sudo rm -rf submodules/WSL2-Linux-Kernel
       - uses: actions/upload-artifact@v4
         with:
           name: the-wireguard-effect
@@ -112,14 +113,10 @@ jobs:
           sudo chown -R root:wireguard-control /var/run/wireguard/
           sudo setcap "all=ep" ./src/linux-amd64-wireguard-go
       - run: pnpm test
-        env:
-          HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
-          WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
-          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
 
   macos-intel-test:
     runs-on: macos-13
-    # timeout-minutes: 10
+    timeout-minutes: 10
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
@@ -136,16 +133,10 @@ jobs:
           brew install bash
           sudo chmod +x ./src/*
       - run: sudo -E pnpm test
-        env:
-          HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
-          WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
-          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
-      - uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
 
   macos-apple-silicon-test:
     runs-on: macos-14
-    # timeout-minutes: 10
+    timeout-minutes: 10
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
@@ -162,70 +153,11 @@ jobs:
           brew install bash
           sudo chmod +x ./src/*
       - run: sudo -E pnpm test
-        env:
-          HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
-          WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
-          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
-      - uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
-
-  freebsd-test:
-    runs-on: ubuntu-latest
-    # timeout-minutes: 10
-    needs: [build]
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: the-wireguard-effect
-      - uses: vmactions/freebsd-vm@v1
-        with:
-          usesh: true
-          sync: rsync
-          copyback: false
-          prepare: |
-            pkg install -y sudo node npm
-            npm -v
-            node -v
-            npm install -g pnpm
-          run: |
-            pnpm install
-            sudo chmod +x ./src/*
-            WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} sudo -E pnpm test
-      - uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
-
-  openbsd-test:
-    runs-on: ubuntu-latest
-    # timeout-minutes: 10
-    needs: [build]
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: the-wireguard-effect
-      - uses: vmactions/openbsd-vm@v1
-        with:
-          usesh: true
-          sync: rsync
-          copyback: false
-          prepare: |
-            pkg_add sudo-1.9.15.5 node
-            npm -v
-            node -v
-            npm install -g pnpm
-          run: |
-            pnpm install
-            sudo chmod +x ./src/*
-            WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} sudo -E pnpm test
-      - uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
 
   windows-test:
     runs-on: windows-latest
-    # timeout-minutes: 10
+    timeout-minutes: 10
     needs: [build]
-    defaults:
-      run:
-        shell: pwsh
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -237,17 +169,15 @@ jobs:
         with:
           version: 9
       - run: pnpm install
-      - run: pnpm test
+      - run: C:\\msys64\\usr\\bin\\bash.exe -lc "pnpm test"
         env:
-          HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
-          WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
-          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
-      - uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
+          MSYSTEM: "MINGW64"
+          CHERE_INVOKING: "1"
+          MSYS2_PATH_TYPE: "inherit"
 
   windows-wsl2-test:
     runs-on: windows-latest
-    # timeout-minutes: 10
+    timeout-minutes: 10
     needs: [build]
     defaults:
       run:
@@ -284,4 +214,4 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
       - run: wsl --distribution Ubuntu22.04 --user root -- chmod +x ./src/*
       - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/
-      - run: wsl --distribution Ubuntu22.04 --user root -- WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test -- --run
+      - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
