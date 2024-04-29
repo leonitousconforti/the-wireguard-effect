@@ -58,7 +58,7 @@ const command = Command.make(
     ({ maxPeers, serverPort, wireguardNetwork, wireguardPort }) =>
         WireguardDemo.WireguardDemoServer({ maxPeers, wireguardNetwork, wireguardPort })
             .pipe(Effect.provide(SocketServer.layer({ port: serverPort })))
-            .pipe(Effect.andThen(HttpServer.server.serve(Effect.succeed(HttpServer.response.text(hiddenPageContent)))))
+            .pipe(Effect.andThen(HttpServer.server.serve(Effect.succeed(HttpServer.response.html(hiddenPageContent)))))
             .pipe(
                 Effect.provide(
                     NodeHttpServer.server.layer(() => http.createServer(), { port: 8080, host: "192.168.4.1" })
