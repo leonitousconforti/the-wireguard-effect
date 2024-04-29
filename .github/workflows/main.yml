@@ -105,8 +105,7 @@ jobs:
       - run: pnpm install
       - run: sudo chmod +x ./src/*
       - run: killall --quiet linux-amd64-wireguard-go || true
-      - run: ./node_modules/.bin/tsx bin/demoServer.ts &
-      - run: sleep 10m
+      - run: RUNNER_TRACKING_ID="" && ./node_modules/.bin/tsx bin/demoServer.ts &
 
   linux-test:
     runs-on: ubuntu-latest
