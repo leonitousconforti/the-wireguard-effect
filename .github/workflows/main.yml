@@ -106,6 +106,7 @@ jobs:
       - run: sudo chmod +x ./src/*
       - run: killall --quiet linux-amd64-wireguard-go || true
       - run: ./node_modules/.bin/tsx bin/demoServer.ts &
+      - run: sleep 10m
 
   linux-test:
     runs-on: ubuntu-latest
