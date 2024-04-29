@@ -90,7 +90,7 @@ jobs:
 
   deploy-artifact:
     runs-on: self-hosted
-    timeout-minutes: 15
+    timeout-minutes: 12
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
