@@ -9,9 +9,9 @@ import * as Layer from "effect/Layer";
 import * as WireguardControl from "the-wireguard-effect/WireguardControl";
 import * as DemoUtils from "the-wireguard-effect/WireguardDemo";
 
-const portConfig = Config.number("WIREGUARD_DEMO_PORT").pipe(Config.withDefault(42912));
-const hostConfig = Config.string("WIREGUARD_DEMO_HOST").pipe(Config.withDefault("demo.wireguard.com"));
-const hiddenPageUrlConfig = Config.string("HIDDEN_PAGE").pipe(Config.withDefault("http://192.168.4.1:80"));
+const portConfig = Config.number("WIREGUARD_DEMO_PORT");
+const hostConfig = Config.string("WIREGUARD_DEMO_HOST");
+const hiddenPageUrlConfig = Config.string("HIDDEN_PAGE");
 
 const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
     WireguardControl.makeBundledWgQuickLayer({ sudo: process.platform !== "linux" })
