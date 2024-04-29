@@ -88,10 +88,19 @@ jobs:
           name: the-wireguard-effect
           path: .
 
+  deploy-artifact:
+    runs-on: self-hosted
+    needs: [build]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: the-wireguard-effect
+          path: deploy
+
   linux-test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [build]
+    needs: [build, deploy-artifact]
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -117,7 +126,7 @@ jobs:
   macos-intel-test:
     runs-on: macos-13
     timeout-minutes: 10
-    needs: [build]
+    needs: [build, deploy-artifact]
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -137,7 +146,7 @@ jobs:
   macos-apple-silicon-test:
     runs-on: macos-14
     timeout-minutes: 10
-    needs: [build]
+    needs: [build, deploy-artifact]
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -157,7 +166,7 @@ jobs:
   windows-test:
     runs-on: windows-latest
     timeout-minutes: 10
-    needs: [build]
+    needs: [build, deploy-artifact]
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -178,7 +187,7 @@ jobs:
   windows-wsl2-test:
     runs-on: windows-latest
     timeout-minutes: 10
-    needs: [build]
+    needs: [build, deploy-artifact]
     defaults:
       run:
         shell: pwsh
