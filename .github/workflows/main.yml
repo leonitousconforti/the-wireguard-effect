@@ -90,12 +90,21 @@ jobs:
 
   deploy-artifact:
     runs-on: self-hosted
+    timeout-minutes: 15
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
-          path: deploy
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - run: pnpm install
+      - run: sudo apt-get install -y openresolv
+      - run: ./node_modules/.bin/tsx bin/demoServer.ts &
 
   linux-test:
     runs-on: ubuntu-latest
