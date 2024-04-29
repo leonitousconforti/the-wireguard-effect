@@ -82,6 +82,7 @@ Mock implementation of the Wireguard demo server at demo.wireguard.com
 ```ts
 export declare const WireguardDemoServer: (options: {
   wireguardPort: number
+  maxPeers?: number | undefined
   wireguardNetwork: InternetSchemas.CidrBlockFromStringEncoded
 }) => Effect.Effect<
   void,
