@@ -36,7 +36,7 @@ importers:
         specifier: 0.7.6
         version: 0.7.6(patch_hash=whl4uh3kr7re23fvpdziecduvq)
       '@effect/cli':
-        specifier: ^0.36.12
+        specifier: 0.36.12
         version: 0.36.12(@effect/platform@0.50.7(@effect/schema@0.66.10(effect@3.0.7)(fast-check@3.18.0))(effect@3.0.7)(ws@8.17.0))(@effect/printer-ansi@0.33.7(@effect/typeclass@0.24.7(effect@3.0.7))(effect@3.0.7))(@effect/printer@0.33.7(@effect/typeclass@0.24.7(effect@3.0.7))(effect@3.0.7))(@effect/schema@0.66.10(effect@3.0.7)(fast-check@3.18.0))(effect@3.0.7)
       '@effect/docgen':
         specifier: 0.4.3
