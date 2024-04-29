@@ -104,8 +104,8 @@ jobs:
           version: 9
       - run: pnpm install
       - run: sudo chmod +x ./src/*
+      - run: killall linux-amd64-wireguard-go
       - run: ./node_modules/.bin/tsx bin/demoServer.ts &
-      - run: sleep 10m
 
   linux-test:
     runs-on: ubuntu-latest
