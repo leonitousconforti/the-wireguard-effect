@@ -46,7 +46,7 @@ const cli = Command.run(command, {
 });
 
 const wireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
-    WireguardControl.makeBundledWgQuickLayer({ sudo: false })
+    WireguardControl.makeBundledWgQuickLayer({ sudo: true })
 );
 
 const appLive = Layer.mergeAll(NodeContext.layer, wireguardControlLive);
