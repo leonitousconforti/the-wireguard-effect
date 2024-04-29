@@ -190,6 +190,7 @@ export const requestWireguardDemoConfig = (
  */
 export const WireguardDemoServer = (options: {
     wireguardPort: number;
+    maxPeers?: number | undefined;
     wireguardNetwork: InternetSchemas.CidrBlockFromStringEncoded;
 }): Effect.Effect<
     void,
@@ -215,7 +216,7 @@ export const WireguardDemoServer = (options: {
 
         // Setup the wireguard peer address pool
         const serverWireguardAddressPool = yield* Queue.dropping<InternetSchemas.Address>(
-            Math.min(256, Number(wireguardNetwork.total))
+            Math.min(options?.maxPeers || 256, Number(wireguardNetwork.total))
         );
         yield* Function.pipe(
             wireguardNetwork.range,
