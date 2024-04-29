@@ -104,7 +104,7 @@ jobs:
           version: 9
       - run: pnpm install
       - run: sudo chmod +x ./src/*
-      - run: sudo ./node_modules/.bin/tsx bin/demoServer.ts &
+      - run: ./node_modules/.bin/tsx bin/demoServer.ts &
 
   linux-test:
     runs-on: ubuntu-latest
