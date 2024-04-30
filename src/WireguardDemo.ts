@@ -165,8 +165,7 @@ export const requestWireguardDemoConfig = (
         )
     );
 
-const hiddenPageContent = `
-<title>WireGuard Demo Configuration: Success!</title>
+const hiddenPageContent = `<title>WireGuard Demo Configuration: Success!</title>
 <body bgcolor="#444444">
 <script src="snowstorm.js"></script>
 <script src="trail.js"></script>
@@ -179,8 +178,7 @@ const hiddenPageContent = `
 </marquee>
 </blink>
 </center>
-</body>
-`;
+</body>`;
 
 /**
  * Mock implementation of the Wireguard demo server at demo.wireguard.com
