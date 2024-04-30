@@ -166,7 +166,7 @@ export const requestWireguardDemoConfig = (
     );
 
 const hiddenPageContent = `
-"<title>WireGuard Demo Configuration: Success!</title>
+<title>WireGuard Demo Configuration: Success!</title>
 <body bgcolor="#444444">
 <script src="snowstorm.js"></script>
 <script src="trail.js"></script>
@@ -180,7 +180,6 @@ const hiddenPageContent = `
 </blink>
 </center>
 </body>
-"
 `;
 
 /**
