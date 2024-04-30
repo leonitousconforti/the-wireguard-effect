@@ -1,5 +1,7 @@
 import * as Command from "@effect/cli/Command";
+import * as HelpDoc from "@effect/cli/HelpDoc";
 import * as Options from "@effect/cli/Options";
+import * as ValidationError from "@effect/cli/ValidationError";
 import * as SocketServer from "@effect/experimental/SocketServer/Node";
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeHttpServer from "@effect/platform-node/NodeHttpServer";
@@ -28,11 +30,33 @@ const serverPort = Options.integer("serverPort")
     .pipe(Options.withSchema(InternetSchemas.Port))
     .pipe(Options.withDescription("The port to listen on for connections"));
 
+const hiddenServerPort = Options.integer("hiddenServerPort")
+    .pipe(Options.withDefault(8080))
+    .pipe(Options.withSchema(InternetSchemas.Port))
+    .pipe(Options.withDescription("The port to listen on for hidden server connections"));
+
 const wireguardNetwork = Options.text("wireguardNetwork")
     .pipe(Options.withDefault("192.168.4.1/24"))
     .pipe(Options.withSchema(InternetSchemas.CidrBlockFromString))
     .pipe(Options.withDescription("The wireguard network cidr to use"))
-    .pipe(Options.map(Schema.encodeSync(InternetSchemas.CidrBlockFromString)));
+    .pipe(
+        Options.mapEffect((wireguardNetwork) =>
+            Effect.gen(function* () {
+                const networkAddress = yield* wireguardNetwork.networkAddress;
+                const hiddenServerBigintAddress = networkAddress.asBigint + 1n;
+                const hiddenServerAddress = yield* InternetSchemas.IPv4.FromBigint(hiddenServerBigintAddress);
+                const hiddenServerString = yield* Schema.encode(InternetSchemas.AddressFromString)(hiddenServerAddress);
+                const wireguardNetworkEncoded = yield* Schema.encode(InternetSchemas.CidrBlockFromString)(
+                    wireguardNetwork
+                );
+
+                return {
+                    wireguardNetwork: wireguardNetworkEncoded,
+                    hiddenServerAddress: hiddenServerString,
+                };
+            }).pipe(Effect.mapError((parseError) => ValidationError.invalidValue(HelpDoc.p(parseError.message))))
+        )
+    );
 
 const hiddenPageContent = `
 "<title>WireGuard Demo Configuration: Success!</title>
@@ -54,14 +78,21 @@ const hiddenPageContent = `
 
 const command = Command.make(
     "demoServer",
-    { maxPeers, serverPort, wireguardNetwork, wireguardPort },
-    ({ maxPeers, serverPort, wireguardNetwork, wireguardPort }) =>
-        WireguardDemo.WireguardDemoServer({ maxPeers, wireguardNetwork, wireguardPort })
+    { hiddenServerPort, maxPeers, serverPort, wireguardNetwork, wireguardPort },
+    ({ hiddenServerPort, maxPeers, serverPort, wireguardNetwork, wireguardPort }) =>
+        WireguardDemo.WireguardDemoServer({
+            maxPeers,
+            wireguardPort,
+            wireguardNetwork: wireguardNetwork.wireguardNetwork,
+        })
             .pipe(Effect.provide(SocketServer.layer({ port: serverPort })))
             .pipe(Effect.andThen(HttpServer.server.serve(Effect.succeed(HttpServer.response.html(hiddenPageContent)))))
             .pipe(
                 Effect.provide(
-                    NodeHttpServer.server.layer(() => http.createServer(), { port: 8080, host: "192.168.4.1" })
+                    NodeHttpServer.server.layer(() => http.createServer(), {
+                        port: hiddenServerPort,
+                        host: wireguardNetwork.hiddenServerAddress,
+                    })
                 )
             )
 );
