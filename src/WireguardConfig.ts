@@ -4,6 +4,7 @@
  * @since 1.0.0
  */
 
+import * as CommandExecutor from "@effect/platform/CommandExecutor";
 import * as PlatformError from "@effect/platform/Error";
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as Path from "@effect/platform/Path";
@@ -118,7 +119,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             | Cause.UnknownException
             | PlatformError.PlatformError
             | WireguardErrors.WireguardError,
-            FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
+            FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
         >;
     } = (interfaceObject) =>
         Effect.gen(this, function* () {
@@ -150,7 +151,11 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             | Cause.UnknownException
             | PlatformError.PlatformError
             | WireguardErrors.WireguardError,
-            FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl | Scope.Scope
+            | FileSystem.FileSystem
+            | Path.Path
+            | CommandExecutor.CommandExecutor
+            | WireguardControl.WireguardControl
+            | Scope.Scope
         >;
     } = (interfaceObject) =>
         Effect.gen(this, function* () {

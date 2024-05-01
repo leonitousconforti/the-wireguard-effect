@@ -4,6 +4,7 @@
  * @since 1.0.0
  */
 
+import * as CommandExecutor from "@effect/platform/CommandExecutor";
 import * as PlatformError from "@effect/platform/Error";
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as Path from "@effect/platform/Path";
@@ -182,7 +183,11 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         ): Effect.Effect<
             WireguardInterface,
             Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
-            FileSystem.FileSystem | Path.Path | Scope.Scope | WireguardControl.WireguardControl
+            | FileSystem.FileSystem
+            | Path.Path
+            | Scope.Scope
+            | CommandExecutor.CommandExecutor
+            | WireguardControl.WireguardControl
         >;
     } = (config) => Effect.flatMap(WireguardControl.WireguardControl, (control) => control.upScoped(config, this));
 
@@ -199,7 +204,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         ): Effect.Effect<
             WireguardInterface,
             Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
-            FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
+            FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
         >;
     } = (config) => Effect.flatMap(WireguardControl.WireguardControl, (control) => control.up(config, this));
 
@@ -215,7 +220,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         ): Effect.Effect<
             WireguardInterface,
             PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException,
-            FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl
+            FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
         >;
     } = (config) => Effect.flatMap(WireguardControl.WireguardControl, (control) => control.down(config, this));
 
@@ -228,7 +233,11 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
     public addPeer: {
         (
             peer: WireguardPeer.WireguardPeer
-        ): Effect.Effect<void, Socket.SocketError | ParseResult.ParseError, WireguardControl.WireguardControl>;
+        ): Effect.Effect<
+            void,
+            Socket.SocketError | ParseResult.ParseError,
+            WireguardControl.WireguardControl | CommandExecutor.CommandExecutor
+        >;
     } = (peer) =>
         Effect.gen(this, function* () {
             const control = yield* WireguardControl.WireguardControl;

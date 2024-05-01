@@ -52,7 +52,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/.cache/ccache
-          key: wsl2-linux-kernel-ccache-${{ hashFiles('submodules/WSL2-modified.patch') }}
+          key: wsl2-linux-kernel-ccache-${{ hashFiles('patches/WSL2-linux-kernel.patch') }}
           restore-keys: |
             wsl2-linux-kernel-ccache-
 
@@ -88,10 +88,30 @@ jobs:
           name: the-wireguard-effect
           path: .
 
+  deploy-artifact:
+    runs-on: self-hosted
+    timeout-minutes: 12
+    needs: [build]
+    steps:
+      - run: killall --quiet --wait node || true
+      - run: killall --quiet --wait linux-amd64-wireguard-go || true
+      - uses: actions/download-artifact@v4
+        with:
+          name: the-wireguard-effect
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - run: pnpm install
+      - run: sudo chmod +x ./src/*
+      - run: RUNNER_TRACKING_ID="" && ./node_modules/.bin/tsx bin/demoServer.ts &
+
   linux-test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [build]
+    needs: [build, deploy-artifact]
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -113,11 +133,15 @@ jobs:
           sudo chown -R root:wireguard-control /var/run/wireguard/
           sudo setcap "all=ep" ./src/linux-amd64-wireguard-go
       - run: pnpm test
+        env:
+          HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
+          WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
+          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
 
   macos-intel-test:
     runs-on: macos-13
     timeout-minutes: 10
-    needs: [build]
+    needs: [build, deploy-artifact]
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -133,11 +157,15 @@ jobs:
           brew install bash
           sudo chmod +x ./src/*
       - run: sudo -E pnpm test
+        env:
+          HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
+          WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
+          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
 
   macos-apple-silicon-test:
     runs-on: macos-14
     timeout-minutes: 10
-    needs: [build]
+    needs: [build, deploy-artifact]
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -153,6 +181,10 @@ jobs:
           brew install bash
           sudo chmod +x ./src/*
       - run: sudo -E pnpm test
+        env:
+          HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
+          WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
+          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
 
   freebsd-test:
     runs-on: ubuntu-latest
@@ -204,7 +236,7 @@ jobs:
   windows-test:
     runs-on: windows-latest
     timeout-minutes: 10
-    needs: [build]
+    needs: [build, deploy-artifact]
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -221,11 +253,14 @@ jobs:
           MSYSTEM: "MINGW64"
           CHERE_INVOKING: "1"
           MSYS2_PATH_TYPE: "inherit"
+          HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
+          WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
+          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
 
   windows-wsl2-test:
     runs-on: windows-latest
     timeout-minutes: 10
-    needs: [build]
+    needs: [build, deploy-artifact]
     defaults:
       run:
         shell: pwsh
@@ -261,4 +296,4 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
       - run: wsl --distribution Ubuntu22.04 --user root -- chmod +x ./src/*
       - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/
-      - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
+      - run: wsl --distribution Ubuntu22.04 --user root -- WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test -- --run
