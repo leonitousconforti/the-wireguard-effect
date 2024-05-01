@@ -178,7 +178,8 @@ const hiddenPageContent = `<title>WireGuard Demo Configuration: Success!</title>
 </marquee>
 </blink>
 </center>
-</body>`;
+</body>
+`;
 
 /**
  * Mock implementation of the Wireguard demo server at demo.wireguard.com
