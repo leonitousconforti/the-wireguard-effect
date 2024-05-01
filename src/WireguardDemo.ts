@@ -5,11 +5,13 @@
  */
 
 import * as SocketServer from "@effect/experimental/SocketServer";
+import * as NodeHttpServer from "@effect/platform-node/NodeHttpServer";
 import * as NodeSocket from "@effect/platform-node/NodeSocket";
 import * as CommandExecutor from "@effect/platform/CommandExecutor";
 import * as PlatformError from "@effect/platform/Error";
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as HttpClient from "@effect/platform/HttpClient";
+import * as HttpServer from "@effect/platform/HttpServer";
 import * as Path from "@effect/platform/Path";
 import * as Socket from "@effect/platform/Socket";
 import * as ParseResult from "@effect/schema/ParseResult";
@@ -18,6 +20,7 @@ import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
+import * as Layer from "effect/Layer";
 import * as HashMap from "effect/MutableHashMap";
 import * as Option from "effect/Option";
 import * as Queue from "effect/Queue";
@@ -28,6 +31,7 @@ import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
 import * as dns from "node:dns";
+import * as http from "node:http";
 
 import * as InternetSchemas from "./InternetSchemas.js";
 import * as WireguardConfig from "./WireguardConfig.js";
@@ -160,6 +164,22 @@ export const requestWireguardDemoConfig = (
             })
         )
     );
+
+const hiddenPageContent = `<title>WireGuard Demo Configuration: Success!</title>
+<body bgcolor="#444444">
+<script src="snowstorm.js"></script>
+<script src="trail.js"></script>
+<center>
+<blink>
+<marquee width="100%" behavior="alternate" direction="right" scrollamount="10">
+<marquee height="100%" behavior="alternate" direction="down">
+<marquee width="100%" bgcolor="#33aadd" direction="right" behavior="alternate"><font face="comic sans ms" size="7" style="font-size: 3vw" color="#ddaa33">Congrats! You've successfully configured WireGuard!</font><br><marquee scrollamount="30"><img src="emblem.svg" width="20%"></marquee><br><marquee direction="left" scrollamount="40" behavior="alternate"><script>document.write('<iframe frameborder="0" height="80%" width="70%" src="/?' + (((document.location.search.substring(1)|0) + 1) % 4) + '"></iframe>');</script></marquee><br><br></marquee>
+</marquee>
+</marquee>
+</blink>
+</center>
+</body>
+`;
 
 /**
  * Mock implementation of the Wireguard demo server at demo.wireguard.com
@@ -314,6 +334,17 @@ export const WireguardDemoServer = (options: {
                 );
             })
         );
+
+        Layer.launch(HttpServer.server.serve(Effect.succeed(HttpServer.response.html(hiddenPageContent))))
+            .pipe(
+                Effect.provide(
+                    NodeHttpServer.server.layer(() => http.createServer(), {
+                        port: 8080,
+                        host: "192.168.4.1",
+                    })
+                )
+            )
+            .pipe(Effect.runFork);
 
         yield* socketHandler;
     });

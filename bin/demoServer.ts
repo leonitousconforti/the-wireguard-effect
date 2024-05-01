@@ -25,6 +25,11 @@ const serverPort = Options.integer("serverPort")
     .pipe(Options.withSchema(InternetSchemas.Port))
     .pipe(Options.withDescription("The port to listen on for connections"));
 
+const hiddenServerPort = Options.integer("hiddenServerPort")
+    .pipe(Options.withDefault(8080))
+    .pipe(Options.withSchema(InternetSchemas.Port))
+    .pipe(Options.withDescription("The port to listen on for hidden server connections"));
+
 const wireguardNetwork = Options.text("wireguardNetwork")
     .pipe(Options.withDefault("192.168.4.1/24"))
     .pipe(Options.withSchema(InternetSchemas.CidrBlockFromString))
@@ -33,11 +38,13 @@ const wireguardNetwork = Options.text("wireguardNetwork")
 
 const command = Command.make(
     "demoServer",
-    { maxPeers, serverPort, wireguardNetwork, wireguardPort },
+    { hiddenServerPort, maxPeers, serverPort, wireguardNetwork, wireguardPort },
     ({ maxPeers, serverPort, wireguardNetwork, wireguardPort }) =>
-        WireguardDemo.WireguardDemoServer({ maxPeers, wireguardNetwork, wireguardPort }).pipe(
-            Effect.provide(SocketServer.layer({ port: serverPort }))
-        )
+        WireguardDemo.WireguardDemoServer({
+            maxPeers,
+            wireguardPort,
+            wireguardNetwork,
+        }).pipe(Effect.provide(SocketServer.layer({ port: serverPort })))
 );
 
 const cli = Command.run(command, {
@@ -46,7 +53,7 @@ const cli = Command.run(command, {
 });
 
 const wireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
-    WireguardControl.makeBundledWgQuickLayer({ sudo: false })
+    WireguardControl.makeBundledWgQuickLayer({ sudo: true })
 );
 
 const appLive = Layer.mergeAll(NodeContext.layer, wireguardControlLive);
