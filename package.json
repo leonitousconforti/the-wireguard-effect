@@ -1,6 +1,6 @@
 {
     "name": "the-wireguard-effect",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Cross platform wireguard api client for nodejs built on wireguard-go with effect-ts",
     "keywords": [
         "wireguard",
@@ -94,7 +94,7 @@
         "ws": "8.17.0"
     },
     "peerDependencies": {
-        "@effect/experimental": "0.15.17",
+        "@effect/experimental": "0.15.16",
         "@effect/platform": "0.52.1",
         "@effect/platform-node": "0.48.2",
         "@effect/schema": "0.66.13",
