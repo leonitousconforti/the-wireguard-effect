@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.2] - 2024-05-02
+
+Bump deps
+
 ## [0.0.1] - 2024-05-01
 
 Initial stable release
