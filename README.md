@@ -16,8 +16,8 @@ The motivation for this project came from wanting to create wireguard configurat
 
 ## Todo/Future :construction:
 
+- Implement wg cli
 - Wireguard windows arm64 prebuilds
-- Switch from execa to @effect/platform Command and Executor
 - Obtain wintun drivers from public source and check hash during build, rather than just uploading them
 - More documentation
 
