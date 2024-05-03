@@ -45,19 +45,19 @@ import * as WireguardPeer from "./WireguardPeer.js";
  * @since 1.0.0
  * @category Unbranded types
  */
-export type WireguardDemoSchema = Schema.Schema.Type<typeof WireguardDemoSchema>;
+export type WireguardDemoServerSchema = Schema.Schema.Type<typeof WireguardDemoServerSchema>;
 
 /**
  * @since 1.0.0
  * @category Encoded types
  */
-export type WireguardDemoSchemaEncoded = Schema.Schema.Encoded<typeof WireguardDemoSchema>;
+export type WireguardDemoServerSchemaEncoded = Schema.Schema.Encoded<typeof WireguardDemoServerSchema>;
 
 /**
  * @since 1.0.0
  * @category Schema
  */
-export const WireguardDemoSchema = Schema.transform(
+export const WireguardDemoServerSchema = Schema.transform(
     Schema.TemplateLiteral(
         Schema.Literal("OK"),
         Schema.Literal(":"),
@@ -143,7 +143,7 @@ export const requestWireguardDemoConfig = (
         Stream.decodeText(),
         Stream.run(Sink.head()),
         Effect.map(Option.getOrUndefined),
-        Effect.andThen(Schema.decodeUnknown(WireguardDemoSchema)),
+        Effect.andThen(Schema.decodeUnknown(WireguardDemoServerSchema)),
         Effect.andThen((response) =>
             dnsLookup(connectOptions.host).pipe(Effect.map((x) => ({ dnsLookup: x, ...response })))
         ),
@@ -209,8 +209,8 @@ const hiddenPageContent = `<title>WireGuard Demo Configuration: Success!</title>
  * @see https://git.zx2c4.com/wireguard-tools/plain/contrib/ncat-client-server/server.sh
  */
 export const WireguardDemoServer = (options: {
-    wireguardPort: number;
     maxPeers?: number | undefined;
+    serverEndpoint: InternetSchemas.Endpoint;
     wireguardNetwork: InternetSchemas.CidrBlockFromStringEncoded;
 }): Effect.Effect<
     void,
@@ -228,10 +228,10 @@ export const WireguardDemoServer = (options: {
     | CommandExecutor.CommandExecutor
 > =>
     Effect.gen(function* () {
-        // Parse parameters
         const server = yield* SocketServer.SocketServer;
+        const wireguardControl = yield* WireguardControl.WireguardControl;
+
         const serverWireguardKeys = WireguardKey.generateKeyPair();
-        const wireguardPort = yield* Schema.decode(InternetSchemas.Port)(options.wireguardPort);
         const wireguardNetwork = yield* Schema.decode(InternetSchemas.CidrBlockFromString)(options.wireguardNetwork);
 
         // Setup the wireguard peer address pool
@@ -246,20 +246,17 @@ export const WireguardDemoServer = (options: {
         const addressReservationLookup = HashMap.empty<WireguardKey.WireguardKey, InternetSchemas.Address>();
 
         // Setup the wireguard interface and wireguard server config
-        const wireguardControl = yield* WireguardControl.WireguardControl;
         const serverWireguardInterface = yield* WireguardInterface.WireguardInterface.getNextAvailableInterface;
         const serverWireguardConfig = yield* Schema.decode(WireguardConfig.WireguardConfig)({
-            ListenPort: wireguardPort,
             Address: options.wireguardNetwork,
             PrivateKey: serverWireguardKeys.privateKey,
+            ListenPort: options.serverEndpoint.listenPort,
         });
         yield* serverWireguardInterface.upScoped(serverWireguardConfig);
 
-        // Start the server
-        yield* Effect.logInfo(`Server waiting for requests....`);
-        const socketHandler = server.run((socket) =>
+        const requestHandler = (socket: Socket.Socket) =>
             Effect.gen(function* () {
-                const responses = yield* Queue.unbounded<WireguardDemoSchemaEncoded>();
+                const responses = yield* Queue.unbounded<WireguardDemoServerSchemaEncoded>();
 
                 yield* Stream.fromQueue(responses).pipe(
                     Stream.pipeThroughChannel(Socket.toChannel(socket)),
@@ -317,7 +314,7 @@ export const WireguardDemoServer = (options: {
                             Queue.take,
                             Effect.map((ip) => ({
                                 yourWireguardAddress: ip,
-                                serverPort: wireguardPort,
+                                serverPort: options.serverEndpoint.natPort,
                                 serverPublicKey: serverWireguardKeys.publicKey,
                             })),
                             Effect.map((response) => Tuple.make(peer, response))
@@ -325,15 +322,16 @@ export const WireguardDemoServer = (options: {
                     ),
                     Stream.runForEach(([peer, res]) =>
                         Effect.gen(function* () {
-                            const encoded = yield* Schema.encode(WireguardDemoSchema)(res);
+                            const encoded = yield* Schema.encode(WireguardDemoServerSchema)(res);
                             yield* responses.offer(encoded);
                             HashMap.set(addressReservationLookup, peer.PublicKey, res.yourWireguardAddress);
                             yield* serverWireguardInterface.addPeer(peer);
                         })
                     )
                 );
-            })
-        );
+            });
+
+        // Start the server
 
         Layer.launch(HttpServer.server.serve(Effect.succeed(HttpServer.response.html(hiddenPageContent))))
             .pipe(
@@ -346,7 +344,7 @@ export const WireguardDemoServer = (options: {
             )
             .pipe(Effect.runFork);
 
-        yield* socketHandler;
+        yield* server.run(requestHandler);
     });
 
 /** @internal */

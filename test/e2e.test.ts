@@ -7,7 +7,7 @@ import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as WireguardControl from "the-wireguard-effect/WireguardControl";
-import * as DemoUtils from "the-wireguard-effect/WireguardDemo";
+import * as DemoUtils from "the-wireguard-effect/WireguardServer";
 
 const portConfig = Config.number("WIREGUARD_DEMO_PORT");
 const hostConfig = Config.string("WIREGUARD_DEMO_HOST");

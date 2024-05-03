@@ -20,13 +20,6 @@ export * as WireguardConfig from "./WireguardConfig.js"
 export * as WireguardControl from "./WireguardControl.js"
 
 /**
- * Utilities for connecting to the Wireguard demo server at demo.wireguard.com
- *
- * @since 1.0.0
- */
-export * as WireguardDemo from "./WireguardDemo.js"
-
-/**
  * Wireguard errors
  *
  * @since 1.0.0
@@ -53,3 +46,10 @@ export * as WireguardKey from "./WireguardKey.js"
  * @since 1.0.0
  */
 export * as WireguardPeer from "./WireguardPeer.js"
+
+/**
+ * Utilities for connecting to the Wireguard demo server at demo.wireguard.com
+ *
+ * @since 1.0.0
+ */
+export * as WireguardServer from "./WireguardServer.js"

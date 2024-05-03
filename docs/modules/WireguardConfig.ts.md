@@ -587,27 +587,27 @@ export declare const WireguardGetConfigResponse: Schema.Schema<
       interfaceObject?: WireguardInterface.WireguardInterface | undefined
     ) => Effect.Effect<
       WireguardInterface.WireguardInterface,
-      | ParseResult.ParseError
       | Socket.SocketError
-      | PlatformError.PlatformError
+      | ParseResult.ParseError
       | Cause.UnknownException
-      | WireguardErrors.WireguardError,
-      FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
+      | WireguardErrors.WireguardError
+      | PlatformError.PlatformError,
+      FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl | CommandExecutor.CommandExecutor
     >
     upScoped: (
       interfaceObject?: WireguardInterface.WireguardInterface | undefined
     ) => Effect.Effect<
       WireguardInterface.WireguardInterface,
-      | ParseResult.ParseError
       | Socket.SocketError
-      | PlatformError.PlatformError
+      | ParseResult.ParseError
       | Cause.UnknownException
-      | WireguardErrors.WireguardError,
+      | WireguardErrors.WireguardError
+      | PlatformError.PlatformError,
+      | Scope.Scope
       | FileSystem.FileSystem
       | Path.Path
-      | Scope.Scope
-      | CommandExecutor.CommandExecutor
       | WireguardControl.WireguardControl
+      | CommandExecutor.CommandExecutor
     >
     readonly Peers: readonly WireguardPeer.WireguardUApiGetPeerResponse[]
   },
