@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.4] - 2024-05-02
+
+Bump deps
+
 ## [0.0.3] - 2024-05-02
 
 Fixed peer deps for those with strict peer deps enabled
