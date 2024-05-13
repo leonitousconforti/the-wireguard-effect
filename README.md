@@ -29,12 +29,13 @@ Here is some content I am stealing from the [Unraid forums](https://forums.unrai
 
 ![Image](./wireguard-help.png)
 
+You can find examples for how to generate configs for each type of configuration displayed above in the [examples](./examples/) directory.
+
 ## Todo/Future :construction:
 
 - Implement wg cli
 - Wireguard windows arm64 prebuilds
 - Obtain wintun drivers from public source and check hash during build, rather than just uploading them
-- More documentation
 
 ## Non-Goals :wastebasket:
 
