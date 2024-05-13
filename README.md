@@ -14,7 +14,18 @@ The motivation for this project came from wanting to create wireguard configurat
 - [x] - userspace api implementation (the [Wireguard cross platform docs](https://www.wireguard.com/xplatform/) have details about it.)
 - [x] - strong control over how the interface is managed across all platforms.
 
-## Docs
+## Todo/Future :construction:
+
+- Implement wg cli
+- Wireguard windows arm64 prebuilds
+- Obtain wintun drivers from public source and check hash during build, rather than just uploading them
+
+## Non-Goals :wastebasket:
+
+- Utilities for installing or checking if wireguard is installed on the system.
+- Utilities to configure userspace network interfaces or generation of any iptables or nftables rules when bringing a config up using the userspace api
+
+## Notes :memo:
 
 Here is some content I am stealing from the [Unraid forums](https://forums.unraid.net/topic/84226-wireguard-quickstart/)
 
@@ -31,16 +42,9 @@ Here is some content I am stealing from the [Unraid forums](https://forums.unrai
 
 You can find examples for how to generate configs for each type of configuration displayed above in the [examples](./examples/) directory.
 
-## Todo/Future :construction:
+## Library docs :card_file_box:
 
-- Implement wg cli
-- Wireguard windows arm64 prebuilds
-- Obtain wintun drivers from public source and check hash during build, rather than just uploading them
-
-## Non-Goals :wastebasket:
-
-- Utilities for installing or checking if wireguard is installed on the system.
-- Utilities to configure userspace network interfaces or generation of any iptables or nftables rules when bringing a config up using the userspace api
+[https://leonitousconforti.github.io/the-wireguard-effect/](https://leonitousconforti.github.io/the-wireguard-effect/)
 
 ## Security :closed_lock_with_key:
 
