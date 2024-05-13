@@ -48,10 +48,10 @@ Added in v1.0.0
 
 ```ts
 export declare const WireguardDemoServerSchema: Schema.transform<
-  Schema.Schema<`OK:${string}:${number}:${string}\n`, `OK:${string}:${number}:${string}\n`, never>,
+  Schema.SchemaClass<`OK:${string}:${number}:${string}\n`, `OK:${string}:${number}:${string}\n`, never>,
   Schema.Struct<{
     serverPort: InternetSchemas.$Port
-    serverPublicKey: Schema.brand<Schema.Schema<string, string, never>, "WireguardKey">
+    serverPublicKey: Schema.brand<Schema.refine<string, Schema.Schema<string, string, never>>, "WireguardKey">
     yourWireguardAddress: InternetSchemas.$AddressFromString
   }>
 >

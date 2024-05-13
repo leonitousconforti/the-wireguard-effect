@@ -573,51 +573,59 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const WireguardGetConfigResponse: Schema.Schema<
-  {
-    readonly Address: InternetSchemas.CidrBlock
-    readonly Dns?: InternetSchemas.IPv4 | InternetSchemas.IPv6 | undefined
-    readonly ListenPort: InternetSchemas.PortBrand
-    readonly FirewallMark?: number | undefined
-    readonly PrivateKey: string & Brand<"WireguardKey">
-    writeToFile: (
-      file: string
-    ) => Effect.Effect<void, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem | Path.Path>
-    up: (
-      interfaceObject?: WireguardInterface.WireguardInterface | undefined
-    ) => Effect.Effect<
-      WireguardInterface.WireguardInterface,
-      | Socket.SocketError
-      | ParseResult.ParseError
-      | Cause.UnknownException
-      | WireguardErrors.WireguardError
-      | PlatformError.PlatformError,
-      FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl | CommandExecutor.CommandExecutor
-    >
-    upScoped: (
-      interfaceObject?: WireguardInterface.WireguardInterface | undefined
-    ) => Effect.Effect<
-      WireguardInterface.WireguardInterface,
-      | Socket.SocketError
-      | ParseResult.ParseError
-      | Cause.UnknownException
-      | WireguardErrors.WireguardError
-      | PlatformError.PlatformError,
-      | Scope.Scope
-      | FileSystem.FileSystem
-      | Path.Path
-      | WireguardControl.WireguardControl
-      | CommandExecutor.CommandExecutor
-    >
-    readonly Peers: readonly WireguardPeer.WireguardUApiGetPeerResponse[]
-  },
-  {
-    readonly Address: `${string}/${number}`
-    readonly Dns?: string | undefined
-    readonly ListenPort: string | number
-    readonly FirewallMark?: number | null | undefined
-    readonly PrivateKey: string
-    readonly Peers?:
+export declare const WireguardGetConfigResponse: Schema.extend<
+  Schema.SchemaClass<
+    {
+      readonly Address: InternetSchemas.CidrBlock
+      readonly PrivateKey: string & Brand<"WireguardKey">
+      readonly Dns?: InternetSchemas.IPv4 | InternetSchemas.IPv6 | undefined
+      readonly ListenPort: InternetSchemas.PortBrand
+      readonly FirewallMark?: number | undefined
+      writeToFile: (
+        file: string
+      ) => Effect.Effect<void, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem | Path.Path>
+      up: (
+        interfaceObject?: WireguardInterface.WireguardInterface | undefined
+      ) => Effect.Effect<
+        WireguardInterface.WireguardInterface,
+        | Socket.SocketError
+        | ParseResult.ParseError
+        | Cause.UnknownException
+        | WireguardErrors.WireguardError
+        | PlatformError.PlatformError,
+        FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl | CommandExecutor.CommandExecutor
+      >
+      upScoped: (
+        interfaceObject?: WireguardInterface.WireguardInterface | undefined
+      ) => Effect.Effect<
+        WireguardInterface.WireguardInterface,
+        | Socket.SocketError
+        | ParseResult.ParseError
+        | Cause.UnknownException
+        | WireguardErrors.WireguardError
+        | PlatformError.PlatformError,
+        | Scope.Scope
+        | FileSystem.FileSystem
+        | Path.Path
+        | WireguardControl.WireguardControl
+        | CommandExecutor.CommandExecutor
+      >
+    },
+    {
+      readonly Address: `${string}/${number}`
+      readonly PrivateKey: string
+      readonly Dns?: string | undefined
+      readonly ListenPort: string | number
+      readonly FirewallMark?: number | null | undefined
+    },
+    never
+  >,
+  Schema.Struct<{
+    Peers: Schema.PropertySignature<
+      ":",
+      readonly WireguardPeer.WireguardUApiGetPeerResponse[],
+      never,
+      "?:",
       | readonly {
           readonly PublicKey: string
           readonly PersistentKeepalive?: number | null | undefined
@@ -641,9 +649,11 @@ export declare const WireguardGetConfigResponse: Schema.Schema<
           readonly lastHandshakeTimeSeconds: string
         }[]
       | null
-      | undefined
-  },
-  never
+      | undefined,
+      false,
+      never
+    >
+  }>
 >
 ```
 

@@ -11,7 +11,6 @@ import * as Brand from "effect/Brand";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
-import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
@@ -176,9 +175,7 @@ export const Port: $Port = Schema.Int.pipe(Schema.between(0, 2 ** 16 - 1))
  *     assert.doesNotThrow(() => decodeIPv4({ ip: "1.1.1.1" }));
  */
 export class IPv4 extends Schema.Class<IPv4>("IPv4")({
-    ip: Schema.String.pipe(
-        Schema.filter((s, _, ast) => (net.isIPv4(s) ? Option.none() : Option.some(new ParseResult.Type(ast, s))))
-    ),
+    ip: Schema.String.pipe(Schema.filter((s) => net.isIPv4(s))),
 }) {
     /** @since 1.0.0 */
     public readonly family: "ipv4" = "ipv4" as const;
@@ -280,9 +277,7 @@ export const IPv4FromString: $IPv4FromString = Schema.transform(Schema.String, I
  *     );
  */
 export class IPv6 extends Schema.Class<IPv6>("IPv6")({
-    ip: Schema.String.pipe(
-        Schema.filter((s, _, ast) => (net.isIPv6(s) ? Option.none() : Option.some(new ParseResult.Type(ast, s))))
-    ),
+    ip: Schema.String.pipe(Schema.filter((s) => net.isIPv6(s))),
 }) {
     /** @since 1.0.0 */
     public readonly family: "ipv6" = "ipv6" as const;
