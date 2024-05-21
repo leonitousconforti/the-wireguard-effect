@@ -1,10 +1,10 @@
 {
     "extends": "./tsconfig.base.json",
-    "include": ["e2e"],
+    "include": ["ui"],
     "references": [{ "path": "tsconfig.src.json" }],
     "compilerOptions": {
         "noEmit": true,
-        "rootDir": "e2e",
-        "tsBuildInfoFile": ".tsbuildinfo/e2e.tsbuildinfo"
+        "rootDir": "ui",
+        "tsBuildInfoFile": ".tsbuildinfo/ui.tsbuildinfo"
     }
 }

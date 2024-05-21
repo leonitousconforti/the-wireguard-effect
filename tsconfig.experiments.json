@@ -1,0 +1,10 @@
+{
+    "extends": "./tsconfig.base.json",
+    "include": ["experiments"],
+    "references": [{ "path": "tsconfig.src.json" }],
+    "compilerOptions": {
+        "noEmit": true,
+        "rootDir": "experiments",
+        "tsBuildInfoFile": ".tsbuildinfo/experiments.tsbuildinfo"
+    }
+}

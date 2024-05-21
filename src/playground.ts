@@ -1,11 +1,11 @@
 //     public static readonly FromBigint = (n: IPv4BigintBrand): Effect.Effect<IPv4, ParseResult.ParseError, never> => {
-//         const padded = n.toString(16).replace(/:/g, "").padStart(8, "0");
-//         const groups: Array<number> = [];
-//         for (let i = 0; i < 8; i += 2) {
-//             const h = padded.slice(i, i + 2);
-//             groups.push(parseInt(h, 16));
-//         }
-//         return Schema.decode(IPv4)(groups.join("."));
+// const padded = n.toString(16).replace(/:/g, "").padStart(8, "0");
+// const groups: Array<number> = [];
+// for (let i = 0; i < 8; i += 2) {
+//     const h = padded.slice(i, i + 2);
+//     groups.push(parseInt(h, 16));
+// }
+// return Schema.decode(IPv4)(groups.join("."));
 //     };
 
 //     /** @since 1.0.0 */
@@ -14,16 +14,16 @@
 //         const self = this;
 //         console.log(self);
 //         console.log(Schema.encodeSync(IPv4)(self));
-//         return Function.pipe(
-//             Schema.encodeSync(IPv4)(self),
-//             String.split("."),
-//             Array.map((s) => Number.parseInt(s, 10)),
-//             Array.map((n) => n.toString(16)),
-//             Array.map(String.padStart(2, "0")),
-//             Array.join(""),
-//             (hex) => BigInt(`0x${hex}`),
-//             (bigint) => IPv4BigintBrand(bigint)
-//         );
+// return Function.pipe(
+//     Schema.encodeSync(IPv4)(self),
+//     String.split("."),
+//     Array.map((s) => Number.parseInt(s, 10)),
+//     Array.map((n) => n.toString(16)),
+//     Array.map(String.padStart(2, "0")),
+//     Array.join(""),
+//     (hex) => BigInt(`0x${hex}`),
+//     (bigint) => IPv4BigintBrand(bigint)
+// );
 //     }
 // }
 
@@ -87,32 +87,3 @@
 //         return IPv6BigintBrand(BigInt(`0x${groups.map(paddedHex).join("")}`));
 //     }
 // }
-
-import { Schema } from "@effect/schema";
-import * as assert from "node:assert";
-
-const Circle = Schema.Struct({ radius: Schema.Number });
-const Square = Schema.Struct({ sideLength: Schema.Number });
-// const DiscriminatedShape = Schema.Union(
-//     Circle.pipe(Schema.attachPropertySignature("kind", "circle")),
-//     Square.pipe(Schema.attachPropertySignature("kind", "square"))
-// );
-const DiscriminatedShape = Schema.Union(
-    Schema.Struct({ radius: Schema.Number, kind: Schema.Literal("circle") }),
-    Schema.Struct({ sideLength: Schema.Number, kind: Schema.Literal("square") })
-);
-
-// decoding
-assert.deepStrictEqual(Schema.decodeSync(DiscriminatedShape)({ radius: 10 }), {
-    kind: "circle",
-    radius: 10,
-});
-
-// encoding
-assert.deepStrictEqual(
-    Schema.encodeSync(DiscriminatedShape)({
-        kind: "circle",
-        radius: 10,
-    }),
-    { radius: 10 }
-);
