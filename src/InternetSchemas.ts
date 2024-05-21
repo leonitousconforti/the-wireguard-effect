@@ -16,10 +16,14 @@ import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as net from "node:net";
 
-/**
- * @internal
- * @see https://stackoverflow.com/questions/70831365/can-i-slice-literal-type-in-typescript
- */
+/** @internal */
+type Tail<T extends ReadonlyArray<unknown>> = T extends
+    | [infer _First, ...infer Rest]
+    | readonly [infer _First, ...infer Rest]
+    ? Rest
+    : Array<unknown>;
+
+/** @internal */
 type Split<Str extends string, Delimiter extends string> = string extends Str | ""
     ? Array<string>
     : Str extends `${infer T}${Delimiter}${infer U}`
@@ -27,29 +31,13 @@ type Split<Str extends string, Delimiter extends string> = string extends Str | 
       : [Str];
 
 /** @since 1.0.0 */
+export const tail = <T extends ReadonlyArray<unknown>>(elements: T): Tail<T> => elements.slice(1) as Tail<T>;
+
+/** @since 1.0.0 */
 export const splitLiteral = <Str extends string, Delimiter extends string>(
     str: Str,
     delimiter: Delimiter
 ): Split<Str, Delimiter> => str.split(delimiter) as Split<Str, Delimiter>;
-
-/**
- * @since 1.0.0
- * @category Branded types
- */
-export type DurationFromSecondsBrand = Duration.Duration & Brand.Brand<"DurationFromSeconds">;
-
-/**
- * @since 1.0.0
- * @category Branded constructors
- */
-export const DurationFromSecondsBrand = Brand.nominal<DurationFromSecondsBrand>();
-
-/**
- * @since 1.0.0
- * @category Api interface
- */
-export interface $DurationFromSeconds
-    extends Schema.Annotable<$DurationFromSeconds, DurationFromSecondsBrand, number, never> {}
 
 /**
  * Transforms a `number` of seconds into a `Duration`.
@@ -59,31 +47,19 @@ export interface $DurationFromSeconds
  * @example
  *     import * as Duration from "effect/Duration";
  *     import * as Schema from "@effect/schema/Schema";
- *     import {
- *         DurationFromSeconds,
- *         DurationFromSecondsBrand,
- *     } from "the-wireguard-effect/InternetSchemas";
+ *     import { DurationFromSeconds } from "the-wireguard-effect/InternetSchemas";
  *
  *     const decodeDuration = Schema.decodeSync(DurationFromSeconds);
  *     const duration = decodeDuration(11);
  *     assert.strictEqual(Duration.toSeconds(duration), 11);
  */
-export const DurationFromSeconds: $DurationFromSeconds = Schema.transform(Schema.Int, Schema.DurationFromSelf, {
-    decode: (seconds) => Duration.seconds(seconds),
-    encode: (duration) => Duration.toSeconds(duration),
-})
-    .pipe(Schema.fromBrand(DurationFromSecondsBrand))
-    .annotations({
-        identifier: "DurationFromSeconds",
-        description: "A duration from a number of seconds",
-    });
-
-/**
- * @since 1.0.0
- * @category Api interface
- */
-export interface $DurationFromSecondsString
-    extends Schema.Annotable<$DurationFromSecondsString, DurationFromSecondsBrand, string, never> {}
+export class DurationFromSeconds extends Schema.transform(Schema.Int, Schema.DurationFromSelf, {
+    decode: Duration.seconds,
+    encode: Duration.toSeconds,
+}).annotations({
+    identifier: "DurationFromSeconds",
+    description: "A duration from a number of seconds",
+}) {}
 
 /**
  * Transforms a `string` of seconds into a `Duration`.
@@ -101,17 +77,13 @@ export interface $DurationFromSecondsString
  *     const duration = decodeDurationString("12");
  *     assert.strictEqual(Duration.toSeconds(duration), 12);
  */
-export const DurationFromSecondsString: $DurationFromSecondsString = Schema.transform(
-    Schema.NumberFromString,
-    DurationFromSeconds,
-    {
-        decode: Function.identity,
-        encode: Function.identity,
-    }
-).annotations({
+export class DurationFromSecondsString extends Schema.transform(Schema.NumberFromString, DurationFromSeconds, {
+    decode: Function.identity,
+    encode: Function.identity,
+}).annotations({
     identifier: "DurationFromSecondsString",
     description: "A duration from a string of seconds",
-});
+}) {}
 
 /**
  * @since 1.0.0
@@ -157,6 +129,24 @@ export const Port: $Port = Schema.Int.pipe(Schema.between(0, 2 ** 16 - 1))
     });
 
 /**
+ * @since 1.0.0
+ * @category Branded types
+ */
+export type IPv4Brand = string & Brand.Brand<"IPv4">;
+
+/**
+ * @since 1.0.0
+ * @category Branded constructors
+ */
+export const IPv4Brand = Brand.nominal<IPv4Brand>();
+
+/**
+ * @since 1.0.0
+ * @category Api interface
+ */
+export interface $IPv4 extends Schema.Annotable<$IPv4, IPv4Brand, Brand.Brand.Unbranded<IPv4Brand>, never> {}
+
+/**
  * An IPv4 address.
  *
  * @since 1.0.0
@@ -165,88 +155,111 @@ export const Port: $Port = Schema.Int.pipe(Schema.between(0, 2 ** 16 - 1))
  *     import * as Schema from "@effect/schema/Schema";
  *     import { IPv4 } from "the-wireguard-effect/InternetSchemas";
  *
- *     const ipv4: IPv4 = new IPv4({ ip: "1.1.1.1" });
+ *     const ipv4: IPv4 = new IPv4({ value: "1.1.1.1" });
  *     assert.strictEqual(ipv4, "1.1.1.1");
  *
  *     const decodeIPv4 = Schema.decodeSync(IPv4);
- *     assert.strictEqual(decodeIPv4({ ip: "1.1.1.1" }), "1.1.1.1");
+ *     assert.strictEqual(decodeIPv4({ value: "1.1.1.1" }), "1.1.1.1");
  *
- *     assert.throws(() => decodeIPv4({ ip: "1.1.a.1" }));
- *     assert.doesNotThrow(() => decodeIPv4({ ip: "1.1.1.1" }));
+ *     assert.throws(() => decodeIPv4({ value: "1.1.a.1" }));
+ *     assert.doesNotThrow(() => decodeIPv4({ value: "1.1.1.1" }));
  */
-export class IPv4 extends Schema.Class<IPv4>("IPv4")({
-    ip: Schema.String.pipe(Schema.filter((s) => net.isIPv4(s))),
-}) {
-    /** @since 1.0.0 */
-    public readonly family: "ipv4" = "ipv4" as const;
+export const IPv4: $IPv4 = Schema.String.pipe(Schema.filter((str) => net.isIPv4(str)))
+    .pipe(Schema.fromBrand(IPv4Brand))
+    .annotations({
+        identifier: "IPv4",
+        description: "An ipv4 address",
+    });
 
-    /** @since 1.0.0 */
-    public static readonly FromBigint = (n: bigint): Effect.Effect<IPv4, ParseResult.ParseError, never> => {
-        const padded = n.toString(16).replace(/:/g, "").padStart(8, "0");
-        const groups: Array<number> = [];
-        for (let i = 0; i < 8; i += 2) {
-            const h = padded.slice(i, i + 2);
-            groups.push(parseInt(h, 16));
-        }
-        return Schema.decode(IPv4)({ ip: groups.join(".") });
-    };
+/**
+ * @since 1.0.0
+ * @category Branded types
+ */
+export type IPv4BigintBrand = bigint & Brand.Brand<"IPv4Bigint">;
 
-    /** @since 1.0.0 */
-    public get asBigint(): bigint {
-        return Function.pipe(
-            this.ip,
-            String.split("."),
-            Array.map((s) => Number.parseInt(s, 10)),
-            Array.map((n) => n.toString(16)),
-            Array.map(String.padStart(2, "0")),
-            Array.join(""),
-            (hex) => BigInt(`0x${hex}`)
-        );
-    }
-}
+/**
+ * @since 1.0.0
+ * @category Branded constructors
+ */
+export const IPv4BigintBrand = Brand.nominal<IPv4BigintBrand>();
 
 /**
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv4FromString extends Schema.Annotable<$IPv4FromString, IPv4, string, never> {}
+export interface $IPv4Bigint
+    extends Schema.transformOrFail<
+        $IPv4,
+        Schema.BrandSchema<IPv4BigintBrand, Brand.Brand.Unbranded<IPv4BigintBrand>, never>,
+        never
+    > {}
 
 /**
- * @since 1.0.0
- * @category Unbranded types
- */
-export type IPv4FromString = Schema.Schema.Type<typeof IPv4FromString>;
-
-/**
- * @since 1.0.0
- * @category Encoded types
- */
-export type IPv4FromStringEncoded = Schema.Schema.Encoded<typeof IPv4FromString>;
-
-/**
- * A schema that transforms a `string` into an `IPv4`.
+ * An IPv4 as a bigint.
  *
  * @since 1.0.0
  * @category Schemas
  * @example
  *     import * as Schema from "@effect/schema/Schema";
- *     import { IPv4FromString } from "the-wireguard-effect/InternetSchemas";
+ *     import {
+ *         IPv4Bigint,
+ *         IPv4BigintBrand,
+ *     } from "the-wireguard-effect/InternetSchemas";
  *
- *     const decodeIPv4 = Schema.decodeSync(IPv4FromString);
- *     assert.strictEqual(decodeIPv4("1.1.1.1").ip, "1.1.1.1");
+ *     const x: IPv4BigintBrand = IPv4BigintBrand(748392749382);
+ *     assert.strictEqual(x, 748392749382);
  *
- *     assert.throws(() => decodeIPv4("1.1.a.1"));
- *     assert.doesNotThrow(() => decodeIPv4("1.1.1.1"));
- *
- * @see {@link IPv4}
+ *     const decodeIPv4Bigint = Schema.decodeSync(IPv4Bigint);
+ *     assert.strictEqual(decodeIPv4Bigint(1), 1);
+ *     assert.doesNotThrow(() => decodeIPv4Bigint(9999999));
  */
-export const IPv4FromString: $IPv4FromString = Schema.transform(Schema.String, IPv4, {
-    decode: (str) => ({ ip: str }),
-    encode: ({ ip }) => ip,
-}).annotations({
-    identifier: "IPv4FromString",
-    description: "An ipv4 address",
+export const IPv4Bigint: $IPv4Bigint = Schema.transformOrFail(
+    IPv4,
+    Schema.BigIntFromSelf.pipe(Schema.fromBrand(IPv4BigintBrand)),
+    {
+        encode: (x) => {
+            const padded = x.toString(16).replace(/:/g, "").padStart(8, "0");
+            const groups: Array<number> = [];
+            for (let i = 0; i < 8; i += 2) {
+                const h = padded.slice(i, i + 2);
+                groups.push(parseInt(h, 16));
+            }
+            return Schema.decode(IPv4)(groups.join(".")).pipe(Effect.mapError(({ error }) => error));
+        },
+        decode: (ip) =>
+            Function.pipe(
+                ip,
+                String.split("."),
+                Array.map((s) => Number.parseInt(s, 10)),
+                Array.map((n) => n.toString(16)),
+                Array.map(String.padStart(2, "0")),
+                Array.join(""),
+                (hex) => BigInt(`0x${hex}`),
+                Effect.succeed
+            ),
+    }
+).annotations({
+    identifier: "IPv4Bigint",
+    description: "A an ipv4 address as a bigint",
 });
+
+/**
+ * @since 1.0.0
+ * @category Branded types
+ */
+export type IPv6Brand = string & Brand.Brand<"IPv6">;
+
+/**
+ * @since 1.0.0
+ * @category Branded constructors
+ */
+export const IPv6Brand = Brand.nominal<IPv6Brand>();
+
+/**
+ * @since 1.0.0
+ * @category Api interface
+ */
+export interface $IPv6 extends Schema.Annotable<$IPv6, IPv6Brand, Brand.Brand.Unbranded<IPv6Brand>, never> {}
 
 /**
  * An IPv6 address.
@@ -276,123 +289,144 @@ export const IPv4FromString: $IPv4FromString = Schema.transform(Schema.String, I
  *         decodeIPv6({ ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334" })
  *     );
  */
-export class IPv6 extends Schema.Class<IPv6>("IPv6")({
-    ip: Schema.String.pipe(Schema.filter((s) => net.isIPv6(s))),
-}) {
-    /** @since 1.0.0 */
-    public readonly family: "ipv6" = "ipv6" as const;
+export const IPv6: $IPv6 = Schema.String.pipe(Schema.filter((str) => net.isIPv6(str)))
+    .pipe(Schema.fromBrand(IPv6Brand))
+    .annotations({
+        identifier: "IPv6",
+        description: "An ipv6 address",
+    });
 
-    /** @since 1.0.0 */
-    public static readonly FromBigint = (n: bigint): Effect.Effect<IPv6, ParseResult.ParseError, never> => {
-        const hex = n.toString(16).padStart(32, "0");
-        const groups = [];
-        for (let i = 0; i < 8; i++) {
-            groups.push(hex.slice(i * 4, (i + 1) * 4));
-        }
-        return Schema.decode(IPv6)({ ip: groups.join(":") });
-    };
+/**
+ * @since 1.0.0
+ * @category Branded types
+ */
+export type IPv6BigintBrand = bigint & Brand.Brand<"IPv6Bigint">;
 
-    /** @since 1.0.0 */
-    public get asBigint(): bigint {
-        function paddedHex(octet: string): string {
-            return parseInt(octet, 16).toString(16).padStart(4, "0");
-        }
-
-        let groups: Array<string> = [];
-        const halves = this.ip.split("::");
-
-        if (halves.length === 2) {
-            let first = halves[0].split(":");
-            let last = halves[1].split(":");
-
-            if (first.length === 1 && first[0] === "") {
-                first = [];
-            }
-            if (last.length === 1 && last[0] === "") {
-                last = [];
-            }
-
-            const remaining = 8 - (first.length + last.length);
-            if (!remaining) {
-                throw new Error("Error parsing groups");
-            }
-
-            groups = groups.concat(first);
-            for (let i = 0; i < remaining; i++) {
-                groups.push("0");
-            }
-            groups = groups.concat(last);
-        } else if (halves.length === 1) {
-            groups = this.ip.split(":");
-        } else {
-            throw new Error("Too many :: groups found");
-        }
-
-        groups = groups.map((group: string) => parseInt(group, 16).toString(16));
-        if (groups.length !== 8) {
-            throw new Error("Invalid number of groups");
-        }
-
-        return BigInt(`0x${groups.map(paddedHex).join("")}`);
-    }
-}
+/**
+ * @since 1.0.0
+ * @category Branded constructors
+ */
+export const IPv6BigintBrand = Brand.nominal<IPv6BigintBrand>();
 
 /**
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv6FromString extends Schema.Annotable<$IPv6FromString, IPv6, string, never> {}
+export interface $IPv6Bigint
+    extends Schema.transformOrFail<
+        $IPv6,
+        Schema.BrandSchema<IPv6BigintBrand, Brand.Brand.Unbranded<IPv6BigintBrand>, never>,
+        never
+    > {}
 
 /**
- * @since 1.0.0
- * @category Unbranded types
- */
-export type IPv6FromString = Schema.Schema.Type<typeof IPv6FromString>;
-
-/**
- * @since 1.0.0
- * @category Encoded types
- */
-export type IPv6FromStringEncoded = Schema.Schema.Encoded<typeof IPv6FromString>;
-
-/**
- * A schema that transforms a `string` into an `IPv6`.
+ * An IPv4 as a bigint.
  *
  * @since 1.0.0
  * @category Schemas
  * @example
  *     import * as Schema from "@effect/schema/Schema";
- *     import { IPv6FromString } from "the-wireguard-effect/InternetSchemas";
+ *     import {
+ *         IPv6Bigint,
+ *         IPv6BigintBrand,
+ *     } from "the-wireguard-effect/InternetSchemas";
  *
- *     const decodeIPv6 = Schema.decodeSync(IPv6FromString);
- *     assert.deepStrictEqual(
- *         decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334").ip,
- *         "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
- *     );
+ *     const y: IPv6BigintBrand = IPv6BigintBrand(748392749382);
+ *     assert.strictEqual(y, 748392749382);
  *
- *     assert.throws(() =>
- *         decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334:")
- *     );
- *     assert.throws(() => decodeIPv6("2001::85a3::0000::0370:7334"));
- *     assert.doesNotThrow(() =>
- *         decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
- *     );
- *
- * @see {@link IPv6}
+ *     const decodeIPv6Bigint = Schema.decodeSync(IPv6Bigint);
+ *     assert.strictEqual(decodeIPv6Bigint(1), 1);
+ *     assert.doesNotThrow(() => decodeIPv6Bigint(9999999));
  */
-export const IPv6FromString: $IPv6FromString = Schema.transform(Schema.String, IPv6, {
-    decode: (str) => ({ ip: str }),
-    encode: ({ ip }) => ip,
-}).annotations({
-    identifier: "IPv6FromString",
-    description: "An ipv6 address",
+export const IPv6Bigint: $IPv6Bigint = Schema.transformOrFail(
+    IPv6,
+    Schema.BigIntFromSelf.pipe(Schema.fromBrand(IPv6BigintBrand)),
+    {
+        encode: (x) => {
+            const hex = x.toString(16).padStart(32, "0");
+            const groups = [];
+            for (let i = 0; i < 8; i++) {
+                groups.push(hex.slice(i * 4, (i + 1) * 4));
+            }
+            return Schema.decode(IPv6)(groups.join(":")).pipe(Effect.mapError(({ error }) => error));
+        },
+        decode: (ip) => {
+            function paddedHex(octet: string): string {
+                return parseInt(octet, 16).toString(16).padStart(4, "0");
+            }
+
+            let groups: Array<string> = [];
+            const halves = ip.split("::");
+
+            if (halves.length === 2) {
+                let first = halves[0].split(":");
+                let last = halves[1].split(":");
+
+                if (first.length === 1 && first[0] === "") {
+                    first = [];
+                }
+                if (last.length === 1 && last[0] === "") {
+                    last = [];
+                }
+
+                const remaining = 8 - (first.length + last.length);
+                if (!remaining) {
+                    throw new Error("Error parsing groups");
+                }
+
+                groups = groups.concat(first);
+                for (let i = 0; i < remaining; i++) {
+                    groups.push("0");
+                }
+                groups = groups.concat(last);
+            } else if (halves.length === 1) {
+                groups = ip.split(":");
+            } else {
+                throw new Error("Too many :: groups found");
+            }
+
+            groups = groups.map((group: string) => parseInt(group, 16).toString(16));
+            if (groups.length !== 8) {
+                throw new Error("Invalid number of groups");
+            }
+
+            return Effect.succeed(BigInt(`0x${groups.map(paddedHex).join("")}`));
+        },
+    }
+).annotations({
+    identifier: "IPv6Bigint",
+    description: "A an ipv6 address as a bigint",
 });
 
 /**
  * @since 1.0.0
  * @category Api interface
  */
-export interface $Address extends Schema.Union<[typeof IPv4, typeof IPv6]> {}
+export interface $Address
+    extends Schema.Union<
+        [
+            Schema.Schema<
+                {
+                    readonly IPv4: IPv4Brand;
+                    readonly family: "ipv4";
+                },
+                {
+                    readonly IPv4: string;
+                },
+                never
+            >,
+            Schema.Schema<
+                {
+                    readonly IPv6: IPv6Brand;
+                    readonly family: "ipv6";
+                },
+                {
+                    readonly IPv6: string;
+                },
+                never
+            >,
+        ]
+    > {}
 
 /**
  * @since 1.0.0
@@ -430,54 +464,67 @@ export type AddressEncoded = Schema.Schema.Encoded<typeof Address>;
  * @see {@link IPv4}
  * @see {@link IPv6}
  */
-export const Address: $Address = Schema.Union(IPv4, IPv6).annotations({
+export const Address: $Address = Schema.Union(
+    Schema.Struct({ IPv4 }).pipe(Schema.attachPropertySignature("family", "ipv4")),
+    Schema.Struct({ IPv6 }).pipe(Schema.attachPropertySignature("family", "ipv6"))
+).annotations({
     identifier: "Address",
     description: "An ip address",
 });
 
 /**
  * @since 1.0.0
+ * @category Branded types
+ */
+export type AddressBigintBrand = bigint & Brand.Brand<"AddressBigint">;
+
+/**
+ * @since 1.0.0
+ * @category Branded constructors
+ */
+export const AddressBigintBrand = Brand.nominal<AddressBigintBrand>();
+
+/**
+ * @since 1.0.0
  * @category Api interface
  */
-export interface $AddressFromString extends Schema.Union<[typeof IPv4FromString, typeof IPv6FromString]> {}
+export interface $AddressBigint
+    extends Schema.transformOrFail<
+        $Address,
+        Schema.BrandSchema<AddressBigintBrand, Brand.Brand.Unbranded<AddressBigintBrand>, never>,
+        never
+    > {}
 
 /**
- * @since 1.0.0
- * @category Unbranded types
- */
-export type AddressFromString = Schema.Schema.Type<typeof AddressFromString>;
-
-/**
- * @since 1.0.0
- * @category Encoded types
- */
-export type AddressFromStringEncoded = Schema.Schema.Encoded<typeof AddressFromString>;
-
-/**
- * An IP address, which is either an IPv4 or IPv6 address. This schema
- * transforms a `string` into an `Address`.
+ * An IPv4 as a bigint.
  *
  * @since 1.0.0
  * @category Schemas
- * @example
- *     import * as Schema from "@effect/schema/Schema";
- *     import { AddressFromString } from "the-wireguard-effect/InternetSchemas";
- *
- *     const decodeAddress = Schema.decodeSync(AddressFromString);
- *
- *     assert.throws(() => decodeAddress("1.1.b.1"));
- *     assert.throws(() =>
- *         decodeAddress("2001:0db8:85a3:0000:0000:8a2e:0370:7334:")
- *     );
- *
- *     assert.doesNotThrow(() => decodeAddress("1.1.1.2"));
- *     assert.doesNotThrow(() =>
- *         decodeAddress("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
- *     );
  */
-export const AddressFromString: $AddressFromString = Schema.Union(IPv4FromString, IPv6FromString).annotations({
-    identifier: "AddressFromString",
-    description: "An ip address",
+export const AddressBigint = Schema.transformOrFail(
+    Address,
+    Schema.Union(
+        Schema.Struct({ IPv4: IPv4Bigint }).pipe(Schema.attachPropertySignature("family", "ipv4")),
+        Schema.Struct({ IPv6: IPv6Bigint }).pipe(Schema.attachPropertySignature("family", "ipv6"))
+    ),
+    {
+        encode: (x) =>
+            Effect.gen(function* () {
+                if ("IPv4" in x) {
+                    const b = yield* Schema.decode(IPv4Bigint)({} as any);
+                } else {
+                    const a = yield* Schema.decode(IPv6Bigint)({} as any);
+                }
+
+                return {} as any;
+            }).pipe(Effect.mapError(({ error }) => error)),
+        decode: (ip) => {
+            return {} as any;
+        },
+    }
+).annotations({
+    identifier: "IPv6Bigint",
+    description: "A an ipv6 address as a bigint",
 });
 
 /**
@@ -577,39 +624,38 @@ export const IPv6CidrMask: $IPv6CidrMask = Schema.Int.pipe(Schema.between(0, 128
     });
 
 /**
- * Internal helper representation of a cidr range so that we can do
- * transformations to and from it as we cannot represent a stream using
- *
  * @since 1.0.0
- * @category Schemas
+ * @category Api interface
+ * @internal
  */
-export class CidrBlock extends Schema.Class<CidrBlock>("CidrBlock")({
-    /** The IP address of this cidr block. */
-    ip: AddressFromString,
-
-    /** The subnet mask of this cidr block. */
+export class CidrBlockBase<Family extends typeof IPv4 | typeof IPv6> extends Schema.Class<
+    CidrBlockBase<typeof IPv4 | typeof IPv6>
+>("CidrBlockMixin")({
+    ip: Address,
     mask: Schema.Union(IPv4CidrMask, IPv6CidrMask),
 }) {
-    /**
-     * The address family of this cidr block.
-     *
-     * @since 1.0.0
-     */
     public readonly family: "ipv4" | "ipv6" = this.ip.family;
 
-    /**
-     * The first address in the range given by this address' subnet, often
-     * referred to as the Network Address.
-     *
-     * @since 1.0.0
-     */
-    private get networkAddressAsBigint(): bigint {
-        const bits = this.family === "ipv4" ? 32 : 128;
-        const bigIntegerAddress = this.ip.asBigint;
-        const intermediate = bigIntegerAddress.toString(2).padStart(bits, "0").slice(0, this.mask);
-        const networkAddressString = intermediate + "0".repeat(bits - this.mask);
-        const networkAddressBigInt = BigInt(`0b${networkAddressString}`);
-        return networkAddressBigInt;
+    /** @internal */
+    private onFamily<OnIPv4, OnIPv6>({
+        onIPv4,
+        onIPv6,
+    }: {
+        onIPv4: (self: CidrBlockBase<typeof IPv4>) => OnIPv4;
+        onIPv6: (self: CidrBlockBase<typeof IPv6>) => OnIPv6;
+    }): Family extends typeof IPv4 ? OnIPv4 : typeof this.ip extends typeof IPv6 ? OnIPv6 : never {
+        type Ret = typeof this.ip extends typeof IPv4 ? OnIPv4 : typeof this.ip extends typeof IPv6 ? OnIPv6 : never;
+
+        const isIPv4 = (): this is CidrBlockBase<typeof IPv4> => this.family === "ipv4";
+        const isIPv6 = (): this is CidrBlockBase<typeof IPv6> => this.family === "ipv6";
+
+        if (isIPv4()) {
+            return onIPv4(this as CidrBlockBase<typeof IPv4>) as Ret;
+        } else if (isIPv6()) {
+            return onIPv6(this as CidrBlockBase<typeof IPv6>) as Ret;
+        } else {
+            return Function.absurd<Ret>(this.family as never);
+        }
     }
 
     /**
@@ -618,10 +664,37 @@ export class CidrBlock extends Schema.Class<CidrBlock>("CidrBlock")({
      *
      * @since 1.0.0
      */
-    public get networkAddress(): Effect.Effect<Address, ParseResult.ParseError, never> {
-        return this.family === "ipv4"
-            ? IPv4.FromBigint(this.networkAddressAsBigint)
-            : IPv6.FromBigint(this.networkAddressAsBigint);
+    protected get networkAddressAsBigint(): Family extends typeof IPv4
+        ? Effect.Effect<IPv4BigintBrand, ParseResult.ParseError, never>
+        : Effect.Effect<IPv6BigintBrand, ParseResult.ParseError, never> {
+        const bits = this.family === "ipv4" ? 32 : 128;
+        //const bigIntegerAddress = this.ip.asBigint;
+        this.onFamily({
+            onIPv4: (self) => Schema.decode(IPv4Bigint)(self.ip),
+            onIPv6: (self) => Schema.decode(IPv6Bigint)(self.ip),
+        });
+        const intermediate = bigIntegerAddress.toString(2).padStart(bits, "0").slice(0, this.mask);
+        const networkAddressString = intermediate + "0".repeat(bits - this.mask);
+        const networkAddressBigInt = BigInt(`0b${networkAddressString}`);
+        return this.onFamily({
+            onIPv4: (_self) => IPv4BigintBrand(networkAddressBigInt),
+            onIPv6: (_self) => IPv6BigintBrand(networkAddressBigInt),
+        });
+    }
+
+    /**
+     * The first address in the range given by this address' subnet, often
+     * referred to as the Network Address.
+     *
+     * @since 1.0.0
+     */
+    public networkAddress(): Family extends typeof IPv4
+        ? Effect.Effect<typeof IPv4, ParseResult.ParseError, never>
+        : Effect.Effect<typeof IPv6, ParseResult.ParseError, never> {
+        return this.onFamily({
+            onIPv4: (self) => IPv4.FromBigint(self.networkAddressAsBigint),
+            onIPv6: (self) => IPv6.FromBigint(self.networkAddressAsBigint),
+        });
     }
 
     /**
@@ -630,13 +703,16 @@ export class CidrBlock extends Schema.Class<CidrBlock>("CidrBlock")({
      *
      * @since 1.0.0
      */
-    private get broadcastAddressAsBigint(): bigint {
+    protected get broadcastAddressAsBigint(): Family extends typeof IPv4 ? IPv4BigintBrand : IPv6BigintBrand {
         const bits = this.family === "ipv4" ? 32 : 128;
         const bigIntegerAddress = this.ip.asBigint;
         const intermediate = bigIntegerAddress.toString(2).padStart(bits, "0").slice(0, this.mask);
         const broadcastAddressString = intermediate + "1".repeat(bits - this.mask);
         const broadcastAddressBigInt = BigInt(`0b${broadcastAddressString}`);
-        return broadcastAddressBigInt;
+        return this.onFamily({
+            onIPv4: (_self) => IPv4BigintBrand(broadcastAddressBigInt),
+            onIPv6: (_self) => IPv6BigintBrand(broadcastAddressBigInt),
+        });
     }
 
     /**
@@ -645,10 +721,13 @@ export class CidrBlock extends Schema.Class<CidrBlock>("CidrBlock")({
      *
      * @since 1.0.0
      */
-    public get broadcastAddress(): Effect.Effect<Address, ParseResult.ParseError, never> {
-        return this.family === "ipv4"
-            ? IPv4.FromBigint(this.broadcastAddressAsBigint)
-            : IPv6.FromBigint(this.broadcastAddressAsBigint);
+    public broadcastAddress(): Family extends typeof IPv4
+        ? Effect.Effect<typeof IPv4, ParseResult.ParseError, never>
+        : Effect.Effect<typeof IPv6, ParseResult.ParseError, never> {
+        return this.onFamily({
+            onIPv4: (self) => IPv4.FromBigint(self.broadcastAddressAsBigint),
+            onIPv6: (self) => IPv6.FromBigint(self.broadcastAddressAsBigint),
+        });
     }
 
     /**
@@ -656,20 +735,29 @@ export class CidrBlock extends Schema.Class<CidrBlock>("CidrBlock")({
      *
      * @since 1.0.0
      */
-    public get range(): Stream.Stream<Address, ParseResult.ParseError, never> {
-        const minValue = this.networkAddressAsBigint;
-        const maxValue = this.broadcastAddressAsBigint;
-
-        const addressFromBigint: (n: bigint) => Effect.Effect<IPv4 | IPv6, ParseResult.ParseError, never> =
-            this.family === "ipv4" ? IPv4.FromBigint : IPv6.FromBigint;
-
-        const stream = Function.pipe(
-            Stream.iterate(minValue, (x) => x + 1n),
-            Stream.takeWhile((n) => n <= maxValue),
-            Stream.mapEffect(addressFromBigint)
-        );
-
-        return stream;
+    public get range(): Family extends typeof IPv4
+        ? Stream.Stream<typeof IPv4, ParseResult.ParseError, never>
+        : Stream.Stream<typeof IPv6, ParseResult.ParseError, never> {
+        return this.onFamily({
+            onIPv4: (self) => {
+                const minValue = self.networkAddressAsBigint;
+                const maxValue = self.broadcastAddressAsBigint;
+                return Function.pipe(
+                    Stream.iterate(minValue, (x) => IPv4BigintBrand(x + 1n)),
+                    Stream.takeWhile((n) => n <= maxValue),
+                    Stream.mapEffect(IPv4.FromBigint)
+                );
+            },
+            onIPv6: (self) => {
+                const minValue = self.networkAddressAsBigint;
+                const maxValue = self.broadcastAddressAsBigint;
+                return Function.pipe(
+                    Stream.iterate(minValue, (x) => IPv6BigintBrand(x + 1n)),
+                    Stream.takeWhile((n) => n <= maxValue),
+                    Stream.mapEffect(IPv6.FromBigint)
+                );
+            },
+        });
     }
 
     /**
@@ -678,18 +766,197 @@ export class CidrBlock extends Schema.Class<CidrBlock>("CidrBlock")({
      * @since 1.0.0
      */
     public get total(): bigint {
-        const minValue = this.networkAddressAsBigint;
-        const maxValue = this.broadcastAddressAsBigint;
+        const minValue: bigint = this.networkAddressAsBigint;
+        const maxValue: bigint = this.broadcastAddressAsBigint;
         return maxValue - minValue + 1n;
     }
+
+    /**
+     * Finds the smallest CIDR block that contains all the given IP addresses.
+     *
+     * @since 1.0.0
+     */
+    public static readonly cidrBlockForRange = <Family extends typeof IPv4 | typeof IPv6>(
+        inputs: Family extends typeof IPv4
+            ? Array.NonEmptyReadonlyArray<typeof IPv4>
+            : Array.NonEmptyReadonlyArray<typeof IPv6>
+    ): Family extends typeof IPv4
+        ? Effect.Effect<CidrBlockBase<typeof IPv4>, ParseResult.ParseError, never>
+        : Effect.Effect<CidrBlockBase<typeof IPv6>, ParseResult.ParseError, never> =>
+        Effect.gen(function* () {
+            const bigIntMinAndMax = (args: Array.NonEmptyReadonlyArray<bigint>) => {
+                return args.reduce(
+                    ([min, max], e) => {
+                        return [e < min ? e : min, e > max ? e : max] as const;
+                    },
+                    [args[0], args[0]] as const
+                );
+            };
+
+            const bits = inputs[0].family === "ipv4" ? 32 : 128;
+            const bigints = Array.map(inputs, (ip) => ip.asBigint);
+            const [min, max] = bigIntMinAndMax(bigints);
+
+            const leadingZerosInMin = bits - min.toString(2).length;
+            const leadingZerosInMax = bits - max.toString(2).length;
+
+            const cidrMask = Math.min(leadingZerosInMin, leadingZerosInMax);
+            const cidrAddress =
+                inputs[0].family === "ipv4"
+                    ? yield* IPv4.FromBigint(IPv4BigintBrand(min))
+                    : yield* IPv6.FromBigint(IPv6BigintBrand(min));
+
+            return yield* Schema.decode(CidrBlockFromString)(`${cidrAddress}/${cidrMask}`);
+        }) as Family extends typeof IPv4
+            ? Effect.Effect<CidrBlockBase<typeof IPv4>, ParseResult.ParseError, never>
+            : Effect.Effect<CidrBlockBase<typeof IPv6>, ParseResult.ParseError, never>;
 }
+
+/**
+ * @since 1.0.0
+ * @category Schemas
+ */
+export class IPv4CidBlock extends CidrBlockBase.transformOrFail<CidrBlockBase<IPv4>>("IPv4CidBlock")(
+    { ip_: IPv4, mask_: IPv4CidrMask },
+    {
+        encode: Effect.succeed,
+        decode: ({ ip, mask }, _options, ast) => {
+            if (Schema.is(IPv4)(ip) && Schema.is(IPv4CidrMask)(mask)) {
+                return Effect.succeed({ ip, mask, ip_: ip, mask_: mask } as const);
+            } else {
+                return Effect.fail(
+                    new ParseResult.Type(
+                        ast,
+                        { ip, mask },
+                        "Did not have ipv4 and ipv4CidrMask when decoding ipv4 cidr block"
+                    )
+                );
+            }
+        },
+    }
+) {}
+
+/**
+ * @since 1.0.0
+ * @category Api interface
+ */
+export interface $IPv4CidBlockFromString
+    extends Schema.Annotable<$IPv4CidBlockFromString, CidrBlockBase<IPv4>, `${string}/${number}`, never> {}
+
+/**
+ * @since 1.0.0
+ * @category Unbranded types
+ */
+export type IPv4CidBlockFromString = Schema.Schema.Type<typeof IPv4CidBlockFromString>;
+
+/**
+ * @since 1.0.0
+ * @category Encoded types
+ */
+export type IPv4CidBlockFromStringEncoded = Schema.Schema.Encoded<typeof IPv4CidBlockFromString>;
+
+/**
+ * A schema that transforms a `string` into a `CidrBlock`.
+ *
+ * @since 1.0.0
+ * @category Schemas
+ */
+export const IPv4CidBlockFromString: $IPv4CidBlockFromString = Schema.transform(
+    Schema.TemplateLiteral(Schema.String, Schema.Literal("/"), Schema.Number),
+    IPv4CidBlock,
+    {
+        decode: (str) => {
+            const [ip, mask] = splitLiteral(str, "/");
+            return { ip, mask: Number.parseInt(mask, 10) } as const;
+        },
+        encode: ({ ip, mask }) => `${ip}/${mask}` as const,
+    }
+).annotations({
+    identifier: "IPv4CidBlockFromString",
+    description: "An ipv4 cidr block from string",
+});
+
+/**
+ * @since 1.0.0
+ * @category Schemas
+ */
+export class IPv6CidBlock extends CidrBlockBase.transformOrFail<CidrBlockBase<IPv6>>("IPv6CidBlock")(
+    { ip_: IPv6, mask_: IPv6CidrMask },
+    {
+        encode: Effect.succeed,
+        decode: ({ ip, mask }, _options, ast) => {
+            if (Schema.is(IPv6)(ip) && Schema.is(IPv6CidrMask)(mask)) {
+                return Effect.succeed({ ip, mask, ip_: ip, mask_: mask } as const);
+            } else {
+                return Effect.fail(
+                    new ParseResult.Type(
+                        ast,
+                        { ip, mask },
+                        "Did not have ipv6 and ipv6CidrMask when decoding ipv6 cidr block"
+                    )
+                );
+            }
+        },
+    }
+) {}
+
+/**
+ * @since 1.0.0
+ * @category Api interface
+ */
+export interface $IPv6CidBlockFromString
+    extends Schema.Annotable<$IPv6CidBlockFromString, CidrBlockBase<IPv6>, `${string}/${number}`, never> {}
+
+/**
+ * @since 1.0.0
+ * @category Unbranded types
+ */
+export type IPv6CidBlockFromString = Schema.Schema.Type<typeof IPv6CidBlockFromString>;
+
+/**
+ * @since 1.0.0
+ * @category Encoded types
+ */
+export type IPv6CidBlockFromStringEncoded = Schema.Schema.Encoded<typeof IPv6CidBlockFromString>;
+
+/**
+ * A schema that transforms a `string` into a `CidrBlock`.
+ *
+ * @since 1.0.0
+ * @category Schemas
+ */
+export const IPv6CidBlockFromString: $IPv6CidBlockFromString = Schema.transform(
+    Schema.TemplateLiteral(Schema.String, Schema.Literal("/"), Schema.Number),
+    IPv6CidBlock,
+    {
+        decode: (str) => {
+            const [ip, mask] = splitLiteral(str, "/");
+            return { ip, mask: Number.parseInt(mask, 10) } as const;
+        },
+        encode: ({ ip, mask }) => `${ip}/${mask}` as const,
+    }
+).annotations({
+    identifier: "IPv6CidBlockFromString",
+    description: "An ipv6 cidr block from string",
+});
+
+/**
+ * @since 1.0.0
+ * @category Schemas
+ */
+export class CidrBlock extends Schema.Union(IPv4CidBlock, IPv6CidBlock) {}
 
 /**
  * @since 1.0.0
  * @category Api interface
  */
 export interface $CidrBlockFromString
-    extends Schema.Annotable<$CidrBlockFromString, CidrBlock, `${string}/${number}`, never> {}
+    extends Schema.Annotable<
+        $CidrBlockFromString,
+        CidrBlockBase<IPv4> | CidrBlockBase<IPv6>,
+        `${string}/${number}`,
+        never
+    > {}
 
 /**
  * @since 1.0.0
@@ -715,7 +982,7 @@ export const CidrBlockFromString: $CidrBlockFromString = Schema.transform(
     {
         decode: (str) => {
             const [ip, mask] = splitLiteral(str, "/");
-            return { ip, mask: Number.parseInt(mask, 10) };
+            return { ip, mask: Number.parseInt(mask, 10) } as const;
         },
         encode: ({ ip, mask }) => `${ip}/${mask}` as const,
     }
@@ -772,7 +1039,7 @@ export const IPv4Endpoint: $IPv4Endpoint = Schema.transform(
         Schema.TemplateLiteral(Schema.String, Schema.Literal(":"), Schema.Number),
         Schema.TemplateLiteral(Schema.String, Schema.Literal(":"), Schema.Number, Schema.Literal(":"), Schema.Number)
     ),
-    Schema.Struct({ address: IPv4FromString, natPort: Port, listenPort: Port }),
+    Schema.Struct({ address: IPv4, natPort: Port, listenPort: Port }),
     {
         decode: (data) => {
             const isObjectInput = !Predicate.isString(data);
@@ -863,12 +1130,10 @@ export const IPv6Endpoint: $IPv6Endpoint = Schema.transform(
             Schema.Number
         )
     ),
-    Schema.Struct({ address: IPv6FromString, natPort: Port, listenPort: Port }),
+    Schema.Struct({ address: IPv6, natPort: Port, listenPort: Port }),
     {
         decode: (data) => {
             const isObjectInput = !Predicate.isString(data);
-            type Tail<T extends ReadonlyArray<unknown>> = T extends [infer _First, ...infer Rest] ? Rest : never;
-            const tail = <T extends ReadonlyArray<unknown>>(elements: T): Tail<T> => elements.slice(1) as Tail<T>;
             const [ip, natPort, listenPort] = isObjectInput
                 ? ([
                       data.ip,
@@ -1021,7 +1286,83 @@ export const Endpoint: $Endpoint = Schema.Union(IPv4Endpoint, IPv6Endpoint, Host
  * @since 1.0.0
  * @category Api interface
  */
-export interface $SetupData extends Schema.Tuple<[$Endpoint, $AddressFromString]> {}
+export interface $IPv4SetupData extends Schema.Tuple<[$IPv4Endpoint, typeof IPv4]> {}
+
+/**
+ * @since 1.0.0
+ * @category Unbranded types
+ */
+export type IPv4SetupData = Schema.Schema.Type<typeof IPv4SetupData>;
+
+/**
+ * @since 1.0.0
+ * @category Encoded types
+ */
+export type IPv4SetupDataEncoded = Schema.Schema.Encoded<typeof IPv4SetupData>;
+
+/**
+ * A wireguard setup data, which consists of an endpoint followed by an address.
+ *
+ * @since 1.0.0
+ * @category Schemas
+ * @example
+ *     import * as Schema from "@effect/schema/Schema";
+ *     import { SetupData } from "the-wireguard-effect/InternetSchemas";
+ *
+ *     const decodeSetupData = Schema.decodeSync(SetupData);
+ *     const setupData = decodeSetupData(["1.1.1.1:51280", "10.0.0.1"]);
+ *
+ * @see {@link IPv4EndpointSchema}
+ * @see {@link IPv4}
+ */
+export const IPv4SetupData: $IPv4SetupData = Schema.Tuple(IPv4Endpoint, IPv4).annotations({
+    identifier: "SetupData",
+    description: "A wireguard setup data",
+});
+
+/**
+ * @since 1.0.0
+ * @category Api interface
+ */
+export interface $IPv6SetupData extends Schema.Tuple<[$IPv6Endpoint, typeof IPv6]> {}
+
+/**
+ * @since 1.0.0
+ * @category Unbranded types
+ */
+export type IPv6SetupData = Schema.Schema.Type<typeof IPv6SetupData>;
+
+/**
+ * @since 1.0.0
+ * @category Encoded types
+ */
+export type IPv6SetupDataEncoded = Schema.Schema.Encoded<typeof IPv6SetupData>;
+
+/**
+ * A wireguard setup data, which consists of an endpoint followed by an address.
+ *
+ * @since 1.0.0
+ * @category Schemas
+ * @example
+ *     import * as Schema from "@effect/schema/Schema";
+ *     import { SetupData } from "the-wireguard-effect/InternetSchemas";
+ *
+ *     const decodeSetupData = Schema.decodeSync(SetupData);
+ *     const setupData = decodeSetupData(["1.1.1.1:51280", "10.0.0.1"]);
+ *
+ * @see {@link IPv6EndpointSchema}
+ * @see {@link IPv6}
+ */
+export const IPv6SetupData: $IPv6SetupData = Schema.Tuple(IPv6Endpoint, IPv6).annotations({
+    identifier: "SetupData",
+    description: "A wireguard setup data",
+});
+
+/**
+ * @since 1.0.0
+ * @category Api interface
+ */
+export interface $SetupData extends Schema.Union<[typeof IPv4SetupData, typeof IPv6SetupData]> {}
 
 /**
  * @since 1.0.0
@@ -1050,7 +1391,7 @@ export type SetupDataEncoded = Schema.Schema.Encoded<typeof SetupData>;
  * @see {@link EndpointSchema}
  * @see {@link Address}
  */
-export const SetupData: $SetupData = Schema.Tuple(Endpoint, AddressFromString).annotations({
+export const SetupData: $SetupData = Schema.Union(IPv4SetupData, IPv6SetupData).annotations({
     identifier: "SetupData",
     description: "A wireguard setup data",
 });

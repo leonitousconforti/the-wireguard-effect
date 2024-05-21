@@ -14,11 +14,12 @@ The motivation for this project came from wanting to create wireguard configurat
 - [x] - userspace api implementation (the [Wireguard cross platform docs](https://www.wireguard.com/xplatform/) have details about it.)
 - [x] - strong control over how the interface is managed across all platforms.
 
-## Todo/Future :construction:
+## WIP/Todo/Future :construction:
 
-- Implement wg cli
+- Implement wg cli clone
 - Wireguard windows arm64 prebuilds
 - Obtain wintun drivers from public source and check hash during build, rather than just uploading them
+- FreeBSD and OpenBSD support (https://github.com/leonitousconforti/the-wireguard-effect/pull/104)
 
 ## Non-Goals :wastebasket:
 
@@ -48,7 +49,7 @@ You can find examples for how to generate configs for each type of configuration
 
 ## Security :closed_lock_with_key:
 
-the-wireguard-effect is not an official WireGuard project, and WireGuard is a registered trademark of Jason A. Donenfeld. The is a hobby project of mine, it has not received an independent security audit and never will.
+the-wireguard-effect is not an official WireGuard project, and WireGuard is a registered trademark of Jason A. Donenfeld. The is a hobby project of mine, it has not received an independent security audit and never will. If that bothers you then don't use it.
 
 ## Contributing and getting help :speech_balloon: :beers:
 

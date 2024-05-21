@@ -1,0 +1,157 @@
+services:
+
+  alice:
+    cap_add:
+      - NET_ADMIN
+    build:
+      context: .
+      dockerfile: A-alice.dockerfile
+    depends_on:
+      - router_alice
+    networks:
+      A-net:
+        ipv4_address: 10.0.1.3
+    hostname: ALICE
+
+  router_alice:
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    build:
+      context: .
+      dockerfile: A-router.dockerfile
+    networks:
+      A-net:
+        ipv4_address: 10.0.1.2
+      E-net:
+        ipv4_address: 10.0.5.2
+    hostname: ROUTER_ALICE
+
+  bob:
+    cap_add:
+      - NET_ADMIN
+    build:
+      context: .
+      dockerfile: B-bob.dockerfile
+    depends_on:
+      - router_bob
+    networks:
+      B-net:
+        ipv4_address: 10.0.2.3
+    hostname: BOB
+
+  router_bob:
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    build:
+      context: .
+      dockerfile: B-router.dockerfile
+    networks:
+      B-net:
+        ipv4_address: 10.0.2.2
+      E-net:
+        ipv4_address: 10.0.5.3
+    hostname: ROUTER_BOB
+
+  charlie:
+    cap_add:
+      - NET_ADMIN
+    build:
+      context: .
+      dockerfile: C-charlie.dockerfile
+    depends_on:
+      - router_charlie
+    networks:
+      C-net:
+        ipv4_address: 10.0.3.3
+    hostname: CHARLIE
+
+  router_charlie:
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    build:
+      context: .
+      dockerfile: C-router.dockerfile
+    networks:
+      C-net:
+        ipv4_address: 10.0.3.2
+      E-net:
+        ipv4_address: 10.0.5.4
+    hostname: ROUTER_CHARLIE
+
+  dave:
+    cap_add:
+      - NET_ADMIN
+    build:
+      context: .
+      dockerfile: D-dave.dockerfile
+    depends_on:
+      - router_dave
+    networks:
+      D-net:
+        ipv4_address: 10.0.4.3
+    hostname: DAVE
+
+  eve:
+    cap_add:
+      - NET_ADMIN
+    build:
+      context: .
+      dockerfile: D-eve.dockerfile
+    depends_on:
+      - router_dave
+    networks:
+      D-net:
+        ipv4_address: 10.0.4.4
+    hostname: EVE
+
+  faye:
+    cap_add:
+      - NET_ADMIN
+    build:
+      context: .
+      dockerfile: D-faye.dockerfile
+    depends_on:
+      - router_dave
+    networks:
+      D-net:
+        ipv4_address: 10.0.4.5
+    hostname: FAYE
+
+  router_dave:
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    build:
+      context: .
+      dockerfile: D-router.dockerfile
+    networks:
+      D-net:
+        ipv4_address: 10.0.4.2
+      E-net:
+        ipv4_address: 10.0.5.5
+    hostname: ROUTER_DAVE
+
+networks:
+  A-net:
+    ipam:
+      config:
+        - subnet: 10.0.1.0/24
+  B-net:
+    ipam:
+      config:
+        - subnet: 10.0.2.0/24
+  C-net:
+    ipam:
+      config:
+        - subnet: 10.0.3.0/24
+  D-net:
+    ipam:
+      config:
+        - subnet: 10.0.4.0/24
+  E-net:
+    ipam:
+      config:
+        - subnet: 10.0.5.0/24

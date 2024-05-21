@@ -168,7 +168,7 @@ export const WireguardIniPeer: $WireguardIniPeer = Schema.transformOrFail(Wiregu
             peer.Endpoint,
             Option.fromNullable,
             Option.map((endpoint) => {
-                const host = "address" in endpoint ? endpoint.address.ip : endpoint.host;
+                const host = "address" in endpoint ? endpoint.address.value : endpoint.host;
                 return `Endpoint = ${host}:${endpoint.natPort}\n` as const;
             }),
             Option.getOrElse(() => "" as const)
@@ -183,7 +183,7 @@ export const WireguardIniPeer: $WireguardIniPeer = Schema.transformOrFail(Wiregu
         const aps: Array<`AllowedIPs = ${string}/${number}`> = Function.pipe(
             peer.AllowedIPs,
             Array.fromIterable,
-            Array.map((ap) => `${ap.ip.ip}/${ap.mask}` as const),
+            Array.map((ap) => `${ap.ip.value}/${ap.mask}` as const),
             Array.map((ap) => `AllowedIPs = ${ap}` as const)
         );
 
@@ -260,7 +260,7 @@ export const makeWireguardUApiSetPeerRequest = (peer: WireguardPeer): string => 
         peer.Endpoint,
         Option.fromNullable,
         Option.map((endpoint) => {
-            const host = "address" in endpoint ? endpoint.address.ip : endpoint.host;
+            const host = "address" in endpoint ? endpoint.address.value : endpoint.host;
             return `endpoint=${host}:${endpoint.natPort}\n` as const;
         }),
         Option.getOrElse(() => "" as const)
@@ -276,7 +276,7 @@ export const makeWireguardUApiSetPeerRequest = (peer: WireguardPeer): string => 
     const aps: Array<`allowed_ip=${string}/${number}`> = Function.pipe(
         peer.AllowedIPs,
         Array.fromIterable,
-        Array.map((ap) => `${ap.ip.ip}/${ap.mask}` as const),
+        Array.map((ap) => `${ap.ip.value}/${ap.mask}` as const),
         Array.map((ap) => `allowed_ip=${ap}` as const)
     );
 

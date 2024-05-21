@@ -151,7 +151,7 @@ export const requestWireguardDemoConfig = (
             Schema.decode(WireguardConfig.WireguardConfig)({
                 Dns: "1.1.1.1",
                 PrivateKey: privateKey,
-                Address: `${serverResponse.yourWireguardAddress.ip}/24`,
+                Address: `${serverResponse.yourWireguardAddress.value}/24`,
                 ListenPort: 0,
                 Peers: [
                     {

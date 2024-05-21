@@ -24,7 +24,7 @@ describe("WireguardConfig", () => {
             const ips = yield* λ(
                 Function.pipe(
                     cidrBlock.range,
-                    Stream.map(({ ip }) => ip),
+                    Stream.map(({ value }) => value),
                     Stream.run(Sink.collectAllN(2)),
                     Effect.map(Chunk.toArray)
                 )
