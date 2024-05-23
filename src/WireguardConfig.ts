@@ -1042,7 +1042,7 @@ export const generate: {
                             if (v === "allowAllDefinedPeers") {
                                 return ips.map((_) => `${_}/32` as const);
                             } else if (v === "allowWholeWireguardNetwork") {
-                                return [`${cidrBlock.ip.value}/${cidrBlock.mask}` as const];
+                                return [`${cidrBlock.address.value}/${cidrBlock.mask}` as const];
                             } else if (Predicate.isString(v)) {
                                 return [v];
                             } else {
@@ -1066,7 +1066,7 @@ export const generate: {
             }),
             Match.when("AllPeersAllowWholeWireguardNetwork", () => {
                 const allowedIps = Array.map(options.peerData, (spoke) =>
-                    Tuple.make(spoke, [`${cidrBlock.ip.value}/${cidrBlock.mask}`] as const)
+                    Tuple.make(spoke, [`${cidrBlock.address.value}/${cidrBlock.mask}`] as const)
                 );
                 return HashMap.fromIterable(allowedIps);
             }),
@@ -1084,7 +1084,7 @@ export const generate: {
                 } else if (how === "AllPeersAllowWholeWireguardNetworkAndLan") {
                     return HashMap.fromIterable(
                         Array.map(options.peerData, (spoke) =>
-                            Tuple.make(spoke, [...([`${cidrBlock.ip.value}/${cidrBlock.mask}`] as const), ...lans])
+                            Tuple.make(spoke, [...([`${cidrBlock.address.value}/${cidrBlock.mask}`] as const), ...lans])
                         )
                     );
                 }
