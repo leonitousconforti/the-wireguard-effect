@@ -30,10 +30,10 @@ type Split<Str extends string, Delimiter extends string> = string extends Str | 
       ? [T, ...Split<U, Delimiter>]
       : [Str];
 
-/** @since 1.0.0 */
+/** @internal */
 export const tail = <T extends ReadonlyArray<unknown>>(elements: T): Tail<T> => elements.slice(1) as Tail<T>;
 
-/** @since 1.0.0 */
+/** @internal */
 export const splitLiteral = <Str extends string, Delimiter extends string>(
     str: Str,
     delimiter: Delimiter
@@ -175,14 +175,11 @@ export type IPv4Encoded = Schema.Schema.Encoded<$IPv4>;
  *     import * as Schema from "@effect/schema/Schema";
  *     import { IPv4 } from "the-wireguard-effect/InternetSchemas";
  *
- *     const ipv4: IPv4 = new IPv4({ value: "1.1.1.1" });
- *     assert.strictEqual(ipv4, "1.1.1.1");
- *
  *     const decodeIPv4 = Schema.decodeSync(IPv4);
  *     assert.strictEqual(decodeIPv4({ value: "1.1.1.1" }), "1.1.1.1");
  *
  *     assert.throws(() => decodeIPv4({ value: "1.1.a.1" }));
- *     assert.doesNotThrow(() => decodeIPv4({ value: "1.1.1.1" }));
+ *     assert.doesNotThrow(() => decodeIPv4({ value: "1.1.1.2" }));
  */
 export const IPv4: $IPv4 = Schema.transform(
     Schema.String.pipe(Schema.filter((str) => net.isIPv4(str))),
@@ -193,7 +190,8 @@ export const IPv4: $IPv4 = Schema.transform(
     }
 ).annotations({
     identifier: "IPv4",
-    description: "An ipv4 address",
+    title: "An ipv4 address",
+    description: "An ipv4 address in dot-decimal notation with no leading zeros",
 });
 
 /**
@@ -226,7 +224,7 @@ export interface $IPv4Bigint
  * @since 1.0.0
  * @category Unbranded types
  */
-export type IPb4Bigint = Schema.Schema.Type<$IPv4Bigint>;
+export type IPv4Bigint = Schema.Schema.Type<$IPv4Bigint>;
 
 /**
  * @since 1.0.0
@@ -284,7 +282,7 @@ export const IPv4Bigint: $IPv4Bigint = Schema.transformOrFail(
     }
 ).annotations({
     identifier: "IPv4Bigint",
-    description: "A an ipv4 address as a bigint",
+    description: "An ipv4 address as a bigint",
 });
 
 /**
@@ -403,7 +401,7 @@ export type IPv6Bigint = Schema.Schema.Type<$IPv6Bigint>;
 export type IPv6BigintEncoded = Schema.Schema.Encoded<$IPv6Bigint>;
 
 /**
- * An IPv4 as a bigint.
+ * An IPv6 as a bigint.
  *
  * @since 1.0.0
  * @category Schemas
@@ -481,7 +479,7 @@ export const IPv6Bigint: $IPv6Bigint = Schema.transformOrFail(
     }
 ).annotations({
     identifier: "IPv6Bigint",
-    description: "A an ipv6 address as a bigint",
+    description: "An ipv6 address as a bigint",
 });
 
 /**
@@ -494,13 +492,13 @@ export interface $Address extends Schema.Union<[$IPv4, $IPv6]> {}
  * @since 1.0.0
  * @category Unbranded types
  */
-export type Address = Schema.Schema.Type<typeof Address>;
+export type Address = Schema.Schema.Type<$Address>;
 
 /**
  * @since 1.0.0
  * @category Encoded types
  */
-export type AddressEncoded = Schema.Schema.Encoded<typeof Address>;
+export type AddressEncoded = Schema.Schema.Encoded<$Address>;
 
 /**
  * An IP address, which is either an IPv4 or IPv6 address.
@@ -528,7 +526,7 @@ export type AddressEncoded = Schema.Schema.Encoded<typeof Address>;
  */
 export const Address: $Address = Schema.Union(IPv4, IPv6).annotations({
     identifier: "Address",
-    description: "An ip address",
+    description: "An ipv4 or ipv6 address",
 });
 
 /**
@@ -550,14 +548,14 @@ export type AddressBigint = Schema.Schema.Type<$AddressBigint>;
 export type AddressBigintEncoded = Schema.Schema.Encoded<$AddressBigint>;
 
 /**
- * An IPv4 as a bigint.
+ * An IP address as a bigint.
  *
  * @since 1.0.0
  * @category Schemas
  */
 export const AddressBigint: $AddressBigint = Schema.Union(IPv4Bigint, IPv6Bigint).annotations({
-    identifier: "IPv6Bigint",
-    description: "A an ipv6 address as a bigint",
+    identifier: "AddressBigint",
+    description: "An ipv4 or ipv6 address as a bigint",
 });
 
 /**
@@ -881,47 +879,69 @@ export class CidrBlockBase<Family extends "ipv4" | "ipv6"> extends Schema.Class<
      *
      * @since 1.0.0
      */
-    // public static readonly cidrBlockForRange = <Family extends typeof IPv4 | typeof IPv6>(
-    //     inputs: Family extends typeof IPv4
-    //         ? Array.NonEmptyReadonlyArray<typeof IPv4>
-    //         : Array.NonEmptyReadonlyArray<typeof IPv6>
-    // ): Family extends typeof IPv4
-    //     ? Effect.Effect<CidrBlockBase<"ipv4">, ParseResult.ParseError, never>
-    //     : Effect.Effect<CidrBlockBase<"ipv6">, ParseResult.ParseError, never> =>
-    //     Effect.gen(function* () {
-    //         const bigIntMinAndMax = (args: Array.NonEmptyReadonlyArray<bigint>) => {
-    //             return args.reduce(
-    //                 ([min, max], e) => {
-    //                     return [e < min ? e : min, e > max ? e : max] as const;
-    //                 },
-    //                 [args[0], args[0]] as const
-    //             );
-    //         };
+    public static readonly cidrBlockForRange = <Family extends "ipv4" | "ipv6">(
+        inputs: Family extends "ipv4" ? Array.NonEmptyReadonlyArray<IPv4> : Array.NonEmptyReadonlyArray<IPv6>
+    ): Family extends "ipv4"
+        ? Effect.Effect<CidrBlockBase<"ipv4">, ParseResult.ParseError, never>
+        : Effect.Effect<CidrBlockBase<"ipv6">, ParseResult.ParseError, never> =>
+        Effect.gen(function* () {
+            const bigIntMinAndMax = (args: Array.NonEmptyReadonlyArray<bigint>) => {
+                return args.reduce(
+                    ([min, max], e) => {
+                        return [e < min ? e : min, e > max ? e : max] as const;
+                    },
+                    [args[0], args[0]] as const
+                );
+            };
 
-    //         const bits = inputs[0].family === "ipv4" ? 32 : 128;
-    //         const bigints = Array.map(inputs, (ip) => ip.asBigint);
-    //         const [min, max] = bigIntMinAndMax(bigints);
+            const bigints = yield* Function.pipe(
+                inputs as Array.NonEmptyReadonlyArray<IPv4 | IPv6>,
+                Array.map((address) =>
+                    address.family === "ipv4"
+                        ? Schema.decode(IPv4Bigint)(address.ip)
+                        : Schema.decode(IPv6Bigint)(address.ip)
+                ),
+                Array.map((x) => x as Effect.Effect<IPv4Bigint | IPv6Bigint, ParseResult.ParseError, never>),
+                Array.map(Effect.map(({ value }) => value)),
+                Effect.all
+            );
 
-    //         const leadingZerosInMin = bits - min.toString(2).length;
-    //         const leadingZerosInMax = bits - max.toString(2).length;
+            const bits = inputs[0].family === "ipv4" ? 32 : 128;
+            const [min, max] = bigIntMinAndMax(bigints);
+            const leadingZerosInMin = bits - min.toString(2).length;
+            const leadingZerosInMax = bits - max.toString(2).length;
 
-    //         const cidrMask = Math.min(leadingZerosInMin, leadingZerosInMax);
-    //         const cidrAddress =
-    //             inputs[0].family === "ipv4"
-    //                 ? yield* IPv4.FromBigint(IPv4BigintBrand(min))
-    //                 : yield* IPv6.FromBigint(IPv6BigintBrand(min));
+            const cidrMask = Math.min(leadingZerosInMin, leadingZerosInMax);
+            const cidrAddress =
+                inputs[0].family === "ipv4"
+                    ? yield* Schema.encode(IPv4Bigint)({ value: IPv4BigintBrand(min), family: "ipv4" })
+                    : yield* Schema.encode(IPv6Bigint)({ value: IPv6BigintBrand(min), family: "ipv6" });
 
-    //         return yield* Schema.decode(CidrBlockFromString)(`${cidrAddress}/${cidrMask}`);
-    //     }) as Family extends typeof IPv4
-    //         ? Effect.Effect<CidrBlockBase<"ipv4">, ParseResult.ParseError, never>
-    //         : Effect.Effect<CidrBlockBase<"ipv6">, ParseResult.ParseError, never>;
+            return yield* Schema.decode(CidrBlockFromString)(`${cidrAddress}/${cidrMask}`);
+        }) as Family extends "ipv4"
+            ? Effect.Effect<CidrBlockBase<"ipv4">, ParseResult.ParseError, never>
+            : Effect.Effect<CidrBlockBase<"ipv6">, ParseResult.ParseError, never>;
 }
+
+/**
+ * @since 1.0.0
+ * @category Api interface
+ */
+export interface $IPv4CidBlock
+    extends Schema.transformOrFail<
+        Schema.Struct<{
+            address: $IPv4;
+            mask: $IPv4CidrMask;
+        }>,
+        typeof CidrBlockBase,
+        never
+    > {}
 
 /**
  * @since 1.0.0
  * @category Schemas
  */
-export class IPv4CidBlock extends Schema.transformOrFail(
+export const IPv4CidBlock: $IPv4CidBlock = Schema.transformOrFail(
     Schema.Struct({ address: IPv4, mask: IPv4CidrMask }),
     CidrBlockBase,
     {
@@ -933,7 +953,10 @@ export class IPv4CidBlock extends Schema.transformOrFail(
             }).pipe(Effect.mapError(({ error }) => error)),
         decode: (data) => ParseResult.succeed({ address: data.address.ip, mask: data.mask }),
     }
-) {}
+).annotations({
+    identifier: "IPv4CidBlock",
+    description: "An ipv4 cidr block",
+});
 
 /**
  * @since 1.0.0
@@ -946,13 +969,13 @@ export interface $IPv4CidBlockFromString
  * @since 1.0.0
  * @category Unbranded types
  */
-export type IPv4CidBlockFromString = Schema.Schema.Type<typeof IPv4CidBlockFromString>;
+export type IPv4CidBlockFromString = Schema.Schema.Type<$IPv4CidBlockFromString>;
 
 /**
  * @since 1.0.0
  * @category Encoded types
  */
-export type IPv4CidBlockFromStringEncoded = Schema.Schema.Encoded<typeof IPv4CidBlockFromString>;
+export type IPv4CidBlockFromStringEncoded = Schema.Schema.Encoded<$IPv4CidBlockFromString>;
 
 /**
  * A schema that transforms a `string` into a `CidrBlock`.
@@ -977,9 +1000,23 @@ export const IPv4CidBlockFromString: $IPv4CidBlockFromString = Schema.transform(
 
 /**
  * @since 1.0.0
+ * @category Api interface
+ */
+export interface $IPv6CidBlock
+    extends Schema.transformOrFail<
+        Schema.Struct<{
+            address: $IPv6;
+            mask: $IPv6CidrMask;
+        }>,
+        typeof CidrBlockBase,
+        never
+    > {}
+
+/**
+ * @since 1.0.0
  * @category Schemas
  */
-export class IPv6CidBlock extends Schema.transformOrFail(
+export const IPv6CidBlock: $IPv6CidBlock = Schema.transformOrFail(
     Schema.Struct({ address: IPv6, mask: IPv6CidrMask }),
     CidrBlockBase,
     {
@@ -991,7 +1028,10 @@ export class IPv6CidBlock extends Schema.transformOrFail(
             }).pipe(Effect.mapError(({ error }) => error)),
         decode: (data) => ParseResult.succeed({ address: data.address.ip, mask: data.mask }),
     }
-) {}
+).annotations({
+    identifier: "IPv6CidBlock",
+    description: "An ipv6 cidr block",
+});
 
 /**
  * @since 1.0.0
@@ -1004,13 +1044,13 @@ export interface $IPv6CidBlockFromString
  * @since 1.0.0
  * @category Unbranded types
  */
-export type IPv6CidBlockFromString = Schema.Schema.Type<typeof IPv6CidBlockFromString>;
+export type IPv6CidBlockFromString = Schema.Schema.Type<$IPv6CidBlockFromString>;
 
 /**
  * @since 1.0.0
  * @category Encoded types
  */
-export type IPv6CidBlockFromStringEncoded = Schema.Schema.Encoded<typeof IPv6CidBlockFromString>;
+export type IPv6CidBlockFromStringEncoded = Schema.Schema.Encoded<$IPv6CidBlockFromString>;
 
 /**
  * A schema that transforms a `string` into a `CidrBlock`.
@@ -1035,9 +1075,15 @@ export const IPv6CidBlockFromString: $IPv6CidBlockFromString = Schema.transform(
 
 /**
  * @since 1.0.0
+ * @category Api interface
+ */
+export interface $CidrBlock extends Schema.Union<[$IPv4CidBlock, $IPv6CidBlock]> {}
+
+/**
+ * @since 1.0.0
  * @category Schemas
  */
-export class CidrBlock extends Schema.Union(IPv4CidBlock, IPv6CidBlock) {}
+export const CidrBlock: $CidrBlock = Schema.Union(IPv4CidBlock, IPv6CidBlock);
 
 /**
  * @since 1.0.0
@@ -1055,13 +1101,13 @@ export interface $CidrBlockFromString
  * @since 1.0.0
  * @category Unbranded types
  */
-export type CidrBlockFromString = Schema.Schema.Type<typeof CidrBlockFromString>;
+export type CidrBlockFromString = Schema.Schema.Type<$CidrBlockFromString>;
 
 /**
  * @since 1.0.0
  * @category Encoded types
  */
-export type CidrBlockFromStringEncoded = Schema.Schema.Encoded<typeof CidrBlockFromString>;
+export type CidrBlockFromStringEncoded = Schema.Schema.Encoded<$CidrBlockFromString>;
 
 /**
  * A schema that transforms a `string` into a `CidrBlock`.
@@ -1098,6 +1144,18 @@ export interface $IPv4Endpoint
         | { readonly ip: string; readonly natPort: number; readonly listenPort: number },
         never
     > {}
+
+/**
+ * @since 1.0.0
+ * @category Unbranded types
+ */
+export type IPv4Endpoint = Schema.Schema.Type<$IPv4Endpoint>;
+
+/**
+ * @since 1.0.0
+ * @category Encoded types
+ */
+export type IPv4EndpointEncoded = Schema.Schema.Encoded<$IPv4Endpoint>;
 
 /**
  * An IPv4 wireguard endpoint, which consists of an IPv4 address followed by a
@@ -1171,6 +1229,18 @@ export interface $IPv6Endpoint
         | { readonly ip: string; readonly natPort: number; readonly listenPort: number },
         never
     > {}
+
+/**
+ * @since 1.0.0
+ * @category Unbranded types
+ */
+export type IPv6Endpoint = Schema.Schema.Type<$IPv6Endpoint>;
+
+/**
+ * @since 1.0.0
+ * @category Encoded types
+ */
+export type IPv6EndpointEncoded = Schema.Schema.Encoded<$IPv6Endpoint>;
 
 /**
  * An IPv6 wireguard endpoint, which consists of an IPv6 address in square
@@ -1267,6 +1337,18 @@ export interface $HostnameEndpoint
     > {}
 
 /**
+ * @since 1.0.0
+ * @category Unbranded types
+ */
+export type HostnameEndpoint = Schema.Schema.Type<$HostnameEndpoint>;
+
+/**
+ * @since 1.0.0
+ * @category Encoded types
+ */
+export type HostnameEndpointEncoded = Schema.Schema.Encoded<$HostnameEndpoint>;
+
+/**
  * A hostname wireguard endpoint, which consists of a hostname followed by a\
  * Nat port then an optional local port. If only one port is provided, it is
  * assumed that the nat port and listen port are the same.
@@ -1316,13 +1398,13 @@ export interface $Endpoint extends Schema.Union<[$IPv4Endpoint, $IPv6Endpoint, $
  * @since 1.0.0
  * @category Unbranded types
  */
-export type Endpoint = Schema.Schema.Type<typeof Endpoint>;
+export type Endpoint = Schema.Schema.Type<$Endpoint>;
 
 /**
  * @since 1.0.0
  * @category Encoded types
  */
-export type EndpointEncoded = Schema.Schema.Encoded<typeof Endpoint>;
+export type EndpointEncoded = Schema.Schema.Encoded<$Endpoint>;
 
 /**
  * A wireguard endpoint, which is either an IPv4 or IPv6 endpoint.
@@ -1379,19 +1461,19 @@ export const Endpoint: $Endpoint = Schema.Union(IPv4Endpoint, IPv6Endpoint, Host
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv4SetupData extends Schema.Tuple<[$IPv4Endpoint, typeof IPv4]> {}
+export interface $IPv4SetupData extends Schema.Tuple<[$IPv4Endpoint, $IPv4]> {}
 
 /**
  * @since 1.0.0
  * @category Unbranded types
  */
-export type IPv4SetupData = Schema.Schema.Type<typeof IPv4SetupData>;
+export type IPv4SetupData = Schema.Schema.Type<$IPv4SetupData>;
 
 /**
  * @since 1.0.0
  * @category Encoded types
  */
-export type IPv4SetupDataEncoded = Schema.Schema.Encoded<typeof IPv4SetupData>;
+export type IPv4SetupDataEncoded = Schema.Schema.Encoded<$IPv4SetupData>;
 
 /**
  * A wireguard setup data, which consists of an endpoint followed by an address.
@@ -1417,19 +1499,19 @@ export const IPv4SetupData: $IPv4SetupData = Schema.Tuple(IPv4Endpoint, IPv4).an
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv6SetupData extends Schema.Tuple<[$IPv6Endpoint, typeof IPv6]> {}
+export interface $IPv6SetupData extends Schema.Tuple<[$IPv6Endpoint, $IPv6]> {}
 
 /**
  * @since 1.0.0
  * @category Unbranded types
  */
-export type IPv6SetupData = Schema.Schema.Type<typeof IPv6SetupData>;
+export type IPv6SetupData = Schema.Schema.Type<$IPv6SetupData>;
 
 /**
  * @since 1.0.0
  * @category Encoded types
  */
-export type IPv6SetupDataEncoded = Schema.Schema.Encoded<typeof IPv6SetupData>;
+export type IPv6SetupDataEncoded = Schema.Schema.Encoded<$IPv6SetupData>;
 
 /**
  * A wireguard setup data, which consists of an endpoint followed by an address.
@@ -1455,19 +1537,19 @@ export const IPv6SetupData: $IPv6SetupData = Schema.Tuple(IPv6Endpoint, IPv6).an
  * @since 1.0.0
  * @category Api interface
  */
-export interface $SetupData extends Schema.Union<[typeof IPv4SetupData, typeof IPv6SetupData]> {}
+export interface $SetupData extends Schema.Union<[$IPv4SetupData, $IPv6SetupData]> {}
 
 /**
  * @since 1.0.0
  * @category Unbranded types
  */
-export type SetupData = Schema.Schema.Type<typeof SetupData>;
+export type SetupData = Schema.Schema.Type<$SetupData>;
 
 /**
  * @since 1.0.0
  * @category Encoded types
  */
-export type SetupDataEncoded = Schema.Schema.Encoded<typeof SetupData>;
+export type SetupDataEncoded = Schema.Schema.Encoded<$SetupData>;
 
 /**
  * A wireguard setup data, which consists of an endpoint followed by an address.
