@@ -13,22 +13,17 @@ import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
 import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
-import * as Chunk from "effect/Chunk";
 import * as Effect from "effect/Effect";
 import * as Either from "effect/Either";
 import * as Function from "effect/Function";
 import * as HashMap from "effect/HashMap";
-import * as Match from "effect/Match";
 import * as Number from "effect/Number";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
 import * as Request from "effect/Request";
 import * as Resolver from "effect/RequestResolver";
 import * as Scope from "effect/Scope";
-import * as Sink from "effect/Sink";
-import * as Stream from "effect/Stream";
 import * as String from "effect/String";
-import * as Tuple from "effect/Tuple";
 import * as ini from "ini";
 
 import * as InternetSchemas from "./InternetSchemas.js";
@@ -49,7 +44,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
     Address: InternetSchemas.CidrBlockFromString,
 
     /** TODO: Document */
-    Dns: Schema.optional(InternetSchemas.AddressFromString),
+    Dns: Schema.optional(InternetSchemas.Address),
 
     /**
      * The value for this is a decimal-string integer corresponding to the
@@ -191,8 +186,8 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(Wi
         Effect.gen(function* () {
             const listenPort = `ListenPort = ${config.ListenPort}\n`;
             const privateKey = `PrivateKey = ${config.PrivateKey}\n`;
-            const address = `Address = ${config.Address.ip.value}/${config.Address.mask}\n`;
-            const dns = Predicate.isNotUndefined(config.Dns) ? `Dns = ${config.Dns?.value}\n` : "";
+            const address = `Address = ${config.Address.address.ip}/${config.Address.mask}\n`;
+            const dns = Predicate.isNotUndefined(config.Dns) ? `Dns = ${config.Dns?.ip}\n` : "";
             const fwmark = Predicate.isNotUndefined(config.FirewallMark)
                 ? `FirewallMark = ${config.FirewallMark}\n`
                 : "";
@@ -506,9 +501,7 @@ export const generate: {
      */
     <
         HubData extends InternetSchemas.SetupDataEncoded,
-        PeerData extends Array.NonEmptyReadonlyArray<
-            InternetSchemas.SetupDataEncoded | InternetSchemas.AddressFromStringEncoded
-        >,
+        PeerData extends Array.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded | InternetSchemas.Address>,
     >(options: {
         hubData: HubData;
         peerData: PeerData;
@@ -558,7 +551,7 @@ export const generate: {
                   Array.NonEmptyReadonlyArray<PeerData[number]>
               > &
                   HashMap.HashMap<
-                      Extract<PeerData[number], InternetSchemas.AddressFromStringEncoded>,
+                      Extract<PeerData[number], InternetSchemas.Address>,
                       Array.NonEmptyReadonlyArray<Extract<PeerData[number], InternetSchemas.SetupDataEncoded>>
                   >)
             | "stronglyConnected"
@@ -634,7 +627,7 @@ export const generate: {
                   Array.NonEmptyReadonlyArray<PeerData[number]>
               > &
                   HashMap.HashMap<
-                      Extract<PeerData[number], InternetSchemas.AddressFromStringEncoded>,
+                      Extract<PeerData[number], InternetSchemas.Address>,
                       Array.NonEmptyReadonlyArray<Extract<PeerData[number], InternetSchemas.SetupDataEncoded>>
                   >)
             | "stronglyConnected"
@@ -706,7 +699,7 @@ export const generate: {
                   Array.NonEmptyReadonlyArray<PeerData[number]>
               > &
                   HashMap.HashMap<
-                      Extract<PeerData[number], InternetSchemas.AddressFromStringEncoded>,
+                      Extract<PeerData[number], InternetSchemas.Address>,
                       Array.NonEmptyReadonlyArray<Extract<PeerData[number], InternetSchemas.SetupDataEncoded>>
                   >)
             | "stronglyConnected"
@@ -722,9 +715,7 @@ export const generate: {
     HubData1 extends InternetSchemas.SetupDataEncoded,
     HubData2 extends InternetSchemas.EndpointEncoded,
     HubData3 extends InternetSchemas.EndpointEncoded,
-    PeerData1 extends Array.NonEmptyReadonlyArray<
-        InternetSchemas.SetupDataEncoded | InternetSchemas.AddressFromStringEncoded
-    >,
+    PeerData1 extends Array.NonEmptyReadonlyArray<InternetSchemas.SetupDataEncoded | InternetSchemas.Address>,
     PeerData2 extends Array.NonEmptyReadonlyArray<InternetSchemas.EndpointEncoded>,
     PeerData3 extends never,
 >(
@@ -778,7 +769,7 @@ export const generate: {
                         Array.NonEmptyReadonlyArray<PeerData1[number]>
                     > &
                         HashMap.HashMap<
-                            Extract<PeerData1[number], InternetSchemas.AddressFromStringEncoded>,
+                            Extract<PeerData1[number], InternetSchemas.Address>,
                             Array.NonEmptyReadonlyArray<Extract<PeerData1[number], InternetSchemas.SetupDataEncoded>>
                         >)
                   | "stronglyConnected"
@@ -838,7 +829,7 @@ export const generate: {
                         Array.NonEmptyReadonlyArray<PeerData2[number]>
                     > &
                         HashMap.HashMap<
-                            Extract<PeerData2[number], InternetSchemas.AddressFromStringEncoded>,
+                            Extract<PeerData2[number], InternetSchemas.Address>,
                             Array.NonEmptyReadonlyArray<Extract<PeerData2[number], InternetSchemas.SetupDataEncoded>>
                         >)
                   | "stronglyConnected"
@@ -898,7 +889,7 @@ export const generate: {
                         Array.NonEmptyReadonlyArray<PeerData3[number]>
                     > &
                         HashMap.HashMap<
-                            Extract<PeerData3[number], InternetSchemas.AddressFromStringEncoded>,
+                            Extract<PeerData3[number], InternetSchemas.Address>,
                             Array.NonEmptyReadonlyArray<Extract<PeerData3[number], InternetSchemas.SetupDataEncoded>>
                         >)
                   | "stronglyConnected"
@@ -912,315 +903,317 @@ export const generate: {
     never
 > =>
     Effect.gen(function* () {
-        // Combination types
-        type HubData = HubData1 | HubData2 | HubData3;
-        type PeerData = PeerData1[number] | PeerData2[number] | PeerData3[number];
+        yield* Effect.void;
+        return {} as any;
+        // // Combination types
+        // type HubData = HubData1 | HubData2 | HubData3;
+        // type PeerData = PeerData1[number] | PeerData2[number] | PeerData3[number];
 
-        // Incoming option types
-        type IncomingPresharedKeysMap = HashMap.HashMap<HubData | PeerData, WireguardKey.WireguardKey | "generate">;
-        type IncomingAllowedIpsMap = HashMap.HashMap<
-            PeerData,
-            | "allowEverything"
-            | Array.NonEmptyReadonlyArray<
-                  | PeerData
-                  | InternetSchemas.CidrBlockFromStringEncoded
-                  | "allowAllDefinedPeers"
-                  | "allowWholeWireguardNetwork"
-              >
-        >;
+        // // Incoming option types
+        // type IncomingPresharedKeysMap = HashMap.HashMap<HubData | PeerData, WireguardKey.WireguardKey | "generate">;
+        // type IncomingAllowedIpsMap = HashMap.HashMap<
+        //     PeerData,
+        //     | "allowEverything"
+        //     | Array.NonEmptyReadonlyArray<
+        //           | PeerData
+        //           | InternetSchemas.CidrBlockFromStringEncoded
+        //           | "allowAllDefinedPeers"
+        //           | "allowWholeWireguardNetwork"
+        //       >
+        // >;
 
-        // Desired types
-        type PresharedKeysMap = HashMap.HashMap<HubData | PeerData, WireguardKey.WireguardKey>;
-        type AllowedIPsMap = HashMap.HashMap<
-            PeerData,
-            Array.NonEmptyReadonlyArray<InternetSchemas.CidrBlockFromStringEncoded>
-        >;
-        type DirectlyConnectedPeersMap = HashMap.HashMap<
-            Extract<PeerData, InternetSchemas.SetupDataEncoded>,
-            Array.NonEmptyReadonlyArray<PeerData>
-        > &
-            HashMap.HashMap<
-                Extract<PeerData, InternetSchemas.AddressFromStringEncoded>,
-                Array.NonEmptyReadonlyArray<Extract<PeerData, InternetSchemas.SetupDataEncoded>>
-            >;
+        // // Desired types
+        // type PresharedKeysMap = HashMap.HashMap<HubData | PeerData, WireguardKey.WireguardKey>;
+        // type AllowedIPsMap = HashMap.HashMap<
+        //     PeerData,
+        //     Array.NonEmptyReadonlyArray<InternetSchemas.CidrBlockFromStringEncoded>
+        // >;
+        // type DirectlyConnectedPeersMap = HashMap.HashMap<
+        //     Extract<PeerData, InternetSchemas.SetupDataEncoded>,
+        //     Array.NonEmptyReadonlyArray<PeerData>
+        // > &
+        //     HashMap.HashMap<
+        //         Extract<PeerData, InternetSchemas.AddressFromStringEncoded>,
+        //         Array.NonEmptyReadonlyArray<Extract<PeerData, InternetSchemas.SetupDataEncoded>>
+        //     >;
 
-        // Parse the number of spokes and additional peers
-        const additionalPeersEncoded = "additionalPeers" in options ? options.additionalPeers ?? 0 : 0;
-        const numSpokesEncoded = "numberOfPeers" in options ? options.numberOfPeers : options.peerData.length;
+        // // Parse the number of spokes and additional peers
+        // const additionalPeersEncoded = "additionalPeers" in options ? options.additionalPeers ?? 0 : 0;
+        // const numSpokesEncoded = "numberOfPeers" in options ? options.numberOfPeers : options.peerData.length;
 
-        // Decode the number of spokes and additional peers
-        const nonNegativeInt = Schema.compose(Schema.Int, Schema.NonNegative);
-        const numSpokes = yield* Schema.decode(nonNegativeInt)(numSpokesEncoded);
-        const numAdditionalPeers = yield* Schema.decode(nonNegativeInt)(additionalPeersEncoded);
-        const ipsNeeded = numSpokes + numAdditionalPeers + 1;
+        // // Decode the number of spokes and additional peers
+        // const nonNegativeInt = Schema.compose(Schema.Int, Schema.NonNegative);
+        // const numSpokes = yield* Schema.decode(nonNegativeInt)(numSpokesEncoded);
+        // const numAdditionalPeers = yield* Schema.decode(nonNegativeInt)(additionalPeersEncoded);
+        // const ipsNeeded = numSpokes + numAdditionalPeers + 1;
 
-        // Generate some ip addresses to use if the input data was just an endpoint
-        const ips:
-            | Array.NonEmptyReadonlyArray<InternetSchemas.IPv4>
-            | Array.NonEmptyReadonlyArray<InternetSchemas.IPv6> =
-            "cidrBlock" in options
-                ? yield* Function.pipe(
-                      Schema.decode(InternetSchemas.CidrBlockFromString)(options.cidrBlock),
-                      Effect.map(
-                          (cidrBlock) =>
-                              cidrBlock.range as Stream.Stream<
-                                  InternetSchemas.IPv4 | InternetSchemas.IPv6,
-                                  ParseResult.ParseError,
-                                  never
-                              >
-                      ),
-                      Stream.unwrap,
-                      Stream.drop(options.addressStartingIndex ?? 0),
-                      Stream.run(Sink.collectAllN(ipsNeeded)),
-                      Effect.map(Chunk.toArray),
-                      Effect.map(
-                          (_) =>
-                              _ as unknown as
-                                  | Array.NonEmptyReadonlyArray<InternetSchemas.IPv4>
-                                  | Array.NonEmptyReadonlyArray<InternetSchemas.IPv6>
-                      )
-                  )
-                : yield* Function.pipe(
-                      options.peerData.map((e) => (Predicate.isString(e) ? e : Tuple.getSecond(e))),
-                      Array.map((_) => Schema.decode(InternetSchemas.AddressFromString)(_)),
-                      Effect.allWith(),
-                      Effect.map(
-                          (_) =>
-                              _ as unknown as
-                                  | Array.NonEmptyReadonlyArray<InternetSchemas.IPv4>
-                                  | Array.NonEmptyReadonlyArray<InternetSchemas.IPv6>
-                      )
-                  );
+        // // Generate some ip addresses to use if the input data was just an endpoint
+        // const ips:
+        //     | Array.NonEmptyReadonlyArray<InternetSchemas.IPv4>
+        //     | Array.NonEmptyReadonlyArray<InternetSchemas.IPv6> =
+        //     "cidrBlock" in options
+        //         ? yield* Function.pipe(
+        //               Schema.decode(InternetSchemas.CidrBlockFromString)(options.cidrBlock),
+        //               Effect.map(
+        //                   (cidrBlock) =>
+        //                       cidrBlock.range as Stream.Stream<
+        //                           InternetSchemas.IPv4 | InternetSchemas.IPv6,
+        //                           ParseResult.ParseError,
+        //                           never
+        //                       >
+        //               ),
+        //               Stream.unwrap,
+        //               Stream.drop(options.addressStartingIndex ?? 0),
+        //               Stream.run(Sink.collectAllN(ipsNeeded)),
+        //               Effect.map(Chunk.toArray),
+        //               Effect.map(
+        //                   (_) =>
+        //                       _ as unknown as
+        //                           | Array.NonEmptyReadonlyArray<InternetSchemas.IPv4>
+        //                           | Array.NonEmptyReadonlyArray<InternetSchemas.IPv6>
+        //               )
+        //           )
+        //         : yield* Function.pipe(
+        //               options.peerData.map((e) => (Predicate.isString(e) ? e : Tuple.getSecond(e))),
+        //               Array.map((_) => Schema.decode(InternetSchemas.AddressFromString)(_)),
+        //               Effect.allWith(),
+        //               Effect.map(
+        //                   (_) =>
+        //                       _ as unknown as
+        //                           | Array.NonEmptyReadonlyArray<InternetSchemas.IPv4>
+        //                           | Array.NonEmptyReadonlyArray<InternetSchemas.IPv6>
+        //               )
+        //           );
 
-        // If the user provided a cidrBlock, then the address that is used for all the hub
-        // and peer address is easy to compute. Otherwise, we must derive a cidrBlock that
-        // would include all the addresses we plan to use.
-        const cidrBlock =
-            "cidrBlock" in options
-                ? yield* Schema.decode(InternetSchemas.CidrBlockFromString)(options.cidrBlock)
-                : yield* InternetSchemas.CidrBlockBase.cidrBlockForRange(ips);
+        // // If the user provided a cidrBlock, then the address that is used for all the hub
+        // // and peer address is easy to compute. Otherwise, we must derive a cidrBlock that
+        // // would include all the addresses we plan to use.
+        // const cidrBlock =
+        //     "cidrBlock" in options
+        //         ? yield* Schema.decode(InternetSchemas.CidrBlockFromString)(options.cidrBlock)
+        //         : yield* InternetSchemas.CidrBlockBase.cidrBlockForRange(ips);
 
-        // Bounds checking on the cidr block
-        if ("cidrBlock" in options && cidrBlock.total < ipsNeeded) {
-            return yield* new WireguardErrors.WireguardError({
-                message: `Not enough IPs in the CIDR block for ${ipsNeeded} peers`,
-            });
-        }
+        // // Bounds checking on the cidr block
+        // if ("cidrBlock" in options && cidrBlock.total < ipsNeeded) {
+        //     return yield* new WireguardErrors.WireguardError({
+        //         message: `Not enough IPs in the CIDR block for ${ipsNeeded} peers`,
+        //     });
+        // }
 
-        // Convert the preshareKeys to a HashMap if it's not already
-        const preshareKeysMap: PresharedKeysMap = Function.pipe(
-            Match.value(options.preshareKeysMap),
-            Match.when(Predicate.isUndefined, (): PresharedKeysMap => HashMap.empty()),
-            Match.when(HashMap.isHashMap, (map) =>
-                HashMap.map(map as IncomingPresharedKeysMap, (value) => {
-                    if (value === "generate") {
-                        return WireguardKey.generatePreshareKey();
-                    }
-                    return value;
-                })
-            ),
-            Match.when("generateAll", () => {
-                const prefill = Function.flow(
-                    Array.map((spoke) => Tuple.make(spoke, WireguardKey.generatePreshareKey())),
-                    HashMap.fromIterable
-                );
-                return "cidrBlock" in options ? prefill(options.peerData) : prefill(options.peerData);
-            }),
-            Match.exhaustive
-        );
+        // // Convert the preshareKeys to a HashMap if it's not already
+        // const preshareKeysMap: PresharedKeysMap = Function.pipe(
+        //     Match.value(options.preshareKeysMap),
+        //     Match.when(Predicate.isUndefined, (): PresharedKeysMap => HashMap.empty()),
+        //     Match.when(HashMap.isHashMap, (map) =>
+        //         HashMap.map(map as IncomingPresharedKeysMap, (value) => {
+        //             if (value === "generate") {
+        //                 return WireguardKey.generatePreshareKey();
+        //             }
+        //             return value;
+        //         })
+        //     ),
+        //     Match.when("generateAll", () => {
+        //         const prefill = Function.flow(
+        //             Array.map((spoke) => Tuple.make(spoke, WireguardKey.generatePreshareKey())),
+        //             HashMap.fromIterable
+        //         );
+        //         return "cidrBlock" in options ? prefill(options.peerData) : prefill(options.peerData);
+        //     }),
+        //     Match.exhaustive
+        // );
 
-        // Convert the allowedIps to a HashMap if it's not already
-        const allowedIpsMap: AllowedIPsMap = Function.pipe(
-            Match.value(options.allowedIpsMap),
-            Match.when(Predicate.isUndefined, (): AllowedIPsMap => HashMap.empty()),
-            Match.when(HashMap.isHashMap, (map) =>
-                HashMap.map(map as IncomingAllowedIpsMap, (value) => {
-                    if (value === "allowEverything") {
-                        return "0.0.0.0/0" as const;
-                    } else {
-                        return Array.flatMap(value, (v) => {
-                            if (v === "allowAllDefinedPeers") {
-                                return ips.map((_) => `${_}/32` as const);
-                            } else if (v === "allowWholeWireguardNetwork") {
-                                return [`${cidrBlock.address.value}/${cidrBlock.mask}` as const];
-                            } else if (Predicate.isString(v)) {
-                                return [v];
-                            } else {
-                                return [];
-                            }
-                        });
-                    }
-                })
-            ),
-            Match.when("AllPeersAllowEverything", () =>
-                HashMap.fromIterable(Array.map(options.peerData, (spoke) => Tuple.make(spoke, ["0.0.0.0/0"] as const)))
-            ),
-            Match.when("AllPeersAllowAllDefinedPeers", () => {
-                const allowedIps = Array.map(options.peerData, (spoke) =>
-                    Tuple.make(
-                        spoke,
-                        ips.map((_) => `${_}/32` as const)
-                    )
-                );
-                return HashMap.fromIterable(allowedIps);
-            }),
-            Match.when("AllPeersAllowWholeWireguardNetwork", () => {
-                const allowedIps = Array.map(options.peerData, (spoke) =>
-                    Tuple.make(spoke, [`${cidrBlock.address.value}/${cidrBlock.mask}`] as const)
-                );
-                return HashMap.fromIterable(allowedIps);
-            }),
-            Match.when(Array.isNonEmptyReadonlyArray, ([how, moreOptions]) => {
-                const lans: Array.NonEmptyReadonlyArray<InternetSchemas.CidrBlockFromStringEncoded> =
-                    Predicate.isString(moreOptions) ? [moreOptions] : moreOptions;
-                if (how === "AllPeersAllowLan") {
-                    return HashMap.fromIterable(Array.map(options.peerData, (spoke) => Tuple.make(spoke, lans)));
-                } else if (how === "AllPeersAllowAllDefinedPeersAndLan") {
-                    return HashMap.fromIterable(
-                        Array.map(options.peerData, (spoke) =>
-                            Tuple.make(spoke, [...ips.map((_) => `${_}/32` as const), ...lans])
-                        )
-                    );
-                } else if (how === "AllPeersAllowWholeWireguardNetworkAndLan") {
-                    return HashMap.fromIterable(
-                        Array.map(options.peerData, (spoke) =>
-                            Tuple.make(spoke, [...([`${cidrBlock.address.value}/${cidrBlock.mask}`] as const), ...lans])
-                        )
-                    );
-                }
-                return Function.absurd(how);
-            }),
-            Match.exhaustive
-        );
+        // // Convert the allowedIps to a HashMap if it's not already
+        // const allowedIpsMap: AllowedIPsMap = Function.pipe(
+        //     Match.value(options.allowedIpsMap),
+        //     Match.when(Predicate.isUndefined, (): AllowedIPsMap => HashMap.empty()),
+        //     Match.when(HashMap.isHashMap, (map) =>
+        //         HashMap.map(map as IncomingAllowedIpsMap, (value) => {
+        //             if (value === "allowEverything") {
+        //                 return "0.0.0.0/0" as const;
+        //             } else {
+        //                 return Array.flatMap(value, (v) => {
+        //                     if (v === "allowAllDefinedPeers") {
+        //                         return ips.map((_) => `${_}/32` as const);
+        //                     } else if (v === "allowWholeWireguardNetwork") {
+        //                         return [`${cidrBlock.address.value}/${cidrBlock.mask}` as const];
+        //                     } else if (Predicate.isString(v)) {
+        //                         return [v];
+        //                     } else {
+        //                         return [];
+        //                     }
+        //                 });
+        //             }
+        //         })
+        //     ),
+        //     Match.when("AllPeersAllowEverything", () =>
+        //         HashMap.fromIterable(Array.map(options.peerData, (spoke) => Tuple.make(spoke, ["0.0.0.0/0"] as const)))
+        //     ),
+        //     Match.when("AllPeersAllowAllDefinedPeers", () => {
+        //         const allowedIps = Array.map(options.peerData, (spoke) =>
+        //             Tuple.make(
+        //                 spoke,
+        //                 ips.map((_) => `${_}/32` as const)
+        //             )
+        //         );
+        //         return HashMap.fromIterable(allowedIps);
+        //     }),
+        //     Match.when("AllPeersAllowWholeWireguardNetwork", () => {
+        //         const allowedIps = Array.map(options.peerData, (spoke) =>
+        //             Tuple.make(spoke, [`${cidrBlock.address.value}/${cidrBlock.mask}`] as const)
+        //         );
+        //         return HashMap.fromIterable(allowedIps);
+        //     }),
+        //     Match.when(Array.isNonEmptyReadonlyArray, ([how, moreOptions]) => {
+        //         const lans: Array.NonEmptyReadonlyArray<InternetSchemas.CidrBlockFromStringEncoded> =
+        //             Predicate.isString(moreOptions) ? [moreOptions] : moreOptions;
+        //         if (how === "AllPeersAllowLan") {
+        //             return HashMap.fromIterable(Array.map(options.peerData, (spoke) => Tuple.make(spoke, lans)));
+        //         } else if (how === "AllPeersAllowAllDefinedPeersAndLan") {
+        //             return HashMap.fromIterable(
+        //                 Array.map(options.peerData, (spoke) =>
+        //                     Tuple.make(spoke, [...ips.map((_) => `${_}/32` as const), ...lans])
+        //                 )
+        //             );
+        //         } else if (how === "AllPeersAllowWholeWireguardNetworkAndLan") {
+        //             return HashMap.fromIterable(
+        //                 Array.map(options.peerData, (spoke) =>
+        //                     Tuple.make(spoke, [...([`${cidrBlock.address.value}/${cidrBlock.mask}`] as const), ...lans])
+        //                 )
+        //             );
+        //         }
+        //         return Function.absurd(how);
+        //     }),
+        //     Match.exhaustive
+        // );
 
-        // Convert the directlyConnectedPeers to a HashMap if it's not already
-        const directlyConnectedPeersMap: DirectlyConnectedPeersMap = Function.pipe(
-            Match.value(options.directlyConnectedPeersMap),
-            Match.when(Predicate.isUndefined, () => HashMap.empty()),
-            Match.when(HashMap.isHashMap, (_) => Function.unsafeCoerce(_)),
-            Match.when("stronglyConnected" as const, () => {
-                return HashMap.fromIterable([]);
-            }),
-            Match.when("weaklyConnected" as const, () => {
-                return HashMap.fromIterable([]);
-            }),
-            Match.when("connectNoPeers" as const, () => {
-                return HashMap.fromIterable([]);
-            }),
-            Match.exhaustive
-        );
+        // // Convert the directlyConnectedPeers to a HashMap if it's not already
+        // const directlyConnectedPeersMap: DirectlyConnectedPeersMap = Function.pipe(
+        //     Match.value(options.directlyConnectedPeersMap),
+        //     Match.when(Predicate.isUndefined, () => HashMap.empty()),
+        //     Match.when(HashMap.isHashMap, (_) => Function.unsafeCoerce(_)),
+        //     Match.when("stronglyConnected" as const, () => {
+        //         return HashMap.fromIterable([]);
+        //     }),
+        //     Match.when("weaklyConnected" as const, () => {
+        //         return HashMap.fromIterable([]);
+        //     }),
+        //     Match.when("connectNoPeers" as const, () => {
+        //         return HashMap.fromIterable([]);
+        //     }),
+        //     Match.exhaustive
+        // );
 
-        // Convert hub data to SetupDataEncoded
-        const hubSetupDataEncoded =
-            "cidrBlock" in options ? Tuple.make(options.hubData, ips.at(0)?.value ?? "") : options.hubData;
+        // // Convert hub data to SetupDataEncoded
+        // const hubSetupDataEncoded =
+        //     "cidrBlock" in options ? Tuple.make(options.hubData, ips.at(0)?.value ?? "") : options.hubData;
 
-        // Convert spoke data to SetupDataEncoded or just an Address
-        const spokeSetupDataEncoded: Array.NonEmptyReadonlyArray<
-            InternetSchemas.SetupDataEncoded | InternetSchemas.AddressFromStringEncoded
-        > =
-            "cidrBlock" in options && "numberOfPeers" in options
-                ? Array.makeBy(options.numberOfPeers, (index) => ips.at(index)?.value ?? "")
-                : "cidrBlock" in options
-                  ? Array.map(options.peerData, (spoke, index) => Tuple.make(spoke, ips.at(index + 1)?.value ?? ""))
-                  : options.peerData;
+        // // Convert spoke data to SetupDataEncoded or just an Address
+        // const spokeSetupDataEncoded: Array.NonEmptyReadonlyArray<
+        //     InternetSchemas.SetupDataEncoded | InternetSchemas.AddressFromStringEncoded
+        // > =
+        //     "cidrBlock" in options && "numberOfPeers" in options
+        //         ? Array.makeBy(options.numberOfPeers, (index) => ips.at(index)?.value ?? "")
+        //         : "cidrBlock" in options
+        //           ? Array.map(options.peerData, (spoke, index) => Tuple.make(spoke, ips.at(index + 1)?.value ?? ""))
+        //           : options.peerData;
 
-        // Decode all SetupData inputs
-        const hubSetupData = yield* Schema.decode(InternetSchemas.SetupData)(hubSetupDataEncoded);
-        const spokeSetupData = yield* Effect.all(
-            Array.map(spokeSetupDataEncoded, (spoke) =>
-                Schema.decode(Schema.Union(InternetSchemas.SetupData, InternetSchemas.AddressFromString))(spoke)
-            )
-        );
-        const spokeSetupDataBoth = Array.zip(spokeSetupDataEncoded, spokeSetupData);
+        // // Decode all SetupData inputs
+        // const hubSetupData = yield* Schema.decode(InternetSchemas.SetupData)(hubSetupDataEncoded);
+        // const spokeSetupData = yield* Effect.all(
+        //     Array.map(spokeSetupDataEncoded, (spoke) =>
+        //         Schema.decode(Schema.Union(InternetSchemas.SetupData, InternetSchemas.AddressFromString))(spoke)
+        //     )
+        // );
+        // const spokeSetupDataBoth = Array.zip(spokeSetupDataEncoded, spokeSetupData);
 
-        // Generate the keys for the hub
-        const hubKeys = WireguardKey.generateKeyPair();
-        const hubPreshareKey = Array.isArray(hubSetupDataEncoded)
-            ? HashMap.get(preshareKeysMap, Tuple.getFirst(hubSetupDataEncoded)).pipe(Option.getOrUndefined)
-            : HashMap.get(preshareKeysMap, hubSetupDataEncoded).pipe(Option.getOrUndefined);
+        // // Generate the keys for the hub
+        // const hubKeys = WireguardKey.generateKeyPair();
+        // const hubPreshareKey = Array.isArray(hubSetupDataEncoded)
+        //     ? HashMap.get(preshareKeysMap, Tuple.getFirst(hubSetupDataEncoded)).pipe(Option.getOrUndefined)
+        //     : HashMap.get(preshareKeysMap, hubSetupDataEncoded).pipe(Option.getOrUndefined);
 
-        // This hub peer config will be added to all the spoke interface configs
-        const hubPeerConfig = {
-            PresharedKey: hubPreshareKey,
-            PublicKey: hubKeys.publicKey,
-            Endpoint: Tuple.getFirst(hubSetupDataEncoded),
-            AllowedIPs: new Set([`${Tuple.getSecond(hubSetupDataEncoded)}/32`] as const),
-        };
+        // // This hub peer config will be added to all the spoke interface configs
+        // const hubPeerConfig = {
+        //     PresharedKey: hubPreshareKey,
+        //     PublicKey: hubKeys.publicKey,
+        //     Endpoint: Tuple.getFirst(hubSetupDataEncoded),
+        //     AllowedIPs: new Set([`${Tuple.getSecond(hubSetupDataEncoded)}/32`] as const),
+        // };
 
-        // All these spoke peer configs will be added to the hub interface config
-        const spokePeerConfigs = Array.map(spokeSetupDataBoth, ([spokeEncoded, spokeDecoded]) => {
-            const keys = WireguardKey.generateKeyPair();
-            const preshareKey = HashMap.get(preshareKeysMap, spokeEncoded).pipe(Option.getOrUndefined);
-            const endpoint = Predicate.isString(spokeEncoded) ? undefined : Tuple.getFirst(spokeEncoded);
-            const allowedIps = Predicate.isString(spokeEncoded)
-                ? HashMap.get(allowedIpsMap, spokeEncoded).pipe(
-                      Option.getOrElse(() => Array.empty<InternetSchemas.CidrBlockFromStringEncoded>())
-                  )
-                : HashMap.get(allowedIpsMap, Tuple.getFirst(spokeEncoded)).pipe(
-                      Option.getOrElse(() => Array.empty<InternetSchemas.CidrBlockFromStringEncoded>())
-                  );
+        // // All these spoke peer configs will be added to the hub interface config
+        // const spokePeerConfigs = Array.map(spokeSetupDataBoth, ([spokeEncoded, spokeDecoded]) => {
+        //     const keys = WireguardKey.generateKeyPair();
+        //     const preshareKey = HashMap.get(preshareKeysMap, spokeEncoded).pipe(Option.getOrUndefined);
+        //     const endpoint = Predicate.isString(spokeEncoded) ? undefined : Tuple.getFirst(spokeEncoded);
+        //     const allowedIps = Predicate.isString(spokeEncoded)
+        //         ? HashMap.get(allowedIpsMap, spokeEncoded).pipe(
+        //               Option.getOrElse(() => Array.empty<InternetSchemas.CidrBlockFromStringEncoded>())
+        //           )
+        //         : HashMap.get(allowedIpsMap, Tuple.getFirst(spokeEncoded)).pipe(
+        //               Option.getOrElse(() => Array.empty<InternetSchemas.CidrBlockFromStringEncoded>())
+        //           );
 
-            return {
-                setupDataEncoded: spokeEncoded,
-                setupDataDecoded: spokeDecoded,
-                keys: {
-                    preshareKey,
-                    privateKey: keys.privateKey,
-                },
-                peerConfig: {
-                    Endpoint: endpoint,
-                    PresharedKey: preshareKey,
-                    PublicKey: keys.publicKey,
-                    AllowedIPs: new Set(allowedIps),
-                },
-            };
-        });
+        //     return {
+        //         setupDataEncoded: spokeEncoded,
+        //         setupDataDecoded: spokeDecoded,
+        //         keys: {
+        //             preshareKey,
+        //             privateKey: keys.privateKey,
+        //         },
+        //         peerConfig: {
+        //             Endpoint: endpoint,
+        //             PresharedKey: preshareKey,
+        //             PublicKey: keys.publicKey,
+        //             AllowedIPs: new Set(allowedIps),
+        //         },
+        //     };
+        // });
 
-        // The hub will get all the peers added to it
-        const spokePeerConfigsBySetupData = Function.pipe(
-            spokePeerConfigs,
-            Array.map((peer) => Tuple.make(peer.setupDataEncoded, peer)),
-            HashMap.fromIterable
-        );
+        // // The hub will get all the peers added to it
+        // const spokePeerConfigsBySetupData = Function.pipe(
+        //     spokePeerConfigs,
+        //     Array.map((peer) => Tuple.make(peer.setupDataEncoded, peer)),
+        //     HashMap.fromIterable
+        // );
 
-        // The hub interface config will have all the spoke peer configs
-        const hubConfig = yield* Schema.decode(WireguardConfig)({
-            PrivateKey: hubKeys.privateKey,
-            ListenPort: Tuple.getFirst(hubSetupData).listenPort,
-            Peers: Array.map(spokePeerConfigs, ({ peerConfig }) => peerConfig),
-            Address: `${Tuple.getSecond(hubSetupDataEncoded)}/${cidrBlock.mask}` as const,
-        });
+        // // The hub interface config will have all the spoke peer configs
+        // const hubConfig = yield* Schema.decode(WireguardConfig)({
+        //     PrivateKey: hubKeys.privateKey,
+        //     ListenPort: Tuple.getFirst(hubSetupData).listenPort,
+        //     Peers: Array.map(spokePeerConfigs, ({ peerConfig }) => peerConfig),
+        //     Address: `${Tuple.getSecond(hubSetupDataEncoded)}/${cidrBlock.mask}` as const,
+        // });
 
-        // Each spoke interface config will have the hub peer config and the other peers from the trust map
-        const spokeConfigs = yield* Function.pipe(
-            spokePeerConfigs,
-            Array.map(({ keys: { privateKey }, setupDataDecoded, setupDataEncoded }) => {
-                const listenPort = Schema.is(InternetSchemas.SetupData)(setupDataDecoded)
-                    ? Tuple.getFirst(setupDataDecoded).listenPort
-                    : 0;
-                const address =
-                    `${Predicate.isString(setupDataEncoded) ? setupDataEncoded : Tuple.getSecond(setupDataEncoded)}/${cidrBlock.mask}` as const;
+        // // Each spoke interface config will have the hub peer config and the other peers from the trust map
+        // const spokeConfigs = yield* Function.pipe(
+        //     spokePeerConfigs,
+        //     Array.map(({ keys: { privateKey }, setupDataDecoded, setupDataEncoded }) => {
+        //         const listenPort = Schema.is(InternetSchemas.SetupData)(setupDataDecoded)
+        //             ? Tuple.getFirst(setupDataDecoded).listenPort
+        //             : 0;
+        //         const address =
+        //             `${Predicate.isString(setupDataEncoded) ? setupDataEncoded : Tuple.getSecond(setupDataEncoded)}/${cidrBlock.mask}` as const;
 
-                const directConnections = Function.pipe(
-                    directlyConnectedPeersMap,
-                    HashMap.get(setupDataEncoded),
-                    Option.getOrElse(() => Array.empty()),
-                    Array.map((friend) => HashMap.get(spokePeerConfigsBySetupData, friend)),
-                    Array.map(Option.getOrThrow),
-                    Array.map(({ peerConfig }) => peerConfig)
-                );
+        //         const directConnections = Function.pipe(
+        //             directlyConnectedPeersMap,
+        //             HashMap.get(setupDataEncoded),
+        //             Option.getOrElse(() => Array.empty()),
+        //             Array.map((friend) => HashMap.get(spokePeerConfigsBySetupData, friend)),
+        //             Array.map(Option.getOrThrow),
+        //             Array.map(({ peerConfig }) => peerConfig)
+        //         );
 
-                return Schema.decode(WireguardConfig)({
-                    Address: address,
-                    ListenPort: listenPort,
-                    PrivateKey: privateKey,
-                    Peers: [hubPeerConfig, ...directConnections],
-                });
-            }),
-            Effect.allWith()
-        );
+        //         return Schema.decode(WireguardConfig)({
+        //             Address: address,
+        //             ListenPort: listenPort,
+        //             PrivateKey: privateKey,
+        //             Peers: [hubPeerConfig, ...directConnections],
+        //         });
+        //     }),
+        //     Effect.allWith()
+        // );
 
-        return Tuple.make(hubConfig, spokeConfigs);
+        // return Tuple.make(hubConfig, spokeConfigs);
     });
 
 /**

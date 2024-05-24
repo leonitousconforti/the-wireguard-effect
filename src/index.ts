@@ -27,13 +27,6 @@ export * as WireguardControl from "./WireguardControl.js"
 export * as WireguardErrors from "./WireguardErrors.js"
 
 /**
- * Helpers for generating Wireguard configurations.
- *
- * @since 1.0.0
- */
-export * as WireguardGenerate from "./WireguardGenerate.js"
-
-/**
  * Wireguard Multi Dimensional Graphing Utils. The first layer is the nodes with
  * the direct connections between then and the second layer is the allowedIPs
  * for each node. The second layer must be isomorphic to the base layer, hence
@@ -46,7 +39,7 @@ export * as WireguardGenerate from "./WireguardGenerate.js"
  * @since 1.0.0
  * @see https://en.wikipedia.org/wiki/Multidimensional_network
  */
-export * as WireguardGraph from "./WireguardGraph.js"
+export * as WireguardGenerate from "./WireguardGenerate.js"
 
 /**
  * Wireguard interface helpers

@@ -156,7 +156,7 @@ export interface $IPv4
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type IPv4 = Schema.Schema.Type<$IPv4>;
 
@@ -176,10 +176,13 @@ export type IPv4Encoded = Schema.Schema.Encoded<$IPv4>;
  *     import { IPv4 } from "the-wireguard-effect/InternetSchemas";
  *
  *     const decodeIPv4 = Schema.decodeSync(IPv4);
- *     assert.strictEqual(decodeIPv4({ value: "1.1.1.1" }), "1.1.1.1");
+ *     assert.deepEqual(decodeIPv4("1.1.1.1"), {
+ *         family: "ipv4",
+ *         ip: "1.1.1.1",
+ *     });
  *
- *     assert.throws(() => decodeIPv4({ value: "1.1.a.1" }));
- *     assert.doesNotThrow(() => decodeIPv4({ value: "1.1.1.2" }));
+ *     assert.throws(() => decodeIPv4("1.1.a.1"));
+ *     assert.doesNotThrow(() => decodeIPv4("1.1.1.2"));
  */
 export const IPv4: $IPv4 = Schema.transform(
     Schema.String.pipe(Schema.filter((str) => net.isIPv4(str))),
@@ -222,7 +225,7 @@ export interface $IPv4Bigint
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type IPv4Bigint = Schema.Schema.Type<$IPv4Bigint>;
 
@@ -244,12 +247,35 @@ export type IPv4BigintEncoded = Schema.Schema.Encoded<$IPv4Bigint>;
  *         IPv4BigintBrand,
  *     } from "the-wireguard-effect/InternetSchemas";
  *
- *     const x: IPv4BigintBrand = IPv4BigintBrand(748392749382);
- *     assert.strictEqual(x, 748392749382);
+ *     const x: IPv4BigintBrand = IPv4BigintBrand(748392749382n);
+ *     assert.strictEqual(x, 748392749382n);
  *
  *     const decodeIPv4Bigint = Schema.decodeSync(IPv4Bigint);
- *     assert.strictEqual(decodeIPv4Bigint(1), 1);
- *     assert.doesNotThrow(() => decodeIPv4Bigint(9999999));
+ *     const encodeIPv4Bigint = Schema.encodeSync(IPv4Bigint);
+ *
+ *     assert.deepEqual(decodeIPv4Bigint("1.1.1.1"), {
+ *         family: "ipv4",
+ *         value: 16843009n,
+ *     });
+ *     assert.deepEqual(decodeIPv4Bigint("254.254.254.254"), {
+ *         family: "ipv4",
+ *         value: 4278124286n,
+ *     });
+ *
+ *     assert.strictEqual(
+ *         encodeIPv4Bigint({
+ *             value: IPv4BigintBrand(16843009n),
+ *             family: "ipv4",
+ *         }),
+ *         "1.1.1.1"
+ *     );
+ *     assert.strictEqual(
+ *         encodeIPv4Bigint({
+ *             value: IPv4BigintBrand(4278124286n),
+ *             family: "ipv4",
+ *         }),
+ *         "254.254.254.254"
+ *     );
  */
 export const IPv4Bigint: $IPv4Bigint = Schema.transformOrFail(
     IPv4,
@@ -312,7 +338,7 @@ export interface $IPv6
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type IPv6 = Schema.Schema.Type<$IPv6>;
 
@@ -331,23 +357,18 @@ export type IPv6Encoded = Schema.Schema.Encoded<$IPv6>;
  *     import * as Schema from "@effect/schema/Schema";
  *     import { IPv6 } from "the-wireguard-effect/InternetSchemas";
  *
- *     const ipv6: IPv6 = new IPv6({
+ *     const decodeIPv6 = Schema.decodeSync(IPv6);
+ *     assert.deepEqual(decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334"), {
+ *         family: "ipv6",
  *         ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
  *     });
- *     assert.strictEqual(ipv6, "2001:0db8:85a3:0000:0000:8a2e:0370:7334");
- *
- *     const decodeIPv6 = Schema.decodeSync(IPv6);
- *     assert.deepStrictEqual(
- *         decodeIPv6({ ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334" }),
- *         "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
- *     );
  *
  *     assert.throws(() =>
- *         decodeIPv6({ ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334:" })
+ *         decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334:")
  *     );
- *     assert.throws(() => decodeIPv6({ ip: "2001::85a3::0000::0370:7334" }));
+ *     assert.throws(() => decodeIPv6("2001::85a3::0000::0370:7334"));
  *     assert.doesNotThrow(() =>
- *         decodeIPv6({ ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334" })
+ *         decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
  *     );
  */
 export const IPv6: $IPv6 = Schema.transform(
@@ -390,7 +411,7 @@ export interface $IPv6Bigint
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type IPv6Bigint = Schema.Schema.Type<$IPv6Bigint>;
 
@@ -412,12 +433,35 @@ export type IPv6BigintEncoded = Schema.Schema.Encoded<$IPv6Bigint>;
  *         IPv6BigintBrand,
  *     } from "the-wireguard-effect/InternetSchemas";
  *
- *     const y: IPv6BigintBrand = IPv6BigintBrand(748392749382);
- *     assert.strictEqual(y, 748392749382);
+ *     const y: IPv6BigintBrand = IPv6BigintBrand(748392749382n);
+ *     assert.strictEqual(y, 748392749382n);
  *
  *     const decodeIPv6Bigint = Schema.decodeSync(IPv6Bigint);
- *     assert.strictEqual(decodeIPv6Bigint(1), 1);
- *     assert.doesNotThrow(() => decodeIPv6Bigint(9999999));
+ *     const encodeIPv6Bigint = Schema.encodeSync(IPv6Bigint);
+ *
+ *     assert.deepEqual(
+ *         decodeIPv6Bigint("4cbd:ff70:e62b:a048:686c:4e7e:a68a:c377"),
+ *         { value: 102007852745154114519525620108359287671n, family: "ipv6" }
+ *     );
+ *     assert.deepEqual(
+ *         decodeIPv6Bigint("d8c6:3feb:46e6:b80c:5a07:6227:ac19:caf6"),
+ *         { value: 288142618299897818094313964584331496182n, family: "ipv6" }
+ *     );
+ *
+ *     assert.deepEqual(
+ *         encodeIPv6Bigint({
+ *             value: IPv6BigintBrand(102007852745154114519525620108359287671n),
+ *             family: "ipv6",
+ *         }),
+ *         "4cbd:ff70:e62b:a048:686c:4e7e:a68a:c377"
+ *     );
+ *     assert.deepEqual(
+ *         encodeIPv6Bigint({
+ *             value: IPv6BigintBrand(288142618299897818094313964584331496182n),
+ *             family: "ipv6",
+ *         }),
+ *         "d8c6:3feb:46e6:b80c:5a07:6227:ac19:caf6"
+ *     );
  */
 export const IPv6Bigint: $IPv6Bigint = Schema.transformOrFail(
     IPv6,
@@ -490,7 +534,7 @@ export interface $Address extends Schema.Union<[$IPv4, $IPv6]> {}
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type Address = Schema.Schema.Type<$Address>;
 
@@ -511,14 +555,14 @@ export type AddressEncoded = Schema.Schema.Encoded<$Address>;
  *
  *     const decodeAddress = Schema.decodeSync(Address);
  *
- *     assert.throws(() => decodeAddress({ ip: "1.1.b.1" }));
+ *     assert.throws(() => decodeAddress("1.1.b.1"));
  *     assert.throws(() =>
- *         decodeAddress({ ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334:" })
+ *         decodeAddress("2001:0db8:85a3:0000:0000:8a2e:0370:7334:")
  *     );
  *
- *     assert.doesNotThrow(() => decodeAddress({ ip: "1.1.1.2" }));
+ *     assert.doesNotThrow(() => decodeAddress("1.1.1.2"));
  *     assert.doesNotThrow(() =>
- *         decodeAddress({ ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334" })
+ *         decodeAddress("2001:0db8:85a3:0000:0000:8a2e:0370:7334")
  *     );
  *
  * @see {@link IPv4}
@@ -537,7 +581,7 @@ export interface $AddressBigint extends Schema.Union<[$IPv4Bigint, $IPv6Bigint]>
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type AddressBigint = Schema.Schema.Type<$AddressBigint>;
 
@@ -579,7 +623,7 @@ export interface $IPv4CidrMask
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type IPv4CidrMask = Schema.Schema.Type<$IPv4CidrMask>;
 
@@ -639,7 +683,7 @@ export interface $IPv6CidrMask
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type IPv6CidrMask = Schema.Schema.Type<$IPv6CidrMask>;
 
@@ -927,21 +971,33 @@ export class CidrBlockBase<Family extends "ipv4" | "ipv6"> extends Schema.Class<
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv4CidBlock
+export interface $IPv4CidrBlock
     extends Schema.transformOrFail<
         Schema.Struct<{
             address: $IPv4;
             mask: $IPv4CidrMask;
         }>,
-        typeof CidrBlockBase,
+        typeof CidrBlockBase<"ipv4">,
         never
     > {}
 
 /**
  * @since 1.0.0
+ * @category Decoded types
+ */
+export type IPv4CidrBlock = Schema.Schema.Type<$IPv4CidrBlock>;
+
+/**
+ * @since 1.0.0
+ * @category Encoded types
+ */
+export type IPv4CidrBlockEncoded = Schema.Schema.Encoded<$IPv4CidrBlock>;
+
+/**
+ * @since 1.0.0
  * @category Schemas
  */
-export const IPv4CidBlock: $IPv4CidBlock = Schema.transformOrFail(
+export const IPv4CidrBlock: $IPv4CidrBlock = Schema.transformOrFail(
     Schema.Struct({ address: IPv4, mask: IPv4CidrMask }),
     CidrBlockBase,
     {
@@ -954,7 +1010,7 @@ export const IPv4CidBlock: $IPv4CidBlock = Schema.transformOrFail(
         decode: (data) => ParseResult.succeed({ address: data.address.ip, mask: data.mask }),
     }
 ).annotations({
-    identifier: "IPv4CidBlock",
+    identifier: "IPv4CidrBlock",
     description: "An ipv4 cidr block",
 });
 
@@ -962,20 +1018,20 @@ export const IPv4CidBlock: $IPv4CidBlock = Schema.transformOrFail(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv4CidBlockFromString
-    extends Schema.Annotable<$IPv4CidBlockFromString, CidrBlockBase<"ipv4">, `${string}/${number}`, never> {}
+export interface $IPv4CidrBlockFromString
+    extends Schema.Annotable<$IPv4CidrBlockFromString, CidrBlockBase<"ipv4">, `${string}/${number}`, never> {}
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
-export type IPv4CidBlockFromString = Schema.Schema.Type<$IPv4CidBlockFromString>;
+export type IPv4CidrBlockFromString = Schema.Schema.Type<$IPv4CidrBlockFromString>;
 
 /**
  * @since 1.0.0
  * @category Encoded types
  */
-export type IPv4CidBlockFromStringEncoded = Schema.Schema.Encoded<$IPv4CidBlockFromString>;
+export type IPv4CidrBlockFromStringEncoded = Schema.Schema.Encoded<$IPv4CidrBlockFromString>;
 
 /**
  * A schema that transforms a `string` into a `CidrBlock`.
@@ -983,9 +1039,9 @@ export type IPv4CidBlockFromStringEncoded = Schema.Schema.Encoded<$IPv4CidBlockF
  * @since 1.0.0
  * @category Schemas
  */
-export const IPv4CidBlockFromString: $IPv4CidBlockFromString = Schema.transform(
+export const IPv4CidrBlockFromString: $IPv4CidrBlockFromString = Schema.transform(
     Schema.TemplateLiteral(Schema.String, Schema.Literal("/"), Schema.Number),
-    IPv4CidBlock,
+    IPv4CidrBlock,
     {
         decode: (str) => {
             const [address, mask] = splitLiteral(str, "/");
@@ -994,7 +1050,7 @@ export const IPv4CidBlockFromString: $IPv4CidBlockFromString = Schema.transform(
         encode: ({ address, mask }) => `${address}/${mask}` as const,
     }
 ).annotations({
-    identifier: "IPv4CidBlockFromString",
+    identifier: "IPv4CidrBlockFromString",
     description: "An ipv4 cidr block from string",
 });
 
@@ -1002,21 +1058,33 @@ export const IPv4CidBlockFromString: $IPv4CidBlockFromString = Schema.transform(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv6CidBlock
+export interface $IPv6CidrBlock
     extends Schema.transformOrFail<
         Schema.Struct<{
             address: $IPv6;
             mask: $IPv6CidrMask;
         }>,
-        typeof CidrBlockBase,
+        typeof CidrBlockBase<"ipv6">,
         never
     > {}
 
 /**
  * @since 1.0.0
+ * @category Decoded types
+ */
+export type IPv6CidrBlock = Schema.Schema.Type<$IPv6CidrBlock>;
+
+/**
+ * @since 1.0.0
+ * @category Encoded types
+ */
+export type IPv6CidrBlockEncoded = Schema.Schema.Encoded<$IPv6CidrBlock>;
+
+/**
+ * @since 1.0.0
  * @category Schemas
  */
-export const IPv6CidBlock: $IPv6CidBlock = Schema.transformOrFail(
+export const IPv6CidrBlock: $IPv6CidrBlock = Schema.transformOrFail(
     Schema.Struct({ address: IPv6, mask: IPv6CidrMask }),
     CidrBlockBase,
     {
@@ -1029,7 +1097,7 @@ export const IPv6CidBlock: $IPv6CidBlock = Schema.transformOrFail(
         decode: (data) => ParseResult.succeed({ address: data.address.ip, mask: data.mask }),
     }
 ).annotations({
-    identifier: "IPv6CidBlock",
+    identifier: "IPv6CidrBlock",
     description: "An ipv6 cidr block",
 });
 
@@ -1037,20 +1105,20 @@ export const IPv6CidBlock: $IPv6CidBlock = Schema.transformOrFail(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv6CidBlockFromString
-    extends Schema.Annotable<$IPv6CidBlockFromString, CidrBlockBase<"ipv6">, `${string}/${number}`, never> {}
+export interface $IPv6CidrBlockFromString
+    extends Schema.Annotable<$IPv6CidrBlockFromString, CidrBlockBase<"ipv6">, `${string}/${number}`, never> {}
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
-export type IPv6CidBlockFromString = Schema.Schema.Type<$IPv6CidBlockFromString>;
+export type IPv6CidrBlockFromString = Schema.Schema.Type<$IPv6CidrBlockFromString>;
 
 /**
  * @since 1.0.0
  * @category Encoded types
  */
-export type IPv6CidBlockFromStringEncoded = Schema.Schema.Encoded<$IPv6CidBlockFromString>;
+export type IPv6CidrBlockFromStringEncoded = Schema.Schema.Encoded<$IPv6CidrBlockFromString>;
 
 /**
  * A schema that transforms a `string` into a `CidrBlock`.
@@ -1058,9 +1126,9 @@ export type IPv6CidBlockFromStringEncoded = Schema.Schema.Encoded<$IPv6CidBlockF
  * @since 1.0.0
  * @category Schemas
  */
-export const IPv6CidBlockFromString: $IPv6CidBlockFromString = Schema.transform(
+export const IPv6CidrBlockFromString: $IPv6CidrBlockFromString = Schema.transform(
     Schema.TemplateLiteral(Schema.String, Schema.Literal("/"), Schema.Number),
-    IPv6CidBlock,
+    IPv6CidrBlock,
     {
         decode: (str) => {
             const [address, mask] = splitLiteral(str, "/");
@@ -1069,7 +1137,7 @@ export const IPv6CidBlockFromString: $IPv6CidBlockFromString = Schema.transform(
         encode: ({ address, mask }) => `${address}/${mask}` as const,
     }
 ).annotations({
-    identifier: "IPv6CidBlockFromString",
+    identifier: "IPv6CidrBlockFromString",
     description: "An ipv6 cidr block from string",
 });
 
@@ -1077,13 +1145,13 @@ export const IPv6CidBlockFromString: $IPv6CidBlockFromString = Schema.transform(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $CidrBlock extends Schema.Union<[$IPv4CidBlock, $IPv6CidBlock]> {}
+export interface $CidrBlock extends Schema.Union<[$IPv4CidrBlock, $IPv6CidrBlock]> {}
 
 /**
  * @since 1.0.0
  * @category Schemas
  */
-export const CidrBlock: $CidrBlock = Schema.Union(IPv4CidBlock, IPv6CidBlock);
+export const CidrBlock: $CidrBlock = Schema.Union(IPv4CidrBlock, IPv6CidrBlock);
 
 /**
  * @since 1.0.0
@@ -1099,7 +1167,7 @@ export interface $CidrBlockFromString
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type CidrBlockFromString = Schema.Schema.Type<$CidrBlockFromString>;
 
@@ -1147,7 +1215,7 @@ export interface $IPv4Endpoint
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type IPv4Endpoint = Schema.Schema.Type<$IPv4Endpoint>;
 
@@ -1232,7 +1300,7 @@ export interface $IPv6Endpoint
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type IPv6Endpoint = Schema.Schema.Type<$IPv6Endpoint>;
 
@@ -1338,7 +1406,7 @@ export interface $HostnameEndpoint
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type HostnameEndpoint = Schema.Schema.Type<$HostnameEndpoint>;
 
@@ -1396,7 +1464,7 @@ export interface $Endpoint extends Schema.Union<[$IPv4Endpoint, $IPv6Endpoint, $
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type Endpoint = Schema.Schema.Type<$Endpoint>;
 
@@ -1465,7 +1533,7 @@ export interface $IPv4SetupData extends Schema.Tuple<[$IPv4Endpoint, $IPv4]> {}
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type IPv4SetupData = Schema.Schema.Type<$IPv4SetupData>;
 
@@ -1503,7 +1571,7 @@ export interface $IPv6SetupData extends Schema.Tuple<[$IPv6Endpoint, $IPv6]> {}
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type IPv6SetupData = Schema.Schema.Type<$IPv6SetupData>;
 
@@ -1541,7 +1609,7 @@ export interface $SetupData extends Schema.Union<[$IPv4SetupData, $IPv6SetupData
 
 /**
  * @since 1.0.0
- * @category Unbranded types
+ * @category Decoded types
  */
 export type SetupData = Schema.Schema.Type<$SetupData>;
 
