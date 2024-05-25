@@ -26,8 +26,8 @@ type Tail<T extends ReadonlyArray<unknown>> = T extends
 /** @internal */
 type Split<Str extends string, Delimiter extends string> = string extends Str | ""
     ? Array<string>
-    : Str extends `${infer T}${Delimiter}${infer U}`
-      ? [T, ...Split<U, Delimiter>]
+    : Str extends `${infer Head}${Delimiter}${infer Rest}`
+      ? [Head, ...Split<Rest, Delimiter>]
       : [Str];
 
 /** @internal */
