@@ -48,7 +48,7 @@ Added in v1.0.0
 
 ```ts
 export declare const WireguardDemoServerSchema: Schema.transform<
-  Schema.SchemaClass<`OK:${string}:${number}:${string}\n`, `OK:${string}:${number}:${string}\n`, never>,
+  Schema.TemplateLiteral<`OK:${string}:${number}:${string}\n`>,
   Schema.Struct<{
     serverPort: InternetSchemas.$Port
     serverPublicKey: Schema.brand<Schema.refine<string, Schema.Schema<string, string, never>>, "WireguardKey">

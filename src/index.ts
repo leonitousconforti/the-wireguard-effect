@@ -27,17 +27,9 @@ export * as WireguardControl from "./WireguardControl.js"
 export * as WireguardErrors from "./WireguardErrors.js"
 
 /**
- * Wireguard Multi Dimensional Graphing Utils. The first layer is the nodes with
- * the direct connections between then and the second layer is the allowedIPs
- * for each node. The second layer must be isomorphic to the base layer, hence
- * why I am experimenting with multi-dimensional graphs. The third layer is the
- * possible paths packets could take between nodes taking into account the first
- * and second layers. This third layer can be extracted into a single layer
- * graph and the extracted graph will be contravariant to the multi layer
- * graph.
+ * Tools to help generate wireguard configs for common situations.
  *
  * @since 1.0.0
- * @see https://en.wikipedia.org/wiki/Multidimensional_network
  */
 export * as WireguardGenerate from "./WireguardGenerate.js"
 

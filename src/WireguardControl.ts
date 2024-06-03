@@ -29,7 +29,7 @@ import * as exec from "node:child_process";
 
 import * as WireguardConfig from "./WireguardConfig.js";
 import * as WireguardErrors from "./WireguardErrors.js";
-import type * as WireguardInterface from "./WireguardInterface.js";
+import * as WireguardInterface from "./WireguardInterface.js";
 
 /**
  * @since 1.0.0
@@ -182,8 +182,8 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
             const bundledWgWindowsExecutablePath = yield* path.fromFileUrl(wgWindowsUrl);
             if (process.platform === "win32") yield* fs.access(bundledWgWindowsExecutablePath, { ok: true });
 
-            const wgQuickCommandWin = [bundledWgWindowsExecutablePath, "/installtunnelservice", file];
-            const wgQuickCommandNix = [bundledWgQuickExecutablePath, "up", file];
+            const wgQuickCommandNix = [bundledWgQuickExecutablePath, "up", file] as const;
+            const wgQuickCommandWin = [bundledWgWindowsExecutablePath, "/installtunnelservice", file] as const;
             const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
 
             yield* execCommand(bundledWireguardGoExecutablePath, wireguardInterface.Name);
@@ -216,8 +216,8 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                 bundledWgWindowsExecutablePath,
                 "/uninstalltunnelservice",
                 wireguardInterface.Name,
-            ];
-            const wgQuickCommandNix = [bundledWgQuickExecutablePath, "down", file];
+            ] as const;
+            const wgQuickCommandNix = [bundledWgQuickExecutablePath, "down", file] as const;
             const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
             yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
             return wireguardInterface;

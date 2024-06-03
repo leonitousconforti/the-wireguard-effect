@@ -77,13 +77,12 @@ export class DurationFromSeconds extends Schema.transform(Schema.Int, Schema.Dur
  *     const duration = decodeDurationString("12");
  *     assert.strictEqual(Duration.toSeconds(duration), 12);
  */
-export class DurationFromSecondsString extends Schema.transform(Schema.NumberFromString, DurationFromSeconds, {
-    decode: Function.identity,
-    encode: Function.identity,
-}).annotations({
-    identifier: "DurationFromSecondsString",
-    description: "A duration from a string of seconds",
-}) {}
+export class DurationFromSecondsString extends Schema.compose(Schema.NumberFromString, DurationFromSeconds).annotations(
+    {
+        identifier: "DurationFromSecondsString",
+        description: "A duration from a string of seconds",
+    }
+) {}
 
 /**
  * @since 1.0.0
@@ -541,8 +540,8 @@ export const IPv6Bigint: $IPv6Bigint = Schema.transformOrFail(
             const halves = ip.split("::");
 
             if (halves.length === 2) {
-                let first = halves[0].split(":");
-                let last = halves[1].split(":");
+                let first = halves[0]!.split(":");
+                let last = halves[1]!.split(":");
 
                 if (first.length === 1 && first[0] === "") {
                     first = [];
@@ -1283,8 +1282,8 @@ export interface $IPv4Endpoint
         { readonly address: IPv4; readonly natPort: PortBrand; readonly listenPort: PortBrand },
         | `${string}:${number}`
         | `${string}:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number },
+        | { readonly ip: string; readonly port: number; readonly family: IPv4Family }
+        | { readonly ip: string; readonly natPort: number; readonly listenPort: number; readonly family: IPv4Family },
         never
     > {}
 
@@ -1318,18 +1317,20 @@ export type IPv4EndpointEncoded = Schema.Schema.Encoded<$IPv4Endpoint>;
  *     const endpoint3 = decodeEndpoint({
  *         ip: "1.2.3.4",
  *         port: 51820,
+ *         family: "ipv4",
  *     });
  *
  *     const endpoint4 = decodeEndpoint({
  *         ip: "1.2.3.4",
  *         natPort: 51820,
  *         listenPort: 41820,
+ *         family: "ipv4",
  *     });
  */
 export const IPv4Endpoint: $IPv4Endpoint = Schema.transform(
     Schema.Union(
-        Schema.Struct({ ip: Schema.String, port: Schema.Number }),
-        Schema.Struct({ ip: Schema.String, natPort: Schema.Number, listenPort: Schema.Number }),
+        Schema.Struct({ ip: Schema.String, port: Schema.Number, family: IPv4Family }),
+        Schema.Struct({ ip: Schema.String, natPort: Schema.Number, listenPort: Schema.Number, family: IPv4Family }),
         Schema.TemplateLiteral(Schema.String, Schema.Literal(":"), Schema.Number),
         Schema.TemplateLiteral(Schema.String, Schema.Literal(":"), Schema.Number, Schema.Literal(":"), Schema.Number)
     ),
@@ -1368,8 +1369,8 @@ export interface $IPv6Endpoint
         { readonly address: IPv6; readonly natPort: PortBrand; readonly listenPort: PortBrand },
         | `[${string}]:${number}`
         | `[${string}]:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number },
+        | { readonly ip: string; readonly port: number; family: IPv6Family }
+        | { readonly ip: string; readonly natPort: number; readonly listenPort: number; family: IPv6Family },
         never
     > {}
 
@@ -1407,18 +1408,20 @@ export type IPv6EndpointEncoded = Schema.Schema.Encoded<$IPv6Endpoint>;
  *     const endpoint3 = decodeEndpoint({
  *         ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
  *         port: 51820,
+ *         family: "ipv6",
  *     });
  *
  *     const endpoint4 = decodeEndpoint({
  *         ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
  *         natPort: 51820,
  *         listenPort: 41820,
+ *         family: "ipv6",
  *     });
  */
 export const IPv6Endpoint: $IPv6Endpoint = Schema.transform(
     Schema.Union(
-        Schema.Struct({ ip: Schema.String, port: Schema.Number }),
-        Schema.Struct({ ip: Schema.String, natPort: Schema.Number, listenPort: Schema.Number }),
+        Schema.Struct({ ip: Schema.String, port: Schema.Number, family: IPv6Family }),
+        Schema.Struct({ ip: Schema.String, natPort: Schema.Number, listenPort: Schema.Number, family: IPv6Family }),
         Schema.TemplateLiteral(
             Schema.Literal("["),
             Schema.String,
@@ -1566,12 +1569,14 @@ export type EndpointEncoded = Schema.Schema.Encoded<$Endpoint>;
  *     const endpoint3 = decodeEndpoint({
  *         ip: "1.2.3.4",
  *         port: 51820,
+ *         family: "ipv4",
  *     });
  *
  *     const endpoint4: Endpoint = decodeEndpoint({
  *         ip: "1.2.3.4",
  *         natPort: 51820,
  *         listenPort: 41820,
+ *         family: "ipv4",
  *     });
  *
  *     const endpoint5 = decodeEndpoint(
@@ -1584,20 +1589,23 @@ export type EndpointEncoded = Schema.Schema.Encoded<$Endpoint>;
  *     const endpoint7 = decodeEndpoint({
  *         ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
  *         port: 51820,
+ *         family: "ipv6",
  *     });
  *
  *     const endpoint8: Endpoint = decodeEndpoint({
  *         ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
  *         natPort: 51820,
  *         listenPort: 41820,
+ *         family: "ipv6",
  *     });
  *
  * @see {@link IPv4Endpoint}
  * @see {@link IPv6Endpoint}
+ * @see {@link HostnameEndpoint}
  */
 export const Endpoint: $Endpoint = Schema.Union(IPv4Endpoint, IPv6Endpoint, HostnameEndpoint).annotations({
     identifier: "Endpoint",
-    description: "An ipv4 or ipv6 wireguard endpoint",
+    description: "An ipv4, ipv6, or hostname wireguard endpoint",
 });
 
 /**
@@ -1680,7 +1688,69 @@ export const IPv6SetupData: $IPv6SetupData = Schema.Tuple(IPv6Endpoint, IPv6).an
  * @since 1.0.0
  * @category Api interface
  */
-export interface $SetupData extends Schema.Union<[$IPv4SetupData, $IPv6SetupData]> {}
+export interface $HostnameIPv4SetupData extends Schema.Tuple<[$HostnameEndpoint, $IPv4]> {}
+
+/**
+ * @since 1.0.0
+ * @category Decoded types
+ */
+export type HostnameIPv4SetupData = Schema.Schema.Type<$HostnameIPv4SetupData>;
+
+/**
+ * @since 1.0.0
+ * @category Encoded types
+ */
+export type HostnameIPv4SetupDataEncoded = Schema.Schema.Encoded<$HostnameIPv4SetupData>;
+
+/**
+ * A wireguard setup data, which consists of an endpoint followed by an address.
+ *
+ * @since 1.0.0
+ * @category Schemas
+ * @see {@link IPv4}
+ * @see {@link HostnameEndpoint}
+ */
+export const HostnameIPv4SetupData: $HostnameIPv4SetupData = Schema.Tuple(HostnameEndpoint, IPv4).annotations({
+    identifier: "HostnameIPv4SetupData",
+    description: "A wireguard hostname+ipv4 setup data",
+});
+
+/**
+ * @since 1.0.0
+ * @category Api interface
+ */
+export interface $HostnameIPv6SetupData extends Schema.Tuple<[$HostnameEndpoint, $IPv6]> {}
+
+/**
+ * @since 1.0.0
+ * @category Decoded types
+ */
+export type HostnameIPv6SetupData = Schema.Schema.Type<$HostnameIPv6SetupData>;
+
+/**
+ * @since 1.0.0
+ * @category Encoded types
+ */
+export type HostnameIPv6SetupDataEncoded = Schema.Schema.Encoded<$HostnameIPv6SetupData>;
+
+/**
+ * A wireguard setup data, which consists of an endpoint followed by an address.
+ *
+ * @since 1.0.0
+ * @category Schemas
+ * @see {@link IPv6}
+ * @see {@link HostnameEndpoint}
+ */
+export const HostnameIPv6SetupData: $HostnameIPv6SetupData = Schema.Tuple(HostnameEndpoint, IPv6).annotations({
+    identifier: "HostnameIPv6SetupData",
+    description: "A wireguard hostname+ipv6 setup data",
+});
+/**
+ * @since 1.0.0
+ * @category Api interface
+ */
+export interface $SetupData
+    extends Schema.Union<[$IPv4SetupData, $IPv6SetupData, $HostnameIPv4SetupData, $HostnameIPv6SetupData]> {}
 
 /**
  * @since 1.0.0
@@ -1707,9 +1777,14 @@ export type SetupDataEncoded = Schema.Schema.Encoded<$SetupData>;
  *     const setupData = decodeSetupData(["1.1.1.1:51280", "10.0.0.1"]);
  *
  * @see {@link Address}
- * @see {@link EndpointSchema}
+ * @see {@link Endpoint}
  */
-export const SetupData: $SetupData = Schema.Union(IPv4SetupData, IPv6SetupData).annotations({
+export const SetupData: $SetupData = Schema.Union(
+    IPv4SetupData,
+    IPv6SetupData,
+    HostnameIPv4SetupData,
+    HostnameIPv6SetupData
+).annotations({
     identifier: "SetupData",
     description: "A wireguard setup data",
 });

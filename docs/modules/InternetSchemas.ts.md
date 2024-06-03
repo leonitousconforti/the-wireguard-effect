@@ -20,13 +20,17 @@ Added in v1.0.0
   - [$CidrBlock (interface)](#cidrblock-interface)
   - [$CidrBlockFromString (interface)](#cidrblockfromstring-interface)
   - [$Endpoint (interface)](#endpoint-interface)
+  - [$Family (interface)](#family-interface)
   - [$HostnameEndpoint (interface)](#hostnameendpoint-interface)
+  - [$HostnameIPv4SetupData (interface)](#hostnameipv4setupdata-interface)
+  - [$HostnameIPv6SetupData (interface)](#hostnameipv6setupdata-interface)
   - [$IPv4 (interface)](#ipv4-interface)
   - [$IPv4Bigint (interface)](#ipv4bigint-interface)
   - [$IPv4CidrBlock (interface)](#ipv4cidrblock-interface)
   - [$IPv4CidrBlockFromString (interface)](#ipv4cidrblockfromstring-interface)
   - [$IPv4CidrMask (interface)](#ipv4cidrmask-interface)
   - [$IPv4Endpoint (interface)](#ipv4endpoint-interface)
+  - [$IPv4Family (interface)](#ipv4family-interface)
   - [$IPv4SetupData (interface)](#ipv4setupdata-interface)
   - [$IPv6 (interface)](#ipv6-interface)
   - [$IPv6Bigint (interface)](#ipv6bigint-interface)
@@ -34,6 +38,7 @@ Added in v1.0.0
   - [$IPv6CidrBlockFromString (interface)](#ipv6cidrblockfromstring-interface)
   - [$IPv6CidrMask (interface)](#ipv6cidrmask-interface)
   - [$IPv6Endpoint (interface)](#ipv6endpoint-interface)
+  - [$IPv6Family (interface)](#ipv6family-interface)
   - [$IPv6SetupData (interface)](#ipv6setupdata-interface)
   - [$Port (interface)](#port-interface)
   - [$SetupData (interface)](#setupdata-interface)
@@ -58,13 +63,17 @@ Added in v1.0.0
   - [AddressBigint (type alias)](#addressbigint-type-alias)
   - [CidrBlockFromString (type alias)](#cidrblockfromstring-type-alias)
   - [Endpoint (type alias)](#endpoint-type-alias)
+  - [Family (type alias)](#family-type-alias)
   - [HostnameEndpoint (type alias)](#hostnameendpoint-type-alias)
+  - [HostnameIPv4SetupData (type alias)](#hostnameipv4setupdata-type-alias)
+  - [HostnameIPv6SetupData (type alias)](#hostnameipv6setupdata-type-alias)
   - [IPv4 (type alias)](#ipv4-type-alias)
   - [IPv4Bigint (type alias)](#ipv4bigint-type-alias)
   - [IPv4CidrBlock (type alias)](#ipv4cidrblock-type-alias)
   - [IPv4CidrBlockFromString (type alias)](#ipv4cidrblockfromstring-type-alias)
   - [IPv4CidrMask (type alias)](#ipv4cidrmask-type-alias)
   - [IPv4Endpoint (type alias)](#ipv4endpoint-type-alias)
+  - [IPv4Family (type alias)](#ipv4family-type-alias)
   - [IPv4SetupData (type alias)](#ipv4setupdata-type-alias)
   - [IPv6 (type alias)](#ipv6-type-alias)
   - [IPv6Bigint (type alias)](#ipv6bigint-type-alias)
@@ -72,6 +81,7 @@ Added in v1.0.0
   - [IPv6CidrBlockFromString (type alias)](#ipv6cidrblockfromstring-type-alias)
   - [IPv6CidrMask (type alias)](#ipv6cidrmask-type-alias)
   - [IPv6Endpoint (type alias)](#ipv6endpoint-type-alias)
+  - [IPv6Family (type alias)](#ipv6family-type-alias)
   - [IPv6SetupData (type alias)](#ipv6setupdata-type-alias)
   - [SetupData (type alias)](#setupdata-type-alias)
 - [Encoded types](#encoded-types)
@@ -80,6 +90,8 @@ Added in v1.0.0
   - [CidrBlockFromStringEncoded (type alias)](#cidrblockfromstringencoded-type-alias)
   - [EndpointEncoded (type alias)](#endpointencoded-type-alias)
   - [HostnameEndpointEncoded (type alias)](#hostnameendpointencoded-type-alias)
+  - [HostnameIPv4SetupDataEncoded (type alias)](#hostnameipv4setupdataencoded-type-alias)
+  - [HostnameIPv6SetupDataEncoded (type alias)](#hostnameipv6setupdataencoded-type-alias)
   - [IPv4BigintEncoded (type alias)](#ipv4bigintencoded-type-alias)
   - [IPv4CidrBlockEncoded (type alias)](#ipv4cidrblockencoded-type-alias)
   - [IPv4CidrBlockFromStringEncoded (type alias)](#ipv4cidrblockfromstringencoded-type-alias)
@@ -103,13 +115,17 @@ Added in v1.0.0
   - [DurationFromSeconds (class)](#durationfromseconds-class)
   - [DurationFromSecondsString (class)](#durationfromsecondsstring-class)
   - [Endpoint](#endpoint)
+  - [Family](#family)
   - [HostnameEndpoint](#hostnameendpoint)
+  - [HostnameIPv4SetupData](#hostnameipv4setupdata)
+  - [HostnameIPv6SetupData](#hostnameipv6setupdata)
   - [IPv4](#ipv4)
   - [IPv4Bigint](#ipv4bigint)
   - [IPv4CidrBlock](#ipv4cidrblock)
   - [IPv4CidrBlockFromString](#ipv4cidrblockfromstring)
   - [IPv4CidrMask](#ipv4cidrmask)
   - [IPv4Endpoint](#ipv4endpoint)
+  - [IPv4Family](#ipv4family)
   - [IPv4SetupData](#ipv4setupdata)
   - [IPv6](#ipv6)
   - [IPv6Bigint](#ipv6bigint)
@@ -117,6 +133,7 @@ Added in v1.0.0
   - [IPv6CidrBlockFromString](#ipv6cidrblockfromstring)
   - [IPv6CidrMask](#ipv6cidrmask)
   - [IPv6Endpoint](#ipv6endpoint)
+  - [IPv6Family](#ipv6family)
   - [IPv6SetupData](#ipv6setupdata)
   - [Port](#port)
   - [SetupData](#setupdata)
@@ -163,7 +180,7 @@ Added in v1.0.0
 export interface $CidrBlockFromString
   extends Schema.Annotable<
     $CidrBlockFromString,
-    CidrBlockBase<"ipv4"> | CidrBlockBase<"ipv6">,
+    CidrBlockBase<IPv4Family> | CidrBlockBase<IPv6Family>,
     `${string}/${number}`,
     never
   > {}
@@ -177,6 +194,16 @@ Added in v1.0.0
 
 ```ts
 export interface $Endpoint extends Schema.Union<[$IPv4Endpoint, $IPv6Endpoint, $HostnameEndpoint]> {}
+```
+
+Added in v1.0.0
+
+## $Family (interface)
+
+**Signature**
+
+```ts
+export interface $Family extends Schema.Union<[$IPv4Family, $IPv6Family]> {}
 ```
 
 Added in v1.0.0
@@ -200,6 +227,26 @@ export interface $HostnameEndpoint
 
 Added in v1.0.0
 
+## $HostnameIPv4SetupData (interface)
+
+**Signature**
+
+```ts
+export interface $HostnameIPv4SetupData extends Schema.Tuple<[$HostnameEndpoint, $IPv4]> {}
+```
+
+Added in v1.0.0
+
+## $HostnameIPv6SetupData (interface)
+
+**Signature**
+
+```ts
+export interface $HostnameIPv6SetupData extends Schema.Tuple<[$HostnameEndpoint, $IPv6]> {}
+```
+
+Added in v1.0.0
+
 ## $IPv4 (interface)
 
 **Signature**
@@ -209,8 +256,8 @@ export interface $IPv4
   extends Schema.transform<
     Schema.filter<typeof Schema.String>,
     Schema.Struct<{
+      family: $IPv4Family
       ip: Schema.BrandSchema<IPv4Brand, Brand.Brand.Unbranded<IPv4Brand>, never>
-      family: Schema.Literal<["ipv4"]>
     }>
   > {}
 ```
@@ -226,8 +273,8 @@ export interface $IPv4Bigint
   extends Schema.transformOrFail<
     $IPv4,
     Schema.Struct<{
+      family: $IPv4Family
       value: Schema.BrandSchema<IPv4BigintBrand, Brand.Brand.Unbranded<IPv4BigintBrand>, never>
-      family: Schema.Literal<["ipv4"]>
     }>,
     never
   > {}
@@ -246,7 +293,7 @@ export interface $IPv4CidrBlock
       address: $IPv4
       mask: $IPv4CidrMask
     }>,
-    typeof CidrBlockBase<"ipv4">,
+    typeof CidrBlockBase<IPv4Family>,
     never
   > {}
 ```
@@ -259,7 +306,7 @@ Added in v1.0.0
 
 ```ts
 export interface $IPv4CidrBlockFromString
-  extends Schema.Annotable<$IPv4CidrBlockFromString, CidrBlockBase<"ipv4">, `${string}/${number}`, never> {}
+  extends Schema.Annotable<$IPv4CidrBlockFromString, CidrBlockBase<IPv4Family>, `${string}/${number}`, never> {}
 ```
 
 Added in v1.0.0
@@ -286,10 +333,20 @@ export interface $IPv4Endpoint
     { readonly address: IPv4; readonly natPort: PortBrand; readonly listenPort: PortBrand },
     | `${string}:${number}`
     | `${string}:${number}:${number}`
-    | { readonly ip: string; readonly port: number }
-    | { readonly ip: string; readonly natPort: number; readonly listenPort: number },
+    | { readonly ip: string; readonly port: number; readonly family: IPv4Family }
+    | { readonly ip: string; readonly natPort: number; readonly listenPort: number; readonly family: IPv4Family },
     never
   > {}
+```
+
+Added in v1.0.0
+
+## $IPv4Family (interface)
+
+**Signature**
+
+```ts
+export interface $IPv4Family extends Schema.Literal<["ipv4"]> {}
 ```
 
 Added in v1.0.0
@@ -313,8 +370,8 @@ export interface $IPv6
   extends Schema.transform<
     Schema.filter<typeof Schema.String>,
     Schema.Struct<{
+      family: $IPv6Family
       ip: Schema.BrandSchema<IPv6Brand, Brand.Brand.Unbranded<IPv6Brand>, never>
-      family: Schema.Literal<["ipv6"]>
     }>
   > {}
 ```
@@ -330,8 +387,8 @@ export interface $IPv6Bigint
   extends Schema.transformOrFail<
     $IPv6,
     Schema.Struct<{
+      family: $IPv6Family
       value: Schema.BrandSchema<IPv6BigintBrand, Brand.Brand.Unbranded<IPv6BigintBrand>, never>
-      family: Schema.Literal<["ipv6"]>
     }>,
     never
   > {}
@@ -350,7 +407,7 @@ export interface $IPv6CidrBlock
       address: $IPv6
       mask: $IPv6CidrMask
     }>,
-    typeof CidrBlockBase<"ipv6">,
+    typeof CidrBlockBase<IPv6Family>,
     never
   > {}
 ```
@@ -363,7 +420,7 @@ Added in v1.0.0
 
 ```ts
 export interface $IPv6CidrBlockFromString
-  extends Schema.Annotable<$IPv6CidrBlockFromString, CidrBlockBase<"ipv6">, `${string}/${number}`, never> {}
+  extends Schema.Annotable<$IPv6CidrBlockFromString, CidrBlockBase<IPv6Family>, `${string}/${number}`, never> {}
 ```
 
 Added in v1.0.0
@@ -390,10 +447,20 @@ export interface $IPv6Endpoint
     { readonly address: IPv6; readonly natPort: PortBrand; readonly listenPort: PortBrand },
     | `[${string}]:${number}`
     | `[${string}]:${number}:${number}`
-    | { readonly ip: string; readonly port: number }
-    | { readonly ip: string; readonly natPort: number; readonly listenPort: number },
+    | { readonly ip: string; readonly port: number; family: IPv6Family }
+    | { readonly ip: string; readonly natPort: number; readonly listenPort: number; family: IPv6Family },
     never
   > {}
+```
+
+Added in v1.0.0
+
+## $IPv6Family (interface)
+
+**Signature**
+
+```ts
+export interface $IPv6Family extends Schema.Literal<["ipv6"]> {}
 ```
 
 Added in v1.0.0
@@ -423,7 +490,8 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface $SetupData extends Schema.Union<[$IPv4SetupData, $IPv6SetupData]> {}
+export interface $SetupData
+  extends Schema.Union<[$IPv4SetupData, $IPv6SetupData, $HostnameIPv4SetupData, $HostnameIPv6SetupData]> {}
 ```
 
 Added in v1.0.0
@@ -614,12 +682,42 @@ export type Endpoint = Schema.Schema.Type<$Endpoint>
 
 Added in v1.0.0
 
+## Family (type alias)
+
+**Signature**
+
+```ts
+export type Family = Schema.Schema.Type<$Family>
+```
+
+Added in v1.0.0
+
 ## HostnameEndpoint (type alias)
 
 **Signature**
 
 ```ts
 export type HostnameEndpoint = Schema.Schema.Type<$HostnameEndpoint>
+```
+
+Added in v1.0.0
+
+## HostnameIPv4SetupData (type alias)
+
+**Signature**
+
+```ts
+export type HostnameIPv4SetupData = Schema.Schema.Type<$HostnameIPv4SetupData>
+```
+
+Added in v1.0.0
+
+## HostnameIPv6SetupData (type alias)
+
+**Signature**
+
+```ts
+export type HostnameIPv6SetupData = Schema.Schema.Type<$HostnameIPv6SetupData>
 ```
 
 Added in v1.0.0
@@ -680,6 +778,16 @@ Added in v1.0.0
 
 ```ts
 export type IPv4Endpoint = Schema.Schema.Type<$IPv4Endpoint>
+```
+
+Added in v1.0.0
+
+## IPv4Family (type alias)
+
+**Signature**
+
+```ts
+export type IPv4Family = Schema.Schema.Type<$IPv4Family>
 ```
 
 Added in v1.0.0
@@ -754,6 +862,16 @@ export type IPv6Endpoint = Schema.Schema.Type<$IPv6Endpoint>
 
 Added in v1.0.0
 
+## IPv6Family (type alias)
+
+**Signature**
+
+```ts
+export type IPv6Family = Schema.Schema.Type<$IPv6Family>
+```
+
+Added in v1.0.0
+
 ## IPv6SetupData (type alias)
 
 **Signature**
@@ -822,6 +940,26 @@ Added in v1.0.0
 
 ```ts
 export type HostnameEndpointEncoded = Schema.Schema.Encoded<$HostnameEndpoint>
+```
+
+Added in v1.0.0
+
+## HostnameIPv4SetupDataEncoded (type alias)
+
+**Signature**
+
+```ts
+export type HostnameIPv4SetupDataEncoded = Schema.Schema.Encoded<$HostnameIPv4SetupData>
+```
+
+Added in v1.0.0
+
+## HostnameIPv6SetupDataEncoded (type alias)
+
+**Signature**
+
+```ts
+export type HostnameIPv6SetupDataEncoded = Schema.Schema.Encoded<$HostnameIPv6SetupData>
 ```
 
 Added in v1.0.0
@@ -1110,13 +1248,15 @@ const endpoint2 = decodeEndpoint("1.2.3.4:51820:41820")
 
 const endpoint3 = decodeEndpoint({
   ip: "1.2.3.4",
-  port: 51820
+  port: 51820,
+  family: "ipv4"
 })
 
 const endpoint4: Endpoint = decodeEndpoint({
   ip: "1.2.3.4",
   natPort: 51820,
-  listenPort: 41820
+  listenPort: 41820,
+  family: "ipv4"
 })
 
 const endpoint5 = decodeEndpoint("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:51820")
@@ -1124,14 +1264,26 @@ const endpoint6 = decodeEndpoint("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:5182
 
 const endpoint7 = decodeEndpoint({
   ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
-  port: 51820
+  port: 51820,
+  family: "ipv6"
 })
 
 const endpoint8: Endpoint = decodeEndpoint({
   ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
   natPort: 51820,
-  listenPort: 41820
+  listenPort: 41820,
+  family: "ipv6"
 })
+```
+
+Added in v1.0.0
+
+## Family
+
+**Signature**
+
+```ts
+export declare const Family: $Family
 ```
 
 Added in v1.0.0
@@ -1146,6 +1298,30 @@ assumed that the nat port and listen port are the same.
 
 ```ts
 export declare const HostnameEndpoint: $HostnameEndpoint
+```
+
+Added in v1.0.0
+
+## HostnameIPv4SetupData
+
+A wireguard setup data, which consists of an endpoint followed by an address.
+
+**Signature**
+
+```ts
+export declare const HostnameIPv4SetupData: $HostnameIPv4SetupData
+```
+
+Added in v1.0.0
+
+## HostnameIPv6SetupData
+
+A wireguard setup data, which consists of an endpoint followed by an address.
+
+**Signature**
+
+```ts
+export declare const HostnameIPv6SetupData: $HostnameIPv6SetupData
 ```
 
 Added in v1.0.0
@@ -1302,14 +1478,26 @@ const endpoint2 = decodeEndpoint("1.2.3.4:51820:41820")
 
 const endpoint3 = decodeEndpoint({
   ip: "1.2.3.4",
-  port: 51820
+  port: 51820,
+  family: "ipv4"
 })
 
 const endpoint4 = decodeEndpoint({
   ip: "1.2.3.4",
   natPort: 51820,
-  listenPort: 41820
+  listenPort: 41820,
+  family: "ipv4"
 })
+```
+
+Added in v1.0.0
+
+## IPv4Family
+
+**Signature**
+
+```ts
+export declare const IPv4Family: $IPv4Family
 ```
 
 Added in v1.0.0
@@ -1489,14 +1677,26 @@ const endpoint2 = decodeEndpoint("[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:5182
 
 const endpoint3 = decodeEndpoint({
   ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
-  port: 51820
+  port: 51820,
+  family: "ipv6"
 })
 
 const endpoint4 = decodeEndpoint({
   ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
   natPort: 51820,
-  listenPort: 41820
+  listenPort: 41820,
+  family: "ipv6"
 })
+```
+
+Added in v1.0.0
+
+## IPv6Family
+
+**Signature**
+
+```ts
+export declare const IPv6Family: $IPv6Family
 ```
 
 Added in v1.0.0
