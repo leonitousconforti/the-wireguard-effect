@@ -3,7 +3,6 @@
     "include": ["examples"],
     "references": [{ "path": "tsconfig.src.json" }],
     "compilerOptions": {
-        "noEmit": true,
         "rootDir": "examples",
         "tsBuildInfoFile": ".tsbuildinfo/examples.tsbuildinfo"
     }
