@@ -11,9 +11,12 @@ import * as Brand from "effect/Brand";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
+import * as HashSet from "effect/HashSet";
 import * as Predicate from "effect/Predicate";
+import * as Record from "effect/Record";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
+import * as Tuple from "effect/Tuple";
 import * as net from "node:net";
 
 /** @internal */
@@ -38,6 +41,21 @@ export const splitLiteral = <Str extends string, Delimiter extends string>(
     str: Str,
     delimiter: Delimiter
 ): Split<Str, Delimiter> => str.split(delimiter) as Split<Str, Delimiter>;
+
+/** @internal */
+export const transposeSet = <Key extends string, Val extends string>(
+    record: Record.ReadonlyRecord<Key, HashSet.HashSet<Val>>
+): Record<Record.ReadonlyRecord.NonLiteralKey<Val>, HashSet.HashSet<Key>> =>
+    Function.pipe(
+        record,
+        Record.map(HashSet.values),
+        Record.map(Array.fromIterable),
+        Record.collect((key, connections) => Array.map(connections, (connection) => Tuple.make(connection, key))),
+        Array.flatten,
+        Array.groupBy(Tuple.getFirst),
+        Record.map(Array.map(Tuple.getSecond)),
+        Record.map(HashSet.fromIterable)
+    );
 
 /**
  * Transforms a `number` of seconds into a `Duration`.
