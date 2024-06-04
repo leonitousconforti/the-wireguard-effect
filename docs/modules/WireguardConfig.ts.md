@@ -18,10 +18,6 @@ Added in v1.0.0
   - [$WireguardIniConfig (interface)](#wireguardiniconfig-interface)
 - [Constructors](#constructors)
   - [fromConfigFile](#fromconfigfile)
-  - [generate](#generate)
-  - [generateHubSpokeConfigs](#generatehubspokeconfigs)
-  - [generateP2PConfigs](#generatep2pconfigs)
-  - [generateStarConfigs](#generatestarconfigs)
 - [Requests](#requests)
   - [WireguardGetConfigRequest (class)](#wireguardgetconfigrequest-class)
   - [WireguardSetConfigRequest (class)](#wireguardsetconfigrequest-class)
@@ -66,458 +62,6 @@ Loads a wireguard interface configuration from an INI file.
 export declare const fromConfigFile: (
   file: string
 ) => Effect.Effect<WireguardConfig, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem>
-```
-
-Added in v1.0.0
-
-## generate
-
-Generates a collection of wireguard configurations.
-
-**Signature**
-
-```ts
-export declare const generate: {
-  <
-    HubData extends readonly [
-      (
-        | `${string}:${number}`
-        | `${string}:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | `[${string}]:${number}`
-        | `[${string}]:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | { readonly host: string; readonly port: number }
-        | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-      ),
-      string
-    ],
-    SpokeData extends readonly [
-      readonly [
-        (
-          | `${string}:${number}`
-          | `${string}:${number}:${number}`
-          | { readonly ip: string; readonly port: number }
-          | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-          | `[${string}]:${number}`
-          | `[${string}]:${number}:${number}`
-          | { readonly ip: string; readonly port: number }
-          | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-          | { readonly host: string; readonly port: number }
-          | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-        ),
-        string
-      ],
-      ...(readonly [
-        (
-          | `${string}:${number}`
-          | `${string}:${number}:${number}`
-          | { readonly ip: string; readonly port: number }
-          | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-          | `[${string}]:${number}`
-          | `[${string}]:${number}:${number}`
-          | { readonly ip: string; readonly port: number }
-          | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-          | { readonly host: string; readonly port: number }
-          | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-        ),
-        string
-      ])[]
-    ]
-  >(options: {
-    hubData: HubData
-    spokeData: SpokeData
-    preshareKeys?: HashMap.HashMap<HubData | SpokeData[number], string & Brand<"WireguardKey">> | "generate" | undefined
-    trustMap?:
-      | HashMap.HashMap<SpokeData[number], readonly [SpokeData[number], ...SpokeData[number][]]>
-      | "trustAllPeers"
-      | "trustNoPeers"
-      | undefined
-  }): Effect.Effect<
-    readonly [hubConfig: WireguardConfig, spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig>],
-    ParseResult.ParseError | WireguardErrors.WireguardError,
-    never
-  >
-  <
-    HubData extends
-      | `${string}:${number}`
-      | `${string}:${number}:${number}`
-      | { readonly ip: string; readonly port: number }
-      | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-      | `[${string}]:${number}`
-      | `[${string}]:${number}:${number}`
-      | { readonly ip: string; readonly port: number }
-      | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-      | { readonly host: string; readonly port: number }
-      | { readonly host: string; readonly natPort: number; readonly listenPort: number },
-    SpokeData extends readonly [
-      (
-        | `${string}:${number}`
-        | `${string}:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | `[${string}]:${number}`
-        | `[${string}]:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | { readonly host: string; readonly port: number }
-        | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-      ),
-      ...(
-        | `${string}:${number}`
-        | `${string}:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | `[${string}]:${number}`
-        | `[${string}]:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | { readonly host: string; readonly port: number }
-        | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-      )[]
-    ]
-  >(options: {
-    hubData: HubData
-    spokeData: SpokeData
-    cidrBlock: InternetSchemas.CidrBlock
-    addressStartingIndex?: number | undefined
-    preshareKeys?: "generate" | HashMap.HashMap<HubData | SpokeData[number], string & Brand<"WireguardKey">> | undefined
-    trustMap?:
-      | "trustAllPeers"
-      | "trustNoPeers"
-      | HashMap.HashMap<SpokeData[number], readonly [SpokeData[number], ...SpokeData[number][]]>
-      | undefined
-  }): Effect.Effect<
-    readonly [hubConfig: WireguardConfig, spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig>],
-    ParseResult.ParseError | WireguardErrors.WireguardError,
-    never
-  >
-}
-```
-
-Added in v1.0.0
-
-## generateHubSpokeConfigs
-
-Generates a collection of wireguard configurations for a hub and spoke
-network with a single central hub node and many peers all connected to it
-where none of the peers trust each other.
-
-**Signature**
-
-```ts
-export declare const generateHubSpokeConfigs: {
-  <
-    HubData extends readonly [
-      (
-        | `${string}:${number}`
-        | `${string}:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | `[${string}]:${number}`
-        | `[${string}]:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | { readonly host: string; readonly port: number }
-        | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-      ),
-      string
-    ],
-    SpokeData extends readonly [
-      readonly [
-        (
-          | `${string}:${number}`
-          | `${string}:${number}:${number}`
-          | { readonly ip: string; readonly port: number }
-          | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-          | `[${string}]:${number}`
-          | `[${string}]:${number}:${number}`
-          | { readonly ip: string; readonly port: number }
-          | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-          | { readonly host: string; readonly port: number }
-          | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-        ),
-        string
-      ],
-      ...(readonly [
-        (
-          | `${string}:${number}`
-          | `${string}:${number}:${number}`
-          | { readonly ip: string; readonly port: number }
-          | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-          | `[${string}]:${number}`
-          | `[${string}]:${number}:${number}`
-          | { readonly ip: string; readonly port: number }
-          | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-          | { readonly host: string; readonly port: number }
-          | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-        ),
-        string
-      ])[]
-    ]
-  >(options: {
-    hubData: HubData
-    spokeData: SpokeData
-  }): Effect.Effect<
-    readonly [hubConfig: WireguardConfig, spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig>],
-    ParseResult.ParseError | WireguardErrors.WireguardError,
-    never
-  >
-  <
-    HubData extends
-      | `${string}:${number}`
-      | `${string}:${number}:${number}`
-      | { readonly ip: string; readonly port: number }
-      | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-      | `[${string}]:${number}`
-      | `[${string}]:${number}:${number}`
-      | { readonly ip: string; readonly port: number }
-      | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-      | { readonly host: string; readonly port: number }
-      | { readonly host: string; readonly natPort: number; readonly listenPort: number },
-    SpokeData extends readonly [
-      (
-        | `${string}:${number}`
-        | `${string}:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | `[${string}]:${number}`
-        | `[${string}]:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | { readonly host: string; readonly port: number }
-        | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-      ),
-      ...(
-        | `${string}:${number}`
-        | `${string}:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | `[${string}]:${number}`
-        | `[${string}]:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | { readonly host: string; readonly port: number }
-        | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-      )[]
-    ]
-  >(options: {
-    hubData: HubData
-    spokeData: SpokeData
-    cidrBlock: InternetSchemas.CidrBlock
-    addressStartingIndex?: number | undefined
-  }): Effect.Effect<
-    readonly [hubConfig: WireguardConfig, spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig>],
-    ParseResult.ParseError | WireguardErrors.WireguardError,
-    never
-  >
-}
-```
-
-Added in v1.0.0
-
-## generateP2PConfigs
-
-Generates two wireguard configurations, each with the other as a single peer
-and shares their keys appropriately.
-
-**Signature**
-
-```ts
-export declare const generateP2PConfigs: {
-  <
-    AliceData extends readonly [
-      (
-        | `${string}:${number}`
-        | `${string}:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | `[${string}]:${number}`
-        | `[${string}]:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | { readonly host: string; readonly port: number }
-        | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-      ),
-      string
-    ],
-    BobData extends readonly [
-      (
-        | `${string}:${number}`
-        | `${string}:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | `[${string}]:${number}`
-        | `[${string}]:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | { readonly host: string; readonly port: number }
-        | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-      ),
-      string
-    ]
-  >(options: {
-    aliceData: AliceData
-    bobData: BobData
-  }): Effect.Effect<
-    readonly [aliceConfig: WireguardConfig, bobConfig: WireguardConfig],
-    ParseResult.ParseError | WireguardErrors.WireguardError,
-    never
-  >
-  <
-    AliceData extends
-      | `${string}:${number}`
-      | `${string}:${number}:${number}`
-      | { readonly ip: string; readonly port: number }
-      | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-      | `[${string}]:${number}`
-      | `[${string}]:${number}:${number}`
-      | { readonly ip: string; readonly port: number }
-      | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-      | { readonly host: string; readonly port: number }
-      | { readonly host: string; readonly natPort: number; readonly listenPort: number },
-    BobData extends
-      | `${string}:${number}`
-      | `${string}:${number}:${number}`
-      | { readonly ip: string; readonly port: number }
-      | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-      | `[${string}]:${number}`
-      | `[${string}]:${number}:${number}`
-      | { readonly ip: string; readonly port: number }
-      | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-      | { readonly host: string; readonly port: number }
-      | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-  >(options: {
-    aliceData: AliceData
-    bobData: BobData
-    cidrBlock: InternetSchemas.CidrBlock
-    addressStartingIndex?: number | undefined
-  }): Effect.Effect<
-    readonly [aliceConfig: WireguardConfig, bobConfig: WireguardConfig],
-    ParseResult.ParseError | WireguardErrors.WireguardError,
-    never
-  >
-}
-```
-
-Added in v1.0.0
-
-## generateStarConfigs
-
-Generates a collection of wireguard configurations for a star network with a
-single central hub node and many peers all connected to it where the peers
-all trust each other.
-
-**Signature**
-
-```ts
-export declare const generateStarConfigs: {
-  <
-    Nodes extends readonly [
-      readonly [
-        (
-          | `${string}:${number}`
-          | `${string}:${number}:${number}`
-          | { readonly ip: string; readonly port: number }
-          | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-          | `[${string}]:${number}`
-          | `[${string}]:${number}:${number}`
-          | { readonly ip: string; readonly port: number }
-          | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-          | { readonly host: string; readonly port: number }
-          | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-        ),
-        string
-      ],
-      readonly [
-        (
-          | `${string}:${number}`
-          | `${string}:${number}:${number}`
-          | { readonly ip: string; readonly port: number }
-          | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-          | `[${string}]:${number}`
-          | `[${string}]:${number}:${number}`
-          | { readonly ip: string; readonly port: number }
-          | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-          | { readonly host: string; readonly port: number }
-          | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-        ),
-        string
-      ],
-      ...(readonly [
-        (
-          | `${string}:${number}`
-          | `${string}:${number}:${number}`
-          | { readonly ip: string; readonly port: number }
-          | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-          | `[${string}]:${number}`
-          | `[${string}]:${number}:${number}`
-          | { readonly ip: string; readonly port: number }
-          | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-          | { readonly host: string; readonly port: number }
-          | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-        ),
-        string
-      ])[]
-    ]
-  >(options: {
-    nodes: Nodes
-  }): Effect.Effect<
-    readonly [hubConfig: WireguardConfig, spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig>],
-    ParseResult.ParseError | WireguardErrors.WireguardError,
-    never
-  >
-  <
-    Nodes extends readonly [
-      (
-        | `${string}:${number}`
-        | `${string}:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | `[${string}]:${number}`
-        | `[${string}]:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | { readonly host: string; readonly port: number }
-        | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-      ),
-      (
-        | `${string}:${number}`
-        | `${string}:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | `[${string}]:${number}`
-        | `[${string}]:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | { readonly host: string; readonly port: number }
-        | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-      ),
-      ...(
-        | `${string}:${number}`
-        | `${string}:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | `[${string}]:${number}`
-        | `[${string}]:${number}:${number}`
-        | { readonly ip: string; readonly port: number }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-        | { readonly host: string; readonly port: number }
-        | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-      )[]
-    ]
-  >(options: {
-    nodes: Nodes
-    cidrBlock: InternetSchemas.CidrBlock
-    addressStartingIndex?: number | undefined
-  }): Effect.Effect<
-    readonly [hubConfig: WireguardConfig, spokeConfigs: Array.NonEmptyReadonlyArray<WireguardConfig>],
-    ParseResult.ParseError | WireguardErrors.WireguardError,
-    never
-  >
-}
 ```
 
 Added in v1.0.0
@@ -573,77 +117,62 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const WireguardGetConfigResponse: Schema.Schema<
-  {
-    readonly Address: InternetSchemas.CidrBlock
-    readonly Dns?: InternetSchemas.IPv4 | InternetSchemas.IPv6 | undefined
-    readonly ListenPort: InternetSchemas.PortBrand
-    readonly FirewallMark?: number | undefined
-    readonly PrivateKey: string & Brand<"WireguardKey">
-    writeToFile: (
-      file: string
-    ) => Effect.Effect<void, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem | Path.Path>
-    up: (
-      interfaceObject?: WireguardInterface.WireguardInterface | undefined
-    ) => Effect.Effect<
-      WireguardInterface.WireguardInterface,
-      | ParseResult.ParseError
-      | Socket.SocketError
-      | PlatformError.PlatformError
-      | Cause.UnknownException
-      | WireguardErrors.WireguardError,
-      FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
+export declare const WireguardGetConfigResponse: Schema.extend<
+  Schema.SchemaClass<
+    {
+      readonly Address: InternetSchemas.CidrBlockBase<"ipv4"> | InternetSchemas.CidrBlockBase<"ipv6">
+      readonly PrivateKey: string & Brand<"WireguardKey">
+      readonly Dns?:
+        | { readonly family: "ipv4"; readonly ip: InternetSchemas.IPv4Brand }
+        | { readonly family: "ipv6"; readonly ip: InternetSchemas.IPv6Brand }
+        | undefined
+      readonly ListenPort: InternetSchemas.PortBrand
+      readonly FirewallMark?: number | undefined
+      writeToFile: (
+        file: string
+      ) => Effect.Effect<void, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem | Path.Path>
+      up: (
+        interfaceObject?: WireguardInterface.WireguardInterface | undefined
+      ) => Effect.Effect<
+        WireguardInterface.WireguardInterface,
+        | Socket.SocketError
+        | ParseResult.ParseError
+        | Cause.UnknownException
+        | WireguardErrors.WireguardError
+        | PlatformError.PlatformError,
+        FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl | CommandExecutor.CommandExecutor
+      >
+      upScoped: (
+        interfaceObject?: WireguardInterface.WireguardInterface | undefined
+      ) => Effect.Effect<
+        WireguardInterface.WireguardInterface,
+        | Socket.SocketError
+        | ParseResult.ParseError
+        | Cause.UnknownException
+        | WireguardErrors.WireguardError
+        | PlatformError.PlatformError,
+        | Scope.Scope
+        | FileSystem.FileSystem
+        | Path.Path
+        | WireguardControl.WireguardControl
+        | CommandExecutor.CommandExecutor
+      >
+    },
+    {
+      readonly Address: `${string}/${number}`
+      readonly PrivateKey: string
+      readonly Dns?: string | undefined
+      readonly ListenPort: string | number
+      readonly FirewallMark?: number | null | undefined
+    },
+    never
+  >,
+  Schema.Struct<{
+    Peers: Schema.optionalWithOptions<
+      Schema.Array$<typeof WireguardPeer.WireguardUApiGetPeerResponse>,
+      { default: () => never[]; nullable: true }
     >
-    upScoped: (
-      interfaceObject?: WireguardInterface.WireguardInterface | undefined
-    ) => Effect.Effect<
-      WireguardInterface.WireguardInterface,
-      | ParseResult.ParseError
-      | Socket.SocketError
-      | PlatformError.PlatformError
-      | Cause.UnknownException
-      | WireguardErrors.WireguardError,
-      | FileSystem.FileSystem
-      | Path.Path
-      | Scope.Scope
-      | CommandExecutor.CommandExecutor
-      | WireguardControl.WireguardControl
-    >
-    readonly Peers: readonly WireguardPeer.WireguardUApiGetPeerResponse[]
-  },
-  {
-    readonly Address: `${string}/${number}`
-    readonly Dns?: string | undefined
-    readonly ListenPort: string | number
-    readonly FirewallMark?: number | null | undefined
-    readonly PrivateKey: string
-    readonly Peers?:
-      | readonly {
-          readonly PublicKey: string
-          readonly PersistentKeepalive?: number | null | undefined
-          readonly AllowedIPs?: ReadonlySet<`${string}/${number}`> | null | undefined
-          readonly Endpoint?:
-            | `${string}:${number}`
-            | `${string}:${number}:${number}`
-            | { readonly ip: string; readonly port: number }
-            | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-            | `[${string}]:${number}`
-            | `[${string}]:${number}:${number}`
-            | { readonly ip: string; readonly port: number }
-            | { readonly ip: string; readonly natPort: number; readonly listenPort: number }
-            | { readonly host: string; readonly port: number }
-            | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-            | null
-            | undefined
-          readonly PresharedKey?: string | null | undefined
-          readonly rxBytes: string
-          readonly txBytes: string
-          readonly lastHandshakeTimeSeconds: string
-        }[]
-      | null
-      | undefined
-  },
-  never
+  }>
 >
 ```
 

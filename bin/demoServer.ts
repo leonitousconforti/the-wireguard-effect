@@ -1,6 +1,6 @@
 import * as Command from "@effect/cli/Command";
 import * as Options from "@effect/cli/Options";
-import * as SocketServer from "@effect/experimental/SocketServer/Node";
+import * as SocketServerNode from "@effect/experimental/SocketServer/Node";
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as Schema from "@effect/schema/Schema";
@@ -9,7 +9,7 @@ import * as Layer from "effect/Layer";
 
 import * as InternetSchemas from "../src/InternetSchemas.js";
 import * as WireguardControl from "../src/WireguardControl.js";
-import * as WireguardDemo from "../src/WireguardDemo.js";
+import * as WireguardServer from "../src/WireguardServer.js";
 
 const maxPeers = Options.integer("maxPeers")
     .pipe(Options.withDefault(256))
@@ -40,11 +40,11 @@ const command = Command.make(
     "demoServer",
     { hiddenServerPort, maxPeers, serverPort, wireguardNetwork, wireguardPort },
     ({ maxPeers, serverPort, wireguardNetwork, wireguardPort }) =>
-        WireguardDemo.WireguardDemoServer({
+        WireguardServer.WireguardDemoServer({
             maxPeers,
-            wireguardPort,
             wireguardNetwork,
-        }).pipe(Effect.provide(SocketServer.layer({ port: serverPort })))
+            serverEndpoint: { host: "localhost", natPort: wireguardPort, listenPort: wireguardPort },
+        }).pipe(Effect.provide(SocketServerNode.layer({ port: serverPort })))
 );
 
 const cli = Command.run(command, {

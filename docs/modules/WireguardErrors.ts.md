@@ -1,6 +1,6 @@
 ---
 title: WireguardErrors.ts
-nav_order: 6
+nav_order: 5
 parent: Modules
 ---
 
@@ -30,7 +30,7 @@ A wireguard userspace api Errno return message.
 **Signature**
 
 ```ts
-export declare const SuccessErrno: Schema.brand<Schema.Schema<"errno=0", "errno=0", never>, "SuccessErrno">
+export declare const SuccessErrno: Schema.brand<Schema.SchemaClass<"errno=", "errno=", never>, "SuccessErrno">
 ```
 
 Added in v1.0.0

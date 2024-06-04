@@ -18,11 +18,12 @@ Added in v1.0.0
   - [From "./InternetSchemas.js"](#from-internetschemasjs)
   - [From "./WireguardConfig.js"](#from-wireguardconfigjs)
   - [From "./WireguardControl.js"](#from-wireguardcontroljs)
-  - [From "./WireguardDemo.js"](#from-wireguarddemojs)
   - [From "./WireguardErrors.js"](#from-wireguarderrorsjs)
+  - [From "./WireguardGenerate.js"](#from-wireguardgeneratejs)
   - [From "./WireguardInterface.js"](#from-wireguardinterfacejs)
   - [From "./WireguardKey.js"](#from-wireguardkeyjs)
   - [From "./WireguardPeer.js"](#from-wireguardpeerjs)
+  - [From "./WireguardServer.js"](#from-wireguardserverjs)
 
 ---
 
@@ -64,18 +65,6 @@ export * as WireguardControl from "./WireguardControl.js"
 
 Added in v1.0.0
 
-## From "./WireguardDemo.js"
-
-Utilities for connecting to the Wireguard demo server at demo.wireguard.com
-
-**Signature**
-
-```ts
-export * as WireguardDemo from "./WireguardDemo.js"
-```
-
-Added in v1.0.0
-
 ## From "./WireguardErrors.js"
 
 Wireguard errors
@@ -84,6 +73,18 @@ Wireguard errors
 
 ```ts
 export * as WireguardErrors from "./WireguardErrors.js"
+```
+
+Added in v1.0.0
+
+## From "./WireguardGenerate.js"
+
+Tools to help generate wireguard configs for common situations.
+
+**Signature**
+
+```ts
+export * as WireguardGenerate from "./WireguardGenerate.js"
 ```
 
 Added in v1.0.0
@@ -120,6 +121,18 @@ Wireguard peer schema definitions
 
 ```ts
 export * as WireguardPeer from "./WireguardPeer.js"
+```
+
+Added in v1.0.0
+
+## From "./WireguardServer.js"
+
+Utilities for connecting to the Wireguard demo server at demo.wireguard.com
+
+**Signature**
+
+```ts
+export * as WireguardServer from "./WireguardServer.js"
 ```
 
 Added in v1.0.0

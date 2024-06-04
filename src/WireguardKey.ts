@@ -45,10 +45,9 @@ export const generateKeyPair = (): { readonly privateKey: WireguardKey; readonly
         publicKeyEncoding: { format: "der", type: "spki" },
         privateKeyEncoding: { format: "der", type: "pkcs8" },
     });
-    return {
-        publicKey: WireguardKey(keys.publicKey.subarray(12).toString("base64")),
-        privateKey: WireguardKey(keys.privateKey.subarray(16).toString("base64")),
-    };
+    const publicKey = Schema.decodeSync(WireguardKey)(keys.publicKey.subarray(12).toString("base64"));
+    const privateKey = Schema.decodeSync(WireguardKey)(keys.privateKey.subarray(16).toString("base64"));
+    return { publicKey, privateKey };
 };
 
 /**
@@ -62,7 +61,7 @@ export const generateKeyPair = (): { readonly privateKey: WireguardKey; readonly
  */
 export const generatePreshareKey = (): WireguardKey => {
     const key = crypto.generateKeySync("hmac", { length: 256 });
-    return WireguardKey(key.export().toString("base64"));
+    return Schema.decodeSync(WireguardKey)(key.export().toString("base64"));
 };
 
 export default WireguardKey;

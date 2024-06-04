@@ -183,7 +183,7 @@ export const WireguardIniPeer: $WireguardIniPeer = Schema.transformOrFail(Wiregu
         const aps: Array<`AllowedIPs = ${string}/${number}`> = Function.pipe(
             peer.AllowedIPs,
             Array.fromIterable,
-            Array.map((ap) => `${ap.ip.ip}/${ap.mask}` as const),
+            Array.map((ap) => `${ap.address.ip}/${ap.mask}` as const),
             Array.map((ap) => `AllowedIPs = ${ap}` as const)
         );
 
@@ -276,7 +276,7 @@ export const makeWireguardUApiSetPeerRequest = (peer: WireguardPeer): string => 
     const aps: Array<`allowed_ip=${string}/${number}`> = Function.pipe(
         peer.AllowedIPs,
         Array.fromIterable,
-        Array.map((ap) => `${ap.ip.ip}/${ap.mask}` as const),
+        Array.map((ap) => `${ap.address.ip}/${ap.mask}` as const),
         Array.map((ap) => `allowed_ip=${ap}` as const)
     );
 

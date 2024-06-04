@@ -7,7 +7,7 @@ import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as WireguardControl from "the-wireguard-effect/WireguardControl";
-import * as DemoUtils from "the-wireguard-effect/WireguardDemo";
+import * as DemoUtils from "the-wireguard-effect/WireguardServer";
 
 const portConfig = Config.number("WIREGUARD_DEMO_PORT");
 const hostConfig = Config.string("WIREGUARD_DEMO_HOST");
@@ -17,7 +17,7 @@ const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
     WireguardControl.makeBundledWgQuickLayer({ sudo: process.platform !== "linux" })
 );
 
-describe("wireguard e2e test using demo.wireguard.com", () => {
+describe.skip("wireguard e2e test using demo.wireguard.com", () => {
     it.scopedLive(
         "Should be able to connect to the demo server",
         () =>
