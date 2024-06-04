@@ -23,7 +23,11 @@ export const program = (
     /** Server's public address */
     serverAddress = "server.wireguard.com:51820" as const
 ): Effect.Effect<
-    readonly [WireguardConfig.WireguardConfig, ...Array.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>],
+    readonly [
+        WireguardConfig.WireguardConfig,
+        WireguardConfig.WireguardConfig,
+        ...ReadonlyArray<WireguardConfig.WireguardConfig>,
+    ],
     ParseResult.ParseError | WireguardErrors.WireguardError,
     never
 > =>

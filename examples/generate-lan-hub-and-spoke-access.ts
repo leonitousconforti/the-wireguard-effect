@@ -2,7 +2,6 @@ import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
-import * as Array from "effect/Array";
 import * as Chunk from "effect/Chunk";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
@@ -26,7 +25,11 @@ export const program = (
     /** Server's public address */
     serverAddress = "server.wireguard.com:51820" as const
 ): Effect.Effect<
-    readonly [WireguardConfig.WireguardConfig, ...Array.NonEmptyReadonlyArray<WireguardConfig.WireguardConfig>],
+    readonly [
+        WireguardConfig.WireguardConfig,
+        WireguardConfig.WireguardConfig,
+        ...ReadonlyArray<WireguardConfig.WireguardConfig>,
+    ],
     ParseResult.ParseError | WireguardErrors.WireguardError,
     never
 > =>
