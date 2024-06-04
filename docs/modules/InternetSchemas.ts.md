@@ -42,6 +42,10 @@ Added in v1.0.0
   - [$IPv6SetupData (interface)](#ipv6setupdata-interface)
   - [$Port (interface)](#port-interface)
   - [$SetupData (interface)](#setupdata-interface)
+  - [CidrBlockBase (class)](#cidrblockbase-class)
+    - [networkAddress (method)](#networkaddress-method)
+    - [broadcastAddress (method)](#broadcastaddress-method)
+    - [family (property)](#family-property)
 - [Branded constructors](#branded-constructors)
   - [IPv4BigintBrand](#ipv4bigintbrand)
   - [IPv4Brand](#ipv4brand)
@@ -180,7 +184,7 @@ Added in v1.0.0
 export interface $CidrBlockFromString
   extends Schema.Annotable<
     $CidrBlockFromString,
-    CidrBlockBase<IPv4Family> | CidrBlockBase<IPv6Family>,
+    CidrBlockBase<"ipv4"> | CidrBlockBase<"ipv6">,
     `${string}/${number}`,
     never
   > {}
@@ -288,12 +292,13 @@ Added in v1.0.0
 
 ```ts
 export interface $IPv4CidrBlock
-  extends Schema.transformOrFail<
-    Schema.Struct<{
-      address: $IPv4
-      mask: $IPv4CidrMask
-    }>,
-    typeof CidrBlockBase<IPv4Family>,
+  extends Schema.Annotable<
+    $IPv4CidrBlock,
+    CidrBlockBase<"ipv4">,
+    {
+      readonly address: string
+      readonly mask: number
+    },
     never
   > {}
 ```
@@ -306,7 +311,7 @@ Added in v1.0.0
 
 ```ts
 export interface $IPv4CidrBlockFromString
-  extends Schema.Annotable<$IPv4CidrBlockFromString, CidrBlockBase<IPv4Family>, `${string}/${number}`, never> {}
+  extends Schema.Annotable<$IPv4CidrBlockFromString, CidrBlockBase<"ipv4">, `${string}/${number}`, never> {}
 ```
 
 Added in v1.0.0
@@ -407,7 +412,7 @@ export interface $IPv6CidrBlock
       address: $IPv6
       mask: $IPv6CidrMask
     }>,
-    typeof CidrBlockBase<IPv6Family>,
+    typeof CidrBlockBase<"ipv6">,
     never
   > {}
 ```
@@ -420,7 +425,7 @@ Added in v1.0.0
 
 ```ts
 export interface $IPv6CidrBlockFromString
-  extends Schema.Annotable<$IPv6CidrBlockFromString, CidrBlockBase<IPv6Family>, `${string}/${number}`, never> {}
+  extends Schema.Annotable<$IPv6CidrBlockFromString, CidrBlockBase<"ipv6">, `${string}/${number}`, never> {}
 ```
 
 Added in v1.0.0
@@ -492,6 +497,60 @@ Added in v1.0.0
 ```ts
 export interface $SetupData
   extends Schema.Union<[$IPv4SetupData, $IPv6SetupData, $HostnameIPv4SetupData, $HostnameIPv6SetupData]> {}
+```
+
+Added in v1.0.0
+
+## CidrBlockBase (class)
+
+**Signature**
+
+```ts
+export declare class CidrBlockBase<_Family>
+```
+
+Added in v1.0.0
+
+### networkAddress (method)
+
+The first address in the range given by this address' subnet, often
+referred to as the Network Address.
+
+**Signature**
+
+```ts
+public networkAddress(): _Family extends IPv4Family
+        ? Effect.Effect<IPv4, ParseResult.ParseError, never>
+        : _Family extends IPv6Family
+          ? Effect.Effect<IPv6, ParseResult.ParseError, never>
+          : never
+```
+
+Added in v1.0.0
+
+### broadcastAddress (method)
+
+The last address in the range given by this address' subnet, often
+referred to as the Broadcast Address.
+
+**Signature**
+
+```ts
+public broadcastAddress(): _Family extends IPv4Family
+        ? Effect.Effect<IPv4, ParseResult.ParseError, never>
+        : _Family extends IPv6Family
+          ? Effect.Effect<IPv6, ParseResult.ParseError, never>
+          : never
+```
+
+Added in v1.0.0
+
+### family (property)
+
+**Signature**
+
+```ts
+readonly family: "ipv4" | "ipv6"
 ```
 
 Added in v1.0.0

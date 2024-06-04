@@ -189,7 +189,7 @@ export declare const toConfigs: <
   readonly [
     WireguardConfig.WireguardConfig,
     WireguardConfig.WireguardConfig,
-    ...Array<WireguardConfig.WireguardConfig>
+    ...ReadonlyArray<WireguardConfig.WireguardConfig>
   ],
   ParseResult.ParseError | WireguardErrors.WireguardError,
   never

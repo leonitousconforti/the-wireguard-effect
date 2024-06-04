@@ -819,12 +819,12 @@ export const IPv6CidrMask: $IPv6CidrMask = Schema.Int.pipe(Schema.between(0, 128
 /**
  * @since 1.0.0
  * @category Api interface
- * @internal
  */
 export class CidrBlockBase<_Family extends Family> extends Schema.Class<CidrBlockBase<Family>>("CidrBlockMixin")({
     address: Address,
     mask: Schema.Union(IPv4CidrMask, IPv6CidrMask),
 }) {
+    /** @since 1.0.0 */
     public readonly family: Family = this.address.family;
 
     /** @internal */
@@ -832,8 +832,8 @@ export class CidrBlockBase<_Family extends Family> extends Schema.Class<CidrBloc
         onIPv4,
         onIPv6,
     }: {
-        onIPv4: (self: CidrBlockBase<IPv4Family>) => OnIPv4;
-        onIPv6: (self: CidrBlockBase<IPv6Family>) => OnIPv6;
+        onIPv4: (self: CidrBlockBase<"ipv4">) => OnIPv4;
+        onIPv6: (self: CidrBlockBase<"ipv6">) => OnIPv6;
     }): _Family extends IPv4Family ? OnIPv4 : _Family extends IPv6Family ? OnIPv6 : never {
         type Ret = typeof this.address.family extends IPv4Family
             ? OnIPv4
@@ -841,13 +841,13 @@ export class CidrBlockBase<_Family extends Family> extends Schema.Class<CidrBloc
               ? OnIPv6
               : never;
 
-        const isIPv4 = (): this is CidrBlockBase<IPv4Family> => this.family === "ipv4";
-        const isIPv6 = (): this is CidrBlockBase<IPv6Family> => this.family === "ipv6";
+        const isIPv4 = (): this is CidrBlockBase<"ipv4"> => this.family === "ipv4";
+        const isIPv6 = (): this is CidrBlockBase<"ipv6"> => this.family === "ipv6";
 
         if (isIPv4()) {
-            return onIPv4(this as CidrBlockBase<IPv4Family>) as Ret;
+            return onIPv4(this as CidrBlockBase<"ipv4">) as Ret;
         } else if (isIPv6()) {
-            return onIPv6(this as CidrBlockBase<IPv6Family>) as Ret;
+            return onIPv6(this as CidrBlockBase<"ipv6">) as Ret;
         } else {
             return Function.absurd<Ret>(this.family as never);
         }
@@ -1018,8 +1018,8 @@ export class CidrBlockBase<_Family extends Family> extends Schema.Class<CidrBloc
     public static readonly cidrBlockForRange = <_Family extends Family>(
         inputs: _Family extends IPv4Family ? Array.NonEmptyReadonlyArray<IPv4> : Array.NonEmptyReadonlyArray<IPv6>
     ): _Family extends IPv4Family
-        ? Effect.Effect<CidrBlockBase<IPv4Family>, ParseResult.ParseError, never>
-        : Effect.Effect<CidrBlockBase<IPv6Family>, ParseResult.ParseError, never> =>
+        ? Effect.Effect<CidrBlockBase<"ipv4">, ParseResult.ParseError, never>
+        : Effect.Effect<CidrBlockBase<"ipv6">, ParseResult.ParseError, never> =>
         Effect.gen(function* () {
             const bigIntMinAndMax = (args: Array.NonEmptyReadonlyArray<bigint>) => {
                 return args.reduce(
@@ -1055,8 +1055,8 @@ export class CidrBlockBase<_Family extends Family> extends Schema.Class<CidrBloc
 
             return yield* Schema.decode(CidrBlockFromString)(`${cidrAddress}/${cidrMask}`);
         }) as _Family extends IPv4Family
-            ? Effect.Effect<CidrBlockBase<IPv4Family>, ParseResult.ParseError, never>
-            : Effect.Effect<CidrBlockBase<IPv6Family>, ParseResult.ParseError, never>;
+            ? Effect.Effect<CidrBlockBase<"ipv4">, ParseResult.ParseError, never>
+            : Effect.Effect<CidrBlockBase<"ipv6">, ParseResult.ParseError, never>;
 }
 
 /**
@@ -1064,14 +1064,25 @@ export class CidrBlockBase<_Family extends Family> extends Schema.Class<CidrBloc
  * @category Api interface
  */
 export interface $IPv4CidrBlock
-    extends Schema.transformOrFail<
-        Schema.Struct<{
-            address: $IPv4;
-            mask: $IPv4CidrMask;
-        }>,
-        typeof CidrBlockBase<IPv4Family>,
+    extends Schema.Annotable<
+        $IPv4CidrBlock,
+        CidrBlockBase<"ipv4">,
+        {
+            readonly address: string;
+            readonly mask: number;
+        },
         never
     > {}
+
+// export interface $IPv4CidrBlock
+//     extends Schema.transformOrFail<
+//         Schema.Struct<{
+//             address: $IPv4;
+//             mask: $IPv4CidrMask;
+//         }>,
+//         typeof CidrBlockBase<"ipv4">,
+//         never
+//     > {}
 
 /**
  * @since 1.0.0
@@ -1111,7 +1122,7 @@ export const IPv4CidrBlock: $IPv4CidrBlock = Schema.transformOrFail(
  * @category Api interface
  */
 export interface $IPv4CidrBlockFromString
-    extends Schema.Annotable<$IPv4CidrBlockFromString, CidrBlockBase<IPv4Family>, `${string}/${number}`, never> {}
+    extends Schema.Annotable<$IPv4CidrBlockFromString, CidrBlockBase<"ipv4">, `${string}/${number}`, never> {}
 
 /**
  * @since 1.0.0
@@ -1156,7 +1167,7 @@ export interface $IPv6CidrBlock
             address: $IPv6;
             mask: $IPv6CidrMask;
         }>,
-        typeof CidrBlockBase<IPv6Family>,
+        typeof CidrBlockBase<"ipv6">,
         never
     > {}
 
@@ -1198,7 +1209,7 @@ export const IPv6CidrBlock: $IPv6CidrBlock = Schema.transformOrFail(
  * @category Api interface
  */
 export interface $IPv6CidrBlockFromString
-    extends Schema.Annotable<$IPv6CidrBlockFromString, CidrBlockBase<IPv6Family>, `${string}/${number}`, never> {}
+    extends Schema.Annotable<$IPv6CidrBlockFromString, CidrBlockBase<"ipv6">, `${string}/${number}`, never> {}
 
 /**
  * @since 1.0.0
@@ -1252,7 +1263,7 @@ export const CidrBlock: $CidrBlock = Schema.Union(IPv4CidrBlock, IPv6CidrBlock);
 export interface $CidrBlockFromString
     extends Schema.Annotable<
         $CidrBlockFromString,
-        CidrBlockBase<IPv4Family> | CidrBlockBase<IPv6Family>,
+        CidrBlockBase<"ipv4"> | CidrBlockBase<"ipv6">,
         `${string}/${number}`,
         never
     > {}
