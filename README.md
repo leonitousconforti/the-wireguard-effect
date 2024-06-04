@@ -17,7 +17,7 @@ The motivation for this project came from wanting to create wireguard configurat
 ## WIP/Todo :construction:
 
 - Implement wg cli clone
-- Obtain wintun drivers from public source and check hash during build, rather than just uploading them
+- Obtain wintun drivers from public source and check hash during build, rather than just uploading them (https://github.com/leonitousconforti/the-wireguard-effect/issues/62)
 - FreeBSD and OpenBSD support (https://github.com/leonitousconforti/the-wireguard-effect/pull/104)
 
 ## Blocked :ambulance:
@@ -27,6 +27,7 @@ The motivation for this project came from wanting to create wireguard configurat
 ## Non-Goals :wastebasket:
 
 - Utilities for installing or checking if wireguard is installed on the system.
+- NAT traversal utilities
 - Utilities to configure network interfaces or generation of any iptables or nftables rules when bringing a config up using the userspace api.
 
 ## Notes :memo:
