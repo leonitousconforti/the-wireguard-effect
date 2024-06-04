@@ -19,6 +19,7 @@ Added in v1.0.0
   - [From "./WireguardConfig.js"](#from-wireguardconfigjs)
   - [From "./WireguardControl.js"](#from-wireguardcontroljs)
   - [From "./WireguardErrors.js"](#from-wireguarderrorsjs)
+  - [From "./WireguardGenerate.js"](#from-wireguardgeneratejs)
   - [From "./WireguardInterface.js"](#from-wireguardinterfacejs)
   - [From "./WireguardKey.js"](#from-wireguardkeyjs)
   - [From "./WireguardPeer.js"](#from-wireguardpeerjs)
@@ -72,6 +73,18 @@ Wireguard errors
 
 ```ts
 export * as WireguardErrors from "./WireguardErrors.js"
+```
+
+Added in v1.0.0
+
+## From "./WireguardGenerate.js"
+
+Tools to help generate wireguard configs for common situations.
+
+**Signature**
+
+```ts
+export * as WireguardGenerate from "./WireguardGenerate.js"
 ```
 
 Added in v1.0.0

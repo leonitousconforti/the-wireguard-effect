@@ -9,6 +9,7 @@
         "ghcr.io/devcontainers/features/node:1": {},
         "ghcr.io/devcontainers/features/github-cli:1": {},
         "ghcr.io/devcontainers/features/common-utils:2": {},
+        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
         "ghcr.io/devcontainers-contrib/features/apt-get-packages:1": {
             "packages": "mingw-w64,imagemagick,libarchive-tools,iptables,iputils-ping,build-essential,flex,bison,dwarves,libssl-dev,libelf-dev,bc,ccache,librsvg2-bin,openresolv,fakeroot,debhelper,libtool-bin,clang,llvm-dev,libxml2-dev,uuid-dev,libssl-dev,bash,patch,make,tar,xz-utils,bzip2,gzip,sed,cpio,libbz2-dev,zlib1g-dev,cmake"
         }

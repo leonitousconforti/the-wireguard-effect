@@ -15,6 +15,7 @@
         "inet",
         "installtunnelservice",
         "interruptible",
+        "lans",
         "leonitous",
         "leonitousconforti",
         "Millis",
@@ -26,6 +27,7 @@
         "protobuf",
         "rushstack",
         "struct",
+        "Tailscale",
         "treeshake",
         "tsbuildinfo",
         "tsdoc",
@@ -34,6 +36,7 @@
         "typeof",
         "Uapi",
         "uninstalltunnelservice",
+        "Unraid",
         "Userspace",
         "utun",
         "wintun"
@@ -50,5 +53,6 @@
         "submodules/wireguard-tools/**": true,
         "submodules/wireguard-windows/**": true,
         "submodules/WSL2-Linux-Kernel/**": true
-    }
+    },
+    "typescript.tsdk": "node_modules/typescript/lib"
 }

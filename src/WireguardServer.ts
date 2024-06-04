@@ -71,7 +71,7 @@ export const WireguardDemoServerSchema = Schema.transform(
     Schema.Struct({
         serverPort: InternetSchemas.Port,
         serverPublicKey: WireguardKey.WireguardKey,
-        yourWireguardAddress: InternetSchemas.AddressFromString,
+        yourWireguardAddress: InternetSchemas.Address,
     }),
     {
         decode: (input) => {
@@ -239,7 +239,7 @@ export const WireguardDemoServer = (options: {
             Math.min(options?.maxPeers || 256, Number(wireguardNetwork.total))
         );
         yield* Function.pipe(
-            wireguardNetwork.range,
+            wireguardNetwork.range as Stream.Stream<InternetSchemas.Address, ParseResult.ParseError, never>,
             Stream.drop(2),
             Stream.run(Sink.fromQueue(serverWireguardAddressPool))
         );
