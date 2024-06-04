@@ -1,7 +1,7 @@
 {
     "extends": "./tsconfig.base.json",
     "include": ["e2e"],
-    "references": [{ "path": "tsconfig.src.json" }],
+    "references": [{ "path": "./tsconfig.src.json" }],
     "compilerOptions": {
         "noEmit": true,
         "rootDir": "e2e",

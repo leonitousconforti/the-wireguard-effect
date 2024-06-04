@@ -608,8 +608,8 @@ export const generateRemoteAccessToLan = <
     Function.flow(
         generateRemoteAccessToServer,
         addAllowedIPs(
-            ipForNode(options.nodes[0]),
             ipForNode(options.nodes[1]),
+            ipForNode(options.nodes[0]),
             Array.isArray(options.lanNetworkCidr)
                 ? options.lanNetworkCidr
                 : Array.of(options.lanNetworkCidr as InternetSchemas.CidrBlockBase<InternetSchemas.Family>)
@@ -635,7 +635,12 @@ export const generateServerToServerAccess = <
     nodes: Nodes;
     wireguardNetworkCidr: NetworkCidr;
 }): WireguardNetwork<Nodes> =>
-    Function.flow(generateKeys, generateHubAndSpokeConnections, computeAllowedIPsFromConnections)(options);
+    Function.flow(
+        generateKeys,
+        addPreshareKeys,
+        generateHubAndSpokeConnections,
+        computeAllowedIPsFromConnections
+    )(options);
 
 /**
  * Builds on "Server to server access", allowing two entire networks to
@@ -665,9 +670,9 @@ export const generateLanToLanAccess = <
           : never,
 >(options: {
     nodes: Nodes;
-    wireguardNetworkCidr: NetworkCidr1;
     server1Lan: NetworkCidr2;
     server2Lan: NetworkCidr3;
+    wireguardNetworkCidr: NetworkCidr1;
 }): WireguardNetwork<Nodes> =>
     Function.flow(
         generateServerToServerAccess,
@@ -689,9 +694,8 @@ export const generateLanToLanAccess = <
 
 /**
  * Builds on "Remote access to server", except that all of the VPN clients can
- * connect to each other as well. The enableDirectCommunication flag determines
- * if traffic between nodes must pass through the server or if nodes are able to
- * communicate directly with each other.
+ * connect to each other as well. Note: all traffic between nodes must pass
+ * through the server.
  *
  * @since 1.0.0
  * @category Generators
@@ -708,14 +712,11 @@ export const generateServerHubAndSpokeAccess = <
 >(options: {
     nodes: Nodes;
     wireguardNetworkCidr: NetworkCidr;
-    enableDirectCommunication?: boolean | undefined;
 }): WireguardNetwork<Nodes> =>
     Function.flow(
         generateKeys,
         addPreshareKeys,
-        Predicate.isTruthy(options.enableDirectCommunication)
-            ? generateStarConnections
-            : generateHubAndSpokeConnections,
+        generateHubAndSpokeConnections,
         computeAllowedIPsFromConnections
     )(options);
 
@@ -744,7 +745,6 @@ export const generateLanHubAndSpokeAccess = <
     nodes: Nodes;
     lanNetworkCidr: NetworkCidr2;
     wireguardNetworkCidr: NetworkCidr;
-    enableDirectCommunication?: boolean | undefined;
 }): WireguardNetwork<Nodes> => {
     const addAllowedIPsToAllNodes = Function.pipe(
         options.nodes,

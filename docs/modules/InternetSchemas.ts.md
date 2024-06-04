@@ -747,7 +747,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type IPv4CidrBlock = Schema.Schema.Type<$IPv4CidrBlock>
+export type IPv4CidrBlock = CidrBlockBase<"ipv4">
 ```
 
 Added in v1.0.0
@@ -827,7 +827,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type IPv6CidrBlock = Schema.Schema.Type<$IPv6CidrBlock>
+export type IPv6CidrBlock = CidrBlockBase<"ipv6">
 ```
 
 Added in v1.0.0

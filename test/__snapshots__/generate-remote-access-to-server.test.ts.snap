@@ -1,0 +1,37 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`wireguard generate remote access to server > Should generate configs 1`] = `
+{
+  "Address": "10.0.0.1/24",
+  "ListenPort": 51820,
+  "Peers": [
+    {
+      "AllowedIPs": Set {
+        "10.0.0.2/32",
+      },
+      "Endpoint": undefined,
+      "PresharedKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
+      "PublicKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
+    },
+  ],
+  "PrivateKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
+}
+`;
+
+exports[`wireguard generate remote access to server > Should generate configs 2`] = `
+{
+  "Address": "10.0.0.2/24",
+  "ListenPort": 0,
+  "Peers": [
+    {
+      "AllowedIPs": Set {
+        "10.0.0.1/32",
+      },
+      "Endpoint": "server.wireguard.com:51820:51820",
+      "PresharedKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
+      "PublicKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
+    },
+  ],
+  "PrivateKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
+}
+`;
