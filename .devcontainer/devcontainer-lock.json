@@ -11,9 +11,9 @@
       "integrity": "sha256:e9e1d402031416ed5fc500f242c27ffa1043a27b5ba612e6596ea62503c8ae70"
     },
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
-      "version": "1.4.5",
-      "resolved": "ghcr.io/devcontainers/features/docker-outside-of-docker@sha256:853fe12eb71b5de8baf2dbd2bb7574bb251251b780332b77b00c866210d76610",
-      "integrity": "sha256:853fe12eb71b5de8baf2dbd2bb7574bb251251b780332b77b00c866210d76610"
+      "version": "1.5.0",
+      "resolved": "ghcr.io/devcontainers/features/docker-outside-of-docker@sha256:20761bd733511c1995ee955682cc2778b0a2e556abf88e9b88490c3be3c80bbc",
+      "integrity": "sha256:20761bd733511c1995ee955682cc2778b0a2e556abf88e9b88490c3be3c80bbc"
     },
     "ghcr.io/devcontainers/features/git:1": {
       "version": "1.2.0",
