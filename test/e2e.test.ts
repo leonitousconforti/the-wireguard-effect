@@ -17,7 +17,7 @@ const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
     WireguardControl.makeBundledWgQuickLayer({ sudo: process.platform !== "linux" })
 );
 
-describe.skip("wireguard e2e test using demo.wireguard.com", () => {
+describe("wireguard e2e test using demo.wireguard.com", () => {
     it.scopedLive(
         "Should be able to connect to the demo server",
         () =>
