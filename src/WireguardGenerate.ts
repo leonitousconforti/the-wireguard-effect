@@ -772,9 +772,24 @@ export const generateLanHubAndSpokeAccess = <
  *
  * @since 1.0.0
  * @category Generators
- * @todo Implement
  */
-// export const generateVpnTunneledAccess = (): WireguardNetwork<Nodes> => {};
+export const generateVpnTunneledAccess = <
+    Nodes extends
+        | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
+        | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
+    NetworkCidr extends Nodes[0] extends WireguardIPv4Node
+        ? InternetSchemas.IPv4CidrBlock
+        : Nodes[0] extends WireguardIPv6Node
+          ? InternetSchemas.IPv6CidrBlock
+          : never,
+>(options: {
+    nodes: Nodes;
+    wireguardNetworkCidr: NetworkCidr;
+}): WireguardNetwork<Nodes> =>
+    Function.flow(
+        generateRemoteAccessToServer,
+        addAllowedIPs(ipForNode(options.nodes[1]), ipForNode(options.nodes[0]), ["0.0.0.0/0"] as const)
+    )(options);
 
 /**
  * Securely access the Internet from untrusted networks by routing all of your
@@ -782,6 +797,27 @@ export const generateLanHubAndSpokeAccess = <
  *
  * @since 1.0.0
  * @category Generators
- * @todo Implement
  */
-// export const generateRemoteTunneledAccess = (): WireguardNetwork<Nodes> => {};
+export const generateRemoteTunneledAccess = <
+    Nodes extends
+        | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
+        | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
+    NetworkCidr1 extends Nodes[0] extends WireguardIPv4Node
+        ? InternetSchemas.IPv4CidrBlock
+        : Nodes[0] extends WireguardIPv6Node
+          ? InternetSchemas.IPv6CidrBlock
+          : never,
+    NetworkCidr2 extends Nodes[0] extends WireguardIPv4Server
+        ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
+        : Nodes[0] extends WireguardIPv6Server
+          ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
+          : never,
+>(options: {
+    nodes: Nodes;
+    lanNetworkCidr: NetworkCidr2;
+    wireguardNetworkCidr: NetworkCidr1;
+}): WireguardNetwork<Nodes> =>
+    Function.flow(
+        generateRemoteAccessToLan,
+        addAllowedIPs(ipForNode(options.nodes[1]), ipForNode(options.nodes[0]), ["0.0.0.0/0"] as const)
+    )(options);
