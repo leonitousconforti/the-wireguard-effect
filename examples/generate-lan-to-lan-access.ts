@@ -1,3 +1,15 @@
+/**
+ * The example demonstrates how to generate a collection of wireguard
+ * configurations for a network with two servers. Both servers will be able to
+ * communicate with each other as well as with the LAN on the other server.
+ *
+ * Inputs are provided as arguments to the program function (because this
+ * example is used in the unit tests and e2e tests as well) and this example can
+ * be ran with:
+ *
+ *      tsx examples/generate-lan-to-lan-access.ts
+ */
+
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as ParseResult from "@effect/schema/ParseResult";

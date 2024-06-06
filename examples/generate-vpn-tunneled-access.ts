@@ -1,3 +1,15 @@
+/**
+ * This example demonstrates how to generate a collection of wireguard
+ * configurations for a network with one server and one client where all the
+ * internet traffic from the client is routed through the server.
+ *
+ * Inputs are provided as arguments to the program function (because this
+ * example is used in the unit tests and e2e tests as well) and this example can
+ * be ran with:
+ *
+ *     tsx examples/generate-vpn-tunneled-access.ts
+ */
+
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as ParseResult from "@effect/schema/ParseResult";

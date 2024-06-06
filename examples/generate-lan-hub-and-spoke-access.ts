@@ -1,3 +1,18 @@
+/**
+ * This example demonstrates how to generate a collection of wireguard
+ * configurations for a network with one hub (server) node with X number of
+ * spoke (client) nodes. The clients will all be able to access the server as
+ * well as the LAN on the server. The clients will also all be able to
+ * communicate with each other, although it should be noted that all traffic
+ * must still flow through the server.
+ *
+ * Inputs are provided as arguments to the program function (because this
+ * example is used in the unit tests and e2e tests as well) and this example can
+ * be ran with:
+ *
+ *      tsx examples/generate-lan-hub-and-spoke-access.ts
+ */
+
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as ParseResult from "@effect/schema/ParseResult";

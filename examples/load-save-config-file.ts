@@ -1,3 +1,10 @@
+/**
+ * This example demonstrates how to load and save a wireguard configuration file
+ * from disk. You can run this example with:
+ *
+ *      tsx examples/load-save-config-file.ts
+ */
+
 import * as Platform from "@effect/platform";
 import * as PlatformNode from "@effect/platform-node";
 import * as ParseResult from "@effect/schema/ParseResult";

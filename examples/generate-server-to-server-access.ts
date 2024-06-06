@@ -1,3 +1,15 @@
+/**
+ * This example demonstrates how to generate a collection of wireguard
+ * configurations for a network with two servers where each server can access
+ * each other as well as resources on the other server.
+ *
+ * Inputs are provided as arguments to the program function (because this
+ * example is used in the unit tests and e2e tests as well) and this example can
+ * be ran with:
+ *
+ *      tsx examples/generate-server-to-server-access.ts
+ */
+
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as ParseResult from "@effect/schema/ParseResult";
