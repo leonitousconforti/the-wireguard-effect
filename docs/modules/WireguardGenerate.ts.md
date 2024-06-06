@@ -28,8 +28,10 @@ Added in v1.0.0
   - [generateLanToLanAccess](#generatelantolanaccess)
   - [generateRemoteAccessToLan](#generateremoteaccesstolan)
   - [generateRemoteAccessToServer](#generateremoteaccesstoserver)
+  - [generateRemoteTunneledAccess](#generateremotetunneledaccess)
   - [generateServerHubAndSpokeAccess](#generateserverhubandspokeaccess)
   - [generateServerToServerAccess](#generateservertoserveraccess)
+  - [generateVpnTunneledAccess](#generatevpntunneledaccess)
 - [Key Transformers](#key-transformers)
   - [addPreshareKeys](#addpresharekeys)
   - [generateKeys](#generatekeys)
@@ -323,6 +325,37 @@ export declare const generateRemoteAccessToServer: <
 
 Added in v1.0.0
 
+## generateRemoteTunneledAccess
+
+Securely access the Internet from untrusted networks by routing all of your
+traffic through the VPN and out the server's internet connection.
+
+**Signature**
+
+```ts
+export declare const generateRemoteTunneledAccess: <
+  Nodes extends
+    | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
+    | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
+  NetworkCidr1 extends Nodes[0] extends WireguardIPv4Node
+    ? InternetSchemas.IPv4CidrBlock
+    : Nodes[0] extends WireguardIPv6Node
+      ? InternetSchemas.IPv6CidrBlock
+      : never,
+  NetworkCidr2 extends Nodes[0] extends WireguardIPv4Server
+    ? InternetSchemas.IPv4CidrBlock | [InternetSchemas.IPv4CidrBlock, ...InternetSchemas.IPv4CidrBlock[]]
+    : Nodes[0] extends WireguardIPv6Server
+      ? InternetSchemas.IPv6CidrBlock | [InternetSchemas.IPv6CidrBlock, ...InternetSchemas.IPv6CidrBlock[]]
+      : never
+>(options: {
+  nodes: Nodes
+  lanNetworkCidr: NetworkCidr2
+  wireguardNetworkCidr: NetworkCidr1
+}) => WireguardNetwork<Nodes>
+```
+
+Added in v1.0.0
+
 ## generateServerHubAndSpokeAccess
 
 Builds on "Remote access to server", except that all of the VPN clients can
@@ -360,6 +393,30 @@ export declare const generateServerToServerAccess: <
   Nodes extends
     | readonly [server1: WireguardIPv4Server, server2: WireguardIPv4Server]
     | readonly [server1: WireguardIPv6Server, server2: WireguardIPv6Server],
+  NetworkCidr extends Nodes[0] extends WireguardIPv4Node
+    ? InternetSchemas.IPv4CidrBlock
+    : Nodes[0] extends WireguardIPv6Node
+      ? InternetSchemas.IPv6CidrBlock
+      : never
+>(options: {
+  nodes: Nodes
+  wireguardNetworkCidr: NetworkCidr
+}) => WireguardNetwork<Nodes>
+```
+
+Added in v1.0.0
+
+## generateVpnTunneledAccess
+
+Route specific traffic through a commercial WireGuard VPN provider.
+
+**Signature**
+
+```ts
+export declare const generateVpnTunneledAccess: <
+  Nodes extends
+    | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
+    | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
   NetworkCidr extends Nodes[0] extends WireguardIPv4Node
     ? InternetSchemas.IPv4CidrBlock
     : Nodes[0] extends WireguardIPv6Node
