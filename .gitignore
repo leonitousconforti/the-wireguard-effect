@@ -15,3 +15,5 @@ src/*.exe
 src/*-bzImage
 src/*-wg
 src/wintun.dll
+
+e2e/**/*.conf

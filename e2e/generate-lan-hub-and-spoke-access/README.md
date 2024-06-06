@@ -7,7 +7,7 @@ We expect that Alice, Bob, and Charlie will all be able to communicate with Dave
 ## Running this example
 
 ```sh
-tsx generate-lan-hub-and-spoke-access.ts
+tsx generate-configs.ts
 docker compose build
 docker compose up --abort-on-container-failure
 ```
