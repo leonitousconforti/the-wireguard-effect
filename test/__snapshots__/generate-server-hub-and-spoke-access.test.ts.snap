@@ -42,6 +42,8 @@ exports[`wireguard generate server hub and spoke access > Should generate config
     {
       "AllowedIPs": Set {
         "10.0.0.1/32",
+        "10.0.0.3/32",
+        "10.0.0.2/32",
       },
       "Endpoint": "server.wireguard.com:51820:51820",
       "PresharedKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
@@ -60,6 +62,8 @@ exports[`wireguard generate server hub and spoke access > Should generate config
     {
       "AllowedIPs": Set {
         "10.0.0.1/32",
+        "10.0.0.3/32",
+        "10.0.0.100/32",
       },
       "Endpoint": "server.wireguard.com:51820:51820",
       "PresharedKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
@@ -78,6 +82,8 @@ exports[`wireguard generate server hub and spoke access > Should generate config
     {
       "AllowedIPs": Set {
         "10.0.0.1/32",
+        "10.0.0.2/32",
+        "10.0.0.100/32",
       },
       "Endpoint": "server.wireguard.com:51820:51820",
       "PresharedKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
