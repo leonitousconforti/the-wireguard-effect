@@ -544,15 +544,8 @@ export const toConfigs = <
         })
     );
 
-    // FIXME: can use iSTupleOf from https://github.com/Effect-TS/effect/pull/2830/files once effect 3.3.0 is released
-    if (configs.length >= 2) {
-        return Effect.all(
-            configs as [
-                Effect.Effect<WireguardConfig.WireguardConfig, ParseResult.ParseError, never>,
-                Effect.Effect<WireguardConfig.WireguardConfig, ParseResult.ParseError, never>,
-                ...Array<Effect.Effect<WireguardConfig.WireguardConfig, ParseResult.ParseError, never>>,
-            ]
-        );
+    if (Predicate.isTupleOfAtLeast(configs, 2)) {
+        return Effect.all(configs);
     } else {
         return Effect.fail(new WireguardErrors.WireguardError({ message: "There must be at least two nodes" }));
     }
