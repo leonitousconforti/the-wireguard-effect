@@ -32,7 +32,7 @@ import * as WireguardGenerate from "the-wireguard-effect/WireguardGenerate";
 
 export const program = (
     /** The network cidr block that the wireguard network will use. */
-    wireguardNetworkCidr: InternetSchemas.IPv4CidrBlockFromStringEncoded = "10.0.0.1/24" as const,
+    wireguardNetworkCidr: InternetSchemas.IPv4CidrBlockFromStringEncoded = "192.168.10.1/24" as const,
 
     /** The network cidr block of the lan on the server that you want to expose. */
     lanNetworkCidr: InternetSchemas.IPv4CidrBlockFromStringEncoded = "192.168.1.1/24" as const,
@@ -68,7 +68,7 @@ export const program = (
         const [serverWireguardNetworkAddress, ...clientAddresses] = yield* Function.pipe(
             wireguardNetworkCidrDecoded.range,
             Stream.drop(1),
-            Stream.take(3),
+            Stream.take(5),
             Stream.runCollect,
             Effect.map(Chunk.toReadonlyArray)
         );
@@ -86,7 +86,7 @@ export const program = (
          * instead of pulling IPs from the cidr block, just make sure this ip is
          * not one that would have been assigned to another client.
          */
-        const client3 = yield* decodeAddress("10.0.0.100");
+        const client3 = yield* decodeAddress("192.168.10.100");
 
         // Generate the network
         const network = WireguardGenerate.generateLanHubAndSpokeAccess({
