@@ -15,10 +15,10 @@ Effect.gen(function* () {
         serverAddress
     );
 
-    yield* configD.writeToFile("D-dave.conf");
-    yield* configC.writeToFile("C-charlie.conf");
-    yield* configA!.writeToFile("A-alice.conf");
-    yield* configB!.writeToFile("B-bob.conf");
+    yield* configD.writeToFile("D-dave-wireguard.conf");
+    yield* configC.writeToFile("C-charlie-wireguard.conf");
+    yield* configA!.writeToFile("A-alice-wireguard.conf");
+    yield* configB!.writeToFile("B-bob-wireguard.conf");
 })
     .pipe(Effect.provide(NodeContext.layer))
     .pipe(NodeRuntime.runMain);

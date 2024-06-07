@@ -1,5 +1,6 @@
 FROM ubuntu:latest
 
-ADD C-charlie.conf /etc/wireguard/wg0.conf
+ADD C-charlie-wireguard.conf /etc/wireguard/wg0.conf
+ADD A-charlie-client-tests.sh /usr/local/bin/client-tests.sh
 RUN apt-get update && apt-get install -y iproute2 iptables tcpdump wireguard-tools wireguard iputils-ping
-CMD ["sh", "-c", "ip route add 10.0.5.0/24 via 10.0.3.2 && wg-quick up wg0 && ping -c 2 10.0.4.2"]
+CMD ["/usr/local/bin/client-tests.sh"]

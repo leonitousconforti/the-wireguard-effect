@@ -1,4 +1,5 @@
 FROM ubuntu:latest
 
+ADD D-router-firewall.sh /usr/local/bin/D-router-firewall.sh
 RUN apt-get update && apt-get install -y iproute2 iptables tcpdump
-CMD ["sh", "-c", "iptables -A FORWARD -j ACCEPT && iptables -t nat -A POSTROUTING -j MASQUERADE && sleep infinity"]
+CMD ["/usr/local/bin/D-router-firewall.sh]
