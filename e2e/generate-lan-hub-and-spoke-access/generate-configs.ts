@@ -9,7 +9,7 @@ const lanNetworkCidr = "10.0.4.0/24" as const;
 const serverAddress = "10.0.5.5:51820:41820" as const;
 
 Effect.gen(function* () {
-    const [configD, configC, configA, configB, configE, configF] = yield* GenerateExample.program(
+    const [configD, configC, configA, configB] = yield* GenerateExample.program(
         wireguardNetworkCidr,
         lanNetworkCidr,
         serverAddress
@@ -19,8 +19,6 @@ Effect.gen(function* () {
     yield* configC.writeToFile("C-charlie.conf");
     yield* configA!.writeToFile("A-alice.conf");
     yield* configB!.writeToFile("B-bob.conf");
-    yield* configE!.writeToFile("D-eve.conf");
-    yield* configF!.writeToFile("D-faye.conf");
 })
     .pipe(Effect.provide(NodeContext.layer))
     .pipe(NodeRuntime.runMain);

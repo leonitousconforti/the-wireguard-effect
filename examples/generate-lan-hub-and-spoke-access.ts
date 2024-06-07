@@ -68,7 +68,7 @@ export const program = (
         const [serverWireguardNetworkAddress, ...clientAddresses] = yield* Function.pipe(
             wireguardNetworkCidrDecoded.range,
             Stream.drop(1),
-            Stream.take(5),
+            Stream.take(3),
             Stream.runCollect,
             Effect.map(Chunk.toReadonlyArray)
         );

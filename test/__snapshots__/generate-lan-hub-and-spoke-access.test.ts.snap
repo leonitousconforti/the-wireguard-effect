@@ -29,22 +29,6 @@ exports[`wireguard generate lan hub and spoke access > Should generate configs 1
       "PresharedKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
       "PublicKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
     },
-    {
-      "AllowedIPs": Set {
-        "192.168.10.4/32",
-      },
-      "Endpoint": undefined,
-      "PresharedKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
-      "PublicKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
-    },
-    {
-      "AllowedIPs": Set {
-        "192.168.10.5/32",
-      },
-      "Endpoint": undefined,
-      "PresharedKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
-      "PublicKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
-    },
   ],
   "PrivateKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
 }
@@ -58,8 +42,6 @@ exports[`wireguard generate lan hub and spoke access > Should generate configs 2
     {
       "AllowedIPs": Set {
         "192.168.10.1/32",
-        "192.168.10.5/32",
-        "192.168.10.4/32",
         "192.168.10.3/32",
         "192.168.10.2/32",
         "192.168.1.1/24",
@@ -81,8 +63,6 @@ exports[`wireguard generate lan hub and spoke access > Should generate configs 3
     {
       "AllowedIPs": Set {
         "192.168.10.1/32",
-        "192.168.10.5/32",
-        "192.168.10.4/32",
         "192.168.10.3/32",
         "192.168.10.100/32",
         "192.168.1.1/24",
@@ -104,54 +84,6 @@ exports[`wireguard generate lan hub and spoke access > Should generate configs 4
     {
       "AllowedIPs": Set {
         "192.168.10.1/32",
-        "192.168.10.5/32",
-        "192.168.10.4/32",
-        "192.168.10.2/32",
-        "192.168.10.100/32",
-        "192.168.1.1/24",
-      },
-      "Endpoint": "server.wireguard.com:51820:51820",
-      "PresharedKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
-      "PublicKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
-    },
-  ],
-  "PrivateKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
-}
-`;
-
-exports[`wireguard generate lan hub and spoke access > Should generate configs 5`] = `
-{
-  "Address": "192.168.10.4/24",
-  "ListenPort": 0,
-  "Peers": [
-    {
-      "AllowedIPs": Set {
-        "192.168.10.1/32",
-        "192.168.10.5/32",
-        "192.168.10.3/32",
-        "192.168.10.2/32",
-        "192.168.10.100/32",
-        "192.168.1.1/24",
-      },
-      "Endpoint": "server.wireguard.com:51820:51820",
-      "PresharedKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
-      "PublicKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
-    },
-  ],
-  "PrivateKey": StringMatching /\\^\\[\\\\d\\+/A-Za-z\\]\\{42\\}\\[048AEIMQUYcgkosw\\]=\\$/,
-}
-`;
-
-exports[`wireguard generate lan hub and spoke access > Should generate configs 6`] = `
-{
-  "Address": "192.168.10.5/24",
-  "ListenPort": 0,
-  "Peers": [
-    {
-      "AllowedIPs": Set {
-        "192.168.10.1/32",
-        "192.168.10.4/32",
-        "192.168.10.3/32",
         "192.168.10.2/32",
         "192.168.10.100/32",
         "192.168.1.1/24",
