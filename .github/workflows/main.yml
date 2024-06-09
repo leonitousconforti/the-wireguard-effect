@@ -5,8 +5,6 @@ on:
     branches: ["main"]
   pull_request:
     branches: ["main"]
-  schedule:
-    - cron:  '30 * * * *'
 
 concurrency:
   group: ${{ github.workflow }}
@@ -132,11 +130,7 @@ jobs:
           sudo mkdir -p /var/run/wireguard/
           sudo chown -R root:wireguard-control /var/run/wireguard/
           sudo setcap "all=ep" ./src/linux-amd64-wireguard-go
-      - run: pnpm test || pnpm test
-        env:
-          HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
-          WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
-          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
+      - run: pnpm test
 
   macos-intel-test:
     runs-on: macos-13
@@ -156,11 +150,7 @@ jobs:
       - run: |
           brew install bash
           sudo chmod +x ./src/*
-      - run: sudo -E pnpm test || sudo -E pnpm test
-        env:
-          HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
-          WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
-          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
+      - run: pnpm test
 
   macos-apple-silicon-test:
     runs-on: macos-14
@@ -180,11 +170,7 @@ jobs:
       - run: |
           brew install bash
           sudo chmod +x ./src/*
-      - run: sudo -E pnpm test || sudo -E pnpm test
-        env:
-          HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
-          WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
-          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
+      - run: pnpm test
 
   freebsd-test:
     runs-on: ubuntu-latest
@@ -248,14 +234,11 @@ jobs:
         with:
           version: 9
       - run: pnpm install
-      - run: C:\\msys64\\usr\\bin\\bash.exe -lc "pnpm test" || C:\\msys64\\usr\\bin\\bash.exe -lc "pnpm test"
+      - run: C:\\msys64\\usr\\bin\\bash.exe -lc "pnpm test"
         env:
           MSYSTEM: "MINGW64"
           CHERE_INVOKING: "1"
           MSYS2_PATH_TYPE: "inherit"
-          HIDDEN_PAGE: ${{ secrets.HIDDEN_PAGE }}
-          WIREGUARD_DEMO_HOST: ${{ secrets.WIREGUARD_DEMO_HOST }}
-          WIREGUARD_DEMO_PORT: ${{ secrets.WIREGUARD_DEMO_PORT }}
 
   windows-wsl2-test:
     runs-on: windows-latest
@@ -296,4 +279,4 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
       - run: wsl --distribution Ubuntu22.04 --user root -- chmod +x ./src/*
       - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/
-      - run: wsl --distribution Ubuntu22.04 --user root -- WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test -- --run || wsl --distribution Ubuntu22.04 --user root -- WIREGUARD_DEMO_HOST=${{ secrets.WIREGUARD_DEMO_HOST }} WIREGUARD_DEMO_PORT=${{ SECRETS.WIREGUARD_DEMO_PORT }} HIDDEN_PAGE=${{ secrets.HIDDEN_PAGE }} pnpm test -- --run
+      - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run

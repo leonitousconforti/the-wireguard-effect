@@ -1,3 +1,15 @@
+/**
+ * This example demonstrates how to generate a collection of wireguard
+ * configurations for a network with one server and one client. The client will
+ * only be able to access the server and resources directly on the server.
+ *
+ * Inputs are provided as arguments to the program function (because this
+ * example is used in the unit tests and e2e tests as well) and this example can
+ * be ran with:
+ *
+ *     tsx examples/generate-remote-access-to-server.ts
+ */
+
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as ParseResult from "@effect/schema/ParseResult";
@@ -21,7 +33,7 @@ export const program = (
     wireguardNetworkCidr: InternetSchemas.IPv4CidrBlockFromStringEncoded = "10.0.0.1/24" as const,
 
     /** Server's public address */
-    serverAddress = "server.wireguard.com:51820" as const
+    serverAddress: `${string}:${number}` | `${string}:${number}:${number}` = "server.wireguard.com:51820" as const
 ): Effect.Effect<
     readonly [
         WireguardConfig.WireguardConfig,
@@ -35,7 +47,9 @@ export const program = (
         /** This will be an IPv4 network, so we choose the IPv4 schemas */
         const decodeAddress = Schema.decode(InternetSchemas.IPv4);
         const decodeCidr = Schema.decode(InternetSchemas.IPv4CidrBlockFromString);
-        const decodeSetupData = Schema.decode(InternetSchemas.HostnameIPv4SetupData);
+        const decodeSetupData = Schema.decode(
+            Schema.Union(InternetSchemas.IPv4SetupData, InternetSchemas.HostnameIPv4SetupData)
+        );
 
         /** Decode the CIDR blocks */
         const wireguardNetworkCidrDecoded = yield* decodeCidr(wireguardNetworkCidr);

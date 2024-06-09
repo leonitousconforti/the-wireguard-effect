@@ -1,3 +1,18 @@
+/**
+ * This example demonstrates how to generate a collection of wireguard
+ * configurations for a network with one hub (server) node with X number of
+ * spoke (client) nodes. The clients will all be able to access the server as
+ * well as the LAN on the server. The clients will also all be able to
+ * communicate with each other, although it should be noted that all traffic
+ * must still flow through the server.
+ *
+ * Inputs are provided as arguments to the program function (because this
+ * example is used in the unit tests and e2e tests as well) and this example can
+ * be ran with:
+ *
+ *      tsx examples/generate-lan-hub-and-spoke-access.ts
+ */
+
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as ParseResult from "@effect/schema/ParseResult";
@@ -17,13 +32,13 @@ import * as WireguardGenerate from "the-wireguard-effect/WireguardGenerate";
 
 export const program = (
     /** The network cidr block that the wireguard network will use. */
-    wireguardNetworkCidr: InternetSchemas.IPv4CidrBlockFromStringEncoded = "10.0.0.1/24" as const,
+    wireguardNetworkCidr: InternetSchemas.IPv4CidrBlockFromStringEncoded = "192.168.10.1/24" as const,
 
     /** The network cidr block of the lan on the server that you want to expose. */
     lanNetworkCidr: InternetSchemas.IPv4CidrBlockFromStringEncoded = "192.168.1.1/24" as const,
 
     /** Server's public address */
-    serverAddress = "server.wireguard.com:51820" as const
+    serverAddress: `${string}:${number}` | `${string}:${number}:${number}` = "server.wireguard.com:51820" as const
 ): Effect.Effect<
     readonly [
         WireguardConfig.WireguardConfig,
@@ -37,7 +52,9 @@ export const program = (
         /** This will be an IPv4 network, so we choose the IPv4 schemas */
         const decodeAddress = Schema.decode(InternetSchemas.IPv4);
         const decodeCidr = Schema.decode(InternetSchemas.IPv4CidrBlockFromString);
-        const decodeSetupData = Schema.decode(InternetSchemas.HostnameIPv4SetupData);
+        const decodeSetupData = Schema.decode(
+            Schema.Union(InternetSchemas.IPv4SetupData, InternetSchemas.HostnameIPv4SetupData)
+        );
 
         /** Decode the CIDR blocks */
         const lanNetworkCidrDecoded = yield* decodeCidr(lanNetworkCidr);
@@ -69,7 +86,7 @@ export const program = (
          * instead of pulling IPs from the cidr block, just make sure this ip is
          * not one that would have been assigned to another client.
          */
-        const client3 = yield* decodeAddress("10.0.0.100");
+        const client3 = yield* decodeAddress("192.168.10.100");
 
         // Generate the network
         const network = WireguardGenerate.generateLanHubAndSpokeAccess({

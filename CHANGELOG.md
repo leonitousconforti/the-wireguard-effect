@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.5] - 2024-04-04
+
+Reworked config generation helpers. Added more examples and tests.
+
 ## [0.0.4] - 2024-05-02
 
 Bump deps

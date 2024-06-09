@@ -30,7 +30,7 @@ A wireguard userspace api Errno return message.
 **Signature**
 
 ```ts
-export declare const SuccessErrno: Schema.brand<Schema.SchemaClass<"errno=", "errno=", never>, "SuccessErrno">
+export declare const SuccessErrno: Schema.brand<Schema.SchemaClass<"errno=0", "errno=0", never>, "SuccessErrno">
 ```
 
 Added in v1.0.0

@@ -1,3 +1,15 @@
+/**
+ * This example demonstrates how to generate a collection of wireguard
+ * configurations for a network with two servers where each server can access
+ * each other as well as resources on the other server.
+ *
+ * Inputs are provided as arguments to the program function (because this
+ * example is used in the unit tests and e2e tests as well) and this example can
+ * be ran with:
+ *
+ *      tsx examples/generate-server-to-server-access.ts
+ */
+
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as ParseResult from "@effect/schema/ParseResult";
@@ -24,7 +36,7 @@ export const program = (
     server1Address = "server1.wireguard.com:51820" as const,
 
     /** Server 2's public address */
-    server2Address = "server2.wireguard.com:51821" as const
+    server2Address: `${string}:${number}` | `${string}:${number}:${number}` = "server2.wireguard.com:51821" as const
 ): Effect.Effect<
     readonly [
         WireguardConfig.WireguardConfig,
@@ -37,7 +49,9 @@ export const program = (
     Effect.gen(function* () {
         /** This will be an IPv4 network, so we choose the IPv4 schemas */
         const decodeCidr = Schema.decode(InternetSchemas.IPv4CidrBlockFromString);
-        const decodeSetupData = Schema.decode(InternetSchemas.HostnameIPv4SetupData);
+        const decodeSetupData = Schema.decode(
+            Schema.Union(InternetSchemas.IPv4SetupData, InternetSchemas.HostnameIPv4SetupData)
+        );
 
         /** Decode the CIDR blocks */
         const wireguardNetworkCidrDecoded = yield* decodeCidr(wireguardNetworkCidr);

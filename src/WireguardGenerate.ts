@@ -145,13 +145,13 @@ export const ipForNode = Function.pipe(
     Match.when(Schema.is(InternetSchemas.IPv4), ({ ip }) => ip),
     Match.when(Schema.is(InternetSchemas.IPv6), ({ ip }) => ip),
     Match.whenOr(
-        Schema.is(InternetSchemas.HostnameIPv4SetupData),
-        Schema.is(InternetSchemas.HostnameIPv6SetupData),
+        Schema.is(InternetSchemas.IPv4SetupData),
+        Schema.is(InternetSchemas.IPv6SetupData),
         Schema.is(InternetSchemas.HostnameIPv4SetupData),
         Schema.is(InternetSchemas.HostnameIPv6SetupData),
         ([_, { ip }]) => ip
     ),
-    Match.orElseAbsurd
+    Match.exhaustive
 );
 
 /** @internal */
@@ -544,15 +544,8 @@ export const toConfigs = <
         })
     );
 
-    // FIXME: can use iSTupleOf from https://github.com/Effect-TS/effect/pull/2830/files once effect 3.3.0 is released
-    if (configs.length >= 2) {
-        return Effect.all(
-            configs as [
-                Effect.Effect<WireguardConfig.WireguardConfig, ParseResult.ParseError, never>,
-                Effect.Effect<WireguardConfig.WireguardConfig, ParseResult.ParseError, never>,
-                ...Array<Effect.Effect<WireguardConfig.WireguardConfig, ParseResult.ParseError, never>>,
-            ]
-        );
+    if (Predicate.isTupleOfAtLeast(configs, 2)) {
+        return Effect.all(configs);
     } else {
         return Effect.fail(new WireguardErrors.WireguardError({ message: "There must be at least two nodes" }));
     }
@@ -712,13 +705,35 @@ export const generateServerHubAndSpokeAccess = <
 >(options: {
     nodes: Nodes;
     wireguardNetworkCidr: NetworkCidr;
-}): WireguardNetwork<Nodes> =>
-    Function.flow(
+}): WireguardNetwork<Nodes> => {
+    const clientNodes = Function.pipe(options.nodes, Array.map(ipForNode), Array.tailNonEmpty);
+
+    const firstFoldOnClientNodes = Array.reduce(
+        clientNodes,
+        Function.identity<AllowedIPsLayer<Nodes>>,
+        (outerAcc, node) => {
+            const secondFoldOverOtherNodes = Array.reduce(
+                Array.filter(clientNodes, (n) => n !== node),
+                Function.identity<AllowedIPsLayer<Nodes>>,
+                (innerAcc, otherNode) =>
+                    Function.compose(
+                        addAllowedIPs(node, ipForNode(options.nodes[0]), [`${otherNode}/32`] as const),
+                        innerAcc
+                    )
+            );
+            return Function.compose(secondFoldOverOtherNodes, outerAcc);
+        }
+    );
+
+    const networkWithoutSpokeAccess = Function.flow(
         generateKeys,
         addPreshareKeys,
         generateHubAndSpokeConnections,
         computeAllowedIPsFromConnections
     )(options);
+
+    return firstFoldOnClientNodes(networkWithoutSpokeAccess);
+};
 
 /**
  * Builds on "Server hub and spoke access", allowing you to access your entire

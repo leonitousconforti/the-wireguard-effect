@@ -1,10 +1,10 @@
 # the-wireguard-effect
 
-the-wireguard-effect has turned into a couple of things. It started as a `Cross platform wireguard api client for nodejs built on wireguard-go with effect-ts`, but has since added a cross platform UI built with electron, a cross platform CLI to control some wireguard interfaces without needing to install anything, a wireguard demo server that implements the same protocol as demo.wireguard.com so it will work with all the existing examples, a lot of helpers and examples for config generation, and integration + e2e testing.
+the-wireguard-effect has turned into a couple of things. It started as a `Cross platform wireguard api client for nodejs built on wireguard-go with effect-ts`, but has since added a cross platform CLI to control some wireguard interfaces without needing to install anything, a wireguard demo server that implements the same protocol as demo.wireguard.com so it will work with all the existing examples, a lot of helpers and examples for config generation, and unit + e2e testing.
 
 ## Motivation/ideation :bulb:
 
-The motivation for this project came from wanting to create wireguard configurations and ultimately control a wireguard interface from JS for a different project of mine. The motivation for adding the UI, CLI, demo-server, config generation, and testing/experiments came from me wanting to experiment with and learn more about wireguard .
+The motivation for this project came from wanting to create wireguard configurations and ultimately control a wireguard interface from JS for a different project of mine. The motivation for adding the CLI, demo-server, config generation, and testing/experiments came from me wanting to experiment with and learn more about wireguard .
 
 ## Goals :white_check_mark:
 
@@ -17,6 +17,7 @@ The motivation for this project came from wanting to create wireguard configurat
 ## WIP/Todo :construction:
 
 - Implement wg cli clone
+- QR code generation
 - Obtain wintun drivers from public source and check hash during build, rather than just uploading them (https://github.com/leonitousconforti/the-wireguard-effect/issues/62)
 - FreeBSD and OpenBSD support (https://github.com/leonitousconforti/the-wireguard-effect/pull/104)
 

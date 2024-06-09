@@ -15,8 +15,7 @@ import * as Function from "effect/Function";
  * @category Errors
  */
 export const SuccessErrno = Function.pipe(
-    // FIXME: bug
-    Schema.TemplateLiteral(Schema.Literal("errno=") /*, Schema.Literal(0) */),
+    Schema.TemplateLiteral("errno=", Schema.Literal(0)),
     Schema.identifier("SuccessErrno"),
     Schema.description("A successful errno"),
     Schema.brand("SuccessErrno")

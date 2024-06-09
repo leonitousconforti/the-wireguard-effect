@@ -180,14 +180,16 @@ export const WireguardIniPeer: $WireguardIniPeer = Schema.transformOrFail(Wiregu
             Option.getOrElse(() => "" as const)
         );
 
-        const aps: Array<`AllowedIPs = ${string}/${number}`> = Function.pipe(
+        const aps: `AllowedIPs = ${string}` = Function.pipe(
             peer.AllowedIPs,
             Array.fromIterable,
             Array.map((ap) => `${ap.address.ip}/${ap.mask}` as const),
-            Array.map((ap) => `AllowedIPs = ${ap}` as const)
+            Array.map((ap) => `${ap}` as const),
+            Array.join(", "),
+            (x) => `AllowedIPs = ${x}` as const
         );
 
-        return Effect.succeed(`[Peer]\n${publicKey}${presharedKey}${endpoint}${keepAlive}${aps.join("\n")}` as const);
+        return Effect.succeed(`[Peer]\n${publicKey}${presharedKey}${endpoint}${keepAlive}${aps}\n` as const);
     },
     // Encoding is trivial using the ini library
     encode: (iniPeer, _options, _ast) =>

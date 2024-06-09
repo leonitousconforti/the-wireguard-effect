@@ -8,6 +8,7 @@ services:
       dockerfile: A-alice.dockerfile
     depends_on:
       - router_alice
+      - dave
     networks:
       A-net:
         ipv4_address: 10.0.1.3
@@ -35,6 +36,7 @@ services:
       dockerfile: B-bob.dockerfile
     depends_on:
       - router_bob
+      - dave
     networks:
       B-net:
         ipv4_address: 10.0.2.3
@@ -62,6 +64,7 @@ services:
       dockerfile: C-charlie.dockerfile
     depends_on:
       - router_charlie
+      - dave
     networks:
       C-net:
         ipv4_address: 10.0.3.3
