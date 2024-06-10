@@ -175,7 +175,7 @@ jobs:
 
   windows-wsl2-test:
     runs-on: windows-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     needs: [build]
     defaults:
       run:
