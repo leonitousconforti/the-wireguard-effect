@@ -33,7 +33,7 @@ export const program = (
     wireguardNetworkCidr: InternetSchemas.IPv4CidrBlockFromStringEncoded = "10.0.0.1/24" as const,
 
     /** Server 1's public address */
-    server1Address = "server1.wireguard.com:51820" as const,
+    server1Address: `${string}:${number}` | `${string}:${number}:${number}` = "server1.wireguard.com:51820" as const,
 
     /** Server 2's public address */
     server2Address: `${string}:${number}` | `${string}:${number}:${number}` = "server2.wireguard.com:51821" as const
