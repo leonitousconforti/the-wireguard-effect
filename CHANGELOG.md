@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.0.5] - 2024-04-04
+## [0.0.5] - 2024-06-04
 
 Reworked config generation helpers. Added more examples and tests.
 
