@@ -175,7 +175,7 @@ jobs:
 
   windows-wsl2-test:
     runs-on: windows-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     needs: [build]
     defaults:
       run:
@@ -192,7 +192,7 @@ jobs:
       - run: wsl --set-default-version 2
       - run: wsl --update
       - run: wsl --install --no-distribution
-      - run: Invoke-WebRequest -URI https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-root.tar.xz -OutFile jammy-server-cloudimg-amd64-root.tar.xz
+      - run: Invoke-WebRequest -URI https://cloud-images.ubuntu.com/releases/jammy/release/ubuntu-22.04-server-cloudimg-amd64-root.tar.xz -OutFile jammy-server-cloudimg-amd64-root.tar.xz
       - run: wsl --import Ubuntu22.04 . jammy-server-cloudimg-amd64-root.tar.xz --version 2
       - run: wsl --list --verbose
       - run: wsl --shutdown
