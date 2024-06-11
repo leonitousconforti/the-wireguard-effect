@@ -1,8 +1,8 @@
 # Changelog
 
-## [0.0.7] - 2024-06-10
+## [Unreleased]
 
-Update peer dependencies
+Implement basic NAT traversal utilities
 
 ## [0.0.6] - 2024-06-08
 
