@@ -13,7 +13,6 @@ The motivation for this project came from wanting to create wireguard configurat
 - [x] - cross platform (supports linux amd64, linux arm64, mac amd64, mac arm64, and windows amd64)
 - [x] - userspace api implementation (the [Wireguard cross platform docs](https://www.wireguard.com/xplatform/) have details about it.)
 - [x] - strong control over how the interface is managed across all platforms.
-- [x] - Some very basic NAT traversal utilities
 
 ## WIP/Todo :construction:
 
@@ -30,6 +29,7 @@ The motivation for this project came from wanting to create wireguard configurat
 
 - Utilities for installing or checking if wireguard is installed on the system.
 - Utilities to configure network interfaces or generation of any iptables or nftables rules when bringing a config up using the userspace api.
+- NAT traversal utilities
 
 ## Notes :memo:
 
