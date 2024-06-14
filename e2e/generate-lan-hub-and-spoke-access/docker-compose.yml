@@ -145,23 +145,35 @@ services:
     build:
       context: ..
       dockerfile: lan-member.dockerfile
+    volumes:
+      - ./D-lan-member.sh:/usr/local/bin/lan-member.sh:ro
     depends_on:
       - router_dave
     networks:
       D-net:
         ipv4_address: 10.0.4.4
     hostname: EVE
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - SYS_MODULE
 
   faye:
     build:
       context: ..
       dockerfile: lan-member.dockerfile
+    volumes:
+      - ./D-lan-member.sh:/usr/local/bin/lan-member.sh:ro
     depends_on:
       - router_dave
     networks:
       D-net:
         ipv4_address: 10.0.4.5
     hostname: FAYE
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - SYS_MODULE
 
   router_dave:
     build:
