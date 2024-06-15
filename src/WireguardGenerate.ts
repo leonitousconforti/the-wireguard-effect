@@ -216,10 +216,14 @@ export const addPreshareKeys = <
 ): keysLayer<Nodes> => ({
     nodes: keysLayer.nodes,
     wireguardNetworkCidr: keysLayer.wireguardNetworkCidr,
-    keys: Record.map(keysLayer.keys, (keys) => ({
-        ...keys,
-        preshareKey: WireguardKey.generatePreshareKey(),
-    })),
+    keys: Record.map(keysLayer.keys, (keys, node) =>
+        node === ipForNode(keysLayer.nodes[0])
+            ? keys
+            : {
+                  ...keys,
+                  preshareKey: WireguardKey.generatePreshareKey(),
+              }
+    ),
 });
 
 /**
@@ -526,7 +530,7 @@ export const toConfigs = <
             const dcsWithAllowedIPs = Array.map(directConnectionsForNode, (dc) => ({
                 Endpoint: dc.Endpoint,
                 PublicKey: dc.PublicKey,
-                PresharedKey: dc.PresharedKey,
+                PresharedKey: node === nodes[0] ? dc.PresharedKey : keysForNode.preshareKey,
                 AllowedIPs: Function.pipe(
                     allowedIPsForNode,
                     Array.filter(({ from }) => from === dc.Address),
