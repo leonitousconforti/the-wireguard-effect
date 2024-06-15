@@ -114,7 +114,7 @@ jobs:
           sudo usermod -a -G wireguard-control runner
           sudo mkdir -p /var/run/wireguard/
           sudo chown -R root:wireguard-control /var/run/wireguard/
-          sudo setcap "all=ep" ./src/linux-amd64-wireguard-go
+          sudo setcap "all=ep" ./dist/prebuilds/linux-amd64-wireguard-go
       - run: pnpm test
       - run: pnpm e2e-tests
 
