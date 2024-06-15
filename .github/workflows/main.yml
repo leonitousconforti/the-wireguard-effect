@@ -98,13 +98,15 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
-          path: /home/runner/work/the-wireguard-effect/
       - uses: actions/setup-node@v4
         with:
           node-version: "18.x"
       - uses: pnpm/action-setup@v4
         with:
           version: 9
+      - run: ls -la
+      - run: pwd
+      - run: cd the-wireguard-effect
       - run: ls -la
       - run: pwd
       - run: pnpm install
