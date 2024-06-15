@@ -135,6 +135,7 @@ jobs:
           version: 9
       - run: brew install bash
       - run: brew install docker
+      - run: brew install docker-compose
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
       - run: sudo -E pnpm test
@@ -157,6 +158,7 @@ jobs:
           version: 9
       - run: brew install bash
       - run: brew install docker
+      - run: brew install docker-compose
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
       - run: sudo -E pnpm test
