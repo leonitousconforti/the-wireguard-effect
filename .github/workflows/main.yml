@@ -106,7 +106,7 @@ jobs:
         with:
           version: 9
       - run: ls -la /tmp/the-wireguard-effect/
-      - run: ls -la /tmp/the-wireguard-effect/the-wireguard-effect/
+      - run: ls -la /tmp/the-wireguard-effect/the-wireguard-effect.tar/
       - run: pnpm install
       - run: sudo apt-get install -y openresolv
       - run: |
