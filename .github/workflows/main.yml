@@ -98,15 +98,15 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
-          path: /tmp/the-wireguard-effect.tar
+          path: /tmp/the-wireguard-effect
       - uses: actions/setup-node@v4
         with:
           node-version: "18.x"
       - uses: pnpm/action-setup@v4
         with:
           version: 9
-      - run: tar -xvf /tmp/the-wireguard-effect.tar
-      - run: ls -la
+      - run: ls -la /tmp/the-wireguard-effect/
+      - run: ls -la /tmp/the-wireguard-effect/the-wireguard-effect/
       - run: pnpm install
       - run: sudo apt-get install -y openresolv
       - run: |
