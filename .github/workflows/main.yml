@@ -84,12 +84,12 @@ jobs:
 
       # https://github.com/actions/download-artifact/tree/v4/?tab=readme-ov-file#limitations
       - name: 'Tar files'
-        run: tar -cvf the-wireguard-effect.tar .
+        run: tar -cvf /tmp/the-wireguard-effect.tar /home/runner/work/the-wireguard-effect/the-wireguard-effect/
 
       - uses: actions/upload-artifact@v4
         with:
           name: the-wireguard-effect
-          path: the-wireguard-effect.tar
+          path: /tmp/the-wireguard-effect.tar
 
   linux-test:
     runs-on: ubuntu-latest
