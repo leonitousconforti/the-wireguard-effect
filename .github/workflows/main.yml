@@ -111,8 +111,7 @@ jobs:
           sudo chown -R root:wireguard-control /var/run/wireguard/
           sudo setcap "all=ep" ./src/linux-amd64-wireguard-go
       - run: pnpm test
-      - shell: bash
-        run: pnpm e2e-tests
+      - run: pnpm e2e-tests
 
   macos-intel-test:
     runs-on: macos-13
