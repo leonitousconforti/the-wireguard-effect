@@ -88,7 +88,7 @@ jobs:
 
   linux-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
@@ -111,10 +111,11 @@ jobs:
           sudo chown -R root:wireguard-control /var/run/wireguard/
           sudo setcap "all=ep" ./src/linux-amd64-wireguard-go
       - run: pnpm test
+      - run: pnpm e2e-tests
 
   macos-intel-test:
     runs-on: macos-13
-    timeout-minutes: 10
+    timeout-minutes: 20
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
@@ -131,10 +132,11 @@ jobs:
           brew install bash
           sudo chmod +x ./src/*
       - run: pnpm test
+      - run: pnpm e2e-tests
 
   macos-apple-silicon-test:
     runs-on: macos-14
-    timeout-minutes: 10
+    timeout-minutes: 20
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
@@ -151,10 +153,11 @@ jobs:
           brew install bash
           sudo chmod +x ./src/*
       - run: pnpm test
+      - run: pnpm e2e-tests
 
   windows-test:
     runs-on: windows-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     needs: [build]
     steps:
       - uses: actions/download-artifact@v4
@@ -172,6 +175,7 @@ jobs:
           MSYSTEM: "MINGW64"
           CHERE_INVOKING: "1"
           MSYS2_PATH_TYPE: "inherit"
+      - run: pnpm e2e-tests
 
   windows-wsl2-test:
     runs-on: windows-latest
@@ -213,3 +217,4 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- chmod +x ./src/*
       - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
+      - run: wsl --distribution Ubuntu22.04 --user root -- pnpm e2e-tests
