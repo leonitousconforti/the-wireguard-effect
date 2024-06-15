@@ -1,141 +1,199 @@
 services:
 
   alice:
-    cap_add:
-      - NET_ADMIN
     build:
-      context: .
-      dockerfile: A-alice.dockerfile
+      context: ..
+      dockerfile: wireguard-client.dockerfile
     depends_on:
       - router_alice
       - dave
+    volumes:
+      - ./A-alice-wireguard.conf:/etc/wireguard/wg0.conf:ro
+      - ./A-alice-client-tests.sh:/usr/local/bin/client-tests.sh:ro
     networks:
       A-net:
         ipv4_address: 10.0.1.3
     hostname: ALICE
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
 
   router_alice:
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
     build:
-      context: .
-      dockerfile: A-router.dockerfile
+      context: ..
+      dockerfile: router.dockerfile
     networks:
       A-net:
         ipv4_address: 10.0.1.2
       E-net:
         ipv4_address: 10.0.5.2
     hostname: ROUTER_ALICE
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
 
   bob:
-    cap_add:
-      - NET_ADMIN
     build:
-      context: .
-      dockerfile: B-bob.dockerfile
+      context: ..
+      dockerfile: wireguard-client.dockerfile
     depends_on:
       - router_bob
       - dave
+    volumes:
+      - ./B-bob-wireguard.conf:/etc/wireguard/wg0.conf:ro
+      - ./B-bob-client-tests.sh:/usr/local/bin/client-tests.sh:ro
     networks:
       B-net:
         ipv4_address: 10.0.2.3
     hostname: BOB
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
 
   router_bob:
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
     build:
-      context: .
-      dockerfile: B-router.dockerfile
+      context: ..
+      dockerfile: router.dockerfile
     networks:
       B-net:
         ipv4_address: 10.0.2.2
       E-net:
         ipv4_address: 10.0.5.3
     hostname: ROUTER_BOB
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
 
   charlie:
-    cap_add:
-      - NET_ADMIN
     build:
-      context: .
-      dockerfile: C-charlie.dockerfile
+      context: ..
+      dockerfile: wireguard-client.dockerfile
     depends_on:
       - router_charlie
       - dave
+    volumes:
+      - ./C-charlie-wireguard.conf:/etc/wireguard/wg0.conf:ro
+      - ./C-charlie-client-tests.sh:/usr/local/bin/client-tests.sh:ro
     networks:
       C-net:
         ipv4_address: 10.0.3.3
     hostname: CHARLIE
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
 
   router_charlie:
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
     build:
-      context: .
-      dockerfile: C-router.dockerfile
+      context: ..
+      dockerfile: router.dockerfile
     networks:
       C-net:
         ipv4_address: 10.0.3.2
       E-net:
         ipv4_address: 10.0.5.4
     hostname: ROUTER_CHARLIE
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
 
   dave:
-    cap_add:
-      - NET_ADMIN
     build:
-      context: .
-      dockerfile: D-dave.dockerfile
+      context: ..
+      dockerfile: wireguard-client.dockerfile
     depends_on:
       - router_dave
+    volumes:
+      - ./D-dave-wireguard.conf:/etc/wireguard/wg0.conf:ro
+      - ./D-dave-client-tests.sh:/usr/local/bin/client-tests.sh:ro
     networks:
       D-net:
         ipv4_address: 10.0.4.3
     hostname: DAVE
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
 
   eve:
-    cap_add:
-      - NET_ADMIN
     build:
-      context: .
-      dockerfile: D-eve.dockerfile
+      context: ..
+      dockerfile: lan-member.dockerfile
+    volumes:
+      - ./D-lan-member.sh:/usr/local/bin/lan-member.sh:ro
     depends_on:
       - router_dave
     networks:
       D-net:
         ipv4_address: 10.0.4.4
     hostname: EVE
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - SYS_MODULE
 
   faye:
-    cap_add:
-      - NET_ADMIN
     build:
-      context: .
-      dockerfile: D-faye.dockerfile
+      context: ..
+      dockerfile: lan-member.dockerfile
+    volumes:
+      - ./D-lan-member.sh:/usr/local/bin/lan-member.sh:ro
     depends_on:
       - router_dave
     networks:
       D-net:
         ipv4_address: 10.0.4.5
     hostname: FAYE
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - SYS_MODULE
 
   router_dave:
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
     build:
-      context: .
-      dockerfile: D-router.dockerfile
+      context: ..
+      dockerfile: router-with-port-forwarding.dockerfile
+    volumes:
+      - ./D-router-firewall.sh:/usr/local/bin/router-firewall.sh:ro
     networks:
       D-net:
         ipv4_address: 10.0.4.2
       E-net:
         ipv4_address: 10.0.5.5
     hostname: ROUTER_DAVE
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
 
 networks:
   A-net:

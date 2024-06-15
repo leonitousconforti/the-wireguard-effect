@@ -1,6 +1,14 @@
 # Changelog
 
-## [0.0.5] - 2024-04-04
+## [Unreleased]
+
+Implement basic NAT traversal utilities
+
+## [0.0.6] - 2024-06-08
+
+Update peer dependencies
+
+## [0.0.5] - 2024-06-04
 
 Reworked config generation helpers. Added more examples and tests.
 

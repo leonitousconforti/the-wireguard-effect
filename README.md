@@ -28,8 +28,8 @@ The motivation for this project came from wanting to create wireguard configurat
 ## Non-Goals :wastebasket:
 
 - Utilities for installing or checking if wireguard is installed on the system.
-- NAT traversal utilities
 - Utilities to configure network interfaces or generation of any iptables or nftables rules when bringing a config up using the userspace api.
+- NAT traversal utilities
 
 ## Notes :memo:
 
@@ -52,7 +52,7 @@ You can find examples for how to generate configs for each type of configuration
 
 [https://leonitousconforti.github.io/the-wireguard-effect/](https://leonitousconforti.github.io/the-wireguard-effect/)
 
-## Security :closed_lock_with_key: :rotating_light:
+## Security and Legal :closed_lock_with_key: :rotating_light:
 
 the-wireguard-effect is not an official WireGuard project, and WireGuard is a registered trademark of Jason A. Donenfeld. The is a hobby project of mine, it has not received an independent security audit and never will. If that bothers you then don't use it.
 
