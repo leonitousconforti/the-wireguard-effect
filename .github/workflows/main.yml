@@ -193,7 +193,7 @@ jobs:
       - run: wsl --list --verbose
 
       # https://forums.docker.com/t/cli-to-switch-between-linux-and-windows-images/30297
-      - run: Start-Process -FilePath "$Env:ProgramFiles\Docker\Docker\DockerCli.exe" -ArgumentList '-SwitchDaemon' -NoNewWindow -Wait
+      - run: Start-Process 'C:\Program Files\Docker\Docker\DockerCli.exe' -ArgumentList '-SwitchDaemon' -NoNewWindow -Wait
         shell: pwsh
 
       # This is where our testing starts
@@ -234,7 +234,7 @@ jobs:
       - run: sleep 15
 
       # https://forums.docker.com/t/cli-to-switch-between-linux-and-windows-images/30297
-      - run: Start-Process -FilePath "$Env:ProgramFiles\Docker\Docker\DockerCli.exe" -ArgumentList '-SwitchLinuxEngine' -NoNewWindow -Wait
+      - run: Start-Process 'C:\Program Files\Docker\Docker\DockerCli.exe' -ArgumentList '-SwitchLinuxEngine' -NoNewWindow -Wait
         shell: pwsh
 
       # Install dependencies
