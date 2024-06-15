@@ -5,19 +5,21 @@ import * as NodeHttp from "@effect/platform-node/NodeHttpClient";
 import * as Config from "effect/Config";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
+import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
-import * as WireguardControl from "the-wireguard-effect/WireguardControl";
-import * as DemoUtils from "the-wireguard-effect/WireguardServer";
 
-const portConfig = Config.number("WIREGUARD_DEMO_PORT");
-const hostConfig = Config.string("WIREGUARD_DEMO_HOST");
-const hiddenPageUrlConfig = Config.string("HIDDEN_PAGE");
+import * as WireguardControl from "the-wireguard-effect/WireguardControl";
+import * as WireguardServer from "the-wireguard-effect/WireguardServer";
+
+const portConfig = Config.number("WIREGUARD_DEMO_PORT").pipe(Config.withDefault(42912));
+const hostConfig = Config.string("WIREGUARD_DEMO_HOST").pipe(Config.withDefault("demo.wireguard.com"));
+const hiddenPageUrlConfig = Config.string("HIDDEN_PAGE").pipe(Config.withDefault("http://192.168.4.1:80"));
 
 const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
     WireguardControl.makeBundledWgQuickLayer({ sudo: process.platform !== "linux" })
 );
 
-describe.skip("wireguard e2e test using demo.wireguard.com", () => {
+describe("wireguard e2e test using demo.wireguard.com", () => {
     it.scopedLive(
         "Should be able to connect to the demo server",
         () =>
@@ -25,18 +27,18 @@ describe.skip("wireguard e2e test using demo.wireguard.com", () => {
                 const host = yield* λ(hostConfig);
                 const port = yield* λ(portConfig);
                 const hiddenPageUrl = yield* λ(hiddenPageUrlConfig);
-                const config = yield* λ(DemoUtils.requestWireguardDemoConfig({ host, port }));
+                const config = yield* λ(WireguardServer.requestWireguardDemoConfig({ host, port }));
                 yield* λ(config.upScoped());
 
                 // TODO: fix this on self hosted test server
-                if (host === "demo.wireguard.com") yield* λ(DemoUtils.requestGoogle);
+                if (host === "demo.wireguard.com") yield* λ(WireguardServer.requestGoogle);
 
-                const hiddenPage = yield* λ(DemoUtils.requestHiddenPage(hiddenPageUrl));
+                const hiddenPage = yield* λ(WireguardServer.requestHiddenPage(hiddenPageUrl));
                 expect(hiddenPage).toMatchSnapshot();
             })
-                .pipe(Effect.provide(NodeContext.layer))
                 .pipe(Effect.provide(NodeHttp.layer))
+                .pipe(Effect.provide(NodeContext.layer))
                 .pipe(Effect.provide(WireguardControlLive)),
-        Duration.seconds(300).pipe(Duration.toMillis)
+        Function.pipe(Duration.seconds(300), Duration.toMillis)
     );
 });
