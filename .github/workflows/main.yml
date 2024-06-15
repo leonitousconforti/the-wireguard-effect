@@ -98,13 +98,13 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
+          path: ${{ github.workspace }}/../
       - uses: actions/setup-node@v4
         with:
           node-version: "18.x"
       - uses: pnpm/action-setup@v4
         with:
           version: 9
-      - run: ls -la
       - run: pnpm install
       - run: sudo apt-get install -y openresolv
       - run: |
@@ -126,6 +126,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
+          path: ${{ github.workspace }}/../
       - uses: actions/setup-node@v4
         with:
           node-version: "18.x"
@@ -147,6 +148,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
+          path: ${{ github.workspace }}/../
       - uses: actions/setup-node@v4
         with:
           node-version: "18.x"
@@ -168,6 +170,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
+          path: ${{ github.workspace }}/../
       - uses: actions/setup-node@v4
         with:
           node-version: "18.x"
@@ -193,6 +196,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
+          path: ${{ github.workspace }}/../
 
       # Yes all this is necassary to get WSL2 working on GitHub Actions without any user input
       # They are all as separate steps so its easier to debug and see what/where it fails (especially when I was writting this)
