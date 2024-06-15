@@ -192,6 +192,10 @@ jobs:
       - run: wsl --import Ubuntu22.04 . jammy-server-cloudimg-amd64-root.tar.xz --version 2
       - run: wsl --list --verbose
 
+      # https://forums.docker.com/t/cli-to-switch-between-linux-and-windows-images/30297
+      - run: Start-Process -FilePath "$Env:ProgramFiles\Docker\Docker\DockerCli.exe" -ArgumentList '-SwitchDaemon' -NoNewWindow -Wait
+        shell: pwsh
+
       # This is where our testing starts
       - run: pnpm install
       - run: C:\\msys64\\usr\\bin\\bash.exe -lc "pnpm test"
@@ -228,6 +232,10 @@ jobs:
       - run: wsl --shutdown
       - run: Copy-Item "D:\a\the-wireguard-effect\the-wireguard-effect\submodules\.wslconfig" -Destination "C:\Users\runneradmin"
       - run: sleep 15
+
+      # https://forums.docker.com/t/cli-to-switch-between-linux-and-windows-images/30297
+      - run: Start-Process -FilePath "$Env:ProgramFiles\Docker\Docker\DockerCli.exe" -ArgumentList '-SwitchLinuxEngine' -NoNewWindow -Wait
+        shell: pwsh
 
       # Install dependencies
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
