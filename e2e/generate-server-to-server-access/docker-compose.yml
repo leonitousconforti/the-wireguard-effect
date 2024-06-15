@@ -1,0 +1,45 @@
+services:
+
+  alice:
+    build:
+      context: ..
+      dockerfile: wireguard-client.dockerfile
+    volumes:
+      - ./A-alice-wireguard.conf:/etc/wireguard/wg0.conf:ro
+      - ./A-alice-client-tests.sh:/usr/local/bin/client-tests.sh:ro
+    networks:
+      server-to-server-net:
+        ipv4_address: 10.0.0.2
+    hostname: ALICE
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+
+  bob:
+    build:
+      context: ..
+      dockerfile: wireguard-client.dockerfile
+    volumes:
+      - ./B-bob-wireguard.conf:/etc/wireguard/wg0.conf:ro
+      - ./B-bob-client-tests.sh:/usr/local/bin/client-tests.sh:ro
+    networks:
+      server-to-server-net:
+        ipv4_address: 10.0.0.3
+    hostname: BOB
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+
+networks:
+  server-to-server-net:
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24
