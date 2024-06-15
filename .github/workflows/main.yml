@@ -135,13 +135,12 @@ jobs:
           version: 9
       - run: brew install bash
       - run: brew install --cask docker
-      - run: brew install docker-compose
-      - run: mkdir -p ~/.docker/cli-plugins
-      - run: ln -sfn /usr/local/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
       - run: sudo -E pnpm test
       - run: pnpm e2e-tests
+      - uses: mxschmitt/action-tmate@v3
+        if: always()
 
   macos-apple-silicon-test:
     runs-on: macos-14
@@ -160,13 +159,12 @@ jobs:
           version: 9
       - run: brew install bash
       - run: brew install --cask docker
-      - run: brew install docker-compose
-      - run: mkdir -p ~/.docker/cli-plugins
-      - run: ln -sfn /usr/local/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
       - run: sudo -E pnpm test
       - run: pnpm e2e-tests
+      - uses: mxschmitt/action-tmate@v3
+        if: always()
 
   windows-test:
     runs-on: windows-latest
@@ -208,6 +206,8 @@ jobs:
           CHERE_INVOKING: "1"
           MSYS2_PATH_TYPE: "inherit"
       - run: pnpm e2e-tests
+      - uses: mxschmitt/action-tmate@v3
+        if: always()
 
   windows-wsl2-test:
     runs-on: windows-latest
@@ -256,3 +256,5 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm e2e-tests
+      - uses: mxschmitt/action-tmate@v3
+        if: always()
