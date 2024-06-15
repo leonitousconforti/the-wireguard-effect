@@ -135,6 +135,9 @@ jobs:
           version: 9
       - run: brew install bash
       - run: brew install --cask docker
+      - run: brew install docker-compose
+      - run: mkdir -p ~/.docker/cli-plugins
+      - run: ln -sfn /usr/local/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
       - run: sudo -E pnpm test
@@ -157,6 +160,7 @@ jobs:
           version: 9
       - run: brew install bash
       - run: brew install --cask docker
+      - run: brew install docker-compose
       - run: mkdir -p ~/.docker/cli-plugins
       - run: ln -sfn /usr/local/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
@@ -193,7 +197,7 @@ jobs:
       - run: wsl --list --verbose
 
       # https://forums.docker.com/t/cli-to-switch-between-linux-and-windows-images/30297
-      - run: Start-Process 'C:\Program Files\Docker\Docker\DockerCli.exe' -ArgumentList '-SwitchDaemon' -NoNewWindow -Wait
+      - run: "& 'C:\\Program Files\\Docker\\Docker\\DockerCli.exe' -SwitchDaemon"
         shell: pwsh
 
       # This is where our testing starts
@@ -234,7 +238,8 @@ jobs:
       - run: sleep 15
 
       # https://forums.docker.com/t/cli-to-switch-between-linux-and-windows-images/30297
-      - run: Start-Process 'C:\Program Files\Docker\Docker\DockerCli.exe' -ArgumentList '-SwitchLinuxEngine' -NoNewWindow -Wait
+
+      - run: "& 'C:\\Program Files\\Docker\\Docker\\DockerCli.exe' -SwitchDaemon"
         shell: pwsh
 
       # Install dependencies
