@@ -136,7 +136,7 @@ jobs:
       - run: brew install bash
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
-      - run: pnpm test
+      - run: sudo -E pnpm test
       - run: pnpm e2e-tests
 
   macos-apple-silicon-test:
@@ -157,7 +157,7 @@ jobs:
       - run: brew install bash
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
-      - run: pnpm test
+      - run: sudo -E pnpm test
       - run: pnpm e2e-tests
 
   windows-test:
