@@ -81,7 +81,7 @@ export const program = (
          * instead of pulling IPs from the cidr block, just make sure this ip is
          * not one that would have been assigned to another client.
          */
-        const client3 = yield* decodeAddress("10.0.0.100");
+        const client3 = yield* decodeAddress("192.168.10.100");
 
         // Generate the network
         const network = WireguardGenerate.generateServerHubAndSpokeAccess({
