@@ -134,7 +134,16 @@ jobs:
         with:
           version: 9
       - run: brew install bash
-      - run: brew install --cask docker
+      - run: brew install lima
+      - run: brew install colima
+      - run: brew install docker
+      - run: brew install docker-compose
+      - run: mkdir -p ~/.docker/cli-plugins
+      - run: ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" ~/.docker/cli-plugins/docker-compose
+      - run: |
+          CPU_COUNT=$(sysctl -n hw.ncpu)
+          MEMORY=$(sysctl hw.memsize | awk '{print $2/1024/1024/1024}')
+          colima start --cpu $CPU_COUNT --memory $MEMORY --network-address
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
       - run: sudo -E pnpm test
@@ -158,7 +167,16 @@ jobs:
         with:
           version: 9
       - run: brew install bash
-      - run: brew install --cask docker
+      - run: brew install lima
+      - run: brew install colima
+      - run: brew install docker
+      - run: brew install docker-compose
+      - run: mkdir -p ~/.docker/cli-plugins
+      - run: ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" ~/.docker/cli-plugins/docker-compose
+      - run: |
+          CPU_COUNT=$(sysctl -n hw.ncpu)
+          MEMORY=$(sysctl hw.memsize | awk '{print $2/1024/1024/1024}')
+          colima start --cpu $CPU_COUNT --memory $MEMORY --network-address
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
       - run: sudo -E pnpm test
