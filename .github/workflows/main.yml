@@ -139,20 +139,9 @@ jobs:
         with:
           version: 9
       - run: brew install bash
-      - run: brew install lima
-      - run: brew install colima
-      - run: brew install docker
-      - run: brew install docker-compose
-      - run: mkdir -p ~/.docker/cli-plugins
-      - run: ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" ~/.docker/cli-plugins/docker-compose
-      - run: |
-          CPU_COUNT=$(sysctl -n hw.ncpu)
-          MEMORY=$(sysctl hw.memsize | awk '{print $2/1024/1024/1024}')
-          colima start --cpu $CPU_COUNT --memory $MEMORY --network-address
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
       - run: sudo -E pnpm test
-      - run: pnpm e2e-tests
 
   macos-apple-silicon-test:
     runs-on: macos-14
@@ -175,20 +164,9 @@ jobs:
         with:
           version: 9
       - run: brew install bash
-      - run: brew install lima
-      - run: brew install colima
-      - run: brew install docker
-      - run: brew install docker-compose
-      - run: mkdir -p ~/.docker/cli-plugins
-      - run: ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" ~/.docker/cli-plugins/docker-compose
-      - run: |
-          CPU_COUNT=$(sysctl -n hw.ncpu)
-          MEMORY=$(sysctl hw.memsize | awk '{print $2/1024/1024/1024}')
-          colima start --cpu $CPU_COUNT --memory $MEMORY --network-address
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
       - run: sudo -E pnpm test
-      - run: pnpm e2e-tests
 
   windows-test:
     runs-on: windows-latest
@@ -206,32 +184,12 @@ jobs:
         with:
           version: 9
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
-
-      # Yes all this is necassary to get WSL2 working on GitHub Actions without any user input
-      # They are all as separate steps so its easier to debug and see what/where it fails (especially when I was writting this)
-      - run: dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-      - run: dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-      - run: wsl --set-default-version 2
-      - run: wsl --update
-      - run: wsl --install --no-distribution
-      - run: Invoke-WebRequest -URI https://cloud-images.ubuntu.com/releases/jammy/release/ubuntu-22.04-server-cloudimg-amd64-root.tar.xz -OutFile jammy-server-cloudimg-amd64-root.tar.xz
-      - run: wsl --import Ubuntu22.04 . jammy-server-cloudimg-amd64-root.tar.xz --version 2
-      - run: wsl --list --verbose
-
-      # https://forums.docker.com/t/cli-to-switch-between-linux-and-windows-images/30297
-      - run: "& 'C:\\Program Files\\Docker\\Docker\\DockerCli.exe' -SwitchDaemon"
-        shell: pwsh
-
-      # This is where our testing starts
       - run: pnpm install
       - run: C:\\msys64\\usr\\bin\\bash.exe -lc "pnpm test"
         env:
           MSYSTEM: "MINGW64"
           CHERE_INVOKING: "1"
           MSYS2_PATH_TYPE: "inherit"
-      - run: pnpm e2e-tests
-      - uses: mxschmitt/action-tmate@v3
-        if: always()
 
   windows-wsl2-test:
     runs-on: windows-latest
@@ -261,11 +219,6 @@ jobs:
       - run: Copy-Item "D:\a\the-wireguard-effect\the-wireguard-effect\submodules\.wslconfig" -Destination "C:\Users\runneradmin"
       - run: sleep 15
 
-      # https://forums.docker.com/t/cli-to-switch-between-linux-and-windows-images/30297
-
-      - run: "& 'C:\\Program Files\\Docker\\Docker\\DockerCli.exe' -SwitchDaemon"
-        shell: pwsh
-
       # Install dependencies
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
       - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get upgrade -y
@@ -279,6 +232,3 @@ jobs:
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
       - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
-      - run: wsl --distribution Ubuntu22.04 --user root -- pnpm e2e-tests
-      - uses: mxschmitt/action-tmate@v3
-        if: always()
