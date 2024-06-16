@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased]
+## [0.0.7] - 2024-06-16
 
-Implement basic NAT traversal utilities
+Updated dependencies
 
 ## [0.0.6] - 2024-06-08
 
