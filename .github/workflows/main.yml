@@ -153,8 +153,6 @@ jobs:
       - run: pnpm install
       - run: sudo -E pnpm test
       - run: pnpm e2e-tests
-      - uses: mxschmitt/action-tmate@v3
-        if: always()
 
   macos-apple-silicon-test:
     runs-on: macos-14
@@ -191,8 +189,6 @@ jobs:
       - run: pnpm install
       - run: sudo -E pnpm test
       - run: pnpm e2e-tests
-      - uses: mxschmitt/action-tmate@v3
-        if: always()
 
   windows-test:
     runs-on: windows-latest
