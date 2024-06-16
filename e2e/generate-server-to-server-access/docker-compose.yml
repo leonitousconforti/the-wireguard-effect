@@ -8,7 +8,7 @@ services:
       - ./A-alice-wireguard.conf:/etc/wireguard/wg0.conf:ro
       - ./A-alice-client-tests.sh:/usr/local/bin/client-tests.sh:ro
     networks:
-      server-to-server-net:
+      internet:
         ipv4_address: 10.0.0.2
     hostname: ALICE
     cap_add:
@@ -27,7 +27,7 @@ services:
       - ./B-bob-wireguard.conf:/etc/wireguard/wg0.conf:ro
       - ./B-bob-client-tests.sh:/usr/local/bin/client-tests.sh:ro
     networks:
-      server-to-server-net:
+      internet:
         ipv4_address: 10.0.0.3
     hostname: BOB
     cap_add:
@@ -39,7 +39,7 @@ services:
       - net.ipv4.conf.all.src_valid_mark=1
 
 networks:
-  server-to-server-net:
+  internet:
     ipam:
       config:
         - subnet: 10.0.0.0/24
