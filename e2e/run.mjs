@@ -12,3 +12,4 @@ const runDockerE2E = (folder) => {
 };
 
 runDockerE2E("./generate-server-to-server-access");
+runDockerE2E("./generate-remote-access-to-server");
