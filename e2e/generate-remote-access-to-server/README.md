@@ -1,4 +1,4 @@
-# Server to Server
+# Remote access to server
 
 Alice is a public server with wireguard exposed on their chosen port and Bob is a wireguard client behind NAT with no port forwarding.
 

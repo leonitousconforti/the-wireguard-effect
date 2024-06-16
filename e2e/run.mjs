@@ -8,6 +8,7 @@ const e2eTests = [
     "./generate-remote-access-to-server/",
     "./generate-remote-access-to-lan/",
     "./generate-server-hub-and-spoke-access/",
+    "./generate-lan-hub-and-spoke-access/",
 ];
 
 const cleanDockerE2E = (folder) => {

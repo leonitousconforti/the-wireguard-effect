@@ -1,4 +1,4 @@
-# Server to Server
+# Server hub and spoke access
 
 Alice is a public server with wireguard exposed on their chosen port and Bob, Charlie, and Dave are wireguard clients behind NAT with no port forwarding.
 
