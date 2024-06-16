@@ -81,10 +81,14 @@ jobs:
       - run: sudo rm -rf submodules/wireguard-tools
       - run: sudo rm -rf submodules/wireguard-windows
       - run: sudo rm -rf submodules/WSL2-Linux-Kernel
+
+      # https://github.com/actions/download-artifact/tree/v4/?tab=readme-ov-file#limitations
+      - run: tar -cvf /tmp/the-wireguard-effect.tar .
+
       - uses: actions/upload-artifact@v4
         with:
           name: the-wireguard-effect
-          path: .
+          path: /tmp/the-wireguard-effect.tar
 
   linux-test:
     runs-on: ubuntu-latest
@@ -94,67 +98,75 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
+          path: /tmp/the-wireguard-effect
       - uses: actions/setup-node@v4
         with:
           node-version: "18.x"
       - uses: pnpm/action-setup@v4
         with:
           version: 9
+      - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
       - run: sudo apt-get install -y openresolv
       - run: |
-          sudo chmod +x ./src/*
           sudo groupadd wireguard-control
           sudo usermod -a -G wireguard-control root
           sudo usermod -a -G wireguard-control runner
           sudo mkdir -p /var/run/wireguard/
           sudo chown -R root:wireguard-control /var/run/wireguard/
-          sudo setcap "all=ep" ./src/linux-amd64-wireguard-go
+          sudo setcap "all=ep" ./dist/prebuilds/linux-amd64-wireguard-go
       - run: pnpm test
-      - shell: bash
-        run: pnpm e2e-tests
+      - run: pnpm e2e-tests
 
   macos-intel-test:
     runs-on: macos-13
     timeout-minutes: 20
     needs: [build]
     steps:
+      - run: |
+          if [[ $(uname -m) != "x86_64" ]]; then
+            echo "This job must run on an Apple Intel processor machine"
+            exit 1
+          fi
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
+          path: /tmp/the-wireguard-effect
       - uses: actions/setup-node@v4
         with:
           node-version: "18.x"
       - uses: pnpm/action-setup@v4
         with:
           version: 9
+      - run: brew install bash
+      - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
-      - run: |
-          brew install bash
-          sudo chmod +x ./src/*
-      - run: pnpm test
-      - run: pnpm e2e-tests
+      - run: sudo -E pnpm test
 
   macos-apple-silicon-test:
     runs-on: macos-14
     timeout-minutes: 20
     needs: [build]
     steps:
+      - run: |
+          if [[ $(uname -m) != "arm64" ]]; then
+            echo "This job must run on an Apple Silicon machine"
+            exit 1
+          fi
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
+          path: /tmp/the-wireguard-effect
       - uses: actions/setup-node@v4
         with:
           node-version: "18.x"
       - uses: pnpm/action-setup@v4
         with:
           version: 9
+      - run: brew install bash
+      - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
-      - run: |
-          brew install bash
-          sudo chmod +x ./src/*
-      - run: pnpm test
-      - run: pnpm e2e-tests
+      - run: sudo -E pnpm test
 
   freebsd-test:
     runs-on: ubuntu-latest
@@ -211,19 +223,20 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
+          path: /tmp/the-wireguard-effect
       - uses: actions/setup-node@v4
         with:
           node-version: "18.x"
       - uses: pnpm/action-setup@v4
         with:
           version: 9
+      - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
       - run: C:\\msys64\\usr\\bin\\bash.exe -lc "pnpm test"
         env:
           MSYSTEM: "MINGW64"
           CHERE_INVOKING: "1"
           MSYS2_PATH_TYPE: "inherit"
-      - run: pnpm e2e-tests
 
   windows-wsl2-test:
     runs-on: windows-latest
@@ -236,6 +249,8 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: the-wireguard-effect
+          path: /tmp/the-wireguard-effect
+      - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
 
       # Yes all this is necassary to get WSL2 working on GitHub Actions without any user input
       # They are all as separate steps so its easier to debug and see what/where it fails (especially when I was writting this)
@@ -262,7 +277,5 @@ jobs:
 
       # This is where our testing starts
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
-      - run: wsl --distribution Ubuntu22.04 --user root -- chmod +x ./src/*
       - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/
       - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
-      - run: wsl --distribution Ubuntu22.04 --user root -- pnpm e2e-tests

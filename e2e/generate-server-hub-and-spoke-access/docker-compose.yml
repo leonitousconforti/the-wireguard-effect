@@ -1,78 +1,16 @@
 services:
 
-  router_alice:
-    build:
-      context: ..
-      dockerfile: router-with-port-forwarding.dockerfile
-    volumes:
-      - ./A-router-firewall.sh:/usr/local/bin/router-firewall.sh:ro
-    networks:
-      internet:
-        ipv4_address: 10.0.0.2
-      alice_intranet:
-        ipv4_address: 10.0.1.2
-    hostname: ALICE-ROUTER
-    cap_add:
-      - NET_RAW
-      - NET_ADMIN
-      - SYS_MODULE
-    sysctls:
-      - net.ipv4.ip_forward=1
-      - net.ipv4.conf.all.src_valid_mark=1
-
   alice:
     build:
       context: ..
       dockerfile: wireguard-client.dockerfile
-    depends_on:
-      - router_alice
     volumes:
       - ./A-alice-wireguard.conf:/etc/wireguard/wg0.conf:ro
       - ./A-alice-client-tests.sh:/usr/local/bin/client-tests.sh:ro
     networks:
-      alice_intranet:
-        ipv4_address: 10.0.1.3
+      internet:
+        ipv4_address: 10.0.0.2
     hostname: ALICE
-    cap_add:
-      - NET_RAW
-      - NET_ADMIN
-      - SYS_MODULE
-    sysctls:
-      - net.ipv4.ip_forward=1
-      - net.ipv4.conf.all.src_valid_mark=1
-
-  eve:
-    build:
-      context: ..
-      dockerfile: lan-member.dockerfile
-    depends_on:
-      - router_alice
-    volumes:
-      - ./A-lan-member.sh:/usr/local/bin/lan-member.sh:ro
-    networks:
-      alice_intranet:
-        ipv4_address: 10.0.1.4
-    hostname: EVE
-    cap_add:
-      - NET_RAW
-      - NET_ADMIN
-      - SYS_MODULE
-    sysctls:
-      - net.ipv4.ip_forward=1
-      - net.ipv4.conf.all.src_valid_mark=1
-
-  faye:
-    build:
-      context: ..
-      dockerfile: lan-member.dockerfile
-    depends_on:
-      - router_alice
-    volumes:
-      - ./A-lan-member.sh:/usr/local/bin/lan-member.sh:ro
-    networks:
-      alice_intranet:
-        ipv4_address: 10.0.1.5
-    hostname: FAYE
     cap_add:
       - NET_RAW
       - NET_ADMIN
@@ -89,7 +27,7 @@ services:
       internet:
         ipv4_address: 10.0.0.3
       bob_intranet:
-        ipv4_address: 10.0.2.2
+        ipv4_address: 10.0.1.2
     hostname: BOB-ROUTER
     cap_add:
       - NET_RAW
@@ -110,7 +48,7 @@ services:
       - ./B-bob-client-tests.sh:/usr/local/bin/client-tests.sh:ro
     networks:
       bob_intranet:
-        ipv4_address: 10.0.2.3
+        ipv4_address: 10.0.1.3
     hostname: BOB
     cap_add:
       - NET_RAW
@@ -128,7 +66,7 @@ services:
       internet:
         ipv4_address: 10.0.0.4
       charlie_intranet:
-        ipv4_address: 10.0.3.2
+        ipv4_address: 10.0.2.2
     hostname: CHARLIE-ROUTER
     cap_add:
       - NET_RAW
@@ -149,7 +87,7 @@ services:
       - ./C-charlie-client-tests.sh:/usr/local/bin/client-tests.sh:ro
     networks:
       charlie_intranet:
-        ipv4_address: 10.0.3.3
+        ipv4_address: 10.0.2.3
     hostname: CHALIE
     cap_add:
       - NET_RAW
@@ -167,7 +105,7 @@ services:
       internet:
         ipv4_address: 10.0.0.5
       dave_intranet:
-        ipv4_address: 10.0.4.2
+        ipv4_address: 10.0.3.2
     hostname: DAVE-ROUTER
     cap_add:
       - NET_RAW
@@ -188,7 +126,7 @@ services:
       - ./D-dave-client-tests.sh:/usr/local/bin/client-tests.sh:ro
     networks:
       dave_intranet:
-        ipv4_address: 10.0.4.3
+        ipv4_address: 10.0.3.3
     hostname: DAVE
     cap_add:
       - NET_RAW
@@ -203,19 +141,15 @@ networks:
     ipam:
       config:
         - subnet: 10.0.0.0/24
-  alice_intranet:
-    ipam:
-      config:
-        - subnet: 10.0.1.0/24
   bob_intranet:
     ipam:
       config:
-        - subnet: 10.0.2.0/24
+        - subnet: 10.0.1.0/24
   charlie_intranet:
     ipam:
       config:
-        - subnet: 10.0.3.0/24
+        - subnet: 10.0.2.0/24
   dave_intranet:
     ipam:
       config:
-        - subnet: 10.0.4.0/24
+        - subnet: 10.0.3.0/24
