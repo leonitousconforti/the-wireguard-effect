@@ -102,6 +102,8 @@ jobs:
         with:
           node-version: "18.x"
       - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
       - run: sudo apt-get install -y openresolv
@@ -133,6 +135,8 @@ jobs:
         with:
           node-version: "18.x"
       - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - run: brew install bash
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
@@ -156,6 +160,8 @@ jobs:
         with:
           node-version: "18.x"
       - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - run: brew install bash
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
@@ -174,6 +180,8 @@ jobs:
         with:
           node-version: "18.x"
       - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
       - run: pnpm install
       - run: C:\\msys64\\usr\\bin\\bash.exe -lc "pnpm test"
