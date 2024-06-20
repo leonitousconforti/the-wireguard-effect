@@ -12,3 +12,13 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      effect:
+        applies-to: version-updates
+        patterns:
+          - "effect"
+          - "@effect*"
