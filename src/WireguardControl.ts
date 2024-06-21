@@ -43,11 +43,7 @@ export interface WireguardControlImpl {
         wireguardInterface: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        | Socket.SocketError
-        | ParseResult.ParseError
-        | PlatformError.PlatformError
-        | Cause.UnknownException
-        | Cause.TimeoutException,
+        Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.TimeoutException,
         FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
     >;
 
@@ -56,7 +52,7 @@ export interface WireguardControlImpl {
         wireguardInterface: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException | Cause.TimeoutException,
+        PlatformError.PlatformError | ParseResult.ParseError | Cause.TimeoutException,
         FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
     >;
 
@@ -65,11 +61,7 @@ export interface WireguardControlImpl {
         wireguardInterface: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        | Socket.SocketError
-        | ParseResult.ParseError
-        | PlatformError.PlatformError
-        | Cause.UnknownException
-        | Cause.TimeoutException,
+        Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.TimeoutException,
         FileSystem.FileSystem | Path.Path | Scope.Scope | CommandExecutor.CommandExecutor
     >;
 
@@ -154,7 +146,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
         ...args: Array<string>
     ): Effect.Effect<
         void,
-        Cause.UnknownException | PlatformError.PlatformError | Cause.TimeoutException,
+        PlatformError.PlatformError | Cause.TimeoutException,
         CommandExecutor.CommandExecutor | FileSystem.FileSystem
     > =>
         process.platform === "win32" && command.includes("-wireguard-go.exe")
@@ -170,8 +162,8 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                       const fileSystem = yield* FileSystem.FileSystem;
                       const stdout = yield* fileSystem.makeTempFile();
                       const stderr = yield* fileSystem.makeTempFile();
-                      const { fd: stdoutFd } = yield* fileSystem.open(stdout, { flag: "r+" });
-                      const { fd: stderrFd } = yield* fileSystem.open(stderr, { flag: "r+" });
+                      const stdoutFd = fs.openSync(stdout, "r+");
+                      const stderrFd = fs.openSync(stderr, "r+");
 
                       const subprocess = exec.spawn(command, args, {
                           detached: true,
@@ -233,7 +225,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                           console.log(event);
                           if (event === "change") {
                               const data = fs.readFileSync(stdout, "utf8");
-                              console.log(data); // FIXME: a
+                              console.log(data);
                               if (data.includes("UAPI listener started")) {
                                   onStarted();
                               }
@@ -247,7 +239,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                           subprocess.off("error", onError);
                           subprocess.off("disconnect", onDisconnect);
                       });
-                  }).pipe(Effect.scoped)
+                  })
               ).pipe(Effect.timeout("1 minutes"))
             : Effect.flatMap(CommandExecutor.CommandExecutor, (executor) =>
                   executor.exitCode(
@@ -255,7 +247,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                           ? Command.make("sudo", command, ...args)
                           : Command.make(`${command}`, ...args)
                   )
-              );
+              ).pipe(Effect.timeout("1 minutes"));
 
     const up: WireguardControlImpl["up"] = (wireguardConfig, wireguardInterface) =>
         Effect.gen(function* () {

@@ -39,10 +39,10 @@ import * as WireguardPeer from "./WireguardPeer.js";
  * @category Schemas
  */
 export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIniConfig")({
-    /** TODO: Document */
+    /** The Address of this peer. */
     Address: InternetSchemas.CidrBlockFromString,
 
-    /** TODO: Document */
+    /** DNS for this peer. */
     Dns: Schema.optional(InternetSchemas.Address),
 
     /**
@@ -110,7 +110,6 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             WireguardInterface.WireguardInterface,
             | Socket.SocketError
             | ParseResult.ParseError
-            | Cause.UnknownException
             | Cause.TimeoutException
             | PlatformError.PlatformError
             | WireguardErrors.WireguardError,
@@ -143,7 +142,6 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             WireguardInterface.WireguardInterface,
             | Socket.SocketError
             | ParseResult.ParseError
-            | Cause.UnknownException
             | Cause.TimeoutException
             | PlatformError.PlatformError
             | WireguardErrors.WireguardError,
