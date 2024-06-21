@@ -36,7 +36,7 @@ sudo ldconfig
 (cd ./wireguard-tools && git apply ../../patches/wg-quick-darwin.patch && cp src/wg-quick/darwin.bash ../../dist/prebuilds/darwin-wg-quick && chmod +x ../../dist/prebuilds/darwin-wg-quick)
 (cd ./wireguard-tools && git reset --hard)
 
-# Wireguard-windows prebuilds (TODO: arm64)
+# Wireguard-windows prebuilds
 (cd ./wireguard-windows && unset GOROOT && make clean && make amd64/wireguard.exe && cp amd64/wireguard.exe ../../dist/prebuilds/win32-amd64-wireguard.exe)
 
 # Windows WSL2 modified linux kernel (https://github.com/microsoft/WSL/issues/7547)
