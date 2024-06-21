@@ -14,8 +14,6 @@ runs:
         node-version: "18.x"
 
     - uses: pnpm/action-setup@v4
-      with:
-        version: 9
 
     - shell: bash
       run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
