@@ -363,7 +363,7 @@ export const requestHiddenPage = (
         const defaultClient = yield* HttpClient.client.Client;
         const client = defaultClient.pipe(HttpClient.client.filterStatusOk);
         const request = HttpClient.request.get(hiddenPageLocation);
-        return yield* client(request).pipe(HttpClient.response.text, Effect.timeout("3 seconds"));
+        return yield* client(request).pipe(HttpClient.response.text, Effect.timeout("7 seconds"));
     }).pipe(Effect.retry(retryPolicy));
 
 /**
@@ -380,5 +380,5 @@ export const requestGoogle: Effect.Effect<
     const defaultClient = yield* HttpClient.client.Client;
     const client = defaultClient.pipe(HttpClient.client.filterStatusOk);
     const request = HttpClient.request.get("https://www.google.com");
-    return yield* client(request).pipe(HttpClient.response.text, Effect.timeout("3 seconds"));
+    return yield* client(request).pipe(HttpClient.response.text, Effect.timeout("7 seconds"));
 }).pipe(Effect.retry(retryPolicy));
