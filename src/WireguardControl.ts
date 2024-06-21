@@ -229,9 +229,10 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                       subprocess.on("disconnect", onDisconnect);
 
                       const watcher = fs.watch(stdout, (event) => {
+                          console.log(event);
                           if (event === "change") {
                               const data = fs.readFileSync(stdout, "utf8");
-                              console.log(data);
+                              console.log(data); // FIXME: a
                               if (data.includes("UAPI listener started")) {
                                   onStarted();
                               }
