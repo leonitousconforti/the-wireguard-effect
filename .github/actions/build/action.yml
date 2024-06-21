@@ -3,10 +3,8 @@ description: "Reusable build action"
 
 runs:
   using: "composite"
-  defaults:
-    run:
-      shell: bash
   steps:
+    # Setup go and node
     - uses: actions/setup-go@v5
       with:
         cache-dependency-path: |
@@ -15,11 +13,13 @@ runs:
       with:
         node-version: "18.x"
 
+    # Setup pnpm and pnpm cache
     - name: "Install pnpm"
       uses: pnpm/action-setup@v4
       with:
         run_install: false
     - name: "Get pnpm store"
+      shell: bash
       run: |
         echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
     - name: "Setup pnpm cache"
@@ -30,9 +30,13 @@ runs:
         restore-keys: |
           ${{ runner.os }}-node18.x-pnpm-store-
 
+    # Install dependencies
     - run: sudo apt-get update
+      shell: bash
     - run: sudo apt-get install mingw-w64 imagemagick libarchive-tools build-essential flex bison dwarves libssl-dev libelf-dev bc ccache librsvg2-bin fakeroot debhelper libtool-bin cmake -y
+      shell: bash
 
+    # Setup ccache for wsl2-linux-kernel
     - name: "Setup ccache"
       uses: actions/cache@v4
       with:
@@ -41,37 +45,53 @@ runs:
         restore-keys: |
           wsl2-linux-kernel-ccache-
 
+    # Setup wireguard windows dist cache
     - name: "Setup wireguard windows dist cache"
       uses: actions/cache@v4
       with:
         path: /tmp/wireguard-windows-distfiles
         key: wireguard-windows-dist
-    - run: mkdir -p /tmp/wireguard-windows-distfiles/.distfiles/
-    - run: cp -r /tmp/wireguard-windows-distfiles/.distfiles/ submodules/wireguard-windows/.distfiles
-    - run: ls -la submodules/wireguard-windows/.distfiles
+    - shell: bash
+      run: |
+        mkdir -p /tmp/wireguard-windows-distfiles/.distfiles/
+        cp -r /tmp/wireguard-windows-distfiles/.distfiles/ submodules/wireguard-windows/.distfiles
+        ls -la submodules/wireguard-windows/.distfiles
 
-    - run: pnpm install
-    - run: pnpm check
-    - run: pnpm lint
-    - run: pnpm build
+    # Check, lint, and build
+    - shell: bash
+      run: pnpm install
+    - shell: bash
+      run: pnpm check
+    - shell: bash
+      run: pnpm lint
+    - shell: bash
+      run: pnpm build
 
-    - run: cp -r submodules/wireguard-windows/.distfiles/ /tmp/wireguard-windows-distfiles
-    - run: ls -la /tmp/wireguard-windows-distfiles
+    # Cache wireguard windows dist
+    - shell: bash
+      run: |
+        cp -r submodules/wireguard-windows/.distfiles/ /tmp/wireguard-windows-distfiles
+        ls -la /tmp/wireguard-windows-distfiles
 
-    - run: sudo rm -rf .git/
-    - run: sudo rm -rf node_modules/
-    - run: sudo rm -rf submodules/wintun
-    - run: sudo rm -rf submodules/nvlist
-    - run: sudo rm -rf submodules/osxcross
-    - run: sudo rm -rf submodules/wireguard-apple
-    - run: sudo rm -rf submodules/wireguard-go
-    - run: sudo rm -rf submodules/wireguard-tools
-    - run: sudo rm -rf submodules/wireguard-windows
-    - run: sudo rm -rf submodules/WSL2-Linux-Kernel
+    # Clean up
+    - shell: bash
+      run: |
+        sudo rm -rf .git/
+        sudo rm -rf node_modules/
+        sudo rm -rf submodules/wintun
+        sudo rm -rf submodules/nvlist
+        sudo rm -rf submodules/osxcross
+        sudo rm -rf submodules/wireguard-apple
+        sudo rm -rf submodules/wireguard-go
+        sudo rm -rf submodules/wireguard-tools
+        sudo rm -rf submodules/wireguard-windows
+        sudo rm -rf submodules/WSL2-Linux-Kernel
 
     # https://github.com/actions/download-artifact/tree/v4/?tab=readme-ov-file#limitations
-    - run: tar -cvf /tmp/the-wireguard-effect.tar .
+    - shell: bash
+      run: tar -cvf /tmp/the-wireguard-effect.tar .
 
+    # Upload the artifact
     - uses: actions/upload-artifact@v4
       with:
         name: the-wireguard-effect
