@@ -18,7 +18,7 @@ runs:
     - shell: pwsh
       run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
     - shell: pwsh
-      un: pnpm install
+      run: pnpm install
     - shell: pwsh
       run: C:\\msys64\\usr\\bin\\bash.exe -lc "pnpm test"
       env:
