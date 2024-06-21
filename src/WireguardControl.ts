@@ -155,76 +155,97 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
     ): Effect.Effect<
         void,
         Cause.UnknownException | PlatformError.PlatformError | Cause.TimeoutException,
-        CommandExecutor.CommandExecutor
+        CommandExecutor.CommandExecutor | FileSystem.FileSystem
     > =>
         process.platform === "win32" && command.includes("-wireguard-go.exe")
-            ? Effect.async<void, PlatformError.PlatformError | Cause.TimeoutException, never>((resume) => {
-                  const subprocess = exec.spawn(command, args, {
-                      detached: true,
-                      stdio: [
-                          "ignore",
-                          fs.openSync("./wireguard-go-stdout.log", "w"),
-                          fs.openSync("./wireguard-go-stderr.log", "w"),
-                      ],
-                  });
+            ? Effect.asyncEffect<
+                  void,
+                  PlatformError.PlatformError,
+                  never,
+                  never,
+                  PlatformError.PlatformError,
+                  FileSystem.FileSystem
+              >((resume) =>
+                  Effect.gen(function* () {
+                      const fileSystem = yield* FileSystem.FileSystem;
+                      const stdout = yield* fileSystem.makeTempFile();
+                      const stderr = yield* fileSystem.makeTempFile();
+                      const { fd: stdoutFd } = yield* fileSystem.open(stdout, { flag: "r+" });
+                      const { fd: stderrFd } = yield* fileSystem.open(stderr, { flag: "r+" });
 
-                  subprocess.unref();
+                      const subprocess = exec.spawn(command, args, {
+                          detached: true,
+                          stdio: ["ignore", stdoutFd, stderrFd],
+                      });
 
-                  function onError(error: Error) {
-                      resume(
-                          Effect.fail(
-                              PlatformError.SystemError({
-                                  reason: "Unknown",
-                                  module: "Command",
-                                  method: "wireguard-go.exe",
-                                  pathOrDescriptor: command,
-                                  message: error.message,
-                              })
-                          )
-                      );
-                  }
+                      subprocess.unref();
 
-                  function onExit(code: number | null) {
-                      if (Predicate.isNotNull(code)) {
-                          return onError(new Error(`Process exited unexpectedly with code ${code}`));
-                      } else {
-                          return onError(new Error("Process exited unexpectedly."));
+                      function onError(error: Error) {
+                          resume(
+                              Effect.fail(
+                                  PlatformError.SystemError({
+                                      reason: "Unknown",
+                                      module: "Command",
+                                      method: "wireguard-go.exe",
+                                      pathOrDescriptor: command,
+                                      message: error.message,
+                                  })
+                              )
+                          );
                       }
-                  }
 
-                  function onClose(code: number | null) {
-                      if (Predicate.isNotNull(code)) {
-                          return onError(new Error(`Process closed unexpectedly with code ${code}`));
-                      } else {
-                          return onError(new Error("Process closed unexpectedly."));
+                      function onExit(code: number | null) {
+                          if (Predicate.isNotNull(code)) {
+                              return onError(new Error(`Process exited unexpectedly with code ${code}`));
+                          } else {
+                              return onError(new Error("Process exited unexpectedly."));
+                          }
                       }
-                  }
 
-                  function onDisconnect() {
-                      return onError(new Error("Process disconnected unexpectedly."));
-                  }
+                      function onClose(code: number | null) {
+                          if (Predicate.isNotNull(code)) {
+                              return onError(new Error(`Process closed unexpectedly with code ${code}`));
+                          } else {
+                              return onError(new Error("Process closed unexpectedly."));
+                          }
+                      }
 
-                  //   function onStarted() {
-                  //       subprocess.off("exit", onExit);
-                  //       subprocess.off("close", onClose);
-                  //       subprocess.off("error", onError);
-                  //       subprocess.off("disconnect", onDisconnect);
-                  //       resume(Effect.void);
-                  //   }
+                      function onDisconnect() {
+                          return onError(new Error("Process disconnected unexpectedly."));
+                      }
 
-                  subprocess.on("exit", onExit);
-                  subprocess.on("close", onClose);
-                  subprocess.on("error", onError);
-                  subprocess.on("disconnect", onDisconnect);
+                      function onStarted() {
+                          watcher.close();
+                          subprocess.off("exit", onExit);
+                          subprocess.off("close", onClose);
+                          subprocess.off("error", onError);
+                          subprocess.off("disconnect", onDisconnect);
+                          resume(Effect.void);
+                      }
 
-                  // Interruption handler
-                  return Effect.sync(() => {
-                      subprocess.off("exit", onExit);
-                      subprocess.off("close", onClose);
-                      subprocess.off("error", onError);
-                      subprocess.off("disconnect", onDisconnect);
-                  });
-              }).pipe(Effect.timeout("1 minutes"))
+                      subprocess.on("exit", onExit);
+                      subprocess.on("close", onClose);
+                      subprocess.on("error", onError);
+                      subprocess.on("disconnect", onDisconnect);
+
+                      const watcher = fs.watch(stdout, (event) => {
+                          if (event === "change") {
+                              const data = fs.readFileSync(stdout, "utf8");
+                              if (data.includes("UAPI listener started")) {
+                                  onStarted();
+                              }
+                          }
+                      });
+
+                      return Effect.sync(() => {
+                          watcher.close();
+                          subprocess.off("exit", onExit);
+                          subprocess.off("close", onClose);
+                          subprocess.off("error", onError);
+                          subprocess.off("disconnect", onDisconnect);
+                      });
+                  }).pipe(Effect.scoped)
+              ).pipe(Effect.timeout("1 minutes"))
             : Effect.flatMap(CommandExecutor.CommandExecutor, (executor) =>
                   executor.exitCode(
                       options.sudo && process.platform !== "win32"
