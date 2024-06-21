@@ -23,6 +23,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
       - uses: ./.github/actions/build
 
   linux-lab:
@@ -31,7 +34,10 @@ jobs:
     timeout-minutes: 60
     needs: [build]
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/linux
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ always() }}
 
   macos-intel-lab:
     if: github.event.inputs.platform == 'macos-intel'
@@ -39,7 +45,10 @@ jobs:
     timeout-minutes: 60
     needs: [build]
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/mac-intel
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ always() }}
 
   macos-apple-silicon-lab:
     if: github.event.inputs.platform == 'macos-apple-silicon'
@@ -47,7 +56,10 @@ jobs:
     timeout-minutes: 60
     needs: [build]
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/mac-apple-silicon
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ always() }}
 
   windows-lab:
     if: github.event.inputs.platform == 'windows'
@@ -55,15 +67,18 @@ jobs:
     timeout-minutes: 60
     needs: [build]
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/windows
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ always() }}
 
   windows-wsl2-lab:
     if: github.event.inputs.platform == 'windows-wsl2'
     runs-on: windows-latest
     timeout-minutes: 60
     needs: [build]
-    defaults:
-      run:
-        shell: pwsh
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/windows-wsl2
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ always() }}

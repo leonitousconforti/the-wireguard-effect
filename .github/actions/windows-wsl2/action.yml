@@ -8,32 +8,54 @@ runs:
       with:
         name: the-wireguard-effect
         path: /tmp/the-wireguard-effect
-    - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
+    - shell: pwsh
+      run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
 
-    # Yes all this is necassary to get WSL2 working on GitHub Actions without any user input
-    # They are all as separate steps so its easier to debug and see what/where it fails (especially when I was writting this)
-    - run: dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-    - run: dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-    - run: wsl --set-default-version 2
-    - run: wsl --update
-    - run: wsl --install --no-distribution
-    - run: Invoke-WebRequest -URI https://cloud-images.ubuntu.com/releases/jammy/release/ubuntu-22.04-server-cloudimg-amd64-root.tar.xz -OutFile jammy-server-cloudimg-amd64-root.tar.xz
-    - run: wsl --import Ubuntu22.04 . jammy-server-cloudimg-amd64-root.tar.xz --version 2
-    - run: wsl --list --verbose
-    - run: wsl --shutdown
-    - run: Copy-Item "D:\a\the-wireguard-effect\the-wireguard-effect\submodules\.wslconfig" -Destination "C:\Users\runneradmin"
-    - run: sleep 15
+    # Yes all this is necessary to get WSL2 working on GitHub Actions without any user input
+    # They are all as separate steps so its easier to debug and see what/where it fails (especially when I was writing this)
+    - shell: pwsh
+      run: dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+    - shell: pwsh
+      run: dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+    - shell: pwsh
+      run: wsl --set-default-version 2
+    - shell: pwsh
+      run: wsl --update
+    - shell: pwsh
+      run: wsl --install --no-distribution
+    - shell: pwsh
+      run: Invoke-WebRequest -URI https://cloud-images.ubuntu.com/releases/jammy/release/ubuntu-22.04-server-cloudimg-amd64-root.tar.xz -OutFile jammy-server-cloudimg-amd64-root.tar.xz
+    - shell: pwsh
+      run: wsl --import Ubuntu22.04 . jammy-server-cloudimg-amd64-root.tar.xz --version 2
+    - shell: pwsh
+      run: wsl --list --verbose
+    - shell: pwsh
+      run: wsl --shutdown
+    - shell: pwsh
+      run: Copy-Item "D:\a\the-wireguard-effect\the-wireguard-effect\submodules\.wslconfig" -Destination "C:\Users\runneradmin"
+    - shell: pwsh
+      run: sleep 15
 
     # Install dependencies
-    - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
-    - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get upgrade -y
-    - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y openresolv
-    - run: wsl --distribution Ubuntu22.04 --user root -- curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
-    - run: wsl --distribution Ubuntu22.04 --user root -- sudo bash nodesource_setup.sh
-    - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y nodejs
-    - run: wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get upgrade -y
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y openresolv
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root -- curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root -- sudo bash nodesource_setup.sh
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y nodejs
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm
 
     # This is where our testing starts
-    - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
-    - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/
-    - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run

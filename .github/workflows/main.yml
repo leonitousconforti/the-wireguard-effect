@@ -56,9 +56,6 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 20
     needs: [build]
-    defaults:
-      run:
-        shell: pwsh
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/windows-wsl2
