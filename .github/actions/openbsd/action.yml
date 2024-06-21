@@ -7,6 +7,11 @@ runs:
     - uses: actions/download-artifact@v4
       with:
         name: the-wireguard-effect
+        path: /tmp/the-wireguard-effect
+
+    - shell: bash
+      run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
+
     - uses: vmactions/openbsd-vm@v1
       with:
         usesh: true
