@@ -3,6 +3,9 @@ description: "Reusable build action"
 
 runs:
   using: "composite"
+  defaults:
+    run:
+      shell: bash
   steps:
     - uses: actions/setup-go@v5
       with:
