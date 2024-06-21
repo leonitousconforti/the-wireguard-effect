@@ -199,7 +199,7 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(Wi
             );
 
             return `[Interface]\n${dns}${listenPort}${fwmark}${address}${privateKey}\n${peersConfig}`;
-        }).pipe(Effect.mapError(({ error }) => error)),
+        }).pipe(Effect.mapError(({ issue }) => issue)),
 
     // Decoding is likewise non-trivial, as we need to parse all the peers from the ini config.
     encode: (iniConfig, _options, _ast) =>
@@ -240,7 +240,7 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(Wi
             );
 
             return yield* parseInterface;
-        }).pipe(Effect.mapError(({ error }) => error)),
+        }).pipe(Effect.mapError(({ issue }) => issue)),
 }).annotations({
     identifier: "WireguardIniConfig",
     description: "A wireguard ini configuration",

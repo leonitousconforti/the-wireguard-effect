@@ -119,44 +119,52 @@ Added in v1.0.0
 ```ts
 export declare const WireguardGetConfigResponse: Schema.extend<
   Schema.SchemaClass<
-    Omit<WireguardConfig, "Peers">,
-    Omit<
-      {
-        readonly Address: `${string}/${number}`
-        readonly PrivateKey: string
-        readonly ListenPort: string | number
-        readonly Dns?: string | undefined
-        readonly FirewallMark?: number | null | undefined
-        readonly Peers?:
-          | readonly {
-              readonly PublicKey: string
-              readonly PersistentKeepalive?: number | null | undefined
-              readonly AllowedIPs?: ReadonlySet<`${string}/${number}`> | null | undefined
-              readonly Endpoint?:
-                | `${string}:${number}`
-                | `${string}:${number}:${number}`
-                | { readonly ip: string; readonly port: number; readonly family: "ipv4" }
-                | {
-                    readonly ip: string
-                    readonly natPort: number
-                    readonly listenPort: number
-                    readonly family: "ipv4"
-                  }
-                | `[${string}]:${number}`
-                | `[${string}]:${number}:${number}`
-                | { readonly ip: string; readonly port: number; family: "ipv6" }
-                | { readonly ip: string; readonly natPort: number; readonly listenPort: number; family: "ipv6" }
-                | { readonly host: string; readonly port: number }
-                | { readonly host: string; readonly natPort: number; readonly listenPort: number }
-                | null
-                | undefined
-              readonly PresharedKey?: string | null | undefined
-            }[]
-          | null
-          | undefined
-      },
-      "Peers"
-    >,
+    {
+      readonly Address: InternetSchemas.CidrBlockBase<"ipv4"> | InternetSchemas.CidrBlockBase<"ipv6">
+      readonly PrivateKey: string & Brand<"WireguardKey">
+      readonly Dns?:
+        | { readonly family: "ipv4"; readonly ip: InternetSchemas.IPv4Brand }
+        | { readonly family: "ipv6"; readonly ip: InternetSchemas.IPv6Brand }
+        | undefined
+      readonly ListenPort: InternetSchemas.PortBrand
+      readonly FirewallMark?: number | undefined
+      writeToFile: (
+        file: string
+      ) => Effect.Effect<void, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem | Path.Path>
+      up: (
+        interfaceObject?: WireguardInterface.WireguardInterface | undefined
+      ) => Effect.Effect<
+        WireguardInterface.WireguardInterface,
+        | Socket.SocketError
+        | ParseResult.ParseError
+        | Cause.TimeoutException
+        | WireguardErrors.WireguardError
+        | PlatformError.PlatformError,
+        FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl | CommandExecutor.CommandExecutor
+      >
+      upScoped: (
+        interfaceObject?: WireguardInterface.WireguardInterface | undefined
+      ) => Effect.Effect<
+        WireguardInterface.WireguardInterface,
+        | Socket.SocketError
+        | ParseResult.ParseError
+        | Cause.TimeoutException
+        | WireguardErrors.WireguardError
+        | PlatformError.PlatformError,
+        | Scope.Scope
+        | FileSystem.FileSystem
+        | Path.Path
+        | WireguardControl.WireguardControl
+        | CommandExecutor.CommandExecutor
+      >
+    },
+    {
+      readonly Address: `${string}/${number}`
+      readonly PrivateKey: string
+      readonly Dns?: string | undefined
+      readonly ListenPort: string | number
+      readonly FirewallMark?: number | null | undefined
+    },
     never
   >,
   Schema.Struct<{
