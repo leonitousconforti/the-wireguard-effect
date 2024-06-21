@@ -223,7 +223,7 @@ export const WireguardIniPeer: $WireguardIniPeer = Schema.transformOrFail(Wiregu
                 ),
             }),
             Schema.decode(WireguardPeer, { onExcessProperty: "error" }),
-            Effect.mapError(({ error }) => error)
+            Effect.mapError(({ issue }) => issue)
         ),
 }).annotations({
     identifier: "WireguardIniPeer",

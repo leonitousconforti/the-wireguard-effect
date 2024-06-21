@@ -11,7 +11,11 @@ import * as CommandExecutor from "@effect/platform/CommandExecutor";
 import * as PlatformError from "@effect/platform/Error";
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as HttpClient from "@effect/platform/HttpClient";
+import * as HttpClientError from "@effect/platform/HttpClientError";
+import * as HttpClientRequest from "@effect/platform/HttpClientRequest";
+import * as HttpClientResponse from "@effect/platform/HttpClientResponse";
 import * as HttpServer from "@effect/platform/HttpServer";
+import * as HttpServerResponse from "@effect/platform/HttpServerResponse";
 import * as Path from "@effect/platform/Path";
 import * as Socket from "@effect/platform/Socket";
 import * as ParseResult from "@effect/schema/ParseResult";
@@ -333,10 +337,10 @@ export const WireguardDemoServer = (options: {
 
         // Start the server
 
-        Layer.launch(HttpServer.server.serve(Effect.succeed(HttpServer.response.html(hiddenPageContent))))
+        Layer.launch(HttpServer.serve(Effect.succeed(HttpServerResponse.html(hiddenPageContent))))
             .pipe(
                 Effect.provide(
-                    NodeHttpServer.server.layer(() => http.createServer(), {
+                    NodeHttpServer.layer(() => http.createServer(), {
                         port: 8080,
                         host: "192.168.4.1",
                     })
@@ -358,12 +362,12 @@ export const retryPolicy = Schedule.recurs(4).pipe(Schedule.addDelay(() => "3 se
  */
 export const requestHiddenPage = (
     hiddenPageLocation: string
-): Effect.Effect<string, HttpClient.error.HttpClientError | Cause.TimeoutException, HttpClient.client.Client.Default> =>
+): Effect.Effect<string, HttpClientError.HttpClientError | Cause.TimeoutException, HttpClient.HttpClient.Default> =>
     Effect.gen(function* () {
-        const defaultClient = yield* HttpClient.client.Client;
-        const client = defaultClient.pipe(HttpClient.client.filterStatusOk);
-        const request = HttpClient.request.get(hiddenPageLocation);
-        return yield* client(request).pipe(HttpClient.response.text, Effect.timeout("7 seconds"));
+        const defaultClient = yield* HttpClient.HttpClient;
+        const client = defaultClient.pipe(HttpClient.filterStatusOk);
+        const request = HttpClientRequest.get(hiddenPageLocation);
+        return yield* client(request).pipe(HttpClientResponse.text, Effect.timeout("7 seconds"));
     }).pipe(Effect.retry(retryPolicy));
 
 /**
@@ -374,11 +378,11 @@ export const requestHiddenPage = (
  */
 export const requestGoogle: Effect.Effect<
     void,
-    HttpClient.error.HttpClientError | Cause.TimeoutException,
-    HttpClient.client.Client.Default
+    HttpClientError.HttpClientError | Cause.TimeoutException,
+    HttpClient.HttpClient.Default
 > = Effect.gen(function* () {
-    const defaultClient = yield* HttpClient.client.Client;
-    const client = defaultClient.pipe(HttpClient.client.filterStatusOk);
-    const request = HttpClient.request.get("https://www.google.com");
-    return yield* client(request).pipe(HttpClient.response.text, Effect.timeout("7 seconds"));
+    const defaultClient = yield* HttpClient.HttpClient;
+    const client = defaultClient.pipe(HttpClient.filterStatusOk);
+    const request = HttpClientRequest.get("https://www.google.com");
+    return yield* client(request).pipe(HttpClientResponse.text, Effect.timeout("7 seconds"));
 }).pipe(Effect.retry(retryPolicy));
