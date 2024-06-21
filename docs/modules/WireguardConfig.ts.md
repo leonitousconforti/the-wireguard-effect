@@ -234,7 +234,7 @@ up: (interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>
     WireguardInterface.WireguardInterface,
     | Socket.SocketError
     | ParseResult.ParseError
-    | Cause.UnknownException
+    | Cause.TimeoutException
     | PlatformError.PlatformError
     | WireguardErrors.WireguardError,
     FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
@@ -256,7 +256,7 @@ upScoped: (interfaceObject?: WireguardInterface.WireguardInterface | undefined) 
     WireguardInterface.WireguardInterface,
     | Socket.SocketError
     | ParseResult.ParseError
-    | Cause.UnknownException
+    | Cause.TimeoutException
     | PlatformError.PlatformError
     | WireguardErrors.WireguardError,
     | FileSystem.FileSystem

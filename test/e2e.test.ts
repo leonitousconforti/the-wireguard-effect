@@ -39,6 +39,6 @@ describe("wireguard e2e test using demo.wireguard.com", () => {
                 .pipe(Effect.provide(NodeHttp.layer))
                 .pipe(Effect.provide(NodeContext.layer))
                 .pipe(Effect.provide(WireguardControlLive)),
-        Function.pipe(Duration.seconds(300), Duration.toMillis)
+        Function.pipe(Duration.seconds(120), Duration.toMillis)
     );
 });

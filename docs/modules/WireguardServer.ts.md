@@ -88,7 +88,7 @@ export declare const WireguardDemoServer: (options: {
   void,
   | Socket.SocketError
   | ParseResult.ParseError
-  | Cause.UnknownException
+  | Cause.TimeoutException
   | WireguardErrors.WireguardError
   | PlatformError.PlatformError
   | SocketServer.SocketServerError,
@@ -113,7 +113,7 @@ working and we can connect to the internet when the wireguard tunnel is up.
 ```ts
 export declare const requestGoogle: Effect.Effect<
   void,
-  HttpClient.error.HttpClientError | Cause.TimeoutException,
+  Cause.TimeoutException | HttpClient.error.HttpClientError,
   HttpClient.client.Client.Default
 >
 ```
