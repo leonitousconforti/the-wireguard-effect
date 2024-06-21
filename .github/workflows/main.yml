@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
       - uses: ./.github/actions/build
 
   linux-test:
@@ -22,6 +25,7 @@ jobs:
     timeout-minutes: 20
     needs: [build]
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/linux
 
   macos-intel-test:
@@ -29,6 +33,7 @@ jobs:
     timeout-minutes: 20
     needs: [build]
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/mac-intel
 
   macos-apple-silicon-test:
@@ -36,6 +41,7 @@ jobs:
     timeout-minutes: 20
     needs: [build]
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/mac-apple-silicon
 
   windows-test:
@@ -43,6 +49,7 @@ jobs:
     timeout-minutes: 20
     needs: [build]
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/windows
 
   windows-wsl2-test:
@@ -53,4 +60,5 @@ jobs:
       run:
         shell: pwsh
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/windows-wsl2

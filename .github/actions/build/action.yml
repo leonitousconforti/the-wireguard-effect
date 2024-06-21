@@ -4,10 +4,6 @@ description: "Reusable build action"
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: "true"
-
     - uses: actions/setup-go@v5
       with:
         cache-dependency-path: |
