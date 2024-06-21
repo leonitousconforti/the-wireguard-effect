@@ -137,7 +137,7 @@ export declare const WireguardGetConfigResponse: Schema.extend<
         WireguardInterface.WireguardInterface,
         | Socket.SocketError
         | ParseResult.ParseError
-        | Cause.UnknownException
+        | Cause.TimeoutException
         | WireguardErrors.WireguardError
         | PlatformError.PlatformError,
         FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl | CommandExecutor.CommandExecutor
@@ -148,7 +148,7 @@ export declare const WireguardGetConfigResponse: Schema.extend<
         WireguardInterface.WireguardInterface,
         | Socket.SocketError
         | ParseResult.ParseError
-        | Cause.UnknownException
+        | Cause.TimeoutException
         | WireguardErrors.WireguardError
         | PlatformError.PlatformError,
         | Scope.Scope
@@ -242,7 +242,7 @@ up: (interfaceObject?: WireguardInterface.WireguardInterface | undefined) =>
     WireguardInterface.WireguardInterface,
     | Socket.SocketError
     | ParseResult.ParseError
-    | Cause.UnknownException
+    | Cause.TimeoutException
     | PlatformError.PlatformError
     | WireguardErrors.WireguardError,
     FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
@@ -264,7 +264,7 @@ upScoped: (interfaceObject?: WireguardInterface.WireguardInterface | undefined) 
     WireguardInterface.WireguardInterface,
     | Socket.SocketError
     | ParseResult.ParseError
-    | Cause.UnknownException
+    | Cause.TimeoutException
     | PlatformError.PlatformError
     | WireguardErrors.WireguardError,
     | FileSystem.FileSystem

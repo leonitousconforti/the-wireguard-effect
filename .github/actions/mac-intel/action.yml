@@ -1,0 +1,32 @@
+name: "MacOSX Intel Test"
+description: "Reusable macosx intel test action"
+
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      run: |
+        if [[ $(uname -m) != "x86_64" ]]; then
+          echo "This job must run on an Apple Intel processor machine"
+          exit 1
+        fi
+
+    - uses: actions/download-artifact@v4
+      with:
+        name: the-wireguard-effect
+        path: /tmp/the-wireguard-effect
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "18.x"
+
+    - uses: pnpm/action-setup@v4
+
+    - shell: bash
+      run: brew install bash
+    - shell: bash
+      run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
+    - shell: bash
+      run: pnpm install
+    - shell: bash
+      run: sudo -E pnpm test

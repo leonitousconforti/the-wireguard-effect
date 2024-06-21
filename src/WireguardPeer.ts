@@ -96,9 +96,6 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
      * they should have the endpoint set to know where to connect to) and this
      * client will just send requests back to the remote peer's source IP and
      * port.
-     *
-     * TODO: fact check my understanding of the wireguard protocol when endpoint
-     * is not supplied.
      */
     Endpoint: Schema.optional(InternetSchemas.Endpoint, { nullable: true }),
 
@@ -226,7 +223,7 @@ export const WireguardIniPeer: $WireguardIniPeer = Schema.transformOrFail(Wiregu
                 ),
             }),
             Schema.decode(WireguardPeer, { onExcessProperty: "error" }),
-            Effect.mapError(({ error }) => error)
+            Effect.mapError(({ issue }) => issue)
         ),
 }).annotations({
     identifier: "WireguardIniPeer",

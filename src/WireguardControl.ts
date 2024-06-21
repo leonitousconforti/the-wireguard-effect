@@ -20,12 +20,14 @@ import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
+import * as Predicate from "effect/Predicate";
 import * as Resolver from "effect/RequestResolver";
 import * as Scope from "effect/Scope";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as exec from "node:child_process";
+import * as fs from "node:fs";
 
 import * as WireguardConfig from "./WireguardConfig.js";
 import * as WireguardErrors from "./WireguardErrors.js";
@@ -41,7 +43,7 @@ export interface WireguardControlImpl {
         wireguardInterface: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.TimeoutException,
         FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
     >;
 
@@ -50,7 +52,7 @@ export interface WireguardControlImpl {
         wireguardInterface: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException,
+        PlatformError.PlatformError | ParseResult.ParseError | Cause.TimeoutException,
         FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
     >;
 
@@ -59,7 +61,7 @@ export interface WireguardControlImpl {
         wireguardInterface: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.TimeoutException,
         FileSystem.FileSystem | Path.Path | Scope.Scope | CommandExecutor.CommandExecutor
     >;
 
@@ -142,22 +144,126 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
     const execCommand = (
         command: string,
         ...args: Array<string>
-    ): Effect.Effect<void, Cause.UnknownException | PlatformError.PlatformError, CommandExecutor.CommandExecutor> =>
+    ): Effect.Effect<
+        void,
+        PlatformError.PlatformError | Cause.TimeoutException,
+        CommandExecutor.CommandExecutor | FileSystem.FileSystem
+    > =>
         process.platform === "win32" && command.includes("-wireguard-go.exe")
-            ? Effect.tryPromise(() => {
-                  const subprocess = exec.spawn(command, args, {
-                      detached: true,
-                      stdio: "ignore",
-                  });
-                  subprocess.unref();
-                  return new Promise((resolve) => setTimeout(resolve, 10000));
-              })
-            : Effect.flatMap(CommandExecutor.CommandExecutor, (executor) =>
-                  executor.exitCode(
-                      options.sudo && process.platform !== "win32"
-                          ? Command.make("sudo", command, ...args)
-                          : Command.make(`${command}`, ...args)
-                  )
+            ? Effect.asyncEffect<
+                  void,
+                  PlatformError.PlatformError,
+                  never,
+                  never,
+                  PlatformError.PlatformError,
+                  FileSystem.FileSystem
+              >((resume) =>
+                  Effect.gen(function* () {
+                      const fileSystem = yield* FileSystem.FileSystem;
+                      const stdout = yield* fileSystem.makeTempFile();
+                      const stderr = yield* fileSystem.makeTempFile();
+                      const { fd: stdoutFd } = yield* fileSystem.open(stdout, { flag: "r+" });
+                      const { fd: stderrFd } = yield* fileSystem.open(stderr, { flag: "r+" });
+
+                      const subprocess = exec.spawn(command, args, {
+                          detached: true,
+                          stdio: ["ignore", stdoutFd, stderrFd],
+                      });
+
+                      subprocess.unref();
+
+                      const timer = setInterval(() => {
+                          const data = fs.readFileSync(stdout, "utf8");
+                          if (data.includes("UAPI listener started")) {
+                              onStarted();
+                          }
+                      }, 1000);
+
+                      function onError(error: Error) {
+                          clearInterval(timer);
+                          subprocess.off("exit", onExit);
+                          subprocess.off("close", onClose);
+                          subprocess.off("error", onError);
+                          subprocess.off("disconnect", onDisconnect);
+                          resume(
+                              Effect.fail(
+                                  PlatformError.SystemError({
+                                      reason: "Unknown",
+                                      module: "Command",
+                                      method: "wireguard-go.exe",
+                                      pathOrDescriptor: command,
+                                      message: error.message,
+                                  })
+                              )
+                          );
+                      }
+
+                      function onExit(code: number | null) {
+                          if (Predicate.isNotNull(code)) {
+                              return onError(new Error(`Process exited unexpectedly with code ${code}`));
+                          } else {
+                              return onError(new Error("Process exited unexpectedly."));
+                          }
+                      }
+
+                      function onClose(code: number | null) {
+                          if (Predicate.isNotNull(code)) {
+                              return onError(new Error(`Process closed unexpectedly with code ${code}`));
+                          } else {
+                              return onError(new Error("Process closed unexpectedly."));
+                          }
+                      }
+
+                      function onDisconnect() {
+                          return onError(new Error("Process disconnected unexpectedly."));
+                      }
+
+                      function onStarted() {
+                          clearInterval(timer);
+                          subprocess.off("exit", onExit);
+                          subprocess.off("close", onClose);
+                          subprocess.off("error", onError);
+                          subprocess.off("disconnect", onDisconnect);
+                          resume(Effect.void);
+                      }
+
+                      subprocess.on("exit", onExit);
+                      subprocess.on("close", onClose);
+                      subprocess.on("error", onError);
+                      subprocess.on("disconnect", onDisconnect);
+
+                      return Effect.sync(() => {
+                          clearInterval(timer);
+                          subprocess.off("exit", onExit);
+                          subprocess.off("close", onClose);
+                          subprocess.off("error", onError);
+                          subprocess.off("disconnect", onDisconnect);
+                      });
+                  }).pipe(Effect.scoped)
+              ).pipe(Effect.timeout("1 minutes"))
+            : Function.pipe(
+                  CommandExecutor.CommandExecutor,
+                  Effect.flatMap((executor) =>
+                      executor.exitCode(
+                          options.sudo && process.platform !== "win32"
+                              ? Command.make("sudo", command, ...args)
+                              : Command.make(command, ...args)
+                      )
+                  ),
+                  Effect.flatMap((exitCode) => {
+                      return exitCode === 0
+                          ? Effect.void
+                          : Effect.fail(
+                                PlatformError.SystemError({
+                                    reason: "Unknown",
+                                    module: "Command",
+                                    pathOrDescriptor: command,
+                                    method: `${command} ${args.join(" ")}`,
+                                    message: `Process exited with code ${exitCode}`,
+                                })
+                            );
+                  }),
+                  Effect.timeout("1 minutes")
               );
 
     const up: WireguardControlImpl["up"] = (wireguardConfig, wireguardInterface) =>

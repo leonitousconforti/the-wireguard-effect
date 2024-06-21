@@ -88,7 +88,7 @@ export declare const WireguardDemoServer: (options: {
   void,
   | Socket.SocketError
   | ParseResult.ParseError
-  | Cause.UnknownException
+  | Cause.TimeoutException
   | WireguardErrors.WireguardError
   | PlatformError.PlatformError
   | SocketServer.SocketServerError,
@@ -113,8 +113,8 @@ working and we can connect to the internet when the wireguard tunnel is up.
 ```ts
 export declare const requestGoogle: Effect.Effect<
   void,
-  HttpClient.error.HttpClientError | Cause.TimeoutException,
-  HttpClient.client.Client.Default
+  Cause.TimeoutException | HttpClientError.HttpClientError,
+  HttpClient.HttpClient.Default
 >
 ```
 
@@ -130,7 +130,7 @@ only be able to see it when connected as a peer.
 ```ts
 export declare const requestHiddenPage: (
   hiddenPageLocation: string
-) => Effect.Effect<string, HttpClient.error.HttpClientError | Cause.TimeoutException, HttpClient.client.Client.Default>
+) => Effect.Effect<string, HttpClientError.HttpClientError | Cause.TimeoutException, HttpClient.HttpClient.Default>
 ```
 
 Added in v1.0.0

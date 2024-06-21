@@ -335,7 +335,7 @@ export const IPv4Bigint: $IPv4Bigint = Schema.transformOrFail(
                 const h = padded.slice(i, i + 2);
                 groups.push(parseInt(h, 16));
             }
-            return Schema.decode(IPv4)(groups.join(".")).pipe(Effect.mapError(({ error }) => error));
+            return Schema.decode(IPv4)(groups.join(".")).pipe(Effect.mapError(({ issue }) => issue));
         },
         decode: ({ ip }) =>
             Function.pipe(
@@ -547,7 +547,7 @@ export const IPv6Bigint: $IPv6Bigint = Schema.transformOrFail(
             for (let i = 0; i < 8; i++) {
                 groups.push(hex.slice(i * 4, (i + 1) * 4));
             }
-            return Schema.decode(IPv6)(groups.join(":")).pipe(Effect.mapError(({ error }) => error));
+            return Schema.decode(IPv6)(groups.join(":")).pipe(Effect.mapError(({ issue }) => issue));
         },
         decode: ({ ip }) => {
             function paddedHex(octet: string): string {
@@ -1109,7 +1109,7 @@ export const IPv4CidrBlock: $IPv4CidrBlock = Schema.transformOrFail(
                 const address = yield* Schema.decode(IPv4)(data.address);
                 const mask = yield* Schema.decode(IPv4CidrMask)(data.mask);
                 return { address, mask } as const;
-            }).pipe(Effect.mapError(({ error }) => error)),
+            }).pipe(Effect.mapError(({ issue }) => issue)),
         decode: (data) => ParseResult.succeed({ address: data.address.ip, mask: data.mask }),
     }
 ).annotations({
@@ -1196,7 +1196,7 @@ export const IPv6CidrBlock: $IPv6CidrBlock = Schema.transformOrFail(
                 const address = yield* Schema.decode(IPv6)(data.address);
                 const mask = yield* Schema.decode(IPv6CidrMask)(data.mask);
                 return { address, mask } as const;
-            }).pipe(Effect.mapError(({ error }) => error)),
+            }).pipe(Effect.mapError(({ issue }) => issue)),
         decode: (data) => ParseResult.succeed({ address: data.address.ip, mask: data.mask }),
     }
 ).annotations({

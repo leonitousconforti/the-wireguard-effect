@@ -39,10 +39,10 @@ import * as WireguardPeer from "./WireguardPeer.js";
  * @category Schemas
  */
 export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIniConfig")({
-    /** TODO: Document */
+    /** The Address of this peer. */
     Address: InternetSchemas.CidrBlockFromString,
 
-    /** TODO: Document */
+    /** DNS for this peer. */
     Dns: Schema.optional(InternetSchemas.Address),
 
     /**
@@ -110,7 +110,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             WireguardInterface.WireguardInterface,
             | Socket.SocketError
             | ParseResult.ParseError
-            | Cause.UnknownException
+            | Cause.TimeoutException
             | PlatformError.PlatformError
             | WireguardErrors.WireguardError,
             FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
@@ -142,7 +142,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             WireguardInterface.WireguardInterface,
             | Socket.SocketError
             | ParseResult.ParseError
-            | Cause.UnknownException
+            | Cause.TimeoutException
             | PlatformError.PlatformError
             | WireguardErrors.WireguardError,
             | FileSystem.FileSystem
@@ -199,7 +199,7 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(Wi
             );
 
             return `[Interface]\n${dns}${listenPort}${fwmark}${address}${privateKey}\n${peersConfig}`;
-        }).pipe(Effect.mapError(({ error }) => error)),
+        }).pipe(Effect.mapError(({ issue }) => issue)),
 
     // Decoding is likewise non-trivial, as we need to parse all the peers from the ini config.
     encode: (iniConfig, _options, _ast) =>
@@ -240,7 +240,7 @@ export const WireguardIniConfig: $WireguardIniConfig = Schema.transformOrFail(Wi
             );
 
             return yield* parseInterface;
-        }).pipe(Effect.mapError(({ error }) => error)),
+        }).pipe(Effect.mapError(({ issue }) => issue)),
 }).annotations({
     identifier: "WireguardIniConfig",
     description: "A wireguard ini configuration",

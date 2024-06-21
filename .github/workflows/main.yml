@@ -5,10 +5,12 @@ on:
     branches: ["main"]
   pull_request:
     branches: ["main"]
+  schedule:
+    - cron: "0 * * * *"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name != 'schedule' }}
 
 jobs:
   build:
@@ -17,156 +19,40 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: 'true'
+          submodules: "true"
+      - uses: ./.github/actions/build
 
-      - uses: actions/setup-go@v5
-        with:
-          cache-dependency-path: |
-            submodules/wireguard-go/go.sum
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "18.x"
-
-      - name: "Install pnpm"
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-          run_install: false
-      - name: "Get pnpm store"
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-      - name: "Setup pnpm cache"
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-node18.x-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-node18.x-pnpm-store-
-
-      - run: sudo apt-get update
-      - run: sudo apt-get install mingw-w64 imagemagick libarchive-tools build-essential flex bison dwarves libssl-dev libelf-dev bc ccache librsvg2-bin fakeroot debhelper libtool-bin cmake -y
-
-      - name: "Setup ccache"
-        uses: actions/cache@v4
-        with:
-          path: /home/runner/.cache/ccache
-          key: wsl2-linux-kernel-ccache-${{ hashFiles('patches/WSL2-linux-kernel.patch') }}
-          restore-keys: |
-            wsl2-linux-kernel-ccache-
-
-      - name: "Setup wireguard windows dist cache"
-        uses: actions/cache@v4
-        with:
-          path: /tmp/wireguard-windows-distfiles
-          key: wireguard-windows-dist
-      - run: mkdir -p /tmp/wireguard-windows-distfiles/.distfiles/
-      - run: cp -r /tmp/wireguard-windows-distfiles/.distfiles/ submodules/wireguard-windows/.distfiles
-      - run: ls -la submodules/wireguard-windows/.distfiles
-
-      - run: pnpm install
-      - run: pnpm check
-      - run: pnpm lint
-      - run: pnpm build
-
-      - run: cp -r submodules/wireguard-windows/.distfiles/ /tmp/wireguard-windows-distfiles
-      - run: ls -la /tmp/wireguard-windows-distfiles
-
-      - run: sudo rm -rf .git/
-      - run: sudo rm -rf node_modules/
-      - run: sudo rm -rf submodules/wintun
-      - run: sudo rm -rf submodules/nvlist
-      - run: sudo rm -rf submodules/osxcross
-      - run: sudo rm -rf submodules/wireguard-apple
-      - run: sudo rm -rf submodules/wireguard-go
-      - run: sudo rm -rf submodules/wireguard-tools
-      - run: sudo rm -rf submodules/wireguard-windows
-      - run: sudo rm -rf submodules/WSL2-Linux-Kernel
-
-      # https://github.com/actions/download-artifact/tree/v4/?tab=readme-ov-file#limitations
-      - run: tar -cvf /tmp/the-wireguard-effect.tar .
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: the-wireguard-effect
-          path: /tmp/the-wireguard-effect.tar
+  e2e-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/e2e
 
   linux-test:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: [build]
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: the-wireguard-effect
-          path: /tmp/the-wireguard-effect
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "18.x"
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
-      - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
-      - run: pnpm install
-      - run: sudo apt-get install -y openresolv
-      - run: |
-          sudo groupadd wireguard-control
-          sudo usermod -a -G wireguard-control root
-          sudo usermod -a -G wireguard-control runner
-          sudo mkdir -p /var/run/wireguard/
-          sudo chown -R root:wireguard-control /var/run/wireguard/
-          sudo setcap "all=ep" ./dist/prebuilds/linux-amd64-wireguard-go
-      - run: pnpm test
-      - run: pnpm e2e-tests
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/linux
 
   macos-intel-test:
     runs-on: macos-13
     timeout-minutes: 20
     needs: [build]
     steps:
-      - run: |
-          if [[ $(uname -m) != "x86_64" ]]; then
-            echo "This job must run on an Apple Intel processor machine"
-            exit 1
-          fi
-      - uses: actions/download-artifact@v4
-        with:
-          name: the-wireguard-effect
-          path: /tmp/the-wireguard-effect
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "18.x"
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
-      - run: brew install bash
-      - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
-      - run: pnpm install
-      - run: sudo -E pnpm test
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/mac-intel
 
   macos-apple-silicon-test:
     runs-on: macos-14
     timeout-minutes: 20
     needs: [build]
     steps:
-      - run: |
-          if [[ $(uname -m) != "arm64" ]]; then
-            echo "This job must run on an Apple Silicon machine"
-            exit 1
-          fi
-      - uses: actions/download-artifact@v4
-        with:
-          name: the-wireguard-effect
-          path: /tmp/the-wireguard-effect
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "18.x"
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
-      - run: brew install bash
-      - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
-      - run: pnpm install
-      - run: sudo -E pnpm test
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/mac-apple-silicon
 
   freebsd-test:
     runs-on: ubuntu-latest
@@ -220,62 +106,13 @@ jobs:
     timeout-minutes: 20
     needs: [build]
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: the-wireguard-effect
-          path: /tmp/the-wireguard-effect
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "18.x"
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
-      - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
-      - run: pnpm install
-      - run: C:\\msys64\\usr\\bin\\bash.exe -lc "pnpm test"
-        env:
-          MSYSTEM: "MINGW64"
-          CHERE_INVOKING: "1"
-          MSYS2_PATH_TYPE: "inherit"
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/windows
 
   windows-wsl2-test:
     runs-on: windows-latest
     timeout-minutes: 20
     needs: [build]
-    defaults:
-      run:
-        shell: pwsh
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: the-wireguard-effect
-          path: /tmp/the-wireguard-effect
-      - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
-
-      # Yes all this is necassary to get WSL2 working on GitHub Actions without any user input
-      # They are all as separate steps so its easier to debug and see what/where it fails (especially when I was writting this)
-      - run: dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-      - run: dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-      - run: wsl --set-default-version 2
-      - run: wsl --update
-      - run: wsl --install --no-distribution
-      - run: Invoke-WebRequest -URI https://cloud-images.ubuntu.com/releases/jammy/release/ubuntu-22.04-server-cloudimg-amd64-root.tar.xz -OutFile jammy-server-cloudimg-amd64-root.tar.xz
-      - run: wsl --import Ubuntu22.04 . jammy-server-cloudimg-amd64-root.tar.xz --version 2
-      - run: wsl --list --verbose
-      - run: wsl --shutdown
-      - run: Copy-Item "D:\a\the-wireguard-effect\the-wireguard-effect\submodules\.wslconfig" -Destination "C:\Users\runneradmin"
-      - run: sleep 15
-
-      # Install dependencies
-      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
-      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get upgrade -y
-      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y openresolv
-      - run: wsl --distribution Ubuntu22.04 --user root -- curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
-      - run: wsl --distribution Ubuntu22.04 --user root -- sudo bash nodesource_setup.sh
-      - run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y nodejs
-      - run: wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm
-
-      # This is where our testing starts
-      - run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
-      - run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/
-      - run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/windows-wsl2
