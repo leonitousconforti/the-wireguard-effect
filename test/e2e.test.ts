@@ -21,7 +21,7 @@ const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
 );
 
 describe("wireguard e2e test using demo.wireguard.com", () => {
-    it.scopedLive(
+    it.effect(
         "Should be able to connect to the demo server",
         () =>
             Effect.gen(function* (λ) {
@@ -40,9 +40,13 @@ describe("wireguard e2e test using demo.wireguard.com", () => {
                 yield* Console.log("Connected to hidden page");
                 expect(hiddenPage).toMatchSnapshot();
             })
+                .pipe(Effect.scoped)
                 .pipe(Effect.provide(NodeHttp.layer))
                 .pipe(Effect.provide(NodeContext.layer))
                 .pipe(Effect.provide(WireguardControlLive)),
-        Function.pipe(Duration.seconds(120), Duration.toMillis)
+        {
+            retry: 3,
+            timeout: Function.pipe(Duration.seconds(120), Duration.toMillis),
+        }
     );
 });
