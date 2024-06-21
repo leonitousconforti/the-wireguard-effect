@@ -263,7 +263,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                                 })
                             );
                   }),
-                  Effect.timeout("30 seconds")
+                  Effect.timeout("1 minutes")
               );
 
     const up: WireguardControlImpl["up"] = (wireguardConfig, wireguardInterface) =>
