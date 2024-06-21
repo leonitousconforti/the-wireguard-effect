@@ -162,8 +162,8 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                       const fileSystem = yield* FileSystem.FileSystem;
                       const stdout = yield* fileSystem.makeTempFile();
                       const stderr = yield* fileSystem.makeTempFile();
-                      const stdoutFd = fs.openSync(stdout, "r+");
-                      const stderrFd = fs.openSync(stderr, "r+");
+                      const { fd: stdoutFd } = yield* fileSystem.open(stdout, { flag: "r+" });
+                      const { fd: stderrFd } = yield* fileSystem.open(stderr, { flag: "r+" });
 
                       const subprocess = exec.spawn(command, args, {
                           detached: true,
@@ -172,7 +172,20 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
 
                       subprocess.unref();
 
+                      const timer = setInterval(() => {
+                          const data = fs.readFileSync(stdout, "utf8");
+                          console.log(data);
+                          if (data.includes("UAPI listener started")) {
+                              onStarted();
+                          }
+                      }, 1000);
+
                       function onError(error: Error) {
+                          clearInterval(timer);
+                          subprocess.off("exit", onExit);
+                          subprocess.off("close", onClose);
+                          subprocess.off("error", onError);
+                          subprocess.off("disconnect", onDisconnect);
                           resume(
                               Effect.fail(
                                   PlatformError.SystemError({
@@ -207,7 +220,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                       }
 
                       function onStarted() {
-                          watcher.close();
+                          clearInterval(timer);
                           subprocess.off("exit", onExit);
                           subprocess.off("close", onClose);
                           subprocess.off("error", onError);
@@ -220,26 +233,14 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                       subprocess.on("error", onError);
                       subprocess.on("disconnect", onDisconnect);
 
-                      console.log("here");
-                      const watcher = fs.watch(stdout, (event) => {
-                          console.log(event);
-                          if (event === "change") {
-                              const data = fs.readFileSync(stdout, "utf8");
-                              console.log(data);
-                              if (data.includes("UAPI listener started")) {
-                                  onStarted();
-                              }
-                          }
-                      });
-
                       return Effect.sync(() => {
-                          watcher.close();
+                          clearInterval(timer);
                           subprocess.off("exit", onExit);
                           subprocess.off("close", onClose);
                           subprocess.off("error", onError);
                           subprocess.off("disconnect", onDisconnect);
                       });
-                  })
+                  }).pipe(Effect.scoped)
               ).pipe(Effect.timeout("1 minutes"))
             : Effect.flatMap(CommandExecutor.CommandExecutor, (executor) =>
                   executor.exitCode(
