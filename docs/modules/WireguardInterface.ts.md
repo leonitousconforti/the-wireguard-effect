@@ -60,7 +60,11 @@ serving traffic once the scope is closed.
 upScoped: (config: WireguardConfig.WireguardConfig) =>
   Effect.Effect<
     WireguardInterface,
-    Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+    | Socket.SocketError
+    | ParseResult.ParseError
+    | PlatformError.PlatformError
+    | Cause.UnknownException
+    | Cause.TimeoutException,
     | FileSystem.FileSystem
     | Path.Path
     | Scope.Scope
@@ -82,7 +86,11 @@ even after the nodejs process exits.
 up: (config: WireguardConfig.WireguardConfig) =>
   Effect.Effect<
     WireguardInterface,
-    Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+    | Socket.SocketError
+    | ParseResult.ParseError
+    | PlatformError.PlatformError
+    | Cause.UnknownException
+    | Cause.TimeoutException,
     FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
   >
 ```
@@ -99,7 +107,7 @@ Stops a previously started wireguard tunnel.
 down: (config: WireguardConfig.WireguardConfig) =>
   Effect.Effect<
     WireguardInterface,
-    PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException,
+    PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException | Cause.TimeoutException,
     FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
   >
 ```
@@ -116,7 +124,7 @@ Adds a peer to this interface.
 addPeer: (peer: WireguardPeer.WireguardPeer) =>
   Effect.Effect<
     void,
-    Socket.SocketError | ParseResult.ParseError,
+    Socket.SocketError | ParseResult.ParseError | Cause.TimeoutException,
     WireguardControl.WireguardControl | CommandExecutor.CommandExecutor
   >
 ```

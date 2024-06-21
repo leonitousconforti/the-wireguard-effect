@@ -20,12 +20,14 @@ import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
+import * as Predicate from "effect/Predicate";
 import * as Resolver from "effect/RequestResolver";
 import * as Scope from "effect/Scope";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as exec from "node:child_process";
+import * as fs from "node:fs";
 
 import * as WireguardConfig from "./WireguardConfig.js";
 import * as WireguardErrors from "./WireguardErrors.js";
@@ -41,7 +43,11 @@ export interface WireguardControlImpl {
         wireguardInterface: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        | Socket.SocketError
+        | ParseResult.ParseError
+        | PlatformError.PlatformError
+        | Cause.UnknownException
+        | Cause.TimeoutException,
         FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
     >;
 
@@ -50,7 +56,7 @@ export interface WireguardControlImpl {
         wireguardInterface: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException,
+        PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException | Cause.TimeoutException,
         FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
     >;
 
@@ -59,7 +65,11 @@ export interface WireguardControlImpl {
         wireguardInterface: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
         WireguardInterface.WireguardInterface,
-        Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+        | Socket.SocketError
+        | ParseResult.ParseError
+        | PlatformError.PlatformError
+        | Cause.UnknownException
+        | Cause.TimeoutException,
         FileSystem.FileSystem | Path.Path | Scope.Scope | CommandExecutor.CommandExecutor
     >;
 
@@ -142,16 +152,79 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
     const execCommand = (
         command: string,
         ...args: Array<string>
-    ): Effect.Effect<void, Cause.UnknownException | PlatformError.PlatformError, CommandExecutor.CommandExecutor> =>
+    ): Effect.Effect<
+        void,
+        Cause.UnknownException | PlatformError.PlatformError | Cause.TimeoutException,
+        CommandExecutor.CommandExecutor
+    > =>
         process.platform === "win32" && command.includes("-wireguard-go.exe")
-            ? Effect.tryPromise(() => {
+            ? Effect.async<void, PlatformError.PlatformError | Cause.TimeoutException, never>((resume) => {
                   const subprocess = exec.spawn(command, args, {
                       detached: true,
-                      stdio: "ignore",
+                      stdio: [
+                          "ignore",
+                          fs.openSync("./wireguard-go-stdout.log", "w"),
+                          fs.openSync("./wireguard-go-stderr.log", "w"),
+                      ],
                   });
+
                   subprocess.unref();
-                  return new Promise((resolve) => setTimeout(resolve, 10000));
-              })
+
+                  function onError(error: Error) {
+                      resume(
+                          Effect.fail(
+                              PlatformError.SystemError({
+                                  reason: "Unknown",
+                                  module: "Command",
+                                  method: "wireguard-go.exe",
+                                  pathOrDescriptor: command,
+                                  message: error.message,
+                              })
+                          )
+                      );
+                  }
+
+                  function onExit(code: number | null) {
+                      if (Predicate.isNotNull(code)) {
+                          return onError(new Error(`Process exited unexpectedly with code ${code}`));
+                      } else {
+                          return onError(new Error("Process exited unexpectedly."));
+                      }
+                  }
+
+                  function onClose(code: number | null) {
+                      if (Predicate.isNotNull(code)) {
+                          return onError(new Error(`Process closed unexpectedly with code ${code}`));
+                      } else {
+                          return onError(new Error("Process closed unexpectedly."));
+                      }
+                  }
+
+                  function onDisconnect() {
+                      return onError(new Error("Process disconnected unexpectedly."));
+                  }
+
+                  //   function onStarted() {
+                  //       subprocess.off("exit", onExit);
+                  //       subprocess.off("close", onClose);
+                  //       subprocess.off("error", onError);
+                  //       subprocess.off("disconnect", onDisconnect);
+                  //       resume(Effect.void);
+                  //   }
+
+                  subprocess.on("exit", onExit);
+                  subprocess.on("close", onClose);
+                  subprocess.on("error", onError);
+                  subprocess.on("disconnect", onDisconnect);
+
+                  // Interruption handler
+                  return Effect.sync(() => {
+                      subprocess.off("exit", onExit);
+                      subprocess.off("close", onClose);
+                      subprocess.off("error", onError);
+                      subprocess.off("disconnect", onDisconnect);
+                  });
+              }).pipe(Effect.timeout("1 minutes"))
             : Effect.flatMap(CommandExecutor.CommandExecutor, (executor) =>
                   executor.exitCode(
                       options.sudo && process.platform !== "win32"

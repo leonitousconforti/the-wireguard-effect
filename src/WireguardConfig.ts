@@ -111,6 +111,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             | Socket.SocketError
             | ParseResult.ParseError
             | Cause.UnknownException
+            | Cause.TimeoutException
             | PlatformError.PlatformError
             | WireguardErrors.WireguardError,
             FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
@@ -143,6 +144,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
             | Socket.SocketError
             | ParseResult.ParseError
             | Cause.UnknownException
+            | Cause.TimeoutException
             | PlatformError.PlatformError
             | WireguardErrors.WireguardError,
             | FileSystem.FileSystem

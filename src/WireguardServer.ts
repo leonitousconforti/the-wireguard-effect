@@ -217,6 +217,7 @@ export const WireguardDemoServer = (options: {
     | Socket.SocketError
     | ParseResult.ParseError
     | Cause.UnknownException
+    | Cause.TimeoutException
     | WireguardErrors.WireguardError
     | PlatformError.PlatformError
     | SocketServer.SocketServerError,

@@ -85,7 +85,11 @@ export interface WireguardControlImpl {
     wireguardInterface: WireguardInterface.WireguardInterface
   ) => Effect.Effect<
     WireguardInterface.WireguardInterface,
-    Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+    | Socket.SocketError
+    | ParseResult.ParseError
+    | PlatformError.PlatformError
+    | Cause.UnknownException
+    | Cause.TimeoutException,
     FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
   >
 
@@ -94,7 +98,7 @@ export interface WireguardControlImpl {
     wireguardInterface: WireguardInterface.WireguardInterface
   ) => Effect.Effect<
     WireguardInterface.WireguardInterface,
-    PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException,
+    PlatformError.PlatformError | ParseResult.ParseError | Cause.UnknownException | Cause.TimeoutException,
     FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
   >
 
@@ -103,7 +107,11 @@ export interface WireguardControlImpl {
     wireguardInterface: WireguardInterface.WireguardInterface
   ) => Effect.Effect<
     WireguardInterface.WireguardInterface,
-    Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.UnknownException,
+    | Socket.SocketError
+    | ParseResult.ParseError
+    | PlatformError.PlatformError
+    | Cause.UnknownException
+    | Cause.TimeoutException,
     FileSystem.FileSystem | Path.Path | Scope.Scope | CommandExecutor.CommandExecutor
   >
 
