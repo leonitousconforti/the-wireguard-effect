@@ -20,8 +20,7 @@ import * as crypto from "node:crypto";
 export const WireguardKey = Function.pipe(
     Schema.String,
     Schema.pattern(/^[\d+/A-Za-z]{42}[048AEIMQUYcgkosw]=$/),
-    Schema.identifier("WireguardKey"),
-    Schema.description("A wireguard key"),
+    Schema.annotations({ identifier: "WireguardKey", description: "A wireguard key" }),
     Schema.brand("WireguardKey")
 );
 

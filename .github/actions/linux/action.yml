@@ -1,0 +1,34 @@
+name: "Linux Test"
+description: "Reusable linux test action"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: the-wireguard-effect
+        path: /tmp/the-wireguard-effect
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "18.x"
+
+    - uses: pnpm/action-setup@v4
+
+    - shell: bash
+      run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
+    - shell: bash
+      run: pnpm install
+    - shell: bash
+      run: sudo apt-get install -y openresolv
+    - shell: bash
+      run: |
+        sudo groupadd wireguard-control
+        sudo usermod -a -G wireguard-control root
+        sudo usermod -a -G wireguard-control runner
+        sudo mkdir -p /var/run/wireguard/
+        sudo chown -R root:wireguard-control /var/run/wireguard/
+        sudo setcap "all=ep" ./dist/prebuilds/linux-amd64-wireguard-go
+
+    - shell: bash
+      run: pnpm test
