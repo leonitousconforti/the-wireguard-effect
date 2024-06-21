@@ -116,7 +116,7 @@ Adds a peer to this interface.
 addPeer: (peer: WireguardPeer.WireguardPeer) =>
   Effect.Effect<
     void,
-    Socket.SocketError | ParseResult.ParseError | Cause.TimeoutException,
+    Socket.SocketError | ParseResult.ParseError,
     WireguardControl.WireguardControl | CommandExecutor.CommandExecutor
   >
 ```
