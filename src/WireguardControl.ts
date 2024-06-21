@@ -231,6 +231,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                       const watcher = fs.watch(stdout, (event) => {
                           if (event === "change") {
                               const data = fs.readFileSync(stdout, "utf8");
+                              console.log(data);
                               if (data.includes("UAPI listener started")) {
                                   onStarted();
                               }
