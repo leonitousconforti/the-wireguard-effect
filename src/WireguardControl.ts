@@ -241,13 +241,30 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                       });
                   }).pipe(Effect.scoped)
               ).pipe(Effect.timeout("1 minutes"))
-            : Effect.flatMap(CommandExecutor.CommandExecutor, (executor) =>
-                  executor.exitCode(
-                      options.sudo && process.platform !== "win32"
-                          ? Command.make("sudo", command, ...args)
-                          : Command.make(`${command}`, ...args)
-                  )
-              ).pipe(Effect.timeout("1 minutes"));
+            : Function.pipe(
+                  CommandExecutor.CommandExecutor,
+                  Effect.flatMap((executor) =>
+                      executor.exitCode(
+                          options.sudo && process.platform !== "win32"
+                              ? Command.make("sudo", command, ...args)
+                              : Command.make(command, ...args)
+                      )
+                  ),
+                  Effect.flatMap((exitCode) => {
+                      return exitCode === 0
+                          ? Effect.void
+                          : Effect.fail(
+                                PlatformError.SystemError({
+                                    reason: "Unknown",
+                                    module: "Command",
+                                    pathOrDescriptor: command,
+                                    method: `${command} ${args.join(" ")}`,
+                                    message: `Process exited with code ${exitCode}`,
+                                })
+                            );
+                  }),
+                  Effect.timeout("30 seconds")
+              );
 
     const up: WireguardControlImpl["up"] = (wireguardConfig, wireguardInterface) =>
         Effect.gen(function* () {
