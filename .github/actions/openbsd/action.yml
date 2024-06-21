@@ -1,0 +1,23 @@
+name: "OpenBSD Test"
+description: "Reusable openbsd test action"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: the-wireguard-effect
+    - uses: vmactions/openbsd-vm@v1
+      with:
+        usesh: true
+        sync: rsync
+        copyback: false
+        prepare: |
+          pkg_add sudo-1.9.15.5 node bash
+          npm -v
+          node -v
+          npm install -g pnpm
+        run: |
+          pnpm install
+          chmod +x ./src/*
+          pnpm test

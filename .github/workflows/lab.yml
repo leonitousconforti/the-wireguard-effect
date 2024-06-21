@@ -11,6 +11,8 @@ on:
         - e2e
         - linux
         - windows
+        - freebsd
+        - openbsd
         - windows-wsl2
         - macos-intel
         - macos-apple-silicon
@@ -68,6 +70,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/mac-apple-silicon
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ always() }}
+
+  freebsd-lab:
+    if: github.event.inputs.platform == 'freebsd'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/freebsd
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ always() }}
+
+  openbsd-lab:
+    if: github.event.inputs.platform == 'openbsd'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/openbsd
       - uses: mxschmitt/action-tmate@v3
         if: ${{ always() }}
 
