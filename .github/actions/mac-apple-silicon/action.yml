@@ -1,0 +1,25 @@
+name: "MacOSX Apple Silicon Test"
+description: "Reusable macosx apple silicon test action"
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        if [[ $(uname -m) != "arm64" ]]; then
+          echo "This job must run on an Apple Silicon machine"
+          exit 1
+        fi
+    - uses: actions/download-artifact@v4
+      with:
+        name: the-wireguard-effect
+        path: /tmp/the-wireguard-effect
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "18.x"
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+    - run: brew install bash
+    - run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
+    - run: pnpm install
+    - run: sudo -E pnpm test

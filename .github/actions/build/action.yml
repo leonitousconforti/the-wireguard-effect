@@ -1,0 +1,79 @@
+name: "Build"
+description: "Reusable build action"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: "true"
+
+    - uses: actions/setup-go@v5
+      with:
+        cache-dependency-path: |
+          submodules/wireguard-go/go.sum
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "18.x"
+
+    - name: "Install pnpm"
+      uses: pnpm/action-setup@v4
+      with:
+        run_install: false
+    - name: "Get pnpm store"
+      run: |
+        echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+    - name: "Setup pnpm cache"
+      uses: actions/cache@v4
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.os }}-node18.x-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-node18.x-pnpm-store-
+
+    - run: sudo apt-get update
+    - run: sudo apt-get install mingw-w64 imagemagick libarchive-tools build-essential flex bison dwarves libssl-dev libelf-dev bc ccache librsvg2-bin fakeroot debhelper libtool-bin cmake -y
+
+    - name: "Setup ccache"
+      uses: actions/cache@v4
+      with:
+        path: /home/runner/.cache/ccache
+        key: wsl2-linux-kernel-ccache-${{ hashFiles('patches/WSL2-linux-kernel.patch') }}
+        restore-keys: |
+          wsl2-linux-kernel-ccache-
+
+    - name: "Setup wireguard windows dist cache"
+      uses: actions/cache@v4
+      with:
+        path: /tmp/wireguard-windows-distfiles
+        key: wireguard-windows-dist
+    - run: mkdir -p /tmp/wireguard-windows-distfiles/.distfiles/
+    - run: cp -r /tmp/wireguard-windows-distfiles/.distfiles/ submodules/wireguard-windows/.distfiles
+    - run: ls -la submodules/wireguard-windows/.distfiles
+
+    - run: pnpm install
+    - run: pnpm check
+    - run: pnpm lint
+    - run: pnpm build
+
+    - run: cp -r submodules/wireguard-windows/.distfiles/ /tmp/wireguard-windows-distfiles
+    - run: ls -la /tmp/wireguard-windows-distfiles
+
+    - run: sudo rm -rf .git/
+    - run: sudo rm -rf node_modules/
+    - run: sudo rm -rf submodules/wintun
+    - run: sudo rm -rf submodules/nvlist
+    - run: sudo rm -rf submodules/osxcross
+    - run: sudo rm -rf submodules/wireguard-apple
+    - run: sudo rm -rf submodules/wireguard-go
+    - run: sudo rm -rf submodules/wireguard-tools
+    - run: sudo rm -rf submodules/wireguard-windows
+    - run: sudo rm -rf submodules/WSL2-Linux-Kernel
+
+    # https://github.com/actions/download-artifact/tree/v4/?tab=readme-ov-file#limitations
+    - run: tar -cvf /tmp/the-wireguard-effect.tar .
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: the-wireguard-effect
+        path: /tmp/the-wireguard-effect.tar

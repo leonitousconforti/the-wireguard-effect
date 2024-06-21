@@ -1,0 +1,69 @@
+name: Lab
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        type: choice
+        required: true
+        description: Which platform to start a lab instance on
+        options:
+        - linux
+        - windows
+        - windows-wsl2
+        - macos-intel
+        - macos-apple-silicon
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: ./.github/actions/build
+
+  linux-lab:
+    if: github.event.inputs.platform == 'linux'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: [build]
+    steps:
+      - uses: ./.github/actions/linux
+
+  macos-intel-lab:
+    if: github.event.inputs.platform == 'macos-intel'
+    runs-on: macos-13
+    timeout-minutes: 60
+    needs: [build]
+    steps:
+      - uses: ./.github/actions/mac-intel
+
+  macos-apple-silicon-lab:
+    if: github.event.inputs.platform == 'macos-apple-silicon'
+    runs-on: macos-14
+    timeout-minutes: 60
+    needs: [build]
+    steps:
+      - uses: ./.github/actions/mac-apple-silicon
+
+  windows-lab:
+    if: github.event.inputs.platform == 'windows'
+    runs-on: windows-latest
+    timeout-minutes: 60
+    needs: [build]
+    steps:
+      - uses: ./.github/actions/windows
+
+  windows-wsl2-lab:
+    if: github.event.inputs.platform == 'windows-wsl2'
+    runs-on: windows-latest
+    timeout-minutes: 60
+    needs: [build]
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: ./.github/actions/windows-wsl2
