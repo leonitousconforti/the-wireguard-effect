@@ -8,6 +8,7 @@ on:
         required: true
         description: Which platform to start a lab instance on
         options:
+        - e2e
         - linux
         - windows
         - windows-wsl2
@@ -27,6 +28,15 @@ jobs:
         with:
           submodules: "true"
       - uses: ./.github/actions/build
+
+  e2e-lab:
+    if: github.event.inputs.platform == 'e2e'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/e2e
 
   linux-lab:
     if: github.event.inputs.platform == 'linux'
