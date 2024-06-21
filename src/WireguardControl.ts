@@ -228,6 +228,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                       subprocess.on("error", onError);
                       subprocess.on("disconnect", onDisconnect);
 
+                      console.log("here");
                       const watcher = fs.watch(stdout, (event) => {
                           console.log(event);
                           if (event === "change") {
