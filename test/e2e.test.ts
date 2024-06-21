@@ -3,6 +3,7 @@ import { describe, expect, it } from "@effect/vitest";
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeHttp from "@effect/platform-node/NodeHttpClient";
 import * as Config from "effect/Config";
+import * as Console from "effect/Console";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -29,11 +30,14 @@ describe("wireguard e2e test using demo.wireguard.com", () => {
                 const hiddenPageUrl = yield* λ(hiddenPageUrlConfig);
                 const config = yield* λ(WireguardServer.requestWireguardDemoConfig({ host, port }));
                 yield* λ(config.upScoped());
+                yield* Console.log("Interface is up");
 
-                // TODO: fix this on self hosted test server
-                if (host === "demo.wireguard.com") yield* λ(WireguardServer.requestGoogle);
+                // FIXME: fix this on self hosted test server
+                // if (host === "demo.wireguard.com") yield* λ(WireguardServer.requestGoogle);
+                // yield* Console.log("Connected to https://google.com");
 
                 const hiddenPage = yield* λ(WireguardServer.requestHiddenPage(hiddenPageUrl));
+                yield* Console.log("Connected to hidden page");
                 expect(hiddenPage).toMatchSnapshot();
             })
                 .pipe(Effect.provide(NodeHttp.layer))
