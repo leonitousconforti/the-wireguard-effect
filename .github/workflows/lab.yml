@@ -15,10 +15,6 @@ on:
         - macos-intel
         - macos-apple-silicon
 
-concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: false
-
 jobs:
   build:
     runs-on: ubuntu-latest
