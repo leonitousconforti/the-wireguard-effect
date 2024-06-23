@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.0.9] - unreleased
+
 ## [0.0.8] - 2024-06-23
 
 Update deps and windows exec command
