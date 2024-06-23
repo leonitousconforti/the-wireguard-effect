@@ -33,6 +33,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/e2e
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ always() }}
 
   linux-lab:
     if: github.event.inputs.platform == 'linux'
