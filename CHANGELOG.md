@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.8] - 2024-06-23
+
+Update deps and windows exec command
+
 ## [0.0.7] - 2024-06-16
 
 Updated dependencies
