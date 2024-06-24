@@ -30,7 +30,7 @@ describe("wireguard e2e test using demo.wireguard.com", () => {
                 const hiddenPageUrl = yield* hiddenPageUrlConfig;
                 const config = yield* WireguardServer.requestWireguardDemoConfig({ host, port });
 
-                const networkInterface = yield* config.upScoped();
+                const networkInterface = yield* config.up();
                 yield* Console.log("Interface is up");
 
                 if (host === "demo.wireguard.com") yield* WireguardServer.requestGoogle;
@@ -43,12 +43,11 @@ describe("wireguard e2e test using demo.wireguard.com", () => {
                 yield* networkInterface.down(config);
                 yield* Console.log("Interface is down");
             })
-                .pipe(Effect.scoped)
                 .pipe(Effect.provide(NodeHttp.layer))
                 .pipe(Effect.provide(NodeContext.layer))
                 .pipe(Effect.provide(WireguardControlLive)),
         {
-            retry: 3,
+            retry: process.platform === "win32" ? 3 : 0,
             timeout: Function.pipe(2, Duration.minutes, Duration.toMillis),
         }
     );
