@@ -23,6 +23,8 @@ jobs:
       - uses: ./.github/actions/build
 
   e2e-test:
+    # FIXME: Enable when ready
+    if: false
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: [build]

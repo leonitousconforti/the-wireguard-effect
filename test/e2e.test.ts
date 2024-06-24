@@ -21,32 +21,31 @@ const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
 );
 
 describe("wireguard e2e test using demo.wireguard.com", () => {
-    it.effect(
+    it.live(
         "Should be able to connect to the demo server",
         () =>
-            Effect.gen(function* (λ) {
-                const host = yield* λ(hostConfig);
-                const port = yield* λ(portConfig);
-                const hiddenPageUrl = yield* λ(hiddenPageUrlConfig);
-                const config = yield* λ(WireguardServer.requestWireguardDemoConfig({ host, port }));
-                yield* λ(config.upScoped());
+            Effect.gen(function* () {
+                const host = yield* hostConfig;
+                const port = yield* portConfig;
+                const hiddenPageUrl = yield* hiddenPageUrlConfig;
+                const config = yield* WireguardServer.requestWireguardDemoConfig({ host, port });
+
+                const networkInterface = yield* config.up();
                 yield* Console.log("Interface is up");
 
-                // FIXME: fix this on self hosted test server
-                // if (host === "demo.wireguard.com") yield* λ(WireguardServer.requestGoogle);
-                // yield* Console.log("Connected to https://google.com");
+                if (host === "demo.wireguard.com") yield* WireguardServer.requestGoogle;
+                yield* Console.log("Connected to https://google.com");
 
-                const hiddenPage = yield* λ(WireguardServer.requestHiddenPage(hiddenPageUrl));
+                const hiddenPage = yield* WireguardServer.requestHiddenPage(hiddenPageUrl);
                 yield* Console.log("Connected to hidden page");
                 expect(hiddenPage).toMatchSnapshot();
+
+                yield* networkInterface.down(config);
+                yield* Console.log("Interface is down");
             })
-                .pipe(Effect.scoped)
                 .pipe(Effect.provide(NodeHttp.layer))
                 .pipe(Effect.provide(NodeContext.layer))
                 .pipe(Effect.provide(WireguardControlLive)),
-        {
-            retry: 3,
-            timeout: Function.pipe(Duration.seconds(120), Duration.toMillis),
-        }
+        Function.pipe(2, Duration.minutes, Duration.toMillis)
     );
 });
