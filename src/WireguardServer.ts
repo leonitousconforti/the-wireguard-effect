@@ -160,7 +160,7 @@ export const requestWireguardDemoConfig = (
                 Peers: [
                     {
                         PersistentKeepalive: 25,
-                        AllowedIPs: new Set(["0.0.0.0/0"]),
+                        AllowedIPs: new Set(["192.168.4.1/24"]),
                         PublicKey: serverResponse.serverPublicKey,
                         Endpoint: `${serverResponse.dnsLookup}:${serverResponse.serverPort}`,
                     },
