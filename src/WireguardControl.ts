@@ -192,7 +192,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                                       module: "Command",
                                       method: "wireguard-go.exe",
                                       pathOrDescriptor: command,
-                                      message: error.message,
+                                      message: `${error.message}\n${fs.readFileSync(stderr, "utf8")}`,
                                   })
                               )
                           );
@@ -224,7 +224,9 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                           subprocess.off("close", onClose);
                           subprocess.off("error", onError);
                           subprocess.off("disconnect", onDisconnect);
-                          resume(Effect.void);
+
+                          // FIXME: I hate this, but it seems needed
+                          setTimeout(() => resume(Effect.void), 5000);
                       }
 
                       subprocess.on("exit", onExit);
@@ -244,13 +246,27 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
             : Function.pipe(
                   CommandExecutor.CommandExecutor,
                   Effect.flatMap((executor) =>
-                      executor.exitCode(
+                      executor.start(
                           options.sudo && process.platform !== "win32"
                               ? Command.make("sudo", command, ...args)
                               : Command.make(command, ...args)
                       )
                   ),
-                  Effect.flatMap((exitCode) => {
+                  Effect.flatMap((process) =>
+                      Effect.all(
+                          [
+                              process.stderr.pipe(
+                                  Stream.decodeText("utf-8"),
+                                  Stream.splitLines,
+                                  Stream.runCollect,
+                                  Effect.map(Chunk.toReadonlyArray)
+                              ),
+                              process.exitCode,
+                          ],
+                          { concurrency: 2 }
+                      )
+                  ),
+                  Effect.flatMap(([stderr, exitCode]) => {
                       return exitCode === 0
                           ? Effect.void
                           : Effect.fail(
@@ -259,11 +275,12 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                                     module: "Command",
                                     pathOrDescriptor: command,
                                     method: `${command} ${args.join(" ")}`,
-                                    message: `Process exited with code ${exitCode}`,
+                                    message: `Process exited with code ${exitCode}: ${stderr.join("\n")}`,
                                 })
                             );
                   }),
-                  Effect.timeout("1 minutes")
+                  Effect.timeout("1 minutes"),
+                  Effect.scoped
               );
 
     const up: WireguardControlImpl["up"] = (wireguardConfig, wireguardInterface) =>
