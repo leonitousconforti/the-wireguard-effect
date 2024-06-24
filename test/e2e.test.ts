@@ -21,7 +21,7 @@ const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
 );
 
 describe("wireguard e2e test using demo.wireguard.com", () => {
-    it.scopedLive(
+    it.live(
         "Should be able to connect to the demo server",
         () =>
             Effect.gen(function* () {
@@ -30,9 +30,8 @@ describe("wireguard e2e test using demo.wireguard.com", () => {
                 const hiddenPageUrl = yield* hiddenPageUrlConfig;
                 const config = yield* WireguardServer.requestWireguardDemoConfig({ host, port });
 
-                const networkInterface = yield* config.upScoped();
+                const networkInterface = yield* config.up();
                 yield* Console.log("Interface is up");
-                yield* Effect.sleep("10 seconds");
 
                 if (host === "demo.wireguard.com") yield* WireguardServer.requestGoogle;
                 yield* Console.log("Connected to https://google.com");
