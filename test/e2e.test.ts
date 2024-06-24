@@ -21,28 +21,35 @@ const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
 );
 
 describe("wireguard e2e test using demo.wireguard.com", () => {
-    it.scoped(
+    it.effect(
         "Should be able to connect to the demo server",
         () =>
-            Effect.gen(function* (λ) {
-                const host = yield* λ(hostConfig);
-                const port = yield* λ(portConfig);
-                const hiddenPageUrl = yield* λ(hiddenPageUrlConfig);
-                const config = yield* λ(WireguardServer.requestWireguardDemoConfig({ host, port }));
+            Effect.gen(function* () {
+                const host = yield* hostConfig;
+                const port = yield* portConfig;
+                const hiddenPageUrl = yield* hiddenPageUrlConfig;
+                const config = yield* WireguardServer.requestWireguardDemoConfig({ host, port });
 
-                yield* λ(config.upScoped());
+                const networkInterface = yield* config.upScoped();
                 yield* Console.log("Interface is up");
 
-                if (host === "demo.wireguard.com") yield* λ(WireguardServer.requestGoogle);
+                if (host === "demo.wireguard.com") yield* WireguardServer.requestGoogle;
                 yield* Console.log("Connected to https://google.com");
 
-                const hiddenPage = yield* λ(WireguardServer.requestHiddenPage(hiddenPageUrl));
+                const hiddenPage = yield* WireguardServer.requestHiddenPage(hiddenPageUrl);
                 yield* Console.log("Connected to hidden page");
                 expect(hiddenPage).toMatchSnapshot();
+
+                yield* networkInterface.down(config);
+                yield* Console.log("Interface is down");
             })
+                .pipe(Effect.scoped)
                 .pipe(Effect.provide(NodeHttp.layer))
                 .pipe(Effect.provide(NodeContext.layer))
                 .pipe(Effect.provide(WireguardControlLive)),
-        Function.pipe(1, Duration.minutes, Duration.toMillis)
+        {
+            retry: 3,
+            timeout: Function.pipe(1, Duration.minutes, Duration.toMillis),
+        }
     );
 });
