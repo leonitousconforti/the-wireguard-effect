@@ -226,7 +226,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                           subprocess.off("disconnect", onDisconnect);
 
                           // FIXME: I hate this, but it seems needed
-                          setTimeout(() => resume(Effect.void), 5000);
+                          setTimeout(() => resume(Effect.void), 15000);
                       }
 
                       subprocess.on("exit", onExit);
