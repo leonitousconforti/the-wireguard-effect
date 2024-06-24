@@ -49,7 +49,7 @@ describe("wireguard e2e test using demo.wireguard.com", () => {
                 .pipe(Effect.provide(WireguardControlLive)),
         {
             retry: 3,
-            timeout: Function.pipe(1, Duration.minutes, Duration.toMillis),
+            timeout: Function.pipe(2, Duration.minutes, Duration.toMillis),
         }
     );
 });
