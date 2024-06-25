@@ -91,7 +91,8 @@ export interface WireguardControlImpl {
 
   readonly down: (
     wireguardConfig: WireguardConfig.WireguardConfig,
-    wireguardInterface: WireguardInterface.WireguardInterface
+    wireguardInterface: WireguardInterface.WireguardInterface,
+    wireguardGoProcess?: exec.ChildProcess
   ) => Effect.Effect<
     WireguardInterface.WireguardInterface,
     PlatformError.PlatformError | ParseResult.ParseError | Cause.TimeoutException,

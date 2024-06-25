@@ -13,6 +13,7 @@ import * as Path from "@effect/platform/Path";
 import * as Socket from "@effect/platform/Socket";
 import * as ParseResult from "@effect/schema/ParseResult";
 import * as Schema from "@effect/schema/Schema";
+import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
 import * as Context from "effect/Context";
@@ -43,8 +44,7 @@ export interface WireguardControlImpl {
         wireguardConfig: WireguardConfig.WireguardConfig,
         wireguardInterface: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
-        | WireguardInterface.WireguardInterface
-        | readonly [wireguardInterface: WireguardInterface.WireguardInterface, wireguardGoProcess: exec.ChildProcess],
+        WireguardInterface.WireguardInterface,
         Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.TimeoutException,
         FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
     >;
@@ -63,8 +63,7 @@ export interface WireguardControlImpl {
         wireguardConfig: WireguardConfig.WireguardConfig,
         wireguardInterface: WireguardInterface.WireguardInterface
     ) => Effect.Effect<
-        | WireguardInterface.WireguardInterface
-        | readonly [wireguardInterface: WireguardInterface.WireguardInterface, wireguardGoProcess: exec.ChildProcess],
+        WireguardInterface.WireguardInterface,
         Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.TimeoutException,
         FileSystem.FileSystem | Path.Path | Scope.Scope | CommandExecutor.CommandExecutor
     >;
@@ -299,7 +298,18 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
             Effect.scoped
         );
 
-    const up: WireguardControlImpl["up"] = (wireguardConfig, wireguardInterface) =>
+    const internalUp: (
+        wireguardConfig: WireguardConfig.WireguardConfig,
+        wireguardInterface: WireguardInterface.WireguardInterface
+    ) => Effect.Effect<
+        | readonly [wireguardInterface: WireguardInterface.WireguardInterface]
+        | readonly [
+              wireguardInterface: WireguardInterface.WireguardInterface,
+              wireguardGoSubprocess: exec.ChildProcess,
+          ],
+        Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.TimeoutException,
+        FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
+    > = (wireguardConfig, wireguardInterface) =>
         Effect.gen(function* () {
             const path = yield* Path.Path;
             const fs = yield* FileSystem.FileSystem;
@@ -344,7 +354,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                     WireguardConfig.WireguardSetConfigResolver
                 );
                 yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
-                return wireguardInterface;
+                return Tuple.make(wireguardInterface);
             }
         });
 
@@ -381,7 +391,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
     const upScoped: WireguardControlImpl["upScoped"] = (wireguardConfig, wireguardInterface) => {
         const _down = (wireguardGoSubprocess?: exec.ChildProcess | undefined) =>
             down(wireguardConfig, wireguardInterface, wireguardGoSubprocess).pipe(Effect.orDie);
-        const _up = up(wireguardConfig, wireguardInterface).pipe(Effect.onError(() => _down()));
+        const _up = internalUp(wireguardConfig, wireguardInterface).pipe(Effect.onError(() => _down()));
         return Effect.acquireRelease(_up, (data) => {
             if (Array.isArray(data) && Tuple.isTupleOf(data, 2)) {
                 const [_, wireguardGoSubprocess] = data;
@@ -389,8 +399,13 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
             } else {
                 return _down();
             }
-        });
+        }).pipe(Effect.map((data) => (Tuple.isTupleOf(data, 2) ? Tuple.getFirst(data) : data[0])));
     };
+
+    const up: WireguardControlImpl["up"] = (wireguardConfig, wireguardInterface) =>
+        internalUp(wireguardConfig, wireguardInterface).pipe(
+            Effect.map((data) => (Tuple.isTupleOf(data, 2) ? Tuple.getFirst(data) : data[0]))
+        );
 
     return WireguardControl.of({
         up,
