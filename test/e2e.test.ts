@@ -9,6 +9,7 @@ import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 
+import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
 import * as WireguardControl from "the-wireguard-effect/WireguardControl";
 import * as WireguardServer from "the-wireguard-effect/WireguardServer";
 
@@ -28,21 +29,37 @@ describe("wireguard e2e test using demo.wireguard.com", () => {
                 const host = yield* hostConfig;
                 const port = yield* portConfig;
                 const hiddenPageUrl = yield* hiddenPageUrlConfig;
-                const config = yield* WireguardServer.requestWireguardDemoConfig({ host, port });
+                const control = yield* WireguardControl.WireguardControl;
 
-                const networkInterface = yield* config.up();
+                const config = yield* WireguardServer.requestWireguardDemoConfig({ host, port });
+                yield* Console.log("Got config from remote demo server");
+
+                const networkInterface = yield* config.upScoped();
                 yield* Console.log("Interface is up");
 
-                if (host === "demo.wireguard.com") yield* WireguardServer.requestGoogle;
-                yield* Console.log("Connected to https://google.com");
+                yield* Effect.sleep("10 seconds");
+                const request = new WireguardConfig.WireguardGetConfigRequest({
+                    wireguardInterface: networkInterface,
+                    address: `${config.Address.address.ip}/${config.Address.mask}`,
+                });
+                const response = yield* Effect.request(request, control.getConfigRequestResolver);
+                yield* Console.log("Got config from local request resolver");
+
+                const peer = response.Peers.at(0);
+                expect(peer?.rxBytes).toBeGreaterThan(0);
+                expect(peer?.txBytes).toBeGreaterThan(0);
+                expect(peer?.lastHandshakeTimeSeconds).toBeGreaterThan(0);
+                yield* Console.log("Connected to peer demo server");
+
+                yield* WireguardServer.requestGoogle;
+                yield* Console.log("Connected to https://google.com (still have internet access)");
 
                 const hiddenPage = yield* WireguardServer.requestHiddenPage(hiddenPageUrl);
                 yield* Console.log("Connected to hidden page");
                 expect(hiddenPage).toMatchSnapshot();
-
-                yield* networkInterface.down(config);
-                yield* Console.log("Interface is down");
             })
+                .pipe(Effect.scoped)
+                .pipe(Effect.retry({ times: 3 }))
                 .pipe(Effect.provide(NodeHttp.layer))
                 .pipe(Effect.provide(NodeContext.layer))
                 .pipe(Effect.provide(WireguardControlLive)),

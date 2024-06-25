@@ -340,7 +340,7 @@ export const WireguardGetConfigResolver: Resolver.RequestResolver<WireguardGetCo
             const peerConfigs = yield* Function.pipe(
                 peers,
                 Array.map((peer) => `public_key=${peer}`),
-                Array.map((peer) => WireguardPeer.parseWireguardUApiGetPeerResponse(peer)),
+                Array.map(WireguardPeer.parseWireguardUApiGetPeerResponse),
                 Array.map(Effect.flatMap(Schema.encode(WireguardPeer.WireguardUApiGetPeerResponse))),
                 Effect.allWith()
             );
@@ -372,7 +372,7 @@ export const WireguardSetConfigResolver: Resolver.RequestResolver<WireguardSetCo
 
             const peers = Function.pipe(
                 config.Peers,
-                Array.map((peer) => WireguardPeer.makeWireguardUApiSetPeerRequest(peer)),
+                Array.map(WireguardPeer.makeWireguardUApiSetPeerRequest),
                 Array.join("\n")
             );
 
