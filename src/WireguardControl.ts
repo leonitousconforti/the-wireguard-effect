@@ -330,10 +330,6 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
             const fs = yield* FileSystem.FileSystem;
             const tempDirectory = yield* fs.makeTempDirectory();
 
-            if (process.platform === "win32") {
-                yield* fs.remove(wireguardInterface.SocketLocation, { force: true });
-            }
-
             const file = path.join(tempDirectory, `${wireguardInterface.Name}.conf`);
             yield* wireguardConfig.writeToFile(file);
 

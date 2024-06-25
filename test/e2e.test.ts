@@ -71,10 +71,12 @@ const flaky = Effect.gen(function* () {
 </body>
 "
 `);
-});
+})
+    .pipe(Effect.scoped)
+    .pipe(Effect.provide(testContext));
 
 it.live(
     "wireguard e2e test using demo.wireguard.com",
-    () => it.flakyTest(flaky.pipe(Effect.scoped).pipe(Effect.provide(testContext)), "3 minutes"),
+    () => it.flakyTest(flaky, "3 minutes"),
     Function.pipe(3.5, Duration.minutes, Duration.toMillis)
 );
