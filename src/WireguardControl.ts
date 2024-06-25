@@ -122,10 +122,11 @@ export const makeUserspaceLayer = (): WireguardControlImpl => {
             Effect.map(Function.constant(wireguardInterface))
         );
 
-    const upScoped: WireguardControlImpl["upScoped"] = (wireguardConfig, wireguardInterface) =>
-        Effect.acquireRelease(up(wireguardConfig, wireguardInterface), () =>
-            down(wireguardConfig, wireguardInterface).pipe(Effect.orDie)
-        );
+    const upScoped: WireguardControlImpl["upScoped"] = (wireguardConfig, wireguardInterface) => {
+        const _down = down(wireguardConfig, wireguardInterface).pipe(Effect.orDie);
+        const _up = up(wireguardConfig, wireguardInterface).pipe(Effect.onError(() => _down));
+        return Effect.acquireRelease(_up, () => _down);
+    };
 
     return WireguardControl.of({
         up,
@@ -353,10 +354,11 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
             return wireguardInterface;
         });
 
-    const upScoped: WireguardControlImpl["upScoped"] = (wireguardConfig, wireguardInterface) =>
-        Effect.acquireRelease(up(wireguardConfig, wireguardInterface), () =>
-            down(wireguardConfig, wireguardInterface).pipe(Effect.orDie)
-        );
+    const upScoped: WireguardControlImpl["upScoped"] = (wireguardConfig, wireguardInterface) => {
+        const _down = down(wireguardConfig, wireguardInterface).pipe(Effect.orDie);
+        const _up = up(wireguardConfig, wireguardInterface).pipe(Effect.onError(() => _down));
+        return Effect.acquireRelease(_up, () => _down);
+    };
 
     return WireguardControl.of({
         up,
