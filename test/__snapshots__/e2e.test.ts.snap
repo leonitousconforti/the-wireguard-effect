@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`wireguard e2e test using demo.wireguard.com > Should be able to connect to the demo server 1`] = `
+exports[`wireguard e2e test using demo.wireguard.com 1`] = `
 "<title>WireGuard Demo Configuration: Success!</title>
 <body bgcolor="#444444">
 <script src="snowstorm.js"></script>
