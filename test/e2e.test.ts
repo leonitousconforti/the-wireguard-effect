@@ -4,7 +4,9 @@ import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeHttp from "@effect/platform-node/NodeHttpClient";
 import * as Config from "effect/Config";
 import * as Console from "effect/Console";
+import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
+import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 
 import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
@@ -55,6 +57,8 @@ const flaky = Effect.gen(function* () {
     expect(hiddenPage).toMatchSnapshot();
 });
 
-it.live("wireguard e2e test using demo.wireguard.com", () =>
-    it.flakyTest(flaky.pipe(Effect.scoped).pipe(Effect.provide(testContext)), "3 minutes")
+it.live(
+    "wireguard e2e test using demo.wireguard.com",
+    () => it.flakyTest(flaky.pipe(Effect.scoped).pipe(Effect.provide(testContext)), "3 minutes"),
+    Function.pipe(3.5, Duration.minutes, Duration.toMillis)
 );
