@@ -192,7 +192,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                                       module: "Command",
                                       method: "wireguard-go.exe",
                                       pathOrDescriptor: command,
-                                      message: `${error.message}\n${fs.readFileSync(stderr, "utf8")}`,
+                                      message: `${error.message}\n${fs.readFileSync(stdout, "utf-8")}\n${fs.readFileSync(stderr, "utf8")}`,
                                   })
                               )
                           );
@@ -255,6 +255,12 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                   Effect.flatMap((process) =>
                       Effect.all(
                           [
+                              process.stdout.pipe(
+                                  Stream.decodeText("utf-8"),
+                                  Stream.splitLines,
+                                  Stream.runCollect,
+                                  Effect.map(Chunk.toReadonlyArray)
+                              ),
                               process.stderr.pipe(
                                   Stream.decodeText("utf-8"),
                                   Stream.splitLines,
@@ -263,10 +269,10 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                               ),
                               process.exitCode,
                           ],
-                          { concurrency: 2 }
+                          { concurrency: 3 }
                       )
                   ),
-                  Effect.flatMap(([stderr, exitCode]) => {
+                  Effect.flatMap(([stdout, stderr, exitCode]) => {
                       return exitCode === 0
                           ? Effect.void
                           : Effect.fail(
@@ -275,7 +281,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): WireguardCo
                                     module: "Command",
                                     pathOrDescriptor: command,
                                     method: `${command} ${args.join(" ")}`,
-                                    message: `Process exited with code ${exitCode}: ${stderr.join("\n")}`,
+                                    message: `Process exited with code ${exitCode}: ${stdout.join("\n")}, ${stderr.join("\n")}`,
                                 })
                             );
                   }),
