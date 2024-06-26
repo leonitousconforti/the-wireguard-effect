@@ -15,6 +15,11 @@ on:
         - macos-intel
         - macos-apple-silicon
 
+# https://github.com/orgs/community/discussions/45140#discussioncomment-7740994
+concurrency:
+  cancel-in-progress: false
+  group: ${{ ((endsWith(github.run_number, '0') || endsWith(github.run_number, '3') || endsWith(github.run_number, '6') || endsWith(github.run_number, '9'))) && '0' || (((endsWith(github.run_number, '1') || endsWith(github.run_number, '4') || endsWith(github.run_number, '7'))) && '1' || '2') }}
+
 jobs:
   build:
     runs-on: ubuntu-latest

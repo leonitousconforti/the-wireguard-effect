@@ -6,7 +6,7 @@ on:
 
 concurrency:
   cancel-in-progress: false
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}
 
 jobs:
   build:

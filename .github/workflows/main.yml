@@ -8,9 +8,10 @@ on:
   schedule:
     - cron: "0 * * * *"
 
+# https://github.com/orgs/community/discussions/45140#discussioncomment-7740994
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name != 'schedule' }}
+  cancel-in-progress: false
+  group: ${{ ((endsWith(github.run_number, '0') || endsWith(github.run_number, '3') || endsWith(github.run_number, '6') || endsWith(github.run_number, '9'))) && '0' || (((endsWith(github.run_number, '1') || endsWith(github.run_number, '4') || endsWith(github.run_number, '7'))) && '1' || '2') }}
 
 jobs:
   build:
