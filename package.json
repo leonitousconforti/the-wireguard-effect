@@ -96,11 +96,11 @@
         "ws": "8.17.1"
     },
     "peerDependencies": {
-        "@effect/experimental": "0.17.10",
-        "@effect/platform": "0.58.11",
-        "@effect/platform-node": "0.53.10",
-        "@effect/schema": "0.68.10",
-        "effect": "3.4.3"
+        "@effect/experimental": "0.17.11",
+        "@effect/platform": "0.58.12",
+        "@effect/platform-node": "0.53.11",
+        "@effect/schema": "0.68.11",
+        "effect": "3.4.4"
     },
     "packageManager": "pnpm@9.4.0",
     "engines": {
