@@ -22,3 +22,12 @@ updates:
         patterns:
           - "effect"
           - "@effect*"
+      babel:
+        applies-to: version-updates
+        patterns:
+          - "babel"
+          - "@babel/*"
+      typescript-eslint:
+        applies-to: version-updates
+        patterns:
+          - "@typescript-eslint/*"
