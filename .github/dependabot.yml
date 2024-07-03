@@ -15,7 +15,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
     groups:
       effect:
         applies-to: version-updates
