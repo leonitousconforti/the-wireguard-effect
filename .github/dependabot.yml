@@ -27,7 +27,9 @@ updates:
         patterns:
           - "babel"
           - "@babel/*"
-      typescript-eslint:
+      typescript:
         applies-to: version-updates
         patterns:
+          - "tsx"
+          - "typescript"
           - "@typescript-eslint/*"
