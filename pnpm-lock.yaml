@@ -46,7 +46,7 @@ importers:
         version: 0.1.2
       '@effect/experimental':
         specifier: 0.17.18
-        version: 0.17.18(@effect/platform-node@0.53.17(@effect/platform@0.58.18(@effect/schema@0.68.15(effect@3.4.6))(effect@3.4.6))(effect@3.4.6))(@effect/platform@0.58.18(@effect/schema@0.68.15(effect@3.4.6))(effect@3.4.6))(@effect/schema@0.68.15(effect@3.4.6))(effect@3.4.6)(ws@8.17.1)
+        version: 0.17.18(@effect/platform-node@0.53.17(@effect/platform@0.58.18(@effect/schema@0.68.15(effect@3.4.6))(effect@3.4.6))(effect@3.4.6))(@effect/platform@0.58.18(@effect/schema@0.68.15(effect@3.4.6))(effect@3.4.6))(@effect/schema@0.68.15(effect@3.4.6))(effect@3.4.6)(ws@8.18.0)
       '@effect/language-service':
         specifier: 0.1.0
         version: 0.1.0
@@ -153,8 +153,8 @@ importers:
         specifier: 1.6.0
         version: 1.6.0(@types/node@20.14.9)
       ws:
-        specifier: 8.17.1
-        version: 8.17.1
+        specifier: 8.18.0
+        version: 8.18.0
     publishDirectory: dist
 
 packages:
@@ -2810,8 +2810,8 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  ws@8.17.1:
-    resolution: {integrity: sha512-6XQFvXTkbfUOZOKKILFG1PDK2NDQs4azKQl26T0YS5CxqWLgXajbPZ+h4gZekJyRqFU8pvnbAbbs/3TgRPy+GQ==}
+  ws@8.18.0:
+    resolution: {integrity: sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -3060,7 +3060,7 @@ snapshots:
       '@dprint/typescript': 0.85.1
       diff: 5.2.0
 
-  '@effect/experimental@0.17.18(@effect/platform-node@0.53.17(@effect/platform@0.58.18(@effect/schema@0.68.15(effect@3.4.6))(effect@3.4.6))(effect@3.4.6))(@effect/platform@0.58.18(@effect/schema@0.68.15(effect@3.4.6))(effect@3.4.6))(@effect/schema@0.68.15(effect@3.4.6))(effect@3.4.6)(ws@8.17.1)':
+  '@effect/experimental@0.17.18(@effect/platform-node@0.53.17(@effect/platform@0.58.18(@effect/schema@0.68.15(effect@3.4.6))(effect@3.4.6))(effect@3.4.6))(@effect/platform@0.58.18(@effect/schema@0.68.15(effect@3.4.6))(effect@3.4.6))(@effect/schema@0.68.15(effect@3.4.6))(effect@3.4.6)(ws@8.18.0)':
     dependencies:
       '@effect/platform': 0.58.18(@effect/schema@0.68.15(effect@3.4.6))(effect@3.4.6)
       '@effect/schema': 0.68.15(effect@3.4.6)
@@ -3068,7 +3068,7 @@ snapshots:
       msgpackr: 1.10.2
     optionalDependencies:
       '@effect/platform-node': 0.53.17(@effect/platform@0.58.18(@effect/schema@0.68.15(effect@3.4.6))(effect@3.4.6))(effect@3.4.6)
-      ws: 8.17.1
+      ws: 8.18.0
 
   '@effect/language-service@0.1.0': {}
 
@@ -3101,7 +3101,7 @@ snapshots:
       effect: 3.4.6
       mime: 3.0.0
       undici: 6.19.2
-      ws: 8.17.1
+      ws: 8.18.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -5780,7 +5780,7 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  ws@8.17.1: {}
+  ws@8.18.0: {}
 
   xtend@4.0.2: {}
 

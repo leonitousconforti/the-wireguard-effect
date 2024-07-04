@@ -93,7 +93,7 @@
         "typescript": "5.5.3",
         "vite": "5.3.3",
         "vitest": "1.6.0",
-        "ws": "8.17.1"
+        "ws": "8.18.0"
     },
     "peerDependencies": {
         "@effect/experimental": "0.17.18",
