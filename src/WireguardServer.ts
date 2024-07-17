@@ -104,7 +104,7 @@ const dnsLookup = (host: string): Effect.Effect<string, Socket.SocketGenericErro
                     resolve(address);
                 });
             }),
-        catch: (_error) => new Socket.SocketGenericError({ error: `Could not lookup ${host}`, reason: "Open" }),
+        catch: (_error) => new Socket.SocketGenericError({ cause: `Could not lookup ${host}`, reason: "Open" }),
     });
 
 /**
