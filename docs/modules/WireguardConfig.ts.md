@@ -168,7 +168,7 @@ export declare const WireguardGetConfigResponse: Schema.extend<
     never
   >,
   Schema.Struct<{
-    Peers: Schema.optionalWithOptions<
+    Peers: Schema.optionalWith<
       Schema.Array$<typeof WireguardPeer.WireguardUApiGetPeerResponse>,
       { default: () => never[]; nullable: true }
     >
