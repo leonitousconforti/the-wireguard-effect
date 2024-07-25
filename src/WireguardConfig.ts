@@ -62,7 +62,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
      * fwmark of the interface. The value may 0 in the case of a set operation,
      * in which case it indicates that the fwmark should be removed.
      */
-    FirewallMark: Schema.optional(Schema.Number, { nullable: true }),
+    FirewallMark: Schema.optionalWith(Schema.Number, { nullable: true }),
 
     /**
      * The value for this key should be a lowercase hex-encoded private key of
@@ -73,7 +73,7 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
     PrivateKey: WireguardKey.WireguardKey,
 
     /** List of peers to add. */
-    Peers: Schema.optional(Schema.Array(WireguardPeer.WireguardPeer), { default: () => [], nullable: true }),
+    Peers: Schema.optionalWith(Schema.Array(WireguardPeer.WireguardPeer), { default: () => [], nullable: true }),
 }) {
     /**
      * Writes a wireguard interface configuration to an INI file.
@@ -276,7 +276,7 @@ export const WireguardGetConfigResponse = Function.pipe(
     Schema.omit("Peers"),
     Schema.extend(
         Schema.Struct({
-            Peers: Schema.optional(Schema.Array(WireguardPeer.WireguardUApiGetPeerResponse), {
+            Peers: Schema.optionalWith(Schema.Array(WireguardPeer.WireguardUApiGetPeerResponse), {
                 default: () => [],
                 nullable: true,
             }),
