@@ -20,7 +20,7 @@ runs:
     - shell: pwsh
       run: wsl --set-default-version 2
     - shell: pwsh
-      run: wsl --update
+      run: wsl --update --web-download
     - shell: pwsh
       run: wsl --install --no-distribution
     - shell: pwsh
