@@ -56,6 +56,22 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/mac-apple-silicon
 
+  freebsd-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/freebsd
+
+  openbsd-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/openbsd
+
   windows-test:
     runs-on: windows-latest
     timeout-minutes: 20
