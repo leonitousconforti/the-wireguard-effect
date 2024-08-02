@@ -114,8 +114,12 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $WireguardIniPeer
-    extends Schema.Annotable<$WireguardIniPeer, string, Schema.Schema.Encoded<typeof WireguardPeer>, never> {}
+export type $WireguardIniPeer = Schema.Annotable<
+    $WireguardIniPeer,
+    string,
+    Schema.Schema.Encoded<typeof WireguardPeer>,
+    never
+>;
 
 /**
  * A wireguard peer configuration encoded in INI format.
