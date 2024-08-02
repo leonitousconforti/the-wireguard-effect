@@ -169,8 +169,12 @@ export class WireguardConfig extends Schema.Class<WireguardConfig>("WireguardIni
  * @since 1.0.0
  * @category Api interface
  */
-export interface $WireguardIniConfig
-    extends Schema.Annotable<$WireguardIniConfig, string, Schema.Schema.Encoded<typeof WireguardConfig>, never> {}
+export type $WireguardIniConfig = Schema.Annotable<
+    $WireguardIniConfig,
+    string,
+    Schema.Schema.Encoded<typeof WireguardConfig>,
+    never
+>;
 
 /**
  * A wireguard configuration encoded in the INI format.

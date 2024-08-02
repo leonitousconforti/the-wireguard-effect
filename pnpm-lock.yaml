@@ -1017,8 +1017,8 @@ packages:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
-  browserslist@4.23.2:
-    resolution: {integrity: sha512-qkqSyistMYdxAcw+CzbZwlBy8AGmS/eEWs+sEV5TnLRGDOL+C5M2EnH6tlZyg0YoAxGJAFKh61En9BR941GnHA==}
+  browserslist@4.23.3:
+    resolution: {integrity: sha512-btwCFJVjI4YWDNfau8RhZ+B1Q/VLoUITrm3RlP6y1tYGWIOa+InuYiRGXUBXo8nA1qKmHMyLB/iVQg5TT4eFoA==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
@@ -2124,8 +2124,8 @@ packages:
   msgpackr@1.11.0:
     resolution: {integrity: sha512-I8qXuuALqJe5laEBYoFykChhSXLikZmUhccjGsPuSJ/7uPip2TJ7lwdIQwWSAi0jGZDXv4WOP8Qg65QZRuXxXw==}
 
-  multipasta@0.2.2:
-    resolution: {integrity: sha512-KKGdmXIJUmt9BV45LsbUdMnju8eCNSyF9KpbyqK2E3wQXjpPQOg52/Hc+nsmBacmEkNxLVT5h1y3ZgEXB4prXg==}
+  multipasta@0.2.3:
+    resolution: {integrity: sha512-ck6FVWpay4fzG/qHn804fSGnVHUvTLljzKAUd9LE1Gw61aIxyU3PrAlOHQBFlP4sGvbWOmf7L1y32Dvlvq3KQg==}
 
   nanoid@3.3.7:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
@@ -2897,7 +2897,7 @@ snapshots:
     dependencies:
       '@babel/compat-data': 7.25.2
       '@babel/helper-validator-option': 7.24.8
-      browserslist: 4.23.2
+      browserslist: 4.23.3
       lru-cache: 5.1.1
       semver: 6.3.1
 
@@ -3059,7 +3059,7 @@ snapshots:
       '@effect/platform': 0.61.2(@effect/schema@0.70.1(effect@3.6.0))(effect@3.6.0)
       '@parcel/watcher': 2.4.1
       effect: 3.6.0
-      multipasta: 0.2.2
+      multipasta: 0.2.3
 
   '@effect/platform-node@0.56.2(@effect/platform@0.61.2(@effect/schema@0.70.1(effect@3.6.0))(effect@3.6.0))(effect@3.6.0)':
     dependencies:
@@ -3078,7 +3078,7 @@ snapshots:
       '@effect/schema': 0.70.1(effect@3.6.0)
       effect: 3.6.0
       find-my-way-ts: 0.1.5
-      multipasta: 0.2.2
+      multipasta: 0.2.3
 
   '@effect/printer-ansi@0.34.0(@effect/typeclass@0.25.0(effect@3.6.0))(effect@3.6.0)':
     dependencies:
@@ -3727,12 +3727,12 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
-  browserslist@4.23.2:
+  browserslist@4.23.3:
     dependencies:
       caniuse-lite: 1.0.30001646
       electron-to-chromium: 1.5.4
       node-releases: 2.0.18
-      update-browserslist-db: 1.1.0(browserslist@4.23.2)
+      update-browserslist-db: 1.1.0(browserslist@4.23.3)
 
   buffer-from@1.1.2: {}
 
@@ -5070,7 +5070,7 @@ snapshots:
     optionalDependencies:
       msgpackr-extract: 3.0.3
 
-  multipasta@0.2.2: {}
+  multipasta@0.2.3: {}
 
   nanoid@3.3.7: {}
 
@@ -5644,9 +5644,9 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.2
 
-  update-browserslist-db@1.1.0(browserslist@4.23.2):
+  update-browserslist-db@1.1.0(browserslist@4.23.3):
     dependencies:
-      browserslist: 4.23.2
+      browserslist: 4.23.3
       escalade: 3.1.2
       picocolors: 1.0.1
 

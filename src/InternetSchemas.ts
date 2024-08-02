@@ -118,7 +118,7 @@ export const PortBrand = Brand.nominal<PortBrand>();
  * @since 1.0.0
  * @category Api interface
  */
-export interface $Port extends Schema.Annotable<$Port, PortBrand, Brand.Brand.Unbranded<PortBrand>, never> {}
+export type $Port = Schema.Annotable<$Port, PortBrand, Brand.Brand.Unbranded<PortBrand>, never>;
 
 /**
  * An operating system port number.
@@ -150,7 +150,7 @@ export const Port: $Port = Schema.Int.pipe(Schema.between(0, 2 ** 16 - 1))
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv4Family extends Schema.Literal<["ipv4"]> {}
+export type $IPv4Family = Schema.Literal<["ipv4"]>;
 
 /**
  * @since 1.0.0
@@ -183,14 +183,13 @@ export const IPv4Brand = Brand.nominal<IPv4Brand>();
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv4
-    extends Schema.transform<
-        Schema.filter<typeof Schema.String>,
-        Schema.Struct<{
-            family: $IPv4Family;
-            ip: Schema.BrandSchema<IPv4Brand, Brand.Brand.Unbranded<IPv4Brand>, never>;
-        }>
-    > {}
+export type $IPv4 = Schema.transform<
+    Schema.filter<typeof Schema.String>,
+    Schema.Struct<{
+        family: $IPv4Family;
+        ip: Schema.BrandSchema<IPv4Brand, Brand.Brand.Unbranded<IPv4Brand>, never>;
+    }>
+>;
 
 /**
  * @since 1.0.0
@@ -257,15 +256,14 @@ export const IPv4BigintBrand = Brand.nominal<IPv4BigintBrand>();
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv4Bigint
-    extends Schema.transformOrFail<
-        $IPv4,
-        Schema.Struct<{
-            family: $IPv4Family;
-            value: Schema.BrandSchema<IPv4BigintBrand, Brand.Brand.Unbranded<IPv4BigintBrand>, never>;
-        }>,
-        never
-    > {}
+export type $IPv4Bigint = Schema.transformOrFail<
+    $IPv4,
+    Schema.Struct<{
+        family: $IPv4Family;
+        value: Schema.BrandSchema<IPv4BigintBrand, Brand.Brand.Unbranded<IPv4BigintBrand>, never>;
+    }>,
+    never
+>;
 
 /**
  * @since 1.0.0
@@ -359,7 +357,7 @@ export const IPv4Bigint: $IPv4Bigint = Schema.transformOrFail(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv6Family extends Schema.Literal<["ipv6"]> {}
+export type $IPv6Family = Schema.Literal<["ipv6"]>;
 
 /**
  * @since 1.0.0
@@ -392,14 +390,13 @@ export const IPv6Brand = Brand.nominal<IPv6Brand>();
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv6
-    extends Schema.transform<
-        Schema.filter<typeof Schema.String>,
-        Schema.Struct<{
-            family: $IPv6Family;
-            ip: Schema.BrandSchema<IPv6Brand, Brand.Brand.Unbranded<IPv6Brand>, never>;
-        }>
-    > {}
+export type $IPv6 = Schema.transform<
+    Schema.filter<typeof Schema.String>,
+    Schema.Struct<{
+        family: $IPv6Family;
+        ip: Schema.BrandSchema<IPv6Brand, Brand.Brand.Unbranded<IPv6Brand>, never>;
+    }>
+>;
 
 /**
  * @since 1.0.0
@@ -470,15 +467,14 @@ export const IPv6BigintBrand = Brand.nominal<IPv6BigintBrand>();
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv6Bigint
-    extends Schema.transformOrFail<
-        $IPv6,
-        Schema.Struct<{
-            family: $IPv6Family;
-            value: Schema.BrandSchema<IPv6BigintBrand, Brand.Brand.Unbranded<IPv6BigintBrand>, never>;
-        }>,
-        never
-    > {}
+export type $IPv6Bigint = Schema.transformOrFail<
+    $IPv6,
+    Schema.Struct<{
+        family: $IPv6Family;
+        value: Schema.BrandSchema<IPv6BigintBrand, Brand.Brand.Unbranded<IPv6BigintBrand>, never>;
+    }>,
+    never
+>;
 
 /**
  * @since 1.0.0
@@ -601,7 +597,7 @@ export const IPv6Bigint: $IPv6Bigint = Schema.transformOrFail(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $Family extends Schema.Union<[$IPv4Family, $IPv6Family]> {}
+export type $Family = Schema.Union<[$IPv4Family, $IPv6Family]>;
 
 /**
  * @since 1.0.0
@@ -624,7 +620,7 @@ export const Family: $Family = Schema.Union(IPv4Family, IPv6Family).annotations(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $Address extends Schema.Union<[$IPv4, $IPv6]> {}
+export type $Address = Schema.Union<[$IPv4, $IPv6]>;
 
 /**
  * @since 1.0.0
@@ -671,7 +667,7 @@ export const Address: $Address = Schema.Union(IPv4, IPv6).annotations({
  * @since 1.0.0
  * @category Api interface
  */
-export interface $AddressBigint extends Schema.Union<[$IPv4Bigint, $IPv6Bigint]> {}
+export type $AddressBigint = Schema.Union<[$IPv4Bigint, $IPv6Bigint]>;
 
 /**
  * @since 1.0.0
@@ -712,8 +708,12 @@ export const IPv4CidrMaskBrand = Brand.nominal<IPv4CidrMaskBrand>();
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv4CidrMask
-    extends Schema.Annotable<$IPv4CidrMask, IPv4CidrMaskBrand, Brand.Brand.Unbranded<IPv4CidrMaskBrand>, never> {}
+export type $IPv4CidrMask = Schema.Annotable<
+    $IPv4CidrMask,
+    IPv4CidrMaskBrand,
+    Brand.Brand.Unbranded<IPv4CidrMaskBrand>,
+    never
+>;
 
 /**
  * @since 1.0.0
@@ -772,8 +772,12 @@ export const IPv6CidrMaskBrand = Brand.nominal<IPv6CidrMaskBrand>();
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv6CidrMask
-    extends Schema.Annotable<$IPv6CidrMask, IPv6CidrMaskBrand, Brand.Brand.Unbranded<IPv6CidrMaskBrand>, never> {}
+export type $IPv6CidrMask = Schema.Annotable<
+    $IPv6CidrMask,
+    IPv6CidrMaskBrand,
+    Brand.Brand.Unbranded<IPv6CidrMaskBrand>,
+    never
+>;
 
 /**
  * @since 1.0.0
@@ -1063,16 +1067,15 @@ export class CidrBlockBase<_Family extends Family> extends Schema.Class<CidrBloc
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv4CidrBlock
-    extends Schema.Annotable<
-        $IPv4CidrBlock,
-        CidrBlockBase<"ipv4">,
-        {
-            readonly address: string;
-            readonly mask: number;
-        },
-        never
-    > {}
+export type $IPv4CidrBlock = Schema.Annotable<
+    $IPv4CidrBlock,
+    CidrBlockBase<"ipv4">,
+    {
+        readonly address: string;
+        readonly mask: number;
+    },
+    never
+>;
 
 // export interface $IPv4CidrBlock
 //     extends Schema.transformOrFail<
@@ -1121,8 +1124,12 @@ export const IPv4CidrBlock: $IPv4CidrBlock = Schema.transformOrFail(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv4CidrBlockFromString
-    extends Schema.Annotable<$IPv4CidrBlockFromString, CidrBlockBase<"ipv4">, `${string}/${number}`, never> {}
+export type $IPv4CidrBlockFromString = Schema.Annotable<
+    $IPv4CidrBlockFromString,
+    CidrBlockBase<"ipv4">,
+    `${string}/${number}`,
+    never
+>;
 
 /**
  * @since 1.0.0
@@ -1161,15 +1168,14 @@ export const IPv4CidrBlockFromString: $IPv4CidrBlockFromString = Schema.transfor
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv6CidrBlock
-    extends Schema.transformOrFail<
-        Schema.Struct<{
-            address: $IPv6;
-            mask: $IPv6CidrMask;
-        }>,
-        typeof CidrBlockBase<"ipv6">,
-        never
-    > {}
+export type $IPv6CidrBlock = Schema.transformOrFail<
+    Schema.Struct<{
+        address: $IPv6;
+        mask: $IPv6CidrMask;
+    }>,
+    typeof CidrBlockBase<"ipv6">,
+    never
+>;
 
 /**
  * @since 1.0.0
@@ -1208,8 +1214,12 @@ export const IPv6CidrBlock: $IPv6CidrBlock = Schema.transformOrFail(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv6CidrBlockFromString
-    extends Schema.Annotable<$IPv6CidrBlockFromString, CidrBlockBase<"ipv6">, `${string}/${number}`, never> {}
+export type $IPv6CidrBlockFromString = Schema.Annotable<
+    $IPv6CidrBlockFromString,
+    CidrBlockBase<"ipv6">,
+    `${string}/${number}`,
+    never
+>;
 
 /**
  * @since 1.0.0
@@ -1248,7 +1258,7 @@ export const IPv6CidrBlockFromString: $IPv6CidrBlockFromString = Schema.transfor
  * @since 1.0.0
  * @category Api interface
  */
-export interface $CidrBlock extends Schema.Union<[$IPv4CidrBlock, $IPv6CidrBlock]> {}
+export type $CidrBlock = Schema.Union<[$IPv4CidrBlock, $IPv6CidrBlock]>;
 
 /**
  * @since 1.0.0
@@ -1260,13 +1270,12 @@ export const CidrBlock: $CidrBlock = Schema.Union(IPv4CidrBlock, IPv6CidrBlock);
  * @since 1.0.0
  * @category Api interface
  */
-export interface $CidrBlockFromString
-    extends Schema.Annotable<
-        $CidrBlockFromString,
-        CidrBlockBase<"ipv4"> | CidrBlockBase<"ipv6">,
-        `${string}/${number}`,
-        never
-    > {}
+export type $CidrBlockFromString = Schema.Annotable<
+    $CidrBlockFromString,
+    CidrBlockBase<"ipv4"> | CidrBlockBase<"ipv6">,
+    `${string}/${number}`,
+    never
+>;
 
 /**
  * @since 1.0.0
@@ -1305,16 +1314,15 @@ export const CidrBlockFromString: $CidrBlockFromString = Schema.transform(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv4Endpoint
-    extends Schema.Annotable<
-        $IPv4Endpoint,
-        { readonly address: IPv4; readonly natPort: PortBrand; readonly listenPort: PortBrand },
-        | `${string}:${number}`
-        | `${string}:${number}:${number}`
-        | { readonly ip: string; readonly port: number; readonly family: IPv4Family }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number; readonly family: IPv4Family },
-        never
-    > {}
+export type $IPv4Endpoint = Schema.Annotable<
+    $IPv4Endpoint,
+    { readonly address: IPv4; readonly natPort: PortBrand; readonly listenPort: PortBrand },
+    | `${string}:${number}`
+    | `${string}:${number}:${number}`
+    | { readonly ip: string; readonly port: number; readonly family: IPv4Family }
+    | { readonly ip: string; readonly natPort: number; readonly listenPort: number; readonly family: IPv4Family },
+    never
+>;
 
 /**
  * @since 1.0.0
@@ -1392,16 +1400,15 @@ export const IPv4Endpoint: $IPv4Endpoint = Schema.transform(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv6Endpoint
-    extends Schema.Annotable<
-        $IPv6Endpoint,
-        { readonly address: IPv6; readonly natPort: PortBrand; readonly listenPort: PortBrand },
-        | `[${string}]:${number}`
-        | `[${string}]:${number}:${number}`
-        | { readonly ip: string; readonly port: number; family: IPv6Family }
-        | { readonly ip: string; readonly natPort: number; readonly listenPort: number; family: IPv6Family },
-        never
-    > {}
+export type $IPv6Endpoint = Schema.Annotable<
+    $IPv6Endpoint,
+    { readonly address: IPv6; readonly natPort: PortBrand; readonly listenPort: PortBrand },
+    | `[${string}]:${number}`
+    | `[${string}]:${number}:${number}`
+    | { readonly ip: string; readonly port: number; family: IPv6Family }
+    | { readonly ip: string; readonly natPort: number; readonly listenPort: number; family: IPv6Family },
+    never
+>;
 
 /**
  * @since 1.0.0
@@ -1500,16 +1507,15 @@ export const IPv6Endpoint: $IPv6Endpoint = Schema.transform(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $HostnameEndpoint
-    extends Schema.Annotable<
-        $HostnameEndpoint,
-        { readonly host: string; readonly natPort: PortBrand; readonly listenPort: PortBrand },
-        | `${string}:${number}`
-        | `${string}:${number}:${number}`
-        | { readonly host: string; readonly port: number }
-        | { readonly host: string; readonly natPort: number; readonly listenPort: number },
-        never
-    > {}
+export type $HostnameEndpoint = Schema.Annotable<
+    $HostnameEndpoint,
+    { readonly host: string; readonly natPort: PortBrand; readonly listenPort: PortBrand },
+    | `${string}:${number}`
+    | `${string}:${number}:${number}`
+    | { readonly host: string; readonly port: number }
+    | { readonly host: string; readonly natPort: number; readonly listenPort: number },
+    never
+>;
 
 /**
  * @since 1.0.0
@@ -1567,7 +1573,7 @@ export const HostnameEndpoint: $HostnameEndpoint = Schema.transform(
  * @since 1.0.0
  * @category Api interface
  */
-export interface $Endpoint extends Schema.Union<[$IPv4Endpoint, $IPv6Endpoint, $HostnameEndpoint]> {}
+export type $Endpoint = Schema.Union<[$IPv4Endpoint, $IPv6Endpoint, $HostnameEndpoint]>;
 
 /**
  * @since 1.0.0
@@ -1641,7 +1647,7 @@ export const Endpoint: $Endpoint = Schema.Union(IPv4Endpoint, IPv6Endpoint, Host
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv4SetupData extends Schema.Tuple<[$IPv4Endpoint, $IPv4]> {}
+export type $IPv4SetupData = Schema.Tuple<[$IPv4Endpoint, $IPv4]>;
 
 /**
  * @since 1.0.0
@@ -1679,7 +1685,7 @@ export const IPv4SetupData: $IPv4SetupData = Schema.Tuple(IPv4Endpoint, IPv4).an
  * @since 1.0.0
  * @category Api interface
  */
-export interface $IPv6SetupData extends Schema.Tuple<[$IPv6Endpoint, $IPv6]> {}
+export type $IPv6SetupData = Schema.Tuple<[$IPv6Endpoint, $IPv6]>;
 
 /**
  * @since 1.0.0
@@ -1717,7 +1723,7 @@ export const IPv6SetupData: $IPv6SetupData = Schema.Tuple(IPv6Endpoint, IPv6).an
  * @since 1.0.0
  * @category Api interface
  */
-export interface $HostnameIPv4SetupData extends Schema.Tuple<[$HostnameEndpoint, $IPv4]> {}
+export type $HostnameIPv4SetupData = Schema.Tuple<[$HostnameEndpoint, $IPv4]>;
 
 /**
  * @since 1.0.0
@@ -1748,7 +1754,7 @@ export const HostnameIPv4SetupData: $HostnameIPv4SetupData = Schema.Tuple(Hostna
  * @since 1.0.0
  * @category Api interface
  */
-export interface $HostnameIPv6SetupData extends Schema.Tuple<[$HostnameEndpoint, $IPv6]> {}
+export type $HostnameIPv6SetupData = Schema.Tuple<[$HostnameEndpoint, $IPv6]>;
 
 /**
  * @since 1.0.0
@@ -1778,8 +1784,7 @@ export const HostnameIPv6SetupData: $HostnameIPv6SetupData = Schema.Tuple(Hostna
  * @since 1.0.0
  * @category Api interface
  */
-export interface $SetupData
-    extends Schema.Union<[$IPv4SetupData, $IPv6SetupData, $HostnameIPv4SetupData, $HostnameIPv6SetupData]> {}
+export type $SetupData = Schema.Union<[$IPv4SetupData, $IPv6SetupData, $HostnameIPv4SetupData, $HostnameIPv6SetupData]>;
 
 /**
  * @since 1.0.0
