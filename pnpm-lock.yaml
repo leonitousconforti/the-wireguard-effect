@@ -72,8 +72,8 @@ importers:
         specifier: 0.8.0
         version: 0.8.0(effect@3.6.0)(vitest@2.0.5(@types/node@22.0.2))
       '@rollup/wasm-node':
-        specifier: 4.19.1
-        version: 4.19.1
+        specifier: 4.19.2
+        version: 4.19.2
       '@types/ini':
         specifier: 4.1.1
         version: 4.1.1
@@ -712,11 +712,6 @@ packages:
   '@pnpm/deps.graph-sequencer@1.0.0':
     resolution: {integrity: sha512-vWWVbYYBBN/kweokmURicokyg7crzcDZo9/naziv8B8RSWrLWFpq5Xl0ro6QCQKgRmb6O78Qy9uQT+Fp79RxsA==}
     engines: {node: '>=16.14'}
-
-  '@rollup/wasm-node@4.19.1':
-    resolution: {integrity: sha512-G90QnusWbCqaHB0BRgGb5f1FIs7W+0bh/kaoBMZNS30VzCcGBEzbpL0UIDQZYPkbKnP5GHZ9s+HrWuny3IAGIw==}
-    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
-    hasBin: true
 
   '@rollup/wasm-node@4.19.2':
     resolution: {integrity: sha512-bJMdn3ISkclfH7ueDODHDws5ageZLuK/CCPvcqgldgk1L6+fWQWH7O2TzUeHq9Mfy9pOkiHHn3mIk0WzlUPLnQ==}
@@ -3354,12 +3349,6 @@ snapshots:
   '@pkgr/core@0.1.1': {}
 
   '@pnpm/deps.graph-sequencer@1.0.0': {}
-
-  '@rollup/wasm-node@4.19.1':
-    dependencies:
-      '@types/estree': 1.0.5
-    optionalDependencies:
-      fsevents: 2.3.3
 
   '@rollup/wasm-node@4.19.2':
     dependencies:
