@@ -15,7 +15,7 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [Api interface](#api-interface)
-  - [$WireguardIniPeer (interface)](#wireguardinipeer-interface)
+  - [$WireguardIniPeer (type alias)](#wireguardinipeer-type-alias)
 - [Datatypes](#datatypes)
   - [WireguardPeer (class)](#wireguardpeer-class)
 - [Requests](#requests)
@@ -30,13 +30,17 @@ Added in v1.0.0
 
 # Api interface
 
-## $WireguardIniPeer (interface)
+## $WireguardIniPeer (type alias)
 
 **Signature**
 
 ```ts
-export interface $WireguardIniPeer
-  extends Schema.Annotable<$WireguardIniPeer, string, Schema.Schema.Encoded<typeof WireguardPeer>, never> {}
+export type $WireguardIniPeer = Schema.Annotable<
+  $WireguardIniPeer,
+  string,
+  Schema.Schema.Encoded<typeof WireguardPeer>,
+  never
+>
 ```
 
 Added in v1.0.0

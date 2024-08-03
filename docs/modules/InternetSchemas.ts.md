@@ -15,33 +15,33 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [Api interface](#api-interface)
-  - [$Address (interface)](#address-interface)
-  - [$AddressBigint (interface)](#addressbigint-interface)
-  - [$CidrBlock (interface)](#cidrblock-interface)
-  - [$CidrBlockFromString (interface)](#cidrblockfromstring-interface)
-  - [$Endpoint (interface)](#endpoint-interface)
-  - [$Family (interface)](#family-interface)
-  - [$HostnameEndpoint (interface)](#hostnameendpoint-interface)
-  - [$HostnameIPv4SetupData (interface)](#hostnameipv4setupdata-interface)
-  - [$HostnameIPv6SetupData (interface)](#hostnameipv6setupdata-interface)
-  - [$IPv4 (interface)](#ipv4-interface)
-  - [$IPv4Bigint (interface)](#ipv4bigint-interface)
-  - [$IPv4CidrBlock (interface)](#ipv4cidrblock-interface)
-  - [$IPv4CidrBlockFromString (interface)](#ipv4cidrblockfromstring-interface)
-  - [$IPv4CidrMask (interface)](#ipv4cidrmask-interface)
-  - [$IPv4Endpoint (interface)](#ipv4endpoint-interface)
-  - [$IPv4Family (interface)](#ipv4family-interface)
-  - [$IPv4SetupData (interface)](#ipv4setupdata-interface)
-  - [$IPv6 (interface)](#ipv6-interface)
-  - [$IPv6Bigint (interface)](#ipv6bigint-interface)
-  - [$IPv6CidrBlock (interface)](#ipv6cidrblock-interface)
-  - [$IPv6CidrBlockFromString (interface)](#ipv6cidrblockfromstring-interface)
-  - [$IPv6CidrMask (interface)](#ipv6cidrmask-interface)
-  - [$IPv6Endpoint (interface)](#ipv6endpoint-interface)
-  - [$IPv6Family (interface)](#ipv6family-interface)
-  - [$IPv6SetupData (interface)](#ipv6setupdata-interface)
-  - [$Port (interface)](#port-interface)
-  - [$SetupData (interface)](#setupdata-interface)
+  - [$Address (type alias)](#address-type-alias)
+  - [$AddressBigint (type alias)](#addressbigint-type-alias)
+  - [$CidrBlock (type alias)](#cidrblock-type-alias)
+  - [$CidrBlockFromString (type alias)](#cidrblockfromstring-type-alias)
+  - [$Endpoint (type alias)](#endpoint-type-alias)
+  - [$Family (type alias)](#family-type-alias)
+  - [$HostnameEndpoint (type alias)](#hostnameendpoint-type-alias)
+  - [$HostnameIPv4SetupData (type alias)](#hostnameipv4setupdata-type-alias)
+  - [$HostnameIPv6SetupData (type alias)](#hostnameipv6setupdata-type-alias)
+  - [$IPv4 (type alias)](#ipv4-type-alias)
+  - [$IPv4Bigint (type alias)](#ipv4bigint-type-alias)
+  - [$IPv4CidrBlock (type alias)](#ipv4cidrblock-type-alias)
+  - [$IPv4CidrBlockFromString (type alias)](#ipv4cidrblockfromstring-type-alias)
+  - [$IPv4CidrMask (type alias)](#ipv4cidrmask-type-alias)
+  - [$IPv4Endpoint (type alias)](#ipv4endpoint-type-alias)
+  - [$IPv4Family (type alias)](#ipv4family-type-alias)
+  - [$IPv4SetupData (type alias)](#ipv4setupdata-type-alias)
+  - [$IPv6 (type alias)](#ipv6-type-alias)
+  - [$IPv6Bigint (type alias)](#ipv6bigint-type-alias)
+  - [$IPv6CidrBlock (type alias)](#ipv6cidrblock-type-alias)
+  - [$IPv6CidrBlockFromString (type alias)](#ipv6cidrblockfromstring-type-alias)
+  - [$IPv6CidrMask (type alias)](#ipv6cidrmask-type-alias)
+  - [$IPv6Endpoint (type alias)](#ipv6endpoint-type-alias)
+  - [$IPv6Family (type alias)](#ipv6family-type-alias)
+  - [$IPv6SetupData (type alias)](#ipv6setupdata-type-alias)
+  - [$Port (type alias)](#port-type-alias)
+  - [$SetupData (type alias)](#setupdata-type-alias)
   - [CidrBlockBase (class)](#cidrblockbase-class)
     - [networkAddress (method)](#networkaddress-method)
     - [broadcastAddress (method)](#broadcastaddress-method)
@@ -146,357 +146,362 @@ Added in v1.0.0
 
 # Api interface
 
-## $Address (interface)
+## $Address (type alias)
 
 **Signature**
 
 ```ts
-export interface $Address extends Schema.Union<[$IPv4, $IPv6]> {}
+export type $Address = Schema.Union<[$IPv4, $IPv6]>
 ```
 
 Added in v1.0.0
 
-## $AddressBigint (interface)
+## $AddressBigint (type alias)
 
 **Signature**
 
 ```ts
-export interface $AddressBigint extends Schema.Union<[$IPv4Bigint, $IPv6Bigint]> {}
+export type $AddressBigint = Schema.Union<[$IPv4Bigint, $IPv6Bigint]>
 ```
 
 Added in v1.0.0
 
-## $CidrBlock (interface)
+## $CidrBlock (type alias)
 
 **Signature**
 
 ```ts
-export interface $CidrBlock extends Schema.Union<[$IPv4CidrBlock, $IPv6CidrBlock]> {}
+export type $CidrBlock = Schema.Union<[$IPv4CidrBlock, $IPv6CidrBlock]>
 ```
 
 Added in v1.0.0
 
-## $CidrBlockFromString (interface)
+## $CidrBlockFromString (type alias)
 
 **Signature**
 
 ```ts
-export interface $CidrBlockFromString
-  extends Schema.Annotable<
-    $CidrBlockFromString,
-    CidrBlockBase<"ipv4"> | CidrBlockBase<"ipv6">,
-    `${string}/${number}`,
-    never
-  > {}
+export type $CidrBlockFromString = Schema.Annotable<
+  $CidrBlockFromString,
+  CidrBlockBase<"ipv4"> | CidrBlockBase<"ipv6">,
+  `${string}/${number}`,
+  never
+>
 ```
 
 Added in v1.0.0
 
-## $Endpoint (interface)
+## $Endpoint (type alias)
 
 **Signature**
 
 ```ts
-export interface $Endpoint extends Schema.Union<[$IPv4Endpoint, $IPv6Endpoint, $HostnameEndpoint]> {}
+export type $Endpoint = Schema.Union<[$IPv4Endpoint, $IPv6Endpoint, $HostnameEndpoint]>
 ```
 
 Added in v1.0.0
 
-## $Family (interface)
+## $Family (type alias)
 
 **Signature**
 
 ```ts
-export interface $Family extends Schema.Union<[$IPv4Family, $IPv6Family]> {}
+export type $Family = Schema.Union<[$IPv4Family, $IPv6Family]>
 ```
 
 Added in v1.0.0
 
-## $HostnameEndpoint (interface)
+## $HostnameEndpoint (type alias)
 
 **Signature**
 
 ```ts
-export interface $HostnameEndpoint
-  extends Schema.Annotable<
-    $HostnameEndpoint,
-    { readonly host: string; readonly natPort: PortBrand; readonly listenPort: PortBrand },
-    | `${string}:${number}`
-    | `${string}:${number}:${number}`
-    | { readonly host: string; readonly port: number }
-    | { readonly host: string; readonly natPort: number; readonly listenPort: number },
-    never
-  > {}
+export type $HostnameEndpoint = Schema.Annotable<
+  $HostnameEndpoint,
+  { readonly host: string; readonly natPort: PortBrand; readonly listenPort: PortBrand },
+  | `${string}:${number}`
+  | `${string}:${number}:${number}`
+  | { readonly host: string; readonly port: number }
+  | { readonly host: string; readonly natPort: number; readonly listenPort: number },
+  never
+>
 ```
 
 Added in v1.0.0
 
-## $HostnameIPv4SetupData (interface)
+## $HostnameIPv4SetupData (type alias)
 
 **Signature**
 
 ```ts
-export interface $HostnameIPv4SetupData extends Schema.Tuple<[$HostnameEndpoint, $IPv4]> {}
+export type $HostnameIPv4SetupData = Schema.Tuple<[$HostnameEndpoint, $IPv4]>
 ```
 
 Added in v1.0.0
 
-## $HostnameIPv6SetupData (interface)
+## $HostnameIPv6SetupData (type alias)
 
 **Signature**
 
 ```ts
-export interface $HostnameIPv6SetupData extends Schema.Tuple<[$HostnameEndpoint, $IPv6]> {}
+export type $HostnameIPv6SetupData = Schema.Tuple<[$HostnameEndpoint, $IPv6]>
 ```
 
 Added in v1.0.0
 
-## $IPv4 (interface)
+## $IPv4 (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv4
-  extends Schema.transform<
-    Schema.filter<typeof Schema.String>,
-    Schema.Struct<{
-      family: $IPv4Family
-      ip: Schema.BrandSchema<IPv4Brand, Brand.Brand.Unbranded<IPv4Brand>, never>
-    }>
-  > {}
+export type $IPv4 = Schema.transform<
+  Schema.filter<typeof Schema.String>,
+  Schema.Struct<{
+    family: $IPv4Family
+    ip: Schema.BrandSchema<IPv4Brand, Brand.Brand.Unbranded<IPv4Brand>, never>
+  }>
+>
 ```
 
 Added in v1.0.0
 
-## $IPv4Bigint (interface)
+## $IPv4Bigint (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv4Bigint
-  extends Schema.transformOrFail<
-    $IPv4,
-    Schema.Struct<{
-      family: $IPv4Family
-      value: Schema.BrandSchema<IPv4BigintBrand, Brand.Brand.Unbranded<IPv4BigintBrand>, never>
-    }>,
-    never
-  > {}
+export type $IPv4Bigint = Schema.transformOrFail<
+  $IPv4,
+  Schema.Struct<{
+    family: $IPv4Family
+    value: Schema.BrandSchema<IPv4BigintBrand, Brand.Brand.Unbranded<IPv4BigintBrand>, never>
+  }>,
+  never
+>
 ```
 
 Added in v1.0.0
 
-## $IPv4CidrBlock (interface)
+## $IPv4CidrBlock (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv4CidrBlock
-  extends Schema.Annotable<
-    $IPv4CidrBlock,
-    CidrBlockBase<"ipv4">,
-    {
-      readonly address: string
-      readonly mask: number
-    },
-    never
-  > {}
+export type $IPv4CidrBlock = Schema.Annotable<
+  $IPv4CidrBlock,
+  CidrBlockBase<"ipv4">,
+  {
+    readonly address: string
+    readonly mask: number
+  },
+  never
+>
 ```
 
 Added in v1.0.0
 
-## $IPv4CidrBlockFromString (interface)
+## $IPv4CidrBlockFromString (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv4CidrBlockFromString
-  extends Schema.Annotable<$IPv4CidrBlockFromString, CidrBlockBase<"ipv4">, `${string}/${number}`, never> {}
+export type $IPv4CidrBlockFromString = Schema.Annotable<
+  $IPv4CidrBlockFromString,
+  CidrBlockBase<"ipv4">,
+  `${string}/${number}`,
+  never
+>
 ```
 
 Added in v1.0.0
 
-## $IPv4CidrMask (interface)
+## $IPv4CidrMask (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv4CidrMask
-  extends Schema.Annotable<$IPv4CidrMask, IPv4CidrMaskBrand, Brand.Brand.Unbranded<IPv4CidrMaskBrand>, never> {}
+export type $IPv4CidrMask = Schema.Annotable<
+  $IPv4CidrMask,
+  IPv4CidrMaskBrand,
+  Brand.Brand.Unbranded<IPv4CidrMaskBrand>,
+  never
+>
 ```
 
 Added in v1.0.0
 
-## $IPv4Endpoint (interface)
+## $IPv4Endpoint (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv4Endpoint
-  extends Schema.Annotable<
-    $IPv4Endpoint,
-    { readonly address: IPv4; readonly natPort: PortBrand; readonly listenPort: PortBrand },
-    | `${string}:${number}`
-    | `${string}:${number}:${number}`
-    | { readonly ip: string; readonly port: number; readonly family: IPv4Family }
-    | { readonly ip: string; readonly natPort: number; readonly listenPort: number; readonly family: IPv4Family },
-    never
-  > {}
+export type $IPv4Endpoint = Schema.Annotable<
+  $IPv4Endpoint,
+  { readonly address: IPv4; readonly natPort: PortBrand; readonly listenPort: PortBrand },
+  | `${string}:${number}`
+  | `${string}:${number}:${number}`
+  | { readonly ip: string; readonly port: number; readonly family: IPv4Family }
+  | { readonly ip: string; readonly natPort: number; readonly listenPort: number; readonly family: IPv4Family },
+  never
+>
 ```
 
 Added in v1.0.0
 
-## $IPv4Family (interface)
+## $IPv4Family (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv4Family extends Schema.Literal<["ipv4"]> {}
+export type $IPv4Family = Schema.Literal<["ipv4"]>
 ```
 
 Added in v1.0.0
 
-## $IPv4SetupData (interface)
+## $IPv4SetupData (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv4SetupData extends Schema.Tuple<[$IPv4Endpoint, $IPv4]> {}
+export type $IPv4SetupData = Schema.Tuple<[$IPv4Endpoint, $IPv4]>
 ```
 
 Added in v1.0.0
 
-## $IPv6 (interface)
+## $IPv6 (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv6
-  extends Schema.transform<
-    Schema.filter<typeof Schema.String>,
-    Schema.Struct<{
-      family: $IPv6Family
-      ip: Schema.BrandSchema<IPv6Brand, Brand.Brand.Unbranded<IPv6Brand>, never>
-    }>
-  > {}
+export type $IPv6 = Schema.transform<
+  Schema.filter<typeof Schema.String>,
+  Schema.Struct<{
+    family: $IPv6Family
+    ip: Schema.BrandSchema<IPv6Brand, Brand.Brand.Unbranded<IPv6Brand>, never>
+  }>
+>
 ```
 
 Added in v1.0.0
 
-## $IPv6Bigint (interface)
+## $IPv6Bigint (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv6Bigint
-  extends Schema.transformOrFail<
-    $IPv6,
-    Schema.Struct<{
-      family: $IPv6Family
-      value: Schema.BrandSchema<IPv6BigintBrand, Brand.Brand.Unbranded<IPv6BigintBrand>, never>
-    }>,
-    never
-  > {}
+export type $IPv6Bigint = Schema.transformOrFail<
+  $IPv6,
+  Schema.Struct<{
+    family: $IPv6Family
+    value: Schema.BrandSchema<IPv6BigintBrand, Brand.Brand.Unbranded<IPv6BigintBrand>, never>
+  }>,
+  never
+>
 ```
 
 Added in v1.0.0
 
-## $IPv6CidrBlock (interface)
+## $IPv6CidrBlock (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv6CidrBlock
-  extends Schema.transformOrFail<
-    Schema.Struct<{
-      address: $IPv6
-      mask: $IPv6CidrMask
-    }>,
-    typeof CidrBlockBase<"ipv6">,
-    never
-  > {}
+export type $IPv6CidrBlock = Schema.transformOrFail<
+  Schema.Struct<{
+    address: $IPv6
+    mask: $IPv6CidrMask
+  }>,
+  typeof CidrBlockBase<"ipv6">,
+  never
+>
 ```
 
 Added in v1.0.0
 
-## $IPv6CidrBlockFromString (interface)
+## $IPv6CidrBlockFromString (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv6CidrBlockFromString
-  extends Schema.Annotable<$IPv6CidrBlockFromString, CidrBlockBase<"ipv6">, `${string}/${number}`, never> {}
+export type $IPv6CidrBlockFromString = Schema.Annotable<
+  $IPv6CidrBlockFromString,
+  CidrBlockBase<"ipv6">,
+  `${string}/${number}`,
+  never
+>
 ```
 
 Added in v1.0.0
 
-## $IPv6CidrMask (interface)
+## $IPv6CidrMask (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv6CidrMask
-  extends Schema.Annotable<$IPv6CidrMask, IPv6CidrMaskBrand, Brand.Brand.Unbranded<IPv6CidrMaskBrand>, never> {}
+export type $IPv6CidrMask = Schema.Annotable<
+  $IPv6CidrMask,
+  IPv6CidrMaskBrand,
+  Brand.Brand.Unbranded<IPv6CidrMaskBrand>,
+  never
+>
 ```
 
 Added in v1.0.0
 
-## $IPv6Endpoint (interface)
+## $IPv6Endpoint (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv6Endpoint
-  extends Schema.Annotable<
-    $IPv6Endpoint,
-    { readonly address: IPv6; readonly natPort: PortBrand; readonly listenPort: PortBrand },
-    | `[${string}]:${number}`
-    | `[${string}]:${number}:${number}`
-    | { readonly ip: string; readonly port: number; family: IPv6Family }
-    | { readonly ip: string; readonly natPort: number; readonly listenPort: number; family: IPv6Family },
-    never
-  > {}
+export type $IPv6Endpoint = Schema.Annotable<
+  $IPv6Endpoint,
+  { readonly address: IPv6; readonly natPort: PortBrand; readonly listenPort: PortBrand },
+  | `[${string}]:${number}`
+  | `[${string}]:${number}:${number}`
+  | { readonly ip: string; readonly port: number; family: IPv6Family }
+  | { readonly ip: string; readonly natPort: number; readonly listenPort: number; family: IPv6Family },
+  never
+>
 ```
 
 Added in v1.0.0
 
-## $IPv6Family (interface)
+## $IPv6Family (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv6Family extends Schema.Literal<["ipv6"]> {}
+export type $IPv6Family = Schema.Literal<["ipv6"]>
 ```
 
 Added in v1.0.0
 
-## $IPv6SetupData (interface)
+## $IPv6SetupData (type alias)
 
 **Signature**
 
 ```ts
-export interface $IPv6SetupData extends Schema.Tuple<[$IPv6Endpoint, $IPv6]> {}
+export type $IPv6SetupData = Schema.Tuple<[$IPv6Endpoint, $IPv6]>
 ```
 
 Added in v1.0.0
 
-## $Port (interface)
+## $Port (type alias)
 
 **Signature**
 
 ```ts
-export interface $Port extends Schema.Annotable<$Port, PortBrand, Brand.Brand.Unbranded<PortBrand>, never> {}
+export type $Port = Schema.Annotable<$Port, PortBrand, Brand.Brand.Unbranded<PortBrand>, never>
 ```
 
 Added in v1.0.0
 
-## $SetupData (interface)
+## $SetupData (type alias)
 
 **Signature**
 
 ```ts
-export interface $SetupData
-  extends Schema.Union<[$IPv4SetupData, $IPv6SetupData, $HostnameIPv4SetupData, $HostnameIPv6SetupData]> {}
+export type $SetupData = Schema.Union<[$IPv4SetupData, $IPv6SetupData, $HostnameIPv4SetupData, $HostnameIPv6SetupData]>
 ```
 
 Added in v1.0.0
