@@ -38,8 +38,8 @@ runs:
     # This is where our testing starts
     - shell: pwsh
       run: |
-        wsl --distribution Ubuntu22.04 --user root -- cd ../ && cp -R ./the-wireguard-effect /tmp
-        wsl --distribution Ubuntu22.04 --user root -- ls -la /tmp/the-wireguard-effect/
-        wsl --distribution Ubuntu22.04 --user root -- cd /tmp/the-wireguard-effect && pnpm install
-        wsl --distribution Ubuntu22.04 --user root -- cd /tmp/the-wireguard-effect && ls -la ./src/
-        wsl --distribution Ubuntu22.04 --user root -- cd /tmp/the-wireguard-effect && pnpm test -- --run
+        wsl --distribution Ubuntu22.04 --user root -- (cd ../ && cp -R ./the-wireguard-effect /tmp)
+        wsl --distribution Ubuntu22.04 --user root -- (ls -la /tmp/the-wireguard-effect/)
+        wsl --distribution Ubuntu22.04 --user root -- (cd /tmp/the-wireguard-effect && pnpm install)
+        wsl --distribution Ubuntu22.04 --user root -- (cd /tmp/the-wireguard-effect && ls -la ./src/)
+        wsl --distribution Ubuntu22.04 --user root -- (cd /tmp/the-wireguard-effect && pnpm test -- --run)
