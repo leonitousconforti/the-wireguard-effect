@@ -29,12 +29,6 @@ runs:
       run: wsl --import Ubuntu22.04 . jammy-server-cloudimg-amd64-root.tar.xz --version 2
     - shell: pwsh
       run: wsl --list --verbose
-    # - shell: pwsh
-    #   run: wsl --shutdown
-    # - shell: pwsh
-    #   run: Copy-Item "D:\a\the-wireguard-effect\the-wireguard-effect\submodules\.wslconfig" -Destination "C:\Users\runneradmin"
-    # - shell: pwsh
-    #   run: sleep 15
 
     # Install dependencies
     - shell: pwsh
