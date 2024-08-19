@@ -26,8 +26,8 @@ sudo ldconfig
 (cd ./nvlist && git reset --hard && git clean --force -d)
 
 # osxcross for cross compiling wg to darwin
-(cd ./osxcross/tarballs && wget -nc https://s3.dockerproject.org/darwin/v2/MacOSX10.10.sdk.tar.xz)
-(cd ./osxcross && sudo UNATTENDED=1 TARGET_DIR=/usr/local/osxcross ./build.sh)
+# (cd ./osxcross/tarballs && wget -nc https://s3.dockerproject.org/darwin/v2/MacOSX10.10.sdk.tar.xz)
+# (cd ./osxcross && sudo UNATTENDED=1 TARGET_DIR=/usr/local/osxcross ./build.sh)
 
 # wg-quick prebuilds
 (cd ./wireguard-tools/src && make clean && PLATFORM=linux make && cp ./wg ../../../dist/prebuilds/linux-wg && chmod +x ../../../dist/prebuilds/linux-wg)
@@ -40,11 +40,15 @@ sudo ldconfig
 (cd ./wireguard-windows && unset GOROOT && make clean && make amd64/wireguard.exe && cp amd64/wireguard.exe ../../dist/prebuilds/win32-amd64-wireguard.exe)
 
 # Windows WSL2 modified linux kernel (https://github.com/microsoft/WSL/issues/7547)
-(cd ./WSL2-Linux-Kernel && git apply ../../patches/WSL2-linux-kernel.patch)
-(cd ./WSL2-Linux-Kernel && make -j $(nproc) KCONFIG_CONFIG=Microsoft/config-wsl CC="ccache gcc")
-(cd ./WSL2-Linux-Kernel && cp arch/x86/boot/bzImage ../../dist/prebuilds/win32-amd64-wsl2-linux-kernel-bzImage)
-(cd ./WSL2-Linux-Kernel && rm -f Microsoft/*.old)
-(cd ./WSL2-Linux-Kernel && git reset --hard)
+# (cd ./WSL2-Linux-Kernel && make -j $(nproc) KCONFIG_CONFIG=Microsoft/config-wsl CC="ccache gcc")
+# (cd ./WSL2-Linux-Kernel && cp arch/x86/boot/bzImage ../../dist/prebuilds/win32-amd64-wsl2-linux-kernel-bzImage-not-patched)
+# (cd ./WSL2-Linux-Kernel && rm -f Microsoft/*.old)
+# (cd ./WSL2-Linux-Kernel && git reset --hard)
+# (cd ./WSL2-Linux-Kernel && git apply ../../patches/WSL2-linux-kernel.patch)
+# (cd ./WSL2-Linux-Kernel && make -j $(nproc) KCONFIG_CONFIG=Microsoft/config-wsl CC="ccache gcc")
+# (cd ./WSL2-Linux-Kernel && cp arch/x86/boot/bzImage ../../dist/prebuilds/win32-amd64-wsl2-linux-kernel-bzImage)
+# (cd ./WSL2-Linux-Kernel && rm -f Microsoft/*.old)
+# (cd ./WSL2-Linux-Kernel && git reset --hard)
 
 # Symlink prebuilds
 (cd ../src && ln -s ../dist/prebuilds/* .)
