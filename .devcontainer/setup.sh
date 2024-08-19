@@ -12,7 +12,7 @@ sudo rm -rf submodules/osxcross/build
 sudo rm -rf submodules/osxcross/target
 
 echo "Initializing submodules"
-git submodule update --init --recursive
+git submodule update --init --recursive --depth 1
 
 echo "📦 Installing global dependencies..."
 npm uninstall -g pnpm
