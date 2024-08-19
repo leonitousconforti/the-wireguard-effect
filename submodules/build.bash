@@ -39,13 +39,6 @@ sudo ldconfig
 # Wireguard-windows prebuilds
 (cd ./wireguard-windows && unset GOROOT && make clean && make amd64/wireguard.exe && cp amd64/wireguard.exe ../../dist/prebuilds/win32-amd64-wireguard.exe)
 
-# Windows WSL2 modified linux kernel (https://github.com/microsoft/WSL/issues/7547)
-(cd ./WSL2-Linux-Kernel && git apply ../../patches/WSL2-linux-kernel.patch)
-(cd ./WSL2-Linux-Kernel && make -j $(nproc) KCONFIG_CONFIG=Microsoft/config-wsl CC="ccache gcc")
-(cd ./WSL2-Linux-Kernel && cp arch/x86/boot/bzImage ../../dist/prebuilds/win32-amd64-wsl2-linux-kernel-bzImage)
-(cd ./WSL2-Linux-Kernel && rm -f Microsoft/*.old)
-(cd ./WSL2-Linux-Kernel && git reset --hard)
-
 # Symlink prebuilds
 (cd ../src && ln -s ../dist/prebuilds/* .)
 (cd ../dist/dist/cjs && ln -s ../../prebuilds/* .)

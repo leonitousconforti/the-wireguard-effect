@@ -74,7 +74,6 @@
         "submodules/wireguard-apple/**": true,
         "submodules/wireguard-go/**": true,
         "submodules/wireguard-tools/**": true,
-        "submodules/wireguard-windows/**": true,
-        "submodules/WSL2-Linux-Kernel/**": true
+        "submodules/wireguard-windows/**": true
     }
 }
