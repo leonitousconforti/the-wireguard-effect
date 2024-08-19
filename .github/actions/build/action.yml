@@ -76,7 +76,6 @@ runs:
         sudo rm -rf submodules/wireguard-go
         sudo rm -rf submodules/wireguard-tools
         sudo rm -rf submodules/wireguard-windows
-        sudo rm -rf submodules/WSL2-Linux-Kernel
 
     # https://github.com/actions/download-artifact/tree/v4/?tab=readme-ov-file#limitations
     - shell: bash

@@ -1,5 +1,0 @@
-# https://learn.microsoft.com/en-us/windows/wsl/wsl-config#wslconf
-[wsl2]
-
-# Specify a custom Linux kernel to use with your installed distros.
-kernel=D:\\a\\the-wireguard-effect\\the-wireguard-effect\\dist\\prebuilds\\win32-amd64-wsl2-linux-kernel-bzImage
