@@ -61,3 +61,5 @@ runs:
       run: wsl --distribution Ubuntu22.04 --user root -- pwd
     - shell: pwsh
       run: wsl --distribution Ubuntu22.04 --user root -- ls
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root -- cp -R /mnt/d/a/the-wireguard-effect/the-wireguard-effect /tmp
