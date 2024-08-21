@@ -7,9 +7,9 @@ runs:
     - uses: actions/download-artifact@v4
       with:
         name: the-wireguard-effect
-        path: /tmp/the-wireguard-effect
+        path: /tmp/the-wireguard-effect-artifact
     - shell: pwsh
-      run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
+      run: tar -xvf /tmp/the-wireguard-effect-artifact/the-wireguard-effect.tar
 
     # Yes all this is necessary to get WSL2 working on GitHub Actions without any user input
     # They are all as separate steps so its easier to debug and see what/where it fails (especially when I was writing this)
