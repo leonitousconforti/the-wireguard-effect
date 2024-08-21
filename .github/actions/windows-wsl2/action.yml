@@ -58,8 +58,6 @@ runs:
     # - shell: pwsh
     #   run: wsl --distribution Ubuntu22.04 --user root -- (cd /tmp/the-wireguard-effect && pnpm test -- --run)
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root -- (cp -R /mnt/c/Users/runner/work/the-wireguard-effect/the-wireguard-effect /tmp)
+      run: wsl --distribution Ubuntu22.04 --user root -- pwd
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root -- (ls -la /tmp/)
-    - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root -- (ls -la /tmp/the-wireguard-effect/)
+      run: wsl --distribution Ubuntu22.04 --user root -- ls
