@@ -63,3 +63,10 @@ runs:
       run: wsl --distribution Ubuntu22.04 --user root -- ls
     - shell: pwsh
       run: wsl --distribution Ubuntu22.04 --user root -- cp -R . /tmp/test
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root |
+        cd /tmp/test &&
+        ls -la &&
+        pnpm install &&
+        ls -la ./src/ &&
+        pnpm test -- --run
