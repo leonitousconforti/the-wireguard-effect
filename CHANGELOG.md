@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.19] - 2024-07-03
+
+fixed CI failure again
+
 ## [0.0.18] - 2024-07-03
 
 fixed CI failure preventing 0.0.17 from releasing
