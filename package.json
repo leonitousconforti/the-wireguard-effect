@@ -122,5 +122,10 @@
             "prebuilds/win32-arm64-wireguard-go"
         ],
         "provenance": true
+    },
+    "pnpm": {
+        "patchedDependencies": {
+            "@effect/build-utils@0.7.8": "patches/@effect__build-utils@0.7.8.patch"
+        }
     }
 }
