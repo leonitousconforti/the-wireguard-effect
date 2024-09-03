@@ -35,7 +35,7 @@ importers:
         version: 0.41.1(@effect/platform@0.62.1(@effect/schema@0.71.0(effect@3.6.4))(effect@3.6.4))(@effect/printer-ansi@0.34.4(@effect/typeclass@0.25.4(effect@3.6.4))(effect@3.6.4))(@effect/printer@0.34.4(@effect/typeclass@0.25.4(effect@3.6.4))(effect@3.6.4))(@effect/schema@0.71.0(effect@3.6.4))(effect@3.6.4)
       '@effect/docgen':
         specifier: 0.4.3
-        version: 0.4.3(tsx@4.17.0)(typescript@5.5.4)
+        version: 0.4.3(tsx@4.19.0)(typescript@5.5.4)
       '@effect/eslint-plugin':
         specifier: 0.2.0
         version: 0.2.0
@@ -136,8 +136,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsx:
-        specifier: 4.17.0
-        version: 4.17.0
+        specifier: 4.19.0
+        version: 4.19.0
       typescript:
         specifier: 5.5.4
         version: 5.5.4
@@ -2782,8 +2782,8 @@ packages:
   tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
 
-  tsx@4.17.0:
-    resolution: {integrity: sha512-eN4mnDA5UMKDt4YZixo9tBioibaMBpoxBkD+rIPAjVmYERSG0/dWEY1CEFuV89CgASlKL499q8AhmkMnnjtOJg==}
+  tsx@4.19.0:
+    resolution: {integrity: sha512-bV30kM7bsLZKZIOCHeMNVMJ32/LuJzLVajkQI/qf92J2Qr08ueLQvW00PUZGiuLPP760UINwupgUj8qrSCPUKg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -3162,13 +3162,13 @@ snapshots:
       toml: 3.0.0
       yaml: 2.5.0
 
-  '@effect/docgen@0.4.3(tsx@4.17.0)(typescript@5.5.4)':
+  '@effect/docgen@0.4.3(tsx@4.19.0)(typescript@5.5.4)':
     dependencies:
       '@effect/markdown-toc': 0.1.0
       doctrine: 3.0.0
       glob: 10.4.5
       prettier: 3.3.3
-      tsx: 4.17.0
+      tsx: 4.19.0
       typescript: 5.5.4
 
   '@effect/eslint-plugin@0.2.0':
@@ -5825,7 +5825,7 @@ snapshots:
 
   tslib@2.6.3: {}
 
-  tsx@4.17.0:
+  tsx@4.19.0:
     dependencies:
       esbuild: 0.23.1
       get-tsconfig: 4.7.6
