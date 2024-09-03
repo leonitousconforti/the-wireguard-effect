@@ -39,8 +39,8 @@ importers:
         specifier: 0.41.1
         version: 0.41.1(@effect/platform@0.62.1(@effect/schema@0.71.0(effect@3.6.4))(effect@3.6.4))(@effect/printer-ansi@0.34.4(@effect/typeclass@0.25.4(effect@3.6.4))(effect@3.6.4))(@effect/printer@0.34.4(@effect/typeclass@0.25.4(effect@3.6.4))(effect@3.6.4))(@effect/schema@0.71.0(effect@3.6.4))(effect@3.6.4)
       '@effect/docgen':
-        specifier: 0.4.3
-        version: 0.4.3(tsx@4.17.0)(typescript@5.5.4)
+        specifier: 0.4.4
+        version: 0.4.4(tsx@4.17.0)(typescript@5.5.4)
       '@effect/eslint-plugin':
         specifier: 0.2.0
         version: 0.2.0
@@ -288,8 +288,8 @@ packages:
       '@effect/schema': ^0.71.0
       effect: ^3.6.4
 
-  '@effect/docgen@0.4.3':
-    resolution: {integrity: sha512-qR7uSUPpY53ljWLiftQ2N5TaGpYJn1j3yXtJcWs2ndo1K3TqM9ZajtpB4WbiCfIpAXsCKfqpoUBn/qb8RpiGWg==}
+  '@effect/docgen@0.4.4':
+    resolution: {integrity: sha512-Qk/LzpXH/5zXpTA+JL5ggnuZwNzgUWxdU5m0MV8IrWUGeBkE7s5W8kA4UsQXRrZsu7tVf//J7OGHNZz4wZkBgw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
@@ -859,6 +859,11 @@ packages:
 
   '@rollup/wasm-node@4.21.0':
     resolution: {integrity: sha512-CqLrY1oc68dyB44h4qfAa/4LM+R+xvqaJSTBV0hWeLXiIdXhgrHlaalXOTrL5vWz+mgnyzlUgy3bhTkZjKt1LQ==}
+    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
+    hasBin: true
+
+  '@rollup/wasm-node@4.21.2':
+    resolution: {integrity: sha512-AJCfdXkpe5EX+jfWOMYuFl3ZomTQyfx4V4geRmChdTwAo05FdpnobwqtYn0mo7Mf1qVN7mniI7kdG98vKDVd2g==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
@@ -3162,7 +3167,7 @@ snapshots:
       toml: 3.0.0
       yaml: 2.5.0
 
-  '@effect/docgen@0.4.3(tsx@4.17.0)(typescript@5.5.4)':
+  '@effect/docgen@0.4.4(tsx@4.17.0)(typescript@5.5.4)':
     dependencies:
       '@effect/markdown-toc': 0.1.0
       doctrine: 3.0.0
@@ -3573,6 +3578,12 @@ snapshots:
   '@pnpm/deps.graph-sequencer@1.0.0': {}
 
   '@rollup/wasm-node@4.21.0':
+    dependencies:
+      '@types/estree': 1.0.5
+    optionalDependencies:
+      fsevents: 2.3.3
+
+  '@rollup/wasm-node@4.21.2':
     dependencies:
       '@types/estree': 1.0.5
     optionalDependencies:
@@ -5932,7 +5943,7 @@ snapshots:
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.41
-      rollup: '@rollup/wasm-node@4.21.0'
+      rollup: '@rollup/wasm-node@4.21.2'
     optionalDependencies:
       '@types/node': 22.3.0
       fsevents: 2.3.3

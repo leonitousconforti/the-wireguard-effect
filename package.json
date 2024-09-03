@@ -55,7 +55,7 @@
         "@babel/plugin-transform-modules-commonjs": "7.24.8",
         "@effect/build-utils": "0.7.7",
         "@effect/cli": "0.41.1",
-        "@effect/docgen": "0.4.3",
+        "@effect/docgen": "0.4.4",
         "@effect/eslint-plugin": "0.2.0",
         "@effect/experimental": "0.23.3",
         "@effect/language-service": "0.1.0",
