@@ -14,10 +14,11 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Install dependencies
-        uses: ./.github/actions/setup
-      - name: Build package
-        run: pnpm build
+        with:
+          submodules: "true"
+
+      - uses: ./.github/actions/build
+
       - name: Create snapshot
         id: snapshot
         run: pnpx pkg-pr-new@0.0.17 publish --pnpm
