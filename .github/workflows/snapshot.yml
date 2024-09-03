@@ -2,7 +2,7 @@ name: Snapshot
 on:
   pull_request:
     # branches: [main]
-    branches: []
+    branches: [main2]
 
 permissions: {}
 
