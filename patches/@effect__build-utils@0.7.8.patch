@@ -1,0 +1,26 @@
+diff --git a/main.js b/main.js
+index febfc0769239db5f0c95a6f80620241b9866c298..adc7f793b7b330a4471d3cdd01750fb53169c626 100755
+--- a/main.js
++++ b/main.js
+@@ -32030,6 +32030,10 @@ var _PackageJson = class _PackageJson extends Class3("PackageJson")({
+     provenance: optionalWith(Boolean$, { default: () => false }),
+     executableFiles: optional(Array$(String$))
+   })),
++  homepage: optional(String$),
++  keywords: optional(Array$(String$)),
++  bugs: optional(Record(String$, String$)),
++  engines: optional(Record(String$, String$)),
+   license: String$,
+   author: optional(String$),
+   repository: Union2(
+@@ -32168,6 +32172,10 @@ var run10 = gen2(function* (_) {
+     addOptional("optionalDependencies");
+     addOptional("gitHead");
+     addOptional("bin");
++    addOptional("keywords");
++    addOptional("homepage");
++    addOptional("bugs");
++    addOptional("engines");
+     if (ctx.hasMain) {
+       out.exports["."] = {};
+       if (ctx.hasMainMjs) {

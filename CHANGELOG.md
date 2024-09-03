@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.17] - 2024-07-03
+
+Update dependencies
+
 ## [0.0.15] - 2024-08-15
 
 Update dependencies
