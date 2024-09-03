@@ -21,7 +21,6 @@ import * as Match from "effect/Match";
 import * as Number from "effect/Number";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
-import * as Record from "effect/Record";
 import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
@@ -101,7 +100,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             const regex = yield* WireguardInterface.InterfaceRegExpForPlatform;
             const usedInterfaceIndexes = Function.pipe(
                 os.networkInterfaces(),
-                Record.keys,
+                Object.keys,
                 Array.filter((name) => regex.test(name)),
                 Array.map(String.replaceAll(/\D/g, "")),
                 Array.map(Number.parse),

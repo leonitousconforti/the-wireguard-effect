@@ -1,6 +1,12 @@
 # Changelog
 
-## [0.0.9] - unreleased
+## [0.0.17] - 2024-07-03
+
+Update dependencies
+
+## [0.0.15] - 2024-08-15
+
+Update dependencies
 
 ## [0.0.8] - 2024-06-23
 

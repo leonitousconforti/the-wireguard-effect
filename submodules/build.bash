@@ -22,13 +22,6 @@ mkdir -p ../dist/prebuilds
 # (cd ./wintun && cp wintun-arm64.dll ../../dist/prebuilds/win32-arm64-wintun.dll)
 (cd ./wintun && cp wintun-amd64.dll ../../dist/prebuilds/wintun.dll)
 
-# nvlist prebuilds (for wg-quick freebsd)
-(cd ./nvlist && git reset --hard && git apply ../../patches/nvlist.patch && cd pkg && make deb && make clean)
-sudo apt-get install ./nvlist/libnv1_0.0.1_amd64.deb
-sudo apt-get install ./nvlist/libnv-dev_0.0.1_amd64.deb
-sudo ldconfig
-(cd ./nvlist && git reset --hard && git clean --force -d)
-
 # osxcross for cross compiling wg to darwin
 (cd ./osxcross/tarballs && wget -nc https://s3.dockerproject.org/darwin/v2/MacOSX10.10.sdk.tar.xz)
 (cd ./osxcross && sudo UNATTENDED=1 TARGET_DIR=/usr/local/osxcross ./build.sh)
@@ -46,13 +39,6 @@ sudo ldconfig
 
 # Wireguard-windows prebuilds
 (cd ./wireguard-windows && unset GOROOT && make clean && make amd64/wireguard.exe && cp amd64/wireguard.exe ../../dist/prebuilds/win32-amd64-wireguard.exe)
-
-# Windows WSL2 modified linux kernel (https://github.com/microsoft/WSL/issues/7547)
-(cd ./WSL2-Linux-Kernel && git apply ../../patches/WSL2-linux-kernel.patch)
-(cd ./WSL2-Linux-Kernel && make -j $(nproc) KCONFIG_CONFIG=Microsoft/config-wsl CC="ccache gcc")
-(cd ./WSL2-Linux-Kernel && cp arch/x86/boot/bzImage ../../dist/prebuilds/win32-amd64-wsl2-linux-kernel-bzImage)
-(cd ./WSL2-Linux-Kernel && rm -f Microsoft/*.old)
-(cd ./WSL2-Linux-Kernel && git reset --hard)
 
 # Symlink prebuilds
 (cd ../src && ln -s ../dist/prebuilds/* .)

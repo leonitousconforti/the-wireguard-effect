@@ -47,14 +47,6 @@ jobs:
       - run: sudo apt-get update
       - run: sudo apt-get install mingw-w64 imagemagick libarchive-tools build-essential flex bison dwarves libssl-dev libelf-dev bc ccache librsvg2-bin fakeroot debhelper libtool-bin cmake -y
 
-      - name: "Setup ccache"
-        uses: actions/cache@v4
-        with:
-          path: /home/runner/.cache/ccache
-          key: wsl2-linux-kernel-ccache-${{ hashFiles('patches/WSL2-linux-kernel.patch') }}
-          restore-keys: |
-            wsl2-linux-kernel-ccache-
-
       - name: "Setup wireguard windows dist cache"
         uses: actions/cache@v4
         with:

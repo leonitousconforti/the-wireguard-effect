@@ -74,7 +74,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
      * request, so it will remain the same as it was before the update, whereas
      * Option.some(0) will disable the keep alive setting.
      */
-    PersistentKeepalive: Schema.optional(InternetSchemas.DurationFromSeconds, {
+    PersistentKeepalive: Schema.optionalWith(InternetSchemas.DurationFromSeconds, {
         as: "Option",
         nullable: true,
     }),
@@ -84,7 +84,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
      * identical value already exists as part of a prior peer, the allowed IP
      * entry will be removed from that peer and added to this peer.
      */
-    AllowedIPs: Schema.optional(Schema.ReadonlySetFromSelf(InternetSchemas.CidrBlockFromString), {
+    AllowedIPs: Schema.optionalWith(Schema.ReadonlySetFromSelf(InternetSchemas.CidrBlockFromString), {
         nullable: true,
         default: () => new Set([]),
     }),
@@ -97,7 +97,7 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
      * client will just send requests back to the remote peer's source IP and
      * port.
      */
-    Endpoint: Schema.optional(InternetSchemas.Endpoint, { nullable: true }),
+    Endpoint: Schema.optionalWith(InternetSchemas.Endpoint, { nullable: true }),
 
     /** Lowercase hex-encoded public key of the new peer entry. */
     PublicKey: WireguardKey.WireguardKey,
@@ -107,15 +107,19 @@ export class WireguardPeer extends Schema.Class<WireguardPeer>("WireguardPeer")(
      * value may be an all zero string in the case of a set operation, in which
      * case it indicates that the preshared-key should be removed.
      */
-    PresharedKey: Schema.optional(WireguardKey.WireguardKey, { nullable: true, as: "Option" }),
+    PresharedKey: Schema.optionalWith(WireguardKey.WireguardKey, { nullable: true, as: "Option" }),
 }) {}
 
 /**
  * @since 1.0.0
  * @category Api interface
  */
-export interface $WireguardIniPeer
-    extends Schema.Annotable<$WireguardIniPeer, string, Schema.Schema.Encoded<typeof WireguardPeer>, never> {}
+export type $WireguardIniPeer = Schema.Annotable<
+    $WireguardIniPeer,
+    string,
+    Schema.Schema.Encoded<typeof WireguardPeer>,
+    never
+>;
 
 /**
  * A wireguard peer configuration encoded in INI format.

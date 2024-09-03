@@ -15,7 +15,7 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [Api interface](#api-interface)
-  - [$WireguardIniConfig (interface)](#wireguardiniconfig-interface)
+  - [$WireguardIniConfig (type alias)](#wireguardiniconfig-type-alias)
 - [Constructors](#constructors)
   - [fromConfigFile](#fromconfigfile)
 - [Requests](#requests)
@@ -39,13 +39,17 @@ Added in v1.0.0
 
 # Api interface
 
-## $WireguardIniConfig (interface)
+## $WireguardIniConfig (type alias)
 
 **Signature**
 
 ```ts
-export interface $WireguardIniConfig
-  extends Schema.Annotable<$WireguardIniConfig, string, Schema.Schema.Encoded<typeof WireguardConfig>, never> {}
+export type $WireguardIniConfig = Schema.Annotable<
+  $WireguardIniConfig,
+  string,
+  Schema.Schema.Encoded<typeof WireguardConfig>,
+  never
+>
 ```
 
 Added in v1.0.0
@@ -168,7 +172,7 @@ export declare const WireguardGetConfigResponse: Schema.extend<
     never
   >,
   Schema.Struct<{
-    Peers: Schema.optionalWithOptions<
+    Peers: Schema.optionalWith<
       Schema.Array$<typeof WireguardPeer.WireguardUApiGetPeerResponse>,
       { default: () => never[]; nullable: true }
     >
