@@ -1,0 +1,24 @@
+name: Snapshot
+on:
+  pull_request:
+    # branches: [main]
+    branches: []
+
+permissions: {}
+
+jobs:
+  snapshot:
+    name: Snapshot
+    if: github.repository_owner == 'leonitousconforti'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+
+      - uses: ./.github/actions/build
+
+      - name: Create snapshot
+        id: snapshot
+        run: pnpx pkg-pr-new@0.0.17 publish --pnpm
