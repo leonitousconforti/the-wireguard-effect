@@ -49,7 +49,7 @@ jobs:
 
   macos-intel-lab:
     if: github.event.inputs.platform == 'macos-intel'
-    runs-on: macos-13
+    runs-on: macos-14
     timeout-minutes: 60
     needs: [build]
     steps:

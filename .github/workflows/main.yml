@@ -41,7 +41,7 @@ jobs:
       - uses: ./.github/actions/linux
 
   macos-intel-test:
-    runs-on: macos-13
+    runs-on: macos-14
     timeout-minutes: 20
     needs: [build]
     steps:
