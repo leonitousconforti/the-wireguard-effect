@@ -68,9 +68,3 @@ runs:
     #     pnpm install &&
     #     ls -la ./src/ &&
     #     pnpm test -- --run
-
-
-wsl --distribution Ubuntu22.04 --user root |
-  pwd
-  pwd
-  exit
