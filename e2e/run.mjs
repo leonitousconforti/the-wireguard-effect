@@ -31,9 +31,6 @@ for (const test of e2eTests) {
     cleanDockerE2E(test);
 }
 
-for (let i = 0; i < 1000; i++) {
-    console.log("iteration", i);
-    for (const test of e2eTests) {
-        runDockerE2E(test);
-    }
+for (const test of e2eTests) {
+    runDockerE2E(test);
 }
