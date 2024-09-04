@@ -1,5 +1,10 @@
-# version: 2
-# updates:
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    open-pull-requests-limit: 0
+    directory: "/"
+    schedule:
+      interval: "monthly"
 #   - package-ecosystem: "gitsubmodule"
 #     directory: "/"
 #     schedule:
