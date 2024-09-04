@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.22] - 2024-09-03
+
+fixed CI failure preventing 0.0.21 from releasing
+
 ## [0.0.21] - 2024-09-04
 
 Update workflows and dependencies
