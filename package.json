@@ -46,7 +46,7 @@
         "rollup": "npm:@rollup/wasm-node"
     },
     "dependencies": {
-        "ini": "^4.1.3"
+        "ini": "^5.0.0"
     },
     "devDependencies": {
         "@babel/cli": "7.25.6",
