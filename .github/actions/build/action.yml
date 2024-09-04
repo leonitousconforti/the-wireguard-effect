@@ -10,12 +10,12 @@ runs:
       with:
         node-version: "18.x"
 
-    # Setup pnpm and pnpm cache
+    # Setup pnpm
     - uses: pnpm/action-setup@v4
-      with:
-        run_install: true
 
     # Check, lint, and build
+    - shell: bash
+      run: pnpm install
     - shell: bash
       run: pnpm check
     - shell: bash
