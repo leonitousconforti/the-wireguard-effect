@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.21] - 2024-09-04
+
+Update workflows and dependencies
+
 ## [0.0.20] - 2024-09-03
 
 Update dependencies and submodules
