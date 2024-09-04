@@ -22,6 +22,13 @@ mkdir -p ../dist/prebuilds
 # (cd ./wintun && cp wintun-arm64.dll ../../dist/prebuilds/win32-arm64-wintun.dll)
 (cd ./wintun && cp wintun-amd64.dll ../../dist/prebuilds/wintun.dll)
 
+# nvlist prebuilds (for wg-quick freebsd)
+(cd ./nvlist && git reset --hard && git apply ../../patches/nvlist.patch && cd pkg && make deb && make clean)
+sudo apt-get install ./nvlist/libnv1_0.0.1_amd64.deb
+sudo apt-get install ./nvlist/libnv-dev_0.0.1_amd64.deb
+sudo ldconfig
+(cd ./nvlist && git reset --hard && git clean --force -d)
+
 # osxcross for cross compiling wg to darwin
 (cd ./osxcross/tarballs && wget -nc https://s3.dockerproject.org/darwin/v2/MacOSX10.10.sdk.tar.xz)
 (cd ./osxcross && sudo UNATTENDED=1 TARGET_DIR=/usr/local/osxcross ./build.sh)
