@@ -6,9 +6,6 @@ runs:
   steps:
     # Setup go and node
     - uses: actions/setup-go@v5
-      with:
-        cache-dependency-path: |
-          submodules/wireguard-go/go.sum
     - uses: actions/setup-node@v4
       with:
         node-version: "18.x"
@@ -16,53 +13,14 @@ runs:
     # Setup pnpm and pnpm cache
     - name: "Install pnpm"
       uses: pnpm/action-setup@v4
-      with:
-        run_install: false
-    - name: "Get pnpm store"
-      shell: bash
-      run: |
-        echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-    - name: "Setup pnpm cache"
-      uses: actions/cache@v4
-      with:
-        path: ${{ env.STORE_PATH }}
-        key: ${{ runner.os }}-node18.x-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-node18.x-pnpm-store-
-
-    # Install dependencies
-    - run: sudo apt-get update
-      shell: bash
-    - run: sudo apt-get install mingw-w64 imagemagick libarchive-tools build-essential flex bison dwarves libssl-dev libelf-dev bc ccache librsvg2-bin fakeroot debhelper libtool-bin cmake -y
-      shell: bash
-
-    # Setup wireguard windows dist cache
-    - name: "Setup wireguard windows dist cache"
-      uses: actions/cache@v4
-      with:
-        path: /tmp/wireguard-windows-distfiles
-        key: wireguard-windows-dist
-    - shell: bash
-      run: |
-        mkdir -p /tmp/wireguard-windows-distfiles/.distfiles/
-        cp -r /tmp/wireguard-windows-distfiles/.distfiles/ submodules/wireguard-windows/.distfiles
-        ls -la submodules/wireguard-windows/.distfiles
 
     # Check, lint, and build
-    - shell: bash
-      run: pnpm install
     - shell: bash
       run: pnpm check
     - shell: bash
       run: pnpm lint
     - shell: bash
       run: pnpm build
-
-    # Cache wireguard windows dist
-    - shell: bash
-      run: |
-        cp -r submodules/wireguard-windows/.distfiles/ /tmp/wireguard-windows-distfiles
-        ls -la /tmp/wireguard-windows-distfiles
 
     # Clean up
     - shell: bash
