@@ -1,10 +1,18 @@
 # Changelog
 
-## [0.0.18] - 2024-07-03
+## [0.0.20] - 2024-09-03
+
+Update dependencies and submodules
+
+## [0.0.19] - 2024-09-03
+
+fixed CI failure again
+
+## [0.0.18] - 2024-09-03
 
 fixed CI failure preventing 0.0.17 from releasing
 
-## [0.0.17] - 2024-07-03
+## [0.0.17] - 2024-09-03
 
 __Failed release__ Update dependencies
 

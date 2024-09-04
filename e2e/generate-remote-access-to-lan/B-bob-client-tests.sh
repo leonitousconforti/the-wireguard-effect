@@ -4,5 +4,7 @@ set -euo pipefail
 
 ip route add 10.0.0.0/24 via 10.0.1.2
 wg-quick up wg0
+sleep 2s
 ping 192.168.10.1 -c 5
 ping 10.0.2.4 -c 2
+sleep 1s

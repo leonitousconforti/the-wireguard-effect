@@ -37,7 +37,7 @@ sudo ldconfig
 (cd ./wireguard-tools/src && make clean && PLATFORM=linux make && cp ./wg ../../../dist/prebuilds/linux-wg && chmod +x ../../../dist/prebuilds/linux-wg)
 (cd ./wireguard-tools/src && make clean && PLATFORM=freebsd make && cp ./wg ../../../dist/prebuilds/freebsd-wg && chmod +x ../../../dist/prebuilds/freebsd-wg)
 (cd ./wireguard-tools/src && make clean && PLATFORM=openbsd make && cp ./wg ../../../dist/prebuilds/openbsd-wg && chmod +x ../../../dist/prebuilds/openbsd-wg)
-(cd ./wireguard-tools/src && make clean && PATH=/usr/local/osxcross/bin/:$PATH PLATFORM=darwin V=1 CC=o64-clang make && cp ./wg ../../../dist/prebuilds/darwin-wg && chmod +x ../../../dist/prebuilds/darwin-wg)
+(cd ./wireguard-tools/src && make clean && PATH=/usr/local/osxcross/bin/:$PATH PLATFORM=darwin CC=o64-clang make && cp ./wg ../../../dist/prebuilds/darwin-wg && chmod +x ../../../dist/prebuilds/darwin-wg)
 (cd ./wireguard-tools && git apply ../../patches/wg-quick-linux.patch && cp src/wg-quick/linux.bash ../../dist/prebuilds/linux-wg-quick && chmod +x ../../dist/prebuilds/linux-wg-quick)
 (cd ./wireguard-tools && git apply ../../patches/wg-quick-darwin.patch && cp src/wg-quick/darwin.bash ../../dist/prebuilds/darwin-wg-quick && chmod +x ../../dist/prebuilds/darwin-wg-quick)
 (cd ./wireguard-tools && git apply ../../patches/wg-quick-freebsd.patch && cp src/wg-quick/freebsd.bash ../../dist/prebuilds/freebsd-wg-quick && chmod +x ../../dist/prebuilds/freebsd-wg-quick)

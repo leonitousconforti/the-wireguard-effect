@@ -7,9 +7,7 @@ runs:
     - uses: actions/download-artifact@v4
       with:
         name: the-wireguard-effect
-        path: /tmp/the-wireguard-effect
-    - shell: pwsh
-      run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
+        path: the-wireguard-effect-artifact
 
     # Yes all this is necessary to get WSL2 working on GitHub Actions without any user input
     # They are all as separate steps so its easier to debug and see what/where it fails (especially when I was writing this)
@@ -32,24 +30,28 @@ runs:
 
     # Install dependencies
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get update
+      run: wsl --distribution Ubuntu22.04 --user root --exec sudo apt-get update
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get upgrade -y
+      run: wsl --distribution Ubuntu22.04 --user root --exec sudo apt-get upgrade -y
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y openresolv
+      run: wsl --distribution Ubuntu22.04 --user root --exec sudo apt-get install -y openresolv
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root -- curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
+      run: wsl --distribution Ubuntu22.04 --user root --exec curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root -- sudo bash nodesource_setup.sh
+      run: wsl --distribution Ubuntu22.04 --user root --exec sudo bash nodesource_setup.sh
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root -- sudo apt-get install -y nodejs
+      run: wsl --distribution Ubuntu22.04 --user root --exec sudo apt-get install -y nodejs
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root -- npm install -g pnpm
+      run: wsl --distribution Ubuntu22.04 --user root --exec npm install -g pnpm
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root --exec cp /mnt/d/a/the-wireguard-effect/the-wireguard-effect/the-wireguard-effect-artifact/the-wireguard-effect.tar /root/
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root --exec mkdir -p /root/the-wireguard-effect/
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root --exec tar -xvf /root/the-wireguard-effect.tar -C /root/the-wireguard-effect/
 
     # This is where our testing starts
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root -- pnpm install
+      run: wsl --distribution Ubuntu22.04 --user root --cd /root/the-wireguard-effect/ -- pnpm install
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root -- ls -la ./src/
-    - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root -- pnpm test -- --run
+      run: wsl --distribution Ubuntu22.04 --user root --cd /root/the-wireguard-effect/ -- pnpm test -- --run
