@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.0.22] - 2024-09-03
+## [0.0.22] - 2024-09-04
 
 fixed CI failure preventing 0.0.21 from releasing
 
