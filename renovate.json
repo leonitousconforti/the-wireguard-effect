@@ -4,7 +4,7 @@
     "prHourlyLimit": 0,
     "git-submodules": {
         "enabled": true
-    }
+    },
     "packageRules": [
         {
             "description": "Group @effect Node.JS packages together",
