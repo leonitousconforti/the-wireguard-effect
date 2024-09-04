@@ -13,6 +13,10 @@ runs:
     # Setup pnpm
     - uses: pnpm/action-setup@v4
 
+    # Install build deps
+    - shell: bash
+      run: sudo apt-get -y install bsdtar
+
     # Check, lint, and build
     - shell: bash
       run: pnpm install
