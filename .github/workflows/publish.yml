@@ -25,6 +25,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "18.x"
+          registry-url: "https://registry.npmjs.org/"
 
       # Setup pnpm and pnpm cache
       - uses: pnpm/action-setup@v4
