@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.23] - 2024-09-04
+
+Updated ini dependency from v4 to v5
+
 ## [0.0.22] - 2024-09-04
 
 fixed CI failure preventing 0.0.21 from releasing
