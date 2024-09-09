@@ -45,8 +45,8 @@ importers:
         specifier: 0.2.0
         version: 0.2.0
       '@effect/experimental':
-        specifier: 0.25.0
-        version: 0.25.0(@effect/platform-node@0.59.0(@effect/platform@0.64.0(@effect/schema@0.72.3(effect@3.7.2))(effect@3.7.2))(effect@3.7.2))(@effect/platform@0.64.0(@effect/schema@0.72.3(effect@3.7.2))(effect@3.7.2))(@effect/schema@0.72.3(effect@3.7.2))(effect@3.7.2)(ws@8.18.0)
+        specifier: 0.25.1
+        version: 0.25.1(@effect/platform-node@0.59.0(@effect/platform@0.64.0(@effect/schema@0.72.3(effect@3.7.2))(effect@3.7.2))(effect@3.7.2))(@effect/platform@0.64.0(@effect/schema@0.72.3(effect@3.7.2))(effect@3.7.2))(@effect/schema@0.72.3(effect@3.7.2))(effect@3.7.2)(ws@8.18.0)
       '@effect/language-service':
         specifier: 0.1.0
         version: 0.1.0
@@ -296,8 +296,8 @@ packages:
   '@effect/eslint-plugin@0.2.0':
     resolution: {integrity: sha512-PC/hEDGctYGYIjZyhM6kbD4FyHxLgoYNoQNjGkCXcFEzi71vQc3PJKe2JnCgzcUDvr/Nc2qgTVU4ONYwjHzQGA==}
 
-  '@effect/experimental@0.25.0':
-    resolution: {integrity: sha512-XBWfEOF7n664Dde8vz0gngnXdobvDh87+HhFiKdd3BtihjuMmUNs2x1QnYwsA/3yvMY8ncRtXZuAWE1KMX5XGA==}
+  '@effect/experimental@0.25.1':
+    resolution: {integrity: sha512-51iDBSLcDZ+7aK3r7EM+4j0GWY4DxyVcK2rcK8/zL7Fi3WItyGA3q3g2FnHZ2BeFTx1u+8RP1Af061iK/GQjUA==}
     peerDependencies:
       '@effect/platform': ^0.64.0
       '@effect/platform-node': ^0.59.0
@@ -3191,7 +3191,7 @@ snapshots:
       '@dprint/typescript': 0.91.7
       prettier-linter-helpers: 1.0.0
 
-  '@effect/experimental@0.25.0(@effect/platform-node@0.59.0(@effect/platform@0.64.0(@effect/schema@0.72.3(effect@3.7.2))(effect@3.7.2))(effect@3.7.2))(@effect/platform@0.64.0(@effect/schema@0.72.3(effect@3.7.2))(effect@3.7.2))(@effect/schema@0.72.3(effect@3.7.2))(effect@3.7.2)(ws@8.18.0)':
+  '@effect/experimental@0.25.1(@effect/platform-node@0.59.0(@effect/platform@0.64.0(@effect/schema@0.72.3(effect@3.7.2))(effect@3.7.2))(effect@3.7.2))(@effect/platform@0.64.0(@effect/schema@0.72.3(effect@3.7.2))(effect@3.7.2))(@effect/schema@0.72.3(effect@3.7.2))(effect@3.7.2)(ws@8.18.0)':
     dependencies:
       '@effect/platform': 0.64.0(@effect/schema@0.72.3(effect@3.7.2))(effect@3.7.2)
       '@effect/schema': 0.72.3(effect@3.7.2)
