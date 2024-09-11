@@ -101,7 +101,7 @@
         "@effect/schema": "0.72.3",
         "effect": "3.7.2"
     },
-    "packageManager": "pnpm@9.9.0",
+    "packageManager": "pnpm@9.10.0",
     "engines": {
         "node": ">=18.0.0"
     },
