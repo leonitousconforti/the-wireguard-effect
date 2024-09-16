@@ -67,7 +67,7 @@
         "@effect/typeclass": "0.26.3",
         "@effect/vitest": "0.9.3",
         "@types/ini": "4.1.1",
-        "@types/node": "22.5.4",
+        "@types/node": "22.5.5",
         "@typescript-eslint/eslint-plugin": "8.5.0",
         "@typescript-eslint/parser": "8.5.0",
         "@typescript-eslint/utils": "8.5.0",
