@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.24] - 2024-09-17
+
+Bumped dependencies
+
 ## [0.0.23] - 2024-09-04
 
 Updated ini dependency from v4 to v5
