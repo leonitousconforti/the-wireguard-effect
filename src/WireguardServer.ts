@@ -13,7 +13,6 @@ import * as FileSystem from "@effect/platform/FileSystem";
 import * as HttpClient from "@effect/platform/HttpClient";
 import * as HttpClientError from "@effect/platform/HttpClientError";
 import * as HttpClientRequest from "@effect/platform/HttpClientRequest";
-import * as HttpClientResponse from "@effect/platform/HttpClientResponse";
 import * as HttpServer from "@effect/platform/HttpServer";
 import * as HttpServerResponse from "@effect/platform/HttpServerResponse";
 import * as Path from "@effect/platform/Path";
@@ -362,13 +361,17 @@ export const retryPolicy = Schedule.recurs(4).pipe(Schedule.addDelay(() => "3 se
  */
 export const requestHiddenPage = (
     hiddenPageLocation: string
-): Effect.Effect<string, HttpClientError.HttpClientError | Cause.TimeoutException, HttpClient.HttpClient.Default> =>
+): Effect.Effect<string, HttpClientError.HttpClientError | Cause.TimeoutException, HttpClient.HttpClient.Service> =>
     Effect.gen(function* () {
         const defaultClient = yield* HttpClient.HttpClient;
         const client = defaultClient.pipe(HttpClient.filterStatusOk);
         const request = HttpClientRequest.get(hiddenPageLocation);
-        return yield* client(request).pipe(HttpClientResponse.text, Effect.timeout("7 seconds"));
-    }).pipe(Effect.retry(retryPolicy));
+        const response = yield* client.execute(request);
+        return yield* response.text;
+    })
+        .pipe(Effect.timeout("7 seconds"))
+        .pipe(Effect.scoped)
+        .pipe(Effect.retry(retryPolicy));
 
 /**
  * Attempts to connect to https://www.google.com to ensure that dns is still
@@ -379,10 +382,14 @@ export const requestHiddenPage = (
 export const requestGoogle: Effect.Effect<
     void,
     HttpClientError.HttpClientError | Cause.TimeoutException,
-    HttpClient.HttpClient.Default
+    HttpClient.HttpClient.Service
 > = Effect.gen(function* () {
     const defaultClient = yield* HttpClient.HttpClient;
     const client = defaultClient.pipe(HttpClient.filterStatusOk);
     const request = HttpClientRequest.get("https://www.google.com");
-    return yield* client(request).pipe(HttpClientResponse.text, Effect.timeout("7 seconds"));
-}).pipe(Effect.retry(retryPolicy));
+    const response = yield* client.execute(request);
+    yield* response.text;
+})
+    .pipe(Effect.timeout("7 seconds"))
+    .pipe(Effect.scoped)
+    .pipe(Effect.retry(retryPolicy));
