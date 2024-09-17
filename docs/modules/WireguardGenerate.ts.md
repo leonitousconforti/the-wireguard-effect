@@ -55,28 +55,26 @@ Adds an allowed IP to a node in the network.
 ```ts
 export declare const addAllowedIPs: (<
   Nodes extends
-    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: WireguardIPv4Node[]]
-    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: WireguardIPv6Node[]]
+    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
+    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
 >(
   nodeToIp: Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
   nodeFromIp: Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
-  cidrs: readonly [
-    `${string}/${number}` | InternetSchemas.IPv4CidrBlock | InternetSchemas.IPv6CidrBlock,
-    ...(`${string}/${number}` | InternetSchemas.IPv4CidrBlock | InternetSchemas.IPv6CidrBlock)[]
-  ]
+  cidrs: Array.NonEmptyReadonlyArray<
+    InternetSchemas.IPv4CidrBlock | InternetSchemas.IPv6CidrBlock | InternetSchemas.CidrBlockFromStringEncoded
+  >
 ) => (allowedIPsLayer: AllowedIPsLayer<Nodes>) => AllowedIPsLayer<Nodes>) &
   (<
     Nodes extends
-      | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: WireguardIPv4Node[]]
-      | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: WireguardIPv6Node[]]
+      | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
+      | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
   >(
     allowedIPsLayer: AllowedIPsLayer<Nodes>,
     nodeToIp: Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
     nodeFromIp: Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
-    cidrs: readonly [
-      `${string}/${number}` | InternetSchemas.IPv4CidrBlock | InternetSchemas.IPv6CidrBlock,
-      ...(`${string}/${number}` | InternetSchemas.IPv4CidrBlock | InternetSchemas.IPv6CidrBlock)[]
-    ]
+    cidrs: Array.NonEmptyReadonlyArray<
+      InternetSchemas.IPv4CidrBlock | InternetSchemas.IPv6CidrBlock | InternetSchemas.CidrBlockFromStringEncoded
+    >
   ) => AllowedIPsLayer<Nodes>)
 ```
 
@@ -92,8 +90,8 @@ connections is has to the other nodes.
 ```ts
 export declare const computeAllowedIPsFromConnections: <
   Nodes extends
-    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: WireguardIPv4Node[]]
-    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: WireguardIPv6Node[]]
+    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
+    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
 >(
   connectionsLayer: ConnectionsLayer<Nodes>
 ) => AllowedIPsLayer<Nodes>
@@ -112,16 +110,16 @@ Adds a direct connection between two nodes in the network.
 ```ts
 export declare const addConnection: (<
   Nodes extends
-    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: WireguardIPv4Node[]]
-    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: WireguardIPv6Node[]]
+    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
+    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
 >(
   from: Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
   to: Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"]
 ) => (connectionsLayer: ConnectionsLayer<Nodes>) => ConnectionsLayer<Nodes>) &
   (<
     Nodes extends
-      | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: WireguardIPv4Node[]]
-      | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: WireguardIPv6Node[]]
+      | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
+      | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
   >(
     connectionsLayer: ConnectionsLayer<Nodes>,
     from: Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
@@ -141,8 +139,8 @@ network.
 ```ts
 export declare const generateHubAndSpokeConnections: <
   Nodes extends
-    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: WireguardIPv4Node[]]
-    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: WireguardIPv6Node[]]
+    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
+    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
 >(
   keysLayer: keysLayer<Nodes>
 ) => ConnectionsLayer<Nodes>
@@ -159,8 +157,8 @@ Generates connections in a star pattern for all nodes in the network.
 ```ts
 export declare const generateStarConnections: <
   Nodes extends
-    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: WireguardIPv4Node[]]
-    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: WireguardIPv6Node[]]
+    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
+    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
 >(
   keysLayer: keysLayer<Nodes>
 ) => ConnectionsLayer<Nodes>
@@ -179,8 +177,8 @@ Converts a network into configs.
 ```ts
 export declare const toConfigs: <
   Nodes extends
-    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: WireguardIPv4Node[]]
-    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: WireguardIPv6Node[]]
+    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
+    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
 >({
   allowedIPs,
   connections,
@@ -212,17 +210,17 @@ LAN as well.
 ```ts
 export declare const generateLanHubAndSpokeAccess: <
   Nodes extends
-    | readonly [server: WireguardIPv4Server, WireguardIPv4Node, ...WireguardIPv4Node[]]
-    | readonly [server: WireguardIPv6Server, WireguardIPv6Node, ...WireguardIPv6Node[]],
+    | readonly [server: WireguardIPv4Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv4Node>]
+    | readonly [server: WireguardIPv6Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv6Node>],
   NetworkCidr extends Nodes[0] extends WireguardIPv4Node
     ? InternetSchemas.IPv4CidrBlock
     : Nodes[0] extends WireguardIPv6Node
       ? InternetSchemas.IPv6CidrBlock
       : never,
   NetworkCidr2 extends Nodes[0] extends WireguardIPv4Server
-    ? InternetSchemas.IPv4CidrBlock | [InternetSchemas.IPv4CidrBlock, ...InternetSchemas.IPv4CidrBlock[]]
+    ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
     : Nodes[0] extends WireguardIPv6Server
-      ? InternetSchemas.IPv6CidrBlock | [InternetSchemas.IPv6CidrBlock, ...InternetSchemas.IPv6CidrBlock[]]
+      ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
       : never
 >(options: {
   nodes: Nodes
@@ -251,14 +249,14 @@ export declare const generateLanToLanAccess: <
       ? InternetSchemas.IPv6CidrBlock
       : never,
   NetworkCidr2 extends Nodes[0] extends WireguardIPv4Server
-    ? InternetSchemas.IPv4CidrBlock | [InternetSchemas.IPv4CidrBlock, ...InternetSchemas.IPv4CidrBlock[]]
+    ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
     : Nodes[0] extends WireguardIPv6Server
-      ? InternetSchemas.IPv6CidrBlock | [InternetSchemas.IPv6CidrBlock, ...InternetSchemas.IPv6CidrBlock[]]
+      ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
       : never,
   NetworkCidr3 extends Nodes[1] extends WireguardIPv4Server
-    ? InternetSchemas.IPv4CidrBlock | [InternetSchemas.IPv4CidrBlock, ...InternetSchemas.IPv4CidrBlock[]]
+    ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
     : Nodes[1] extends WireguardIPv6Server
-      ? InternetSchemas.IPv6CidrBlock | [InternetSchemas.IPv6CidrBlock, ...InternetSchemas.IPv6CidrBlock[]]
+      ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
       : never
 >(options: {
   nodes: Nodes
@@ -288,9 +286,9 @@ export declare const generateRemoteAccessToLan: <
       ? InternetSchemas.IPv6CidrBlock
       : never,
   NetworkCidr2 extends Nodes[0] extends WireguardIPv4Server
-    ? InternetSchemas.IPv4CidrBlock | [InternetSchemas.IPv4CidrBlock, ...InternetSchemas.IPv4CidrBlock[]]
+    ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
     : Nodes[0] extends WireguardIPv6Server
-      ? InternetSchemas.IPv6CidrBlock | [InternetSchemas.IPv6CidrBlock, ...InternetSchemas.IPv6CidrBlock[]]
+      ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
       : never
 >(options: {
   nodes: Nodes
@@ -343,9 +341,9 @@ export declare const generateRemoteTunneledAccess: <
       ? InternetSchemas.IPv6CidrBlock
       : never,
   NetworkCidr2 extends Nodes[0] extends WireguardIPv4Server
-    ? InternetSchemas.IPv4CidrBlock | [InternetSchemas.IPv4CidrBlock, ...InternetSchemas.IPv4CidrBlock[]]
+    ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
     : Nodes[0] extends WireguardIPv6Server
-      ? InternetSchemas.IPv6CidrBlock | [InternetSchemas.IPv6CidrBlock, ...InternetSchemas.IPv6CidrBlock[]]
+      ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
       : never
 >(options: {
   nodes: Nodes
@@ -367,8 +365,8 @@ through the server.
 ```ts
 export declare const generateServerHubAndSpokeAccess: <
   Nodes extends
-    | readonly [server: WireguardIPv4Server, WireguardIPv4Node, ...WireguardIPv4Node[]]
-    | readonly [server: WireguardIPv6Server, WireguardIPv6Node, ...WireguardIPv6Node[]],
+    | readonly [server: WireguardIPv4Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv4Node>]
+    | readonly [server: WireguardIPv6Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv6Node>],
   NetworkCidr extends Nodes[0] extends WireguardIPv4Node
     ? InternetSchemas.IPv4CidrBlock
     : Nodes[0] extends WireguardIPv6Node
@@ -441,8 +439,8 @@ Generates preshare keys for all nodes in the network.
 ```ts
 export declare const addPreshareKeys: <
   Nodes extends
-    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: WireguardIPv4Node[]]
-    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: WireguardIPv6Node[]]
+    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
+    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
 >(
   keysLayer: keysLayer<Nodes>
 ) => keysLayer<Nodes>
@@ -459,8 +457,8 @@ Generates private+public keys for all nodes in the network.
 ```ts
 export declare const generateKeys: <
   Nodes extends
-    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: WireguardIPv4Node[]]
-    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: WireguardIPv6Node[]]
+    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
+    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
 >(
   nodesLayer: NodesLayer<Nodes>
 ) => keysLayer<Nodes>

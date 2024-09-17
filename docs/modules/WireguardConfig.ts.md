@@ -132,35 +132,41 @@ export declare const WireguardGetConfigResponse: Schema.extend<
         | undefined
       readonly ListenPort: InternetSchemas.PortBrand
       readonly FirewallMark?: number | undefined
-      writeToFile: (
-        file: string
-      ) => Effect.Effect<void, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem | Path.Path>
-      up: (
-        interfaceObject?: WireguardInterface.WireguardInterface | undefined
-      ) => Effect.Effect<
-        WireguardInterface.WireguardInterface,
-        | Socket.SocketError
-        | ParseResult.ParseError
-        | Cause.TimeoutException
-        | WireguardErrors.WireguardError
-        | PlatformError.PlatformError,
-        FileSystem.FileSystem | Path.Path | WireguardControl.WireguardControl | CommandExecutor.CommandExecutor
-      >
-      upScoped: (
-        interfaceObject?: WireguardInterface.WireguardInterface | undefined
-      ) => Effect.Effect<
-        WireguardInterface.WireguardInterface,
-        | Socket.SocketError
-        | ParseResult.ParseError
-        | Cause.TimeoutException
-        | WireguardErrors.WireguardError
-        | PlatformError.PlatformError,
-        | Scope.Scope
-        | FileSystem.FileSystem
-        | Path.Path
-        | WireguardControl.WireguardControl
-        | CommandExecutor.CommandExecutor
-      >
+      writeToFile: {
+        (
+          file: string
+        ): Effect.Effect<void, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem | Path.Path>
+      }
+      up: {
+        (
+          interfaceObject?: WireguardInterface.WireguardInterface | undefined
+        ): Effect.Effect<
+          WireguardInterface.WireguardInterface,
+          | Socket.SocketError
+          | ParseResult.ParseError
+          | Cause.TimeoutException
+          | PlatformError.PlatformError
+          | WireguardErrors.WireguardError,
+          FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor | WireguardControl.WireguardControl
+        >
+      }
+      upScoped: {
+        (
+          interfaceObject?: WireguardInterface.WireguardInterface | undefined
+        ): Effect.Effect<
+          WireguardInterface.WireguardInterface,
+          | Socket.SocketError
+          | ParseResult.ParseError
+          | Cause.TimeoutException
+          | PlatformError.PlatformError
+          | WireguardErrors.WireguardError,
+          | FileSystem.FileSystem
+          | Path.Path
+          | CommandExecutor.CommandExecutor
+          | WireguardControl.WireguardControl
+          | Scope.Scope
+        >
+      }
     },
     {
       readonly Address: `${string}/${number}`
