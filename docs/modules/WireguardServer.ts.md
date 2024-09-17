@@ -148,7 +148,7 @@ export declare const requestWireguardDemoConfig: (
   {
     privateKey,
     publicKey
-  }?: { readonly privateKey: string & Brand<"WireguardKey">; readonly publicKey: string & Brand<"WireguardKey"> }
+  }?: { readonly privateKey: WireguardKey.WireguardKey; readonly publicKey: WireguardKey.WireguardKey }
 ) => Effect.Effect<WireguardConfig.WireguardConfig, Socket.SocketError | ParseResult.ParseError, never>
 ```
 
