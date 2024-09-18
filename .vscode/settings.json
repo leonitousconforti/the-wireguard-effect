@@ -6,6 +6,7 @@
         "ccache",
         "cloudimg",
         "codegen",
+        "compat",
         "Conforti",
         "debhelper",
         "Devcontainer",
