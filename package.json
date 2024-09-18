@@ -42,9 +42,6 @@
         "lint": "eslint .",
         "test": "vitest"
     },
-    "resolutions": {
-        "rollup": "npm:@rollup/wasm-node"
-    },
     "dependencies": {
         "ini": "^5.0.0"
     },
