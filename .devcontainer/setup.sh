@@ -25,8 +25,8 @@ sudo usermod -a -G wireguard-control root
 sudo mkdir -p /var/run/wireguard/
 sudo chown -R root:wireguard-control /var/run/wireguard/
 
-echo "🏗️ Building..."
-pnpm build
+# echo "🏗️ Building..."
+# pnpm build
 
 # echo "🧪 Testing..."
 # pnpm test
