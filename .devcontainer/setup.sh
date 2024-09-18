@@ -8,17 +8,14 @@ SHELL="$(which bash)" pnpm setup
 source /home/vscode/.bashrc
 pnpm config set store-dir $PNPM_HOME/store
 
+echo "Initializing submodules"
 sudo rm -rf submodules/osxcross/build
 sudo rm -rf submodules/osxcross/target
-
-echo "Initializing submodules"
 git submodule update --init --recursive --depth 1
 
-echo "📦 Installing global dependencies..."
-npm uninstall -g pnpm
-npm install -g @devcontainers/cli npm-check-updates pnpm
-
 echo "📦 Installing repo dependencies..."
+corepack install
+corepack enable
 pnpm install
 
 echo "🔧 Setting up groups and permissions for \"sudo-less\" testing"
@@ -28,6 +25,12 @@ sudo usermod -a -G wireguard-control root
 sudo mkdir -p /var/run/wireguard/
 sudo chown -R root:wireguard-control /var/run/wireguard/
 
-echo "✅ Devcontainer setup complete! You should run \"pnpm build\" and \"pnpm test\" now"
+# echo "🏗️ Building..."
+# pnpm build
+
+# echo "🧪 Testing..."
+# pnpm test
+
+echo "✅ Devcontainer setup complete!"
 echo "🙏 Thank you for contributing to the-wireguard-effect!"
 echo "📝 P.S Don't forget to configure your git credentials with 'git config --global user.name you' and 'git config --global user.email you@z.com'"

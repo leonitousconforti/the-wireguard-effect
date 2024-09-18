@@ -15,7 +15,7 @@ runs:
 
     # Install build deps
     - shell: bash
-      run: sudo apt-get -y install mingw-w64 libarchive-tools
+      run: sudo apt-get -y install mingw-w64 libarchive-tools clang cmake libxml2-dev imagemagick librsvg2-bin
 
     # Check, lint, and build
     - shell: bash
