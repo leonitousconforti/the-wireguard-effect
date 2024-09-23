@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.26] - 2024-09-23
+
+Bumped dependencies
+
 ## [0.0.25] - 2024-09-17
 
 fixed CI failure preventing 0.0.24 from releasing
