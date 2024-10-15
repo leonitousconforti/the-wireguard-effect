@@ -361,7 +361,7 @@ export const retryPolicy = Schedule.recurs(4).pipe(Schedule.addDelay(() => "3 se
  */
 export const requestHiddenPage = (
     hiddenPageLocation: string
-): Effect.Effect<string, HttpClientError.HttpClientError | Cause.TimeoutException, HttpClient.HttpClient.Service> =>
+): Effect.Effect<string, HttpClientError.HttpClientError | Cause.TimeoutException, HttpClient.HttpClient> =>
     Effect.gen(function* () {
         const defaultClient = yield* HttpClient.HttpClient;
         const client = defaultClient.pipe(HttpClient.filterStatusOk);
@@ -382,7 +382,7 @@ export const requestHiddenPage = (
 export const requestGoogle: Effect.Effect<
     void,
     HttpClientError.HttpClientError | Cause.TimeoutException,
-    HttpClient.HttpClient.Service
+    HttpClient.HttpClient
 > = Effect.gen(function* () {
     const defaultClient = yield* HttpClient.HttpClient;
     const client = defaultClient.pipe(HttpClient.filterStatusOk);
