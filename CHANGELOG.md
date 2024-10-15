@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.27] - 2024-10-15
+
+Bumped dependencies
+
 ## [0.0.26] - 2024-09-23
 
 Bumped dependencies

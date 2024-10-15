@@ -114,7 +114,7 @@ working and we can connect to the internet when the wireguard tunnel is up.
 export declare const requestGoogle: Effect.Effect<
   void,
   Cause.TimeoutException | HttpClientError.HttpClientError,
-  HttpClient.HttpClient.Service
+  HttpClient.HttpClient<HttpClientError.HttpClientError, Scope.Scope>
 >
 ```
 
@@ -130,7 +130,7 @@ only be able to see it when connected as a peer.
 ```ts
 export declare const requestHiddenPage: (
   hiddenPageLocation: string
-) => Effect.Effect<string, HttpClientError.HttpClientError | Cause.TimeoutException, HttpClient.HttpClient.Service>
+) => Effect.Effect<string, HttpClientError.HttpClientError | Cause.TimeoutException, HttpClient.HttpClient>
 ```
 
 Added in v1.0.0
