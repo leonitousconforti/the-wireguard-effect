@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+Bumped dependencies
+
 ## [0.0.27] - 2024-10-15
 
 Bumped dependencies
