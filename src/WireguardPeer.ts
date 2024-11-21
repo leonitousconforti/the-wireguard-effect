@@ -4,8 +4,6 @@
  * @since 1.0.0
  */
 
-import * as ParseResult from "@effect/schema/ParseResult";
-import * as Schema from "@effect/schema/Schema";
 import * as Array from "effect/Array";
 import * as Brand from "effect/Brand";
 import * as Duration from "effect/Duration";
@@ -13,6 +11,8 @@ import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Number from "effect/Number";
 import * as Option from "effect/Option";
+import * as ParseResult from "effect/ParseResult";
+import * as Schema from "effect/Schema";
 import * as ini from "ini";
 
 import * as InternetSchemas from "./InternetSchemas.js";
@@ -24,7 +24,7 @@ import * as WireguardKey from "./WireguardKey.js";
  * @since 1.0.0
  * @category Datatypes
  * @example
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import * as Duration from "effect/Duration";
  *     import * as Option from "effect/Option";
  *     import * as InternetSchemas from "the-wireguard-effect/InternetSchemas";
@@ -129,7 +129,7 @@ export type $WireguardIniPeer = Schema.Annotable<
  * @example
  *     import * as Effect from "effect/Effect";
  *     import * as Function from "effect/Function";
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import * as WireguardKey from "the-wireguard-effect/WireguardKey";
  *     import * as WireguardPeer from "the-wireguard-effect/WireguardPeer";
  *

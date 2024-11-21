@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@effect/vitest";
 
-import * as Schema from "@effect/schema/Schema";
 import * as Effect from "effect/Effect";
+import * as Schema from "effect/Schema";
 import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
 import * as GenerateExample from "../examples/generate-vpn-tunneled-access.js";
 

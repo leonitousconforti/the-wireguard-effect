@@ -4,15 +4,15 @@
  * @since 1.0.0
  */
 
-import * as ParseResult from "@effect/schema/ParseResult";
-import * as Schema from "@effect/schema/Schema";
 import * as Array from "effect/Array";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Match from "effect/Match";
 import * as Option from "effect/Option";
+import * as ParseResult from "effect/ParseResult";
 import * as Predicate from "effect/Predicate";
 import * as Record from "effect/Record";
+import * as Schema from "effect/Schema";
 import * as Tuple from "effect/Tuple";
 import * as assert from "node:assert";
 

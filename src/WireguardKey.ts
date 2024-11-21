@@ -4,8 +4,8 @@
  * @since 1.0.0
  */
 
-import * as Schema from "@effect/schema/Schema";
 import * as Function from "effect/Function";
+import * as Schema from "effect/Schema";
 import * as crypto from "node:crypto";
 
 /**

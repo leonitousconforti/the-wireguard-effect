@@ -1193,7 +1193,7 @@ export declare const Address: $Address
 **Example**
 
 ```ts
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 import { Address } from "the-wireguard-effect/InternetSchemas"
 
 const decodeAddress = Schema.decodeSync(Address)
@@ -1255,7 +1255,7 @@ export declare class DurationFromSeconds
 
 ```ts
 import * as Duration from "effect/Duration"
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 import { DurationFromSeconds } from "the-wireguard-effect/InternetSchemas"
 
 const decodeDuration = Schema.decodeSync(DurationFromSeconds)
@@ -1279,7 +1279,7 @@ export declare class DurationFromSecondsString
 
 ```ts
 import * as Duration from "effect/Duration"
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 import { DurationFromSecondsString } from "the-wireguard-effect/InternetSchemas"
 
 const decodeDurationString = Schema.decodeSync(DurationFromSecondsString)
@@ -1302,7 +1302,7 @@ export declare const Endpoint: $Endpoint
 **Example**
 
 ```ts
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 
 import { Endpoint } from "the-wireguard-effect/InternetSchemas"
 
@@ -1403,7 +1403,7 @@ export declare const IPv4: $IPv4
 **Example**
 
 ```ts
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 import { IPv4 } from "the-wireguard-effect/InternetSchemas"
 
 const decodeIPv4 = Schema.decodeSync(IPv4)
@@ -1431,7 +1431,7 @@ export declare const IPv4Bigint: $IPv4Bigint
 **Example**
 
 ```ts
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 import { IPv4Bigint, IPv4BigintBrand } from "the-wireguard-effect/InternetSchemas"
 
 const x: IPv4BigintBrand = IPv4BigintBrand(748392749382n)
@@ -1502,7 +1502,7 @@ export declare const IPv4CidrMask: $IPv4CidrMask
 **Example**
 
 ```ts
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 import { IPv4CidrMask, IPv4CidrMaskBrand } from "the-wireguard-effect/InternetSchemas"
 
 const mask: IPv4CidrMaskBrand = IPv4CidrMaskBrand(24)
@@ -1533,7 +1533,7 @@ export declare const IPv4Endpoint: $IPv4Endpoint
 **Example**
 
 ```ts
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 import { IPv4Endpoint } from "the-wireguard-effect/InternetSchemas"
 
 const decodeEndpoint = Schema.decodeSync(IPv4Endpoint)
@@ -1579,7 +1579,7 @@ export declare const IPv4SetupData: $IPv4SetupData
 **Example**
 
 ```ts
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 import { SetupData } from "the-wireguard-effect/InternetSchemas"
 
 const decodeSetupData = Schema.decodeSync(SetupData)
@@ -1601,7 +1601,7 @@ export declare const IPv6: $IPv6
 **Example**
 
 ```ts
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 import { IPv6 } from "the-wireguard-effect/InternetSchemas"
 
 const decodeIPv6 = Schema.decodeSync(IPv6)
@@ -1630,7 +1630,7 @@ export declare const IPv6Bigint: $IPv6Bigint
 **Example**
 
 ```ts
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 import { IPv6Bigint, IPv6BigintBrand } from "the-wireguard-effect/InternetSchemas"
 
 const y: IPv6BigintBrand = IPv6BigintBrand(748392749382n)
@@ -1701,7 +1701,7 @@ export declare const IPv6CidrMask: $IPv6CidrMask
 **Example**
 
 ```ts
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 import { IPv6CidrMask, IPv6CidrMaskBrand } from "the-wireguard-effect/InternetSchemas"
 
 const mask: IPv6CidrMaskBrand = IPv6CidrMaskBrand(64)
@@ -1732,7 +1732,7 @@ export declare const IPv6Endpoint: $IPv6Endpoint
 **Example**
 
 ```ts
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 import { IPv6Endpoint } from "the-wireguard-effect/InternetSchemas"
 
 const decodeEndpoint = Schema.decodeSync(IPv6Endpoint)
@@ -1778,7 +1778,7 @@ export declare const IPv6SetupData: $IPv6SetupData
 **Example**
 
 ```ts
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 import { SetupData } from "the-wireguard-effect/InternetSchemas"
 
 const decodeSetupData = Schema.decodeSync(SetupData)
@@ -1800,7 +1800,7 @@ export declare const Port: $Port
 **Example**
 
 ```ts
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 import { Port, PortBrand } from "the-wireguard-effect/InternetSchemas"
 
 const port: PortBrand = PortBrand(8080)
@@ -1828,7 +1828,7 @@ export declare const SetupData: $SetupData
 **Example**
 
 ```ts
-import * as Schema from "@effect/schema/Schema"
+import * as Schema from "effect/Schema"
 import { SetupData } from "the-wireguard-effect/InternetSchemas"
 
 const decodeSetupData = Schema.decodeSync(SetupData)

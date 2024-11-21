@@ -3,9 +3,9 @@ import * as Options from "@effect/cli/Options";
 import * as SocketServerNode from "@effect/experimental/SocketServer/Node";
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
-import * as Schema from "@effect/schema/Schema";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
+import * as Schema from "effect/Schema";
 
 import * as InternetSchemas from "../src/InternetSchemas.js";
 import * as WireguardControl from "../src/WireguardControl.js";

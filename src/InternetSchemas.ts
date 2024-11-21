@@ -4,16 +4,16 @@
  * @since 1.0.0
  */
 
-import * as ParseResult from "@effect/schema/ParseResult";
-import * as Schema from "@effect/schema/Schema";
 import * as Array from "effect/Array";
 import * as Brand from "effect/Brand";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as HashSet from "effect/HashSet";
+import * as ParseResult from "effect/ParseResult";
 import * as Predicate from "effect/Predicate";
 import * as Record from "effect/Record";
+import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
@@ -64,7 +64,7 @@ export const transposeSet = <Key extends string, Val extends string>(
  * @category Schemas
  * @example
  *     import * as Duration from "effect/Duration";
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import { DurationFromSeconds } from "the-wireguard-effect/InternetSchemas";
  *
  *     const decodeDuration = Schema.decodeSync(DurationFromSeconds);
@@ -86,7 +86,7 @@ export class DurationFromSeconds extends Schema.transform(Schema.Int, Schema.Dur
  * @category Schemas
  * @example
  *     import * as Duration from "effect/Duration";
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import { DurationFromSecondsString } from "the-wireguard-effect/InternetSchemas";
  *
  *     const decodeDurationString = Schema.decodeSync(
@@ -126,7 +126,7 @@ export type $Port = Schema.Annotable<$Port, PortBrand, Brand.Brand.Unbranded<Por
  * @since 1.0.0
  * @category Schemas
  * @example
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import { Port, PortBrand } from "the-wireguard-effect/InternetSchemas";
  *
  *     const port: PortBrand = PortBrand(8080);
@@ -209,7 +209,7 @@ export type IPv4Encoded = Schema.Schema.Encoded<$IPv4>;
  * @since 1.0.0
  * @category Schemas
  * @example
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import { IPv4 } from "the-wireguard-effect/InternetSchemas";
  *
  *     const decodeIPv4 = Schema.decodeSync(IPv4);
@@ -283,7 +283,7 @@ export type IPv4BigintEncoded = Schema.Schema.Encoded<$IPv4Bigint>;
  * @since 1.0.0
  * @category Schemas
  * @example
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import {
  *         IPv4Bigint,
  *         IPv4BigintBrand,
@@ -416,7 +416,7 @@ export type IPv6Encoded = Schema.Schema.Encoded<$IPv6>;
  * @since 1.0.0
  * @category Schemas
  * @example
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import { IPv6 } from "the-wireguard-effect/InternetSchemas";
  *
  *     const decodeIPv6 = Schema.decodeSync(IPv6);
@@ -494,7 +494,7 @@ export type IPv6BigintEncoded = Schema.Schema.Encoded<$IPv6Bigint>;
  * @since 1.0.0
  * @category Schemas
  * @example
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import {
  *         IPv6Bigint,
  *         IPv6BigintBrand,
@@ -640,7 +640,7 @@ export type AddressEncoded = Schema.Schema.Encoded<$Address>;
  * @since 1.0.0
  * @category Schemas
  * @example
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import { Address } from "the-wireguard-effect/InternetSchemas";
  *
  *     const decodeAddress = Schema.decodeSync(Address);
@@ -733,7 +733,7 @@ export type IPv4CidrMaskEncoded = Schema.Schema.Encoded<$IPv4CidrMask>;
  * @since 1.0.0
  * @category Schemas
  * @example
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import {
  *         IPv4CidrMask,
  *         IPv4CidrMaskBrand,
@@ -797,7 +797,7 @@ export type IPv6CidrMaskEncoded = Schema.Schema.Encoded<$IPv6CidrMask>;
  * @since 1.0.0
  * @category Schemas
  * @example
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import {
  *         IPv6CidrMask,
  *         IPv6CidrMaskBrand,
@@ -1344,7 +1344,7 @@ export type IPv4EndpointEncoded = Schema.Schema.Encoded<$IPv4Endpoint>;
  * @since 1.0.0
  * @category Schemas
  * @example
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import { IPv4Endpoint } from "the-wireguard-effect/InternetSchemas";
  *
  *     const decodeEndpoint = Schema.decodeSync(IPv4Endpoint);
@@ -1430,7 +1430,7 @@ export type IPv6EndpointEncoded = Schema.Schema.Encoded<$IPv6Endpoint>;
  * @since 1.0.0
  * @category Schemas
  * @example
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import { IPv6Endpoint } from "the-wireguard-effect/InternetSchemas";
  *
  *     const decodeEndpoint = Schema.decodeSync(IPv6Endpoint);
@@ -1593,7 +1593,7 @@ export type EndpointEncoded = Schema.Schema.Encoded<$Endpoint>;
  * @since 1.0.0
  * @category Schemas
  * @example
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *
  *     import { Endpoint } from "the-wireguard-effect/InternetSchemas";
  *
@@ -1667,7 +1667,7 @@ export type IPv4SetupDataEncoded = Schema.Schema.Encoded<$IPv4SetupData>;
  * @since 1.0.0
  * @category Schemas
  * @example
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import { SetupData } from "the-wireguard-effect/InternetSchemas";
  *
  *     const decodeSetupData = Schema.decodeSync(SetupData);
@@ -1705,7 +1705,7 @@ export type IPv6SetupDataEncoded = Schema.Schema.Encoded<$IPv6SetupData>;
  * @since 1.0.0
  * @category Schemas
  * @example
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import { SetupData } from "the-wireguard-effect/InternetSchemas";
  *
  *     const decodeSetupData = Schema.decodeSync(SetupData);
@@ -1804,7 +1804,7 @@ export type SetupDataEncoded = Schema.Schema.Encoded<$SetupData>;
  * @since 1.0.0
  * @category Schemas
  * @example
- *     import * as Schema from "@effect/schema/Schema";
+ *     import * as Schema from "effect/Schema";
  *     import { SetupData } from "the-wireguard-effect/InternetSchemas";
  *
  *     const decodeSetupData = Schema.decodeSync(SetupData);

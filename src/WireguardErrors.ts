@@ -4,9 +4,9 @@
  * @since 1.0.0
  */
 
-import * as Schema from "@effect/schema/Schema";
 import * as Data from "effect/Data";
 import * as Function from "effect/Function";
+import * as Schema from "effect/Schema";
 
 /**
  * A wireguard userspace api Errno return message.

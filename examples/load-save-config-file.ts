@@ -7,9 +7,9 @@
 
 import * as Platform from "@effect/platform";
 import * as PlatformNode from "@effect/platform-node";
-import * as ParseResult from "@effect/schema/ParseResult";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
+import * as ParseResult from "effect/ParseResult";
 
 import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
 

@@ -5,7 +5,7 @@
  *      tsx examples/generate-single-node.ts
  */
 
-import * as Schema from "@effect/schema/Schema";
+import * as Schema from "effect/Schema";
 
 import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
 import * as WireguardKey from "the-wireguard-effect/WireguardKey";
