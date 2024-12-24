@@ -114,7 +114,7 @@ working and we can connect to the internet when the wireguard tunnel is up.
 export declare const requestGoogle: Effect.Effect<
   void,
   Cause.TimeoutException | HttpClientError.HttpClientError,
-  HttpClient.HttpClient<HttpClientError.HttpClientError, Scope.Scope>
+  HttpClient.HttpClient
 >
 ```
 
