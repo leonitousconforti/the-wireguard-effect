@@ -22,36 +22,34 @@ runs:
     - shell: pwsh
       run: wsl --install --no-distribution
     - shell: pwsh
-      run: Invoke-WebRequest -URI https://cloud-images.ubuntu.com/releases/jammy/release/ubuntu-22.04-server-cloudimg-amd64-root.tar.xz -OutFile jammy-server-cloudimg-amd64-root.tar.xz
+      run: Invoke-WebRequest -URI https://cloud-images.ubuntu.com/releases/noble/release/ubuntu-24.04-server-cloudimg-amd64-root.tar.xz -OutFile ubuntu-24.04-server-cloudimg-amd64-root.tar.xz
     - shell: pwsh
-      run: wsl --import Ubuntu22.04 . jammy-server-cloudimg-amd64-root.tar.xz --version 2
+      run: wsl --import Ubuntu24.04 . ubuntu-24.04-server-cloudimg-amd64-root.tar.xz --version 2
     - shell: pwsh
       run: wsl --list --verbose
 
     # Install dependencies
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root --exec sudo apt-get update
+      run: wsl --distribution Ubuntu24.04 --user root --exec sudo apt-get update
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root --exec sudo apt-get upgrade -y
+      run: wsl --distribution Ubuntu24.04 --user root --exec sudo apt-get upgrade -y
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root --exec sudo apt-get install -y openresolv
+      run: wsl --distribution Ubuntu24.04 --user root --exec curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root --exec curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
+      run: wsl --distribution Ubuntu24.04 --user root --exec sudo bash nodesource_setup.sh
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root --exec sudo bash nodesource_setup.sh
+      run: wsl --distribution Ubuntu24.04 --user root --exec sudo apt-get install -y nodejs
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root --exec sudo apt-get install -y nodejs
+      run: wsl --distribution Ubuntu24.04 --user root --exec npm install -g pnpm
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root --exec npm install -g pnpm
+      run: wsl --distribution Ubuntu24.04 --user root --exec cp /mnt/d/a/the-wireguard-effect/the-wireguard-effect/the-wireguard-effect-artifact/the-wireguard-effect.tar /root/
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root --exec cp /mnt/d/a/the-wireguard-effect/the-wireguard-effect/the-wireguard-effect-artifact/the-wireguard-effect.tar /root/
+      run: wsl --distribution Ubuntu24.04 --user root --exec mkdir -p /root/the-wireguard-effect/
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root --exec mkdir -p /root/the-wireguard-effect/
-    - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root --exec tar -xvf /root/the-wireguard-effect.tar -C /root/the-wireguard-effect/
+      run: wsl --distribution Ubuntu24.04 --user root --exec tar -xvf /root/the-wireguard-effect.tar -C /root/the-wireguard-effect/
 
     # This is where our testing starts
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root --cd /root/the-wireguard-effect/ -- pnpm install
+      run: wsl --distribution Ubuntu24.04 --user root --cd /root/the-wireguard-effect/ -- pnpm install
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root --cd /root/the-wireguard-effect/ -- pnpm test -- --run
+      run: wsl --distribution Ubuntu24.04 --user root --cd /root/the-wireguard-effect/ -- pnpm test -- --run
