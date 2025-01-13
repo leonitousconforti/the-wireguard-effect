@@ -20,8 +20,6 @@ runs:
     - shell: bash
       run: pnpm install
     - shell: bash
-      run: sudo apt-get install -y openresolv
-    - shell: bash
       run: |
         sudo groupadd wireguard-control
         sudo usermod -a -G wireguard-control root
