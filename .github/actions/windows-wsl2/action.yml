@@ -34,6 +34,8 @@ runs:
     - shell: pwsh
       run: wsl --distribution Ubuntu24.04 --user root --exec sudo apt-get upgrade -y
     - shell: pwsh
+      run: wsl --distribution Ubuntu24.04 --user root --exec sudo apt-get install -y wireguard wireguard-tools
+    - shell: pwsh
       run: wsl --distribution Ubuntu24.04 --user root --exec curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
     - shell: pwsh
       run: wsl --distribution Ubuntu24.04 --user root --exec sudo bash nodesource_setup.sh
