@@ -13,7 +13,7 @@ mkdir -p ../dist/prebuilds
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=linux GOARCH=arm64 make && mv wireguard-go ../../dist/prebuilds/linux-arm64-wireguard-go && chmod +x ../../dist/prebuilds/linux-arm64-wireguard-go)
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=darwin GOARCH=arm64 make && mv wireguard-go ../../dist/prebuilds/darwin-arm64-wireguard-go && chmod +x ../../dist/prebuilds/darwin-arm64-wireguard-go)
 
-# wintun prebuilds (TODO: aquire these from a public source and check hashes)
+# wintun prebuilds (TODO: acquire these from a public source and check hashes)
 # (cd ./wintun && cp wintun-amd64.dll ../../dist/prebuilds/win32-amd64-wintun.dll)
 # (cd ./wintun && cp wintun-arm64.dll ../../dist/prebuilds/win32-arm64-wintun.dll)
 (cd ./wintun && cp wintun-amd64.dll ../../dist/prebuilds/wintun.dll)

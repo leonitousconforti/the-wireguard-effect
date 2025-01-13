@@ -33,7 +33,7 @@
         "build-annotate": "babel build/esm --plugins annotate-pure-calls --out-dir build/esm --source-maps",
         "build-cjs": "babel build/esm --plugins @babel/transform-export-namespace-from --plugins @babel/transform-modules-commonjs --out-dir build/cjs --source-maps",
         "build-esm": "tsc -b tsconfig.build.json",
-        "build-submodules": "./submodules/build.mjs",
+        "build-submodules": "(cd submodules && ./build.bash)",
         "check": "tsc -b tsconfig.json",
         "clean": "rimraf .tsbuildinfo docs build dist coverage && rimraf --glob src/*-wireguard-go src/*-wg-quick src/*-wintun.dll src/LICENSE-* src/*.exe src/*-bzImage src/*-wg src/wintun.dll",
         "codegen": "build-utils prepare-v2",
