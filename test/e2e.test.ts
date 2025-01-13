@@ -23,38 +23,41 @@ const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
 
 const testContext = Layer.mergeAll(NodeHttp.layer, NodeContext.layer, WireguardControlLive);
 
-const flaky = Effect.gen(function* () {
-    const host = yield* hostConfig;
-    const port = yield* portConfig;
-    const hiddenPageUrl = yield* hiddenPageUrlConfig;
-    const control = yield* WireguardControl.WireguardControl;
+it.live(
+    "wireguard e2e test using demo.wireguard.com",
+    () =>
+        Effect.gen(function* () {
+            const host = yield* hostConfig;
+            const port = yield* portConfig;
+            const hiddenPageUrl = yield* hiddenPageUrlConfig;
+            const control = yield* WireguardControl.WireguardControl;
 
-    const config = yield* WireguardServer.requestWireguardDemoConfig({ host, port });
-    yield* Console.log("Got config from remote demo server");
+            const config = yield* WireguardServer.requestWireguardDemoConfig({ host, port });
+            yield* Console.log("Got config from remote demo server");
 
-    const networkInterface = yield* config.upScoped();
-    yield* Console.log("Interface is up");
+            const networkInterface = yield* config.upScoped();
+            yield* Console.log("Interface is up");
 
-    yield* Effect.sleep("10 seconds");
-    const request = new WireguardConfig.WireguardGetConfigRequest({
-        wireguardInterface: networkInterface,
-        address: `${config.Address.address.ip}/${config.Address.mask}`,
-    });
-    const response = yield* Effect.request(request, control.getConfigRequestResolver);
-    yield* Console.log("Got config from local request resolver");
+            yield* Effect.sleep("10 seconds");
+            const request = new WireguardConfig.WireguardGetConfigRequest({
+                wireguardInterface: networkInterface,
+                address: `${config.Address.address.ip}/${config.Address.mask}`,
+            });
+            const response = yield* Effect.request(request, control.getConfigRequestResolver);
+            yield* Console.log("Got config from local request resolver");
 
-    const peer = response.Peers.at(0);
-    expect(peer?.rxBytes).toBeGreaterThan(0);
-    expect(peer?.txBytes).toBeGreaterThan(0);
-    expect(peer?.lastHandshakeTimeSeconds).toBeGreaterThan(0);
-    yield* Console.log("Connected to peer demo server");
+            const peer = response.Peers.at(0);
+            expect(peer?.rxBytes).toBeGreaterThan(0);
+            expect(peer?.txBytes).toBeGreaterThan(0);
+            expect(peer?.lastHandshakeTimeSeconds).toBeGreaterThan(0);
+            yield* Console.log("Connected to peer demo server");
 
-    yield* WireguardServer.requestGoogle;
-    yield* Console.log("Connected to https://google.com (still have internet access)");
+            yield* WireguardServer.requestGoogle;
+            yield* Console.log("Connected to https://google.com (still have internet access)");
 
-    const hiddenPage = yield* WireguardServer.requestHiddenPage(hiddenPageUrl);
-    yield* Console.log("Connected to hidden page");
-    expect(hiddenPage).toMatchInlineSnapshot(`
+            const hiddenPage = yield* WireguardServer.requestHiddenPage(hiddenPageUrl);
+            yield* Console.log("Connected to hidden page");
+            expect(hiddenPage).toMatchInlineSnapshot(`
 "<title>WireGuard Demo Configuration: Success!</title>
 <body bgcolor="#444444">
 <script src="snowstorm.js"></script>
@@ -71,12 +74,8 @@ const flaky = Effect.gen(function* () {
 </body>
 "
 `);
-})
-    .pipe(Effect.scoped)
-    .pipe(Effect.provide(testContext));
-
-it.live(
-    "wireguard e2e test using demo.wireguard.com",
-    () => it.flakyTest(flaky, "3 minutes"),
+        })
+            .pipe(Effect.scoped)
+            .pipe(Effect.provide(testContext)),
     Function.pipe(3.5, Duration.minutes, Duration.toMillis)
 );
