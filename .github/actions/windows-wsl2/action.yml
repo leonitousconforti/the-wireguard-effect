@@ -34,7 +34,7 @@ runs:
     - shell: pwsh
       run: wsl --distribution Ubuntu24.04 --user root --exec sudo apt-get upgrade -y
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root --exec sudo apt-get install -y openresolv
+      run: wsl --distribution Ubuntu24.04 --user root --exec sudo apt-get install -y openresolv
     - shell: pwsh
       run: wsl --distribution Ubuntu24.04 --user root --exec curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
     - shell: pwsh
