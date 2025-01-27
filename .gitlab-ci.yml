@@ -1,5 +1,5 @@
 include:
-  - project: "leonitousconforti/renovate-runner"
+  - project: "leoconforti/renovate-runner"
     file: "/templates/renovate.gitlab-ci.yml"
 
 renovate:
