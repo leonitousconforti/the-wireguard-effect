@@ -6,6 +6,7 @@
 /coverage/
 /node_modules/
 /docs/examples/
+/.devcontainer/.devpod-internal/
 
 src/*-wireguard-go
 src/*-wg-quick
