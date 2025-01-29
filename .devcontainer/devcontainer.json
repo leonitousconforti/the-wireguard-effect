@@ -61,5 +61,5 @@
 
     "privileged": true,
     "runArgs": ["--cap-add=NET_ADMIN"],
-    "postCreateCommand": "bash -i -c '/workspaces/the-wireguard-effect/.devcontainer/setup.sh'"
+    "postCreateCommand": "bash -i -c './.devcontainer/setup.sh'"
 }
