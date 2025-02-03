@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [0.0.32] - 2024-02-03
+
+Bumped dependencies
+
 ## [0.0.31] - 2024-01-13
 
 Bumped dependencies
