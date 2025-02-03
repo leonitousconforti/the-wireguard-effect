@@ -125,6 +125,9 @@ importers:
       fast-check:
         specifier: 3.23.2
         version: 3.23.2
+      glob:
+        specifier: 11.0.1
+        version: 11.0.1
       madge:
         specifier: 8.0.0
         version: 8.0.0(typescript@5.7.3)
