@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   '@effect/build-utils@0.7.8':
-    hash: oaoatercnwuavpvdghbdjxpjre
+    hash: 24fb33efe11a433552e04e8cc0fc7c1358fc415bfef004c79ed8fe2efe351fb9
     path: patches/@effect__build-utils@0.7.8.patch
 
 importers:
@@ -31,7 +31,7 @@ importers:
         version: 7.26.3(@babel/core@7.26.7)
       '@effect/build-utils':
         specifier: 0.7.8
-        version: 0.7.8(patch_hash=oaoatercnwuavpvdghbdjxpjre)
+        version: 0.7.8(patch_hash=24fb33efe11a433552e04e8cc0fc7c1358fc415bfef004c79ed8fe2efe351fb9)
       '@effect/cli':
         specifier: 0.54.1
         version: 0.54.1(@effect/platform@0.75.1(effect@3.12.7))(@effect/printer-ansi@0.40.7(@effect/typeclass@0.31.7(effect@3.12.7))(effect@3.12.7))(@effect/printer@0.40.7(@effect/typeclass@0.31.7(effect@3.12.7))(effect@3.12.7))(effect@3.12.7)
@@ -3026,7 +3026,7 @@ snapshots:
 
   '@dprint/typescript@0.91.8': {}
 
-  '@effect/build-utils@0.7.8(patch_hash=oaoatercnwuavpvdghbdjxpjre)': {}
+  '@effect/build-utils@0.7.8(patch_hash=24fb33efe11a433552e04e8cc0fc7c1358fc415bfef004c79ed8fe2efe351fb9)': {}
 
   '@effect/cli@0.54.1(@effect/platform@0.75.1(effect@3.12.7))(@effect/printer-ansi@0.40.7(@effect/typeclass@0.31.7(effect@3.12.7))(effect@3.12.7))(@effect/printer@0.40.7(@effect/typeclass@0.31.7(effect@3.12.7))(effect@3.12.7))(effect@3.12.7)':
     dependencies:
