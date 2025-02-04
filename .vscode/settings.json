@@ -69,7 +69,8 @@
         "Userspace",
         "utun",
         "wintun",
-        "wslconfig"
+        "wslconfig",
+        "Xplatform"
     ],
     "search.exclude": {
         "**/node_modules": true,

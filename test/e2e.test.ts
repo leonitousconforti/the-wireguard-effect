@@ -9,7 +9,6 @@ import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 
-import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
 import * as WireguardControl from "the-wireguard-effect/WireguardControl";
 import * as WireguardServer from "the-wireguard-effect/WireguardServer";
 
@@ -30,7 +29,6 @@ it.live(
             const host = yield* hostConfig;
             const port = yield* portConfig;
             const hiddenPageUrl = yield* hiddenPageUrlConfig;
-            const control = yield* WireguardControl.WireguardControl;
 
             const config = yield* WireguardServer.requestWireguardDemoConfig({ host, port });
             yield* Console.log("Got config from remote demo server");
@@ -39,11 +37,7 @@ it.live(
             yield* Console.log("Interface is up");
 
             yield* Effect.sleep("10 seconds");
-            const request = new WireguardConfig.WireguardGetConfigRequest({
-                wireguardInterface: networkInterface,
-                address: `${config.Address.address.ip}/${config.Address.mask}`,
-            });
-            const response = yield* Effect.request(request, control.getConfigRequestResolver);
+            const response = yield* networkInterface.getConfig(`${config.Address.address.ip}/${config.Address.mask}`);
             yield* Console.log("Got config from local request resolver");
 
             const peer = response.Peers.at(0);

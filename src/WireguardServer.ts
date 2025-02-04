@@ -36,6 +36,7 @@ import * as Tuple from "effect/Tuple";
 import * as dns from "node:dns";
 import * as http from "node:http";
 
+import * as internalInternetSchemas from "./internal/internetSchemas.js";
 import * as InternetSchemas from "./InternetSchemas.js";
 import * as WireguardConfig from "./WireguardConfig.js";
 import * as WireguardControl from "./WireguardControl.js";
@@ -78,7 +79,7 @@ export const WireguardDemoServerSchema = Schema.transform(
     }),
     {
         decode: (input) => {
-            const [_status, key, port, address] = InternetSchemas.splitLiteral(input, ":");
+            const [_status, key, port, address] = internalInternetSchemas.splitLiteral(input, ":");
             return {
                 serverPort: Number.parseInt(port),
                 serverPublicKey: key,
@@ -232,7 +233,6 @@ export const WireguardDemoServer = (options: {
 > =>
     Effect.gen(function* () {
         const server = yield* SocketServer.SocketServer;
-        const wireguardControl = yield* WireguardControl.WireguardControl;
 
         const serverWireguardKeys = WireguardKey.generateKeyPair();
         const wireguardNetwork = yield* Schema.decode(InternetSchemas.CidrBlockFromString)(options.wireguardNetwork);
@@ -279,19 +279,14 @@ export const WireguardDemoServer = (options: {
                             const size = yield* Queue.size(serverWireguardAddressPool);
                             if (size > 0) return peer;
 
-                            const config = yield* Effect.request(
-                                new WireguardConfig.WireguardGetConfigRequest({
-                                    address: options.wireguardNetwork,
-                                    wireguardInterface: serverWireguardInterface,
-                                }),
-                                wireguardControl.getConfigRequestResolver
-                            );
+                            const config = yield* serverWireguardInterface.getConfig(options.wireguardNetwork);
+
                             const lastPeer = Function.pipe(
                                 config.Peers,
                                 Array.sort(
                                     (
-                                        a: WireguardPeer.WireguardUApiGetPeerResponse,
-                                        b: WireguardPeer.WireguardUApiGetPeerResponse
+                                        a: Schema.Schema.Type<(typeof WireguardPeer.WireguardPeer)["uapi-json-get"]>,
+                                        b: Schema.Schema.Type<(typeof WireguardPeer.WireguardPeer)["uapi-json-get"]>
                                     ) => {
                                         if (a.lastHandshakeTimeSeconds - b.lastHandshakeTimeSeconds <= -1) return -1;
                                         else if (a.lastHandshakeTimeSeconds - b.lastHandshakeTimeSeconds >= 1) return 1;

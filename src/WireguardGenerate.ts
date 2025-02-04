@@ -16,6 +16,7 @@ import * as Schema from "effect/Schema";
 import * as Tuple from "effect/Tuple";
 import * as assert from "node:assert";
 
+import * as internalInternalSchemas from "./internal/internetSchemas.js";
 import * as InternetSchemas from "./InternetSchemas.js";
 import * as WireguardConfig from "./WireguardConfig.js";
 import * as WireguardErrors from "./WireguardErrors.js";
@@ -281,7 +282,7 @@ export const generateHubAndSpokeConnections = <
         makeEmptyContext,
         Record.map((_, node) => {
             if (node === ipForNode(keysLayer.nodes[0])) {
-                return InternetSchemas.tail(keysLayer.nodes);
+                return internalInternalSchemas.tail(keysLayer.nodes);
             } else {
                 return Array.of(keysLayer.nodes[0]);
             }

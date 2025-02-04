@@ -62,5 +62,3 @@ export const generatePreshareKey = (): WireguardKey => {
     const key = crypto.generateKeySync("hmac", { length: 256 });
     return Schema.decodeSync(WireguardKey)(key.export().toString("base64"));
 };
-
-export default WireguardKey;

@@ -21,10 +21,12 @@ Added in v1.0.0
   - [BundledWgQuickLayer](#bundledwgquicklayer)
   - [UserspaceLayer](#userspacelayer)
 - [Models](#models)
-  - [WireguardControlImpl (interface)](#wireguardcontrolimpl-interface)
+  - [WireguardControl (interface)](#wireguardcontrol-interface)
 - [Tags](#tags)
   - [WireguardControl](#wireguardcontrol)
-  - [WireguardControl (interface)](#wireguardcontrol-interface)
+- [Type ids](#type-ids)
+  - [TypeId](#typeid)
+  - [TypeId (type alias)](#typeid-type-alias)
 
 ---
 
@@ -35,7 +37,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const makeBundledWgQuickLayer: (options: { sudo: boolean }) => WireguardControlImpl
+export declare const makeBundledWgQuickLayer: (options: { sudo: boolean }) => WireguardControl
 ```
 
 Added in v1.0.0
@@ -45,7 +47,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const makeUserspaceLayer: () => WireguardControlImpl
+export declare const makeUserspaceLayer: () => WireguardControl
 ```
 
 Added in v1.0.0
@@ -74,12 +76,14 @@ Added in v1.0.0
 
 # Models
 
-## WireguardControlImpl (interface)
+## WireguardControl (interface)
 
 **Signature**
 
 ```ts
-export interface WireguardControlImpl {
+export interface WireguardControl {
+  readonly [TypeId]: TypeId
+
   readonly up: (
     wireguardConfig: WireguardConfig.WireguardConfig,
     wireguardInterface: WireguardInterface.WireguardInterface
@@ -107,9 +111,6 @@ export interface WireguardControlImpl {
     Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.TimeoutException,
     FileSystem.FileSystem | Path.Path | Scope.Scope | CommandExecutor.CommandExecutor
   >
-
-  readonly getConfigRequestResolver: Resolver.RequestResolver<WireguardConfig.WireguardGetConfigRequest, never>
-  readonly setConfigRequestResolver: Resolver.RequestResolver<WireguardConfig.WireguardSetConfigRequest, never>
 }
 ```
 
@@ -122,19 +123,29 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const WireguardControl: Context.Tag<WireguardControl, WireguardControlImpl>
+export declare const WireguardControl: Context.Tag<WireguardControl, WireguardControl>
 ```
 
 Added in v1.0.0
 
-## WireguardControl (interface)
+# Type ids
+
+## TypeId
 
 **Signature**
 
 ```ts
-export interface WireguardControl {
-  readonly _: unique symbol
-}
+export declare const TypeId: typeof TypeId
+```
+
+Added in v1.0.0
+
+## TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof TypeId
 ```
 
 Added in v1.0.0

@@ -14,36 +14,15 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [Api interface](#api-interface)
-  - [$WireguardIniPeer (type alias)](#wireguardinipeer-type-alias)
 - [Datatypes](#datatypes)
   - [WireguardPeer (class)](#wireguardpeer-class)
-- [Requests](#requests)
-  - [makeWireguardUApiSetPeerRequest](#makewireguarduapisetpeerrequest)
-- [Responses](#responses)
-  - [WireguardUApiGetPeerResponse (class)](#wireguarduapigetpeerresponse-class)
-  - [parseWireguardUApiGetPeerResponse](#parsewireguarduapigetpeerresponse)
+- [Schemas](#schemas)
+  - [WireguardUapiGetPeer (class)](#wireguarduapigetpeer-class)
+  - [WireguardUapiSetPeer (class)](#wireguarduapisetpeer-class)
 - [Transformations](#transformations)
-  - [WireguardIniPeer](#wireguardinipeer)
+  - [WireguardIniPeer (class)](#wireguardinipeer-class)
 
 ---
-
-# Api interface
-
-## $WireguardIniPeer (type alias)
-
-**Signature**
-
-```ts
-export type $WireguardIniPeer = Schema.Annotable<
-  $WireguardIniPeer,
-  string,
-  Schema.Schema.Encoded<typeof WireguardPeer>,
-  never
->
-```
-
-Added in v1.0.0
 
 # Datatypes
 
@@ -103,64 +82,38 @@ const peerSchemaInstantiation = Schema.decode(WireguardPeer)({
 
 Added in v1.0.0
 
-# Requests
+# Schemas
 
-## makeWireguardUApiSetPeerRequest
-
-Creates a wireguard userspace api set peer request from a wireguard peer.
-This is a one way transformation (hence why schema is not involved), and you
-are not expected to need to decode this back into a wireguard peer. Instead,
-you should use the request resolver on the wireguard control interface to
-"transform" this into a response.
+## WireguardUapiGetPeer (class)
 
 **Signature**
 
 ```ts
-export declare const makeWireguardUApiSetPeerRequest: (peer: WireguardPeer) => string
+export declare class WireguardUapiGetPeer
 ```
 
 Added in v1.0.0
 
-# Responses
-
-## WireguardUApiGetPeerResponse (class)
-
-A wireguard peer from an interface inspection request contains three
-additional fields.
+## WireguardUapiSetPeer (class)
 
 **Signature**
 
 ```ts
-export declare class WireguardUApiGetPeerResponse
-```
-
-Added in v1.0.0
-
-## parseWireguardUApiGetPeerResponse
-
-Parses a wireguard userspace api get peer response from a wireguard control
-request resolver into a wireguard peer.
-
-**Signature**
-
-```ts
-export declare const parseWireguardUApiGetPeerResponse: (
-  input: string
-) => Effect.Effect<WireguardUApiGetPeerResponse, ParseResult.ParseError, never>
+export declare class WireguardUapiSetPeer
 ```
 
 Added in v1.0.0
 
 # Transformations
 
-## WireguardIniPeer
+## WireguardIniPeer (class)
 
 A wireguard peer configuration encoded in INI format.
 
 **Signature**
 
 ```ts
-export declare const WireguardIniPeer: $WireguardIniPeer
+export declare class WireguardIniPeer
 ```
 
 **Example**

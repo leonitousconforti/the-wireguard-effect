@@ -9,53 +9,14 @@ import * as Brand from "effect/Brand";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
-import * as HashSet from "effect/HashSet";
 import * as ParseResult from "effect/ParseResult";
 import * as Predicate from "effect/Predicate";
-import * as Record from "effect/Record";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
-import * as Tuple from "effect/Tuple";
 import * as net from "node:net";
 
-/** @internal */
-type Tail<T extends ReadonlyArray<unknown>> = T extends
-    | [infer _First, ...infer Rest]
-    | readonly [infer _First, ...infer Rest]
-    ? Rest
-    : Array<unknown>;
-
-/** @internal */
-type Split<Str extends string, Delimiter extends string> = string extends Str | ""
-    ? Array<string>
-    : Str extends `${infer Head}${Delimiter}${infer Rest}`
-      ? [Head, ...Split<Rest, Delimiter>]
-      : [Str];
-
-/** @internal */
-export const tail = <T extends ReadonlyArray<unknown>>(elements: T): Tail<T> => elements.slice(1) as Tail<T>;
-
-/** @internal */
-export const splitLiteral = <Str extends string, Delimiter extends string>(
-    str: Str,
-    delimiter: Delimiter
-): Split<Str, Delimiter> => str.split(delimiter) as Split<Str, Delimiter>;
-
-/** @internal */
-export const transposeSet = <Key extends string, Val extends string>(
-    record: Record.ReadonlyRecord<Key, HashSet.HashSet<Val>>
-): Record<Record.ReadonlyRecord.NonLiteralKey<Val>, HashSet.HashSet<Key>> =>
-    Function.pipe(
-        record,
-        Record.map(HashSet.values),
-        Record.map(Array.fromIterable),
-        Record.collect((key, connections) => Array.map(connections, (connection) => Tuple.make(connection, key))),
-        Array.flatten,
-        Array.groupBy(Tuple.getFirst),
-        Record.map(Array.map(Tuple.getSecond)),
-        Record.map(HashSet.fromIterable)
-    );
+import * as internal from "./internal/internetSchemas.js";
 
 /**
  * Transforms a `number` of seconds into a `Duration`.
@@ -1154,7 +1115,7 @@ export const IPv4CidrBlockFromString: $IPv4CidrBlockFromString = Schema.transfor
     IPv4CidrBlock,
     {
         decode: (str) => {
-            const [address, mask] = splitLiteral(str, "/");
+            const [address, mask] = internal.splitLiteral(str, "/");
             return { address, mask: Number.parseInt(mask, 10) } as const;
         },
         encode: ({ address, mask }) => `${address}/${mask}` as const,
@@ -1244,7 +1205,7 @@ export const IPv6CidrBlockFromString: $IPv6CidrBlockFromString = Schema.transfor
     IPv6CidrBlock,
     {
         decode: (str) => {
-            const [address, mask] = splitLiteral(str, "/");
+            const [address, mask] = internal.splitLiteral(str, "/");
             return { address, mask: Number.parseInt(mask, 10) } as const;
         },
         encode: ({ address, mask }) => `${address}/${mask}` as const,
@@ -1300,7 +1261,7 @@ export const CidrBlockFromString: $CidrBlockFromString = Schema.transform(
     CidrBlock,
     {
         decode: (str) => {
-            const [address, mask] = splitLiteral(str, "/");
+            const [address, mask] = internal.splitLiteral(str, "/");
             return { address, mask: Number.parseInt(mask, 10) } as const;
         },
         encode: ({ address, mask }) => `${address}/${mask}` as const,
@@ -1381,7 +1342,7 @@ export const IPv4Endpoint: $IPv4Endpoint = Schema.transform(
                       "natPort" in data ? (`${data.natPort}` as const) : (`${data.port}` as const),
                       "listenPort" in data ? (`${data.listenPort}` as const) : undefined,
                   ] as const)
-                : splitLiteral(data, ":");
+                : internal.splitLiteral(data, ":");
 
             const natPortParsed = Number.parseInt(natPort, 10);
             const listenPortParsed = Predicate.isNotUndefined(listenPort)
@@ -1486,8 +1447,8 @@ export const IPv6Endpoint: $IPv6Endpoint = Schema.transform(
                       "listenPort" in data ? (`${data.listenPort}` as const) : undefined,
                   ] as const)
                 : ([
-                      splitLiteral(data, "]")[0].slice(1),
-                      ...tail(splitLiteral(splitLiteral(data, "]")[1], ":")),
+                      internal.splitLiteral(data, "]")[0].slice(1),
+                      ...internal.tail(internal.splitLiteral(internal.splitLiteral(data, "]")[1], ":")),
                   ] as const);
 
             const natPortParsed = Number.parseInt(natPort, 10);
@@ -1554,7 +1515,7 @@ export const HostnameEndpoint: $HostnameEndpoint = Schema.transform(
                       "natPort" in data ? (`${data.natPort}` as const) : (`${data.port}` as const),
                       "listenPort" in data ? (`${data.listenPort}` as const) : undefined,
                   ] as const)
-                : splitLiteral(data, ":");
+                : internal.splitLiteral(data, ":");
 
             const natPortParsed = Number.parseInt(natPort, 10);
             const listenPortParsed = Predicate.isNotUndefined(listenPort)
