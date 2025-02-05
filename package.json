@@ -52,10 +52,10 @@
         "@babel/core": "7.26.7",
         "@babel/plugin-transform-export-namespace-from": "7.25.9",
         "@babel/plugin-transform-modules-commonjs": "7.26.3",
-        "@effect/build-utils": "0.7.8",
+        "@effect/build-utils": "0.7.9",
         "@effect/cli": "0.54.3",
         "@effect/docgen": "0.5.2",
-        "@effect/eslint-plugin": "0.2.0",
+        "@effect/eslint-plugin": "0.3.0",
         "@effect/experimental": "0.39.3",
         "@effect/language-service": "0.2.0",
         "@effect/platform": "0.75.3",
@@ -125,7 +125,7 @@
     },
     "pnpm": {
         "patchedDependencies": {
-            "@effect/build-utils@0.7.8": "patches/@effect__build-utils@0.7.8.patch"
+            "@effect/build-utils": "patches/@effect__build-utils.patch"
         }
     }
 }
