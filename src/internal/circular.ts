@@ -603,16 +603,3 @@ export const removePeer: {
         const configAfter = yield* getConfig(wireguardInterface, "0.0.0.0/0" as const);
         assert.ok(configAfter.Peers.find((p) => p.PublicKey === peer.PublicKey) === undefined);
     });
-
-export const fromConfigFile: {
-    (
-        file: string
-    ): Effect.Effect<WireguardConfig, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem>;
-} = (file: string) =>
-    Effect.gen(function* () {
-        const fs = yield* FileSystem.FileSystem;
-        const fsConfig = yield* fs.readFileString(file);
-        const iniConfigEncoded = yield* Schema.encode(WireguardIniConfig)(fsConfig);
-        const config = yield* Schema.decode(WireguardConfig)(iniConfigEncoded);
-        return config;
-    });
