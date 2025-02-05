@@ -28,7 +28,7 @@ const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
     WireguardControl.makeBundledWgQuickLayer({ sudo: process.platform !== "linux" })
 );
 
-const testContext = Layer.mergeAll(NodeHttp.layer, NodeContext.layer, WireguardControlLive);
+const testLayer = Layer.mergeAll(NodeHttp.layer, NodeContext.layer, WireguardControlLive);
 
 /**
  * Waits for all peers on the interface to have a successful handshake as well
@@ -59,7 +59,7 @@ export const httpRequest = (
         Effect.scoped
     );
 
-it.layer(testContext, { timeout: "1 minute" })((it) =>
+it.layer(testLayer, { timeout: "1 minute" })((it) =>
     it.scoped("wireguard e2e test using demo.wireguard.com", () =>
         Effect.gen(function* () {
             const host = yield* hostConfig;
