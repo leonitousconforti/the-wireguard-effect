@@ -10,7 +10,6 @@ import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Config from "effect/Config";
 import * as Console from "effect/Console";
-import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
@@ -60,7 +59,7 @@ export const httpRequest = (
         Effect.scoped
     );
 
-it.layer(testContext, { timeout: Function.pipe(1, Duration.minutes, Duration.toMillis) })((it) =>
+it.layer(testContext, { timeout: "1 minute" })((it) =>
     it.scoped("wireguard e2e test using demo.wireguard.com", () =>
         Effect.gen(function* () {
             const host = yield* hostConfig;
