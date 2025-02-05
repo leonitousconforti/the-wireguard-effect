@@ -10,6 +10,7 @@ import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Config from "effect/Config";
 import * as Console from "effect/Console";
+import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
@@ -59,28 +60,31 @@ export const httpRequest = (
         Effect.scoped
     );
 
-it.layer(testLayer, { timeout: "1 minute" })((it) =>
-    it.scoped("wireguard e2e test using demo.wireguard.com", () =>
-        Effect.gen(function* () {
-            const host = yield* hostConfig;
-            const port = yield* portConfig;
-            const hiddenPageUrl = yield* hiddenPageUrlConfig;
+it.layer(testLayer)((it) =>
+    it.scoped(
+        "wireguard e2e test using demo.wireguard.com",
+        () =>
+            Effect.gen(function* () {
+                const host = yield* hostConfig;
+                const port = yield* portConfig;
+                const hiddenPageUrl = yield* hiddenPageUrlConfig;
 
-            const config = yield* WireguardServer.requestWireguardDemoConfig({ host, port });
-            yield* Console.log("Got config from remote demo server");
+                const config = yield* WireguardServer.requestWireguardDemoConfig({ host, port });
+                yield* Console.log("Got config from remote demo server");
 
-            const networkInterface = yield* config.upScoped();
-            yield* Console.log("Interface is up");
+                const networkInterface = yield* config.upScoped();
+                yield* Console.log("Interface is up");
 
-            yield* waitForHandshakes(networkInterface);
-            yield* Console.log("Have handshake and traffic in both directions");
+                yield* waitForHandshakes(networkInterface);
+                yield* Console.log("Have handshake and traffic in both directions");
 
-            yield* httpRequest("https://www.google.com");
-            yield* Console.log("Connected to https://google.com (still have internet access)");
+                yield* httpRequest("https://www.google.com");
+                yield* Console.log("Connected to https://google.com (still have internet access)");
 
-            const hiddenPage = yield* httpRequest(hiddenPageUrl);
-            yield* Console.log("Connected to hidden page");
-            expect(hiddenPage).toMatchSnapshot();
-        })
+                const hiddenPage = yield* httpRequest(hiddenPageUrl);
+                yield* Console.log("Connected to hidden page");
+                expect(hiddenPage).toMatchSnapshot();
+            }),
+        { timeout: Function.pipe(1, Duration.minutes, Duration.toMillis) }
     )
 );
