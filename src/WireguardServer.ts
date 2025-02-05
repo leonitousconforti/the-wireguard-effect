@@ -302,7 +302,6 @@ export const WireguardDemoServer = (options: {
             });
 
         // Start the server
-
         Layer.launch(HttpServer.serve(Effect.succeed(HttpServerResponse.html(hiddenPageContent))))
             .pipe(
                 Effect.provide(

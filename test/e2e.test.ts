@@ -40,7 +40,7 @@ const waitForHandshakes = (
 ): Effect.Effect<void, Cause.TimeoutException | Socket.SocketError | ParseResult.ParseError, never> =>
     Function.pipe(
         wireguardInterface.streamStats(),
-        Stream.takeUntil(Array.every((peer) => peer.rxBytes > 0 && peer.txBytes > 0)),
+        Stream.takeUntil(Array.every((peer) => peer.lastHandshakeTimeSeconds > 0)),
         Stream.timeout("10 seconds"),
         Stream.runDrain
     );
@@ -86,5 +86,7 @@ it.live(
         })
             .pipe(Effect.scoped)
             .pipe(Effect.provide(testContext)),
-    Function.pipe(3.5, Duration.minutes, Duration.toMillis)
+    {
+        timeout: Function.pipe(1, Duration.minutes, Duration.toMillis),
+    }
 );

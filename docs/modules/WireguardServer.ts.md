@@ -22,8 +22,6 @@ Added in v1.0.0
   - [WireguardDemoServerSchema (type alias)](#wireguarddemoserverschema-type-alias)
 - [utils](#utils)
   - [WireguardDemoServer](#wireguarddemoserver)
-  - [requestGoogle](#requestgoogle)
-  - [requestHiddenPage](#requesthiddenpage)
   - [requestWireguardDemoConfig](#requestwireguarddemoconfig)
 
 ---
@@ -99,38 +97,6 @@ export declare const WireguardDemoServer: (options: {
   | WireguardControl.WireguardControl
   | CommandExecutor.CommandExecutor
 >
-```
-
-Added in v1.0.0
-
-## requestGoogle
-
-Attempts to connect to https://www.google.com to ensure that dns is still
-working and we can connect to the internet when the wireguard tunnel is up.
-
-**Signature**
-
-```ts
-export declare const requestGoogle: Effect.Effect<
-  void,
-  Cause.TimeoutException | HttpClientError.HttpClientError,
-  HttpClient.HttpClient
->
-```
-
-Added in v1.0.0
-
-## requestHiddenPage
-
-Attempts to view the hidden page on the demo.wireguard.com server, you should
-only be able to see it when connected as a peer.
-
-**Signature**
-
-```ts
-export declare const requestHiddenPage: (
-  hiddenPageLocation: string
-) => Effect.Effect<string, HttpClientError.HttpClientError | Cause.TimeoutException, HttpClient.HttpClient>
 ```
 
 Added in v1.0.0
