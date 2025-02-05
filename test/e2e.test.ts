@@ -60,9 +60,8 @@ export const httpRequest = (
         Effect.scoped
     );
 
-it.live(
-    "wireguard e2e test using demo.wireguard.com",
-    () =>
+it.layer(testContext, { timeout: Function.pipe(1, Duration.minutes, Duration.toMillis) })((it) =>
+    it.scoped("wireguard e2e test using demo.wireguard.com", () =>
         Effect.gen(function* () {
             const host = yield* hostConfig;
             const port = yield* portConfig;
@@ -84,9 +83,5 @@ it.live(
             yield* Console.log("Connected to hidden page");
             expect(hiddenPage).toMatchSnapshot();
         })
-            .pipe(Effect.scoped)
-            .pipe(Effect.provide(testContext)),
-    {
-        timeout: Function.pipe(1, Duration.minutes, Duration.toMillis),
-    }
+    )
 );

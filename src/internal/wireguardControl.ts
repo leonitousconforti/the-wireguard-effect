@@ -116,7 +116,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                 subprocess.off("close", onClose);
                 subprocess.off("error", onError);
                 subprocess.off("disconnect", onDisconnect);
-                yield* Effect.sleep(5000);
+                yield* Effect.sleep(15000);
                 resume(Effect.succeed(subprocess));
 
                 function onError(error: Error) {
