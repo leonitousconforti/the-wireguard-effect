@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   '@effect/build-utils':
-    hash: db084384c707ff9e683140e446c649d56d56b94e53c4e09699e8ffb806926486
+    hash: l5kgl23lx2gxuhhyvqfmhjtllq
     path: patches/@effect__build-utils.patch
 
 importers:
@@ -31,7 +31,7 @@ importers:
         version: 7.26.3(@babel/core@7.26.7)
       '@effect/build-utils':
         specifier: 0.7.9
-        version: 0.7.9(patch_hash=db084384c707ff9e683140e446c649d56d56b94e53c4e09699e8ffb806926486)
+        version: 0.7.9(patch_hash=l5kgl23lx2gxuhhyvqfmhjtllq)
       '@effect/cli':
         specifier: 0.54.3
         version: 0.54.3(@effect/platform@0.75.3(effect@3.12.9))(@effect/printer-ansi@0.40.9(@effect/typeclass@0.31.9(effect@3.12.9))(effect@3.12.9))(@effect/printer@0.40.9(@effect/typeclass@0.31.9(effect@3.12.9))(effect@3.12.9))(effect@3.12.9)
@@ -150,8 +150,8 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
       vite:
-        specifier: 6.0.11
-        version: 6.0.11(@types/node@22.13.1)(tsx@4.19.2)(yaml@2.7.0)
+        specifier: 6.1.0
+        version: 6.1.0(@types/node@22.13.1)(tsx@4.19.2)(yaml@2.7.0)
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.1)
@@ -3130,8 +3130,8 @@ packages:
       terser:
         optional: true
 
-  vite@6.0.11:
-    resolution: {integrity: sha512-4VL9mQPKoHy4+FE0NnRE/kbY51TOfaknxAjt3fJbGJxhIpBZiqVzlZDEesWWsuREXHwNdAoOFZ9MkPEVXczHwg==}
+  vite@6.1.0:
+    resolution: {integrity: sha512-RjjMipCKVoR4hVfPY6GQTgveinjNuyLw+qruksLDvA5ktI1150VmcMBKmQaEWJhg/j6Uaf6dNCNA0AfdzUb/hQ==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
     peerDependencies:
@@ -3406,7 +3406,7 @@ snapshots:
 
   '@dprint/typescript@0.91.8': {}
 
-  '@effect/build-utils@0.7.9(patch_hash=db084384c707ff9e683140e446c649d56d56b94e53c4e09699e8ffb806926486)': {}
+  '@effect/build-utils@0.7.9(patch_hash=l5kgl23lx2gxuhhyvqfmhjtllq)': {}
 
   '@effect/cli@0.54.3(@effect/platform@0.75.3(effect@3.12.9))(@effect/printer-ansi@0.40.9(@effect/typeclass@0.31.9(effect@3.12.9))(effect@3.12.9))(@effect/printer@0.40.9(@effect/typeclass@0.31.9(effect@3.12.9))(effect@3.12.9))(effect@3.12.9)':
     dependencies:
@@ -6204,7 +6204,7 @@ snapshots:
       '@types/node': 22.13.1
       fsevents: 2.3.3
 
-  vite@6.0.11(@types/node@22.13.1)(tsx@4.19.2)(yaml@2.7.0):
+  vite@6.1.0(@types/node@22.13.1)(tsx@4.19.2)(yaml@2.7.0):
     dependencies:
       esbuild: 0.24.2
       postcss: 8.5.1
