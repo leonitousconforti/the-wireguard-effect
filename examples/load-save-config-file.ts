@@ -24,10 +24,7 @@ const program: Effect.Effect<
     // Find the config file
     const thisFolder = yield* path.fromFileUrl(new URL(".", import.meta.url));
     const configFile = path.join(thisFolder, "wireguard-config.conf");
-    yield* fileSystem
-        .exists(configFile)
-        .pipe(Effect.flatMap((exists) => (exists ? Effect.void : Effect.fail("Config file not found"))))
-        .pipe(Effect.orDie);
+    yield* fileSystem.stat(configFile);
 
     // Load the config file
     const config = yield* WireguardConfig.fromConfigFile(configFile);

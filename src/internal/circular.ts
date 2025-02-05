@@ -35,7 +35,6 @@ import * as internalInterface from "./wireguardInterface.js";
 // WireguardConfig.ts
 // --------------------------------------------
 
-/** @internal */
 export class WireguardConfig extends internalWireguardConfig.WireguardConfigVariantSchema.Class<WireguardConfig>(
     "WireguardIniConfig"
 )({
@@ -170,7 +169,6 @@ export class WireguardConfig extends internalWireguardConfig.WireguardConfigVari
         );
 }
 
-/** @internal */
 export class WireguardIniConfig extends Schema.transformOrFail(WireguardConfig, Schema.String, {
     // Encoding is non-trivial, as we need to handle all the peers individually.
     decode: (config: WireguardConfig, _options, _ast) =>
@@ -604,4 +602,17 @@ export const removePeer: {
         // Get the config after removing this peer and ensure this peer is not present
         const configAfter = yield* getConfig(wireguardInterface, "0.0.0.0/0" as const);
         assert.ok(configAfter.Peers.find((p) => p.PublicKey === peer.PublicKey) === undefined);
+    });
+
+export const fromConfigFile: {
+    (
+        file: string
+    ): Effect.Effect<WireguardConfig, ParseResult.ParseError | PlatformError.PlatformError, FileSystem.FileSystem>;
+} = (file: string) =>
+    Effect.gen(function* () {
+        const fs = yield* FileSystem.FileSystem;
+        const fsConfig = yield* fs.readFileString(file);
+        const iniConfigEncoded = yield* Schema.encode(WireguardIniConfig)(fsConfig);
+        const config = yield* Schema.decode(WireguardConfig)(iniConfigEncoded);
+        return config;
     });
