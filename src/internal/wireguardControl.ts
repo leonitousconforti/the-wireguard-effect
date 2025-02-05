@@ -247,15 +247,15 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
 
             const arch = process.arch === "x64" ? "amd64" : process.arch;
             const extension = process.platform === "win32" ? ".exe" : "";
-            const wireguardGoUrl = new URL(`./${process.platform}-${arch}-wireguard-go${extension}`, import.meta.url);
+            const wireguardGoUrl = new URL(`../${process.platform}-${arch}-wireguard-go${extension}`, import.meta.url);
             const bundledWireguardGoExecutablePath = yield* path.fromFileUrl(wireguardGoUrl);
             yield* fs.access(bundledWireguardGoExecutablePath, { ok: true });
 
-            const wgQuickUrl = new URL(`./${process.platform}-wg-quick`, import.meta.url);
+            const wgQuickUrl = new URL(`../${process.platform}-wg-quick`, import.meta.url);
             const bundledWgQuickExecutablePath = yield* path.fromFileUrl(wgQuickUrl);
             if (process.platform !== "win32") yield* fs.access(bundledWgQuickExecutablePath, { ok: true });
 
-            const wgWindowsUrl = new URL(`./win32-${arch}-wireguard.exe`, import.meta.url);
+            const wgWindowsUrl = new URL(`../win32-${arch}-wireguard.exe`, import.meta.url);
             const bundledWgWindowsExecutablePath = yield* path.fromFileUrl(wgWindowsUrl);
             if (process.platform === "win32") yield* fs.access(bundledWgWindowsExecutablePath, { ok: true });
 
@@ -294,11 +294,11 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
             yield* wireguardConfig.writeToFile(file);
 
             const arch = process.arch === "x64" ? "amd64" : process.arch;
-            const wgQuickUrl = new URL(`./${process.platform}-wg-quick`, import.meta.url);
+            const wgQuickUrl = new URL(`../${process.platform}-wg-quick`, import.meta.url);
             const bundledWgQuickExecutablePath = yield* path.fromFileUrl(wgQuickUrl);
             if (process.platform !== "win32") yield* fs.access(bundledWgQuickExecutablePath, { ok: true });
 
-            const wgWindowsUrl = new URL(`./win32-${arch}-wireguard.exe`, import.meta.url);
+            const wgWindowsUrl = new URL(`../win32-${arch}-wireguard.exe`, import.meta.url);
             const bundledWgWindowsExecutablePath = yield* path.fromFileUrl(wgWindowsUrl);
             if (process.platform === "win32") yield* fs.access(bundledWgWindowsExecutablePath, { ok: true });
 
