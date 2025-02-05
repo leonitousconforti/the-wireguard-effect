@@ -285,8 +285,8 @@ export const WireguardDemoServer = (options: {
                                 config.Peers,
                                 Array.sort(
                                     (
-                                        a: Schema.Schema.Type<(typeof WireguardPeer.WireguardPeer)["uapi-json-get"]>,
-                                        b: Schema.Schema.Type<(typeof WireguardPeer.WireguardPeer)["uapi-json-get"]>
+                                        a: Schema.Schema.Type<(typeof WireguardPeer.WireguardPeer)["uapi"]>,
+                                        b: Schema.Schema.Type<(typeof WireguardPeer.WireguardPeer)["uapi"]>
                                     ) => {
                                         if (a.lastHandshakeTimeSeconds - b.lastHandshakeTimeSeconds <= -1) return -1;
                                         else if (a.lastHandshakeTimeSeconds - b.lastHandshakeTimeSeconds >= 1) return 1;
@@ -367,24 +367,3 @@ export const requestHiddenPage = (
         .pipe(Effect.timeout("7 seconds"))
         .pipe(Effect.scoped)
         .pipe(Effect.retry(retryPolicy));
-
-/**
- * Attempts to connect to https://www.google.com to ensure that dns is still
- * working and we can connect to the internet when the wireguard tunnel is up.
- *
- * @since 1.0.0
- */
-export const requestGoogle: Effect.Effect<
-    void,
-    HttpClientError.HttpClientError | Cause.TimeoutException,
-    HttpClient.HttpClient
-> = Effect.gen(function* () {
-    const defaultClient = yield* HttpClient.HttpClient;
-    const client = defaultClient.pipe(HttpClient.filterStatusOk);
-    const request = HttpClientRequest.get("https://www.google.com");
-    const response = yield* client.execute(request);
-    yield* response.text;
-})
-    .pipe(Effect.timeout("7 seconds"))
-    .pipe(Effect.scoped)
-    .pipe(Effect.retry(retryPolicy));

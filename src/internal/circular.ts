@@ -14,6 +14,7 @@ import * as Number from "effect/Number";
 import * as Option from "effect/Option";
 import * as ParseResult from "effect/ParseResult";
 import * as Predicate from "effect/Predicate";
+import * as Schedule from "effect/Schedule";
 import * as Schema from "effect/Schema";
 import * as Ast from "effect/SchemaAST";
 import * as Scope from "effect/Scope";
@@ -73,15 +74,11 @@ export class WireguardConfig extends internalWireguardConfig.WireguardConfigVari
 
     /** List of peers to add. */
     Peers: internalWireguardConfig.WireguardConfigVariantSchema.Field({
-        json: Schema.optionalWith(Schema.Array(WireguardPeer.WireguardPeer.json), {
+        json: Schema.optionalWith(Schema.Array(WireguardPeer.WireguardPeer), {
             default: () => [],
             nullable: true,
         }),
-        "uapi-json-get": Schema.optionalWith(Schema.Array(WireguardPeer.WireguardPeer["uapi-json-get"]), {
-            default: () => [],
-            nullable: true,
-        }),
-        "uapi-json-set": Schema.optionalWith(Schema.Array(WireguardPeer.WireguardPeer["uapi-json-set"]), {
+        uapi: Schema.optionalWith(Schema.Array(WireguardPeer.WireguardPeer["uapi"]), {
             default: () => [],
             nullable: true,
         }),
@@ -422,7 +419,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         (
             address: InternetSchemas.CidrBlockFromStringEncoded
         ): Effect.Effect<
-            Schema.Schema.Type<(typeof WireguardConfig)["uapi-json-get"]>,
+            Schema.Schema.Type<(typeof WireguardConfig)["uapi"]>,
             Socket.SocketError | ParseResult.ParseError,
             never
         >;
@@ -447,6 +444,20 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
     public removePeer: {
         (peer: WireguardPeer.WireguardPeer): Effect.Effect<void, Socket.SocketError | ParseResult.ParseError, never>;
     } = (peer: WireguardPeer.WireguardPeer) => removePeer(this, peer);
+
+    /**
+     * Streams the stats from all the peers on this interface.
+     *
+     * @since 1.0.0
+     * @category Wireguard control
+     */
+    public streamStats: {
+        (): Stream.Stream<
+            ReadonlyArray<Schema.Schema.Type<(typeof WireguardPeer.WireguardPeer)["uapi"]>>,
+            Socket.SocketError | ParseResult.ParseError,
+            never
+        >;
+    } = () => streamStats(this);
 }
 
 // --------------------------------------------
@@ -516,7 +527,7 @@ export const setConfig: {
 
         const peers = yield* Function.pipe(
             wireguardConfig.Peers,
-            Array.map((peer) => Schema.encode(WireguardPeer.WireguardPeer["uapi-json-set"])(peer)),
+            Array.map((peer) => Schema.encode(WireguardPeer.WireguardPeer)(peer)),
             Array.map(Effect.flatMap((peer) => Schema.decode(WireguardPeer.WireguardUapiSetPeer)(peer))),
             Effect.allWith(),
             Effect.map(Array.join("\n"))
@@ -533,7 +544,7 @@ export const getConfig: {
         wireguardInterface: WireguardInterface,
         address: InternetSchemas.CidrBlockFromStringEncoded
     ): Effect.Effect<
-        Schema.Schema.Type<(typeof WireguardConfig)["uapi-json-get"]>,
+        Schema.Schema.Type<(typeof WireguardConfig)["uapi"]>,
         Socket.SocketError | ParseResult.ParseError,
         never
     >;
@@ -547,11 +558,11 @@ export const getConfig: {
             peers,
             Array.map((peer) => `public_key=${peer}`),
             Array.map((x) => Schema.decode(WireguardPeer.WireguardUapiGetPeer, { onExcessProperty: "error" })(x)),
-            Array.map(Effect.flatMap((x) => Schema.encode(WireguardPeer.WireguardPeer["uapi-json-get"])(x))),
+            Array.map(Effect.flatMap((x) => Schema.encode(WireguardPeer.WireguardPeer["uapi"])(x))),
             Effect.allWith()
         );
 
-        return yield* Schema.decode(WireguardConfig["uapi-json-get"], { onExcessProperty: "error" })({
+        return yield* Schema.decode(WireguardConfig["uapi"], { onExcessProperty: "error" })({
             Address: address,
             ListenPort: listen_port,
             PrivateKey: Buffer.from(private_key, "hex").toString("base64"),
@@ -573,7 +584,7 @@ export const addPeer: {
         assert.ok(configBefore.Peers.find((p) => p.PublicKey === peer.PublicKey) === undefined);
 
         // Add the peer to the interface
-        const a = yield* Schema.encode(WireguardPeer.WireguardPeer["uapi-json-set"])(peer);
+        const a = yield* Schema.encode(WireguardPeer.WireguardPeer)(peer);
         const b = yield* Schema.decode(WireguardPeer.WireguardUapiSetPeer)(a);
         yield* internalInterface.userspaceContact(wireguardInterface, `set=1\n${b}`);
 
@@ -595,7 +606,7 @@ export const removePeer: {
         assert.ok(configBefore.Peers.find((p) => p.PublicKey === peer.PublicKey) !== undefined);
 
         // Remove the peer from the interface
-        const a = yield* Schema.encode(WireguardPeer.WireguardPeer["uapi-json-set"])(peer);
+        const a = yield* Schema.encode(WireguardPeer.WireguardPeer)(peer);
         const b = yield* Schema.decode(WireguardPeer.WireguardUapiSetPeer)(a);
         yield* internalInterface.userspaceContact(wireguardInterface, `set=1\n${b}remove=true\n`);
 
@@ -603,3 +614,17 @@ export const removePeer: {
         const configAfter = yield* getConfig(wireguardInterface, "0.0.0.0/0" as const);
         assert.ok(configAfter.Peers.find((p) => p.PublicKey === peer.PublicKey) === undefined);
     });
+
+/** @internal */
+export const streamStats = (
+    wireguardInterface: WireguardInterface
+): Stream.Stream<
+    ReadonlyArray<Schema.Schema.Type<(typeof WireguardPeer.WireguardPeer)["uapi"]>>,
+    Socket.SocketError | ParseResult.ParseError,
+    never
+> => {
+    const pull = getConfig(wireguardInterface, "0.0.0.0/0" as const);
+    const schedule = Schedule.spaced("1 second");
+    const stream = Stream.repeatEffectWithSchedule(pull, schedule);
+    return Stream.map(stream, ({ Peers: peers }) => peers);
+};

@@ -113,16 +113,16 @@ export class WireguardPeer extends internalWireguardPeer.WireguardPeerConfigVari
     PresharedKey: Schema.optionalWith(WireguardKey.WireguardKey, { nullable: true, as: "Option" }),
 
     /** The number of received bytes. */
-    rxBytes: internalWireguardPeer.WireguardPeerConfigVariantSchema.FieldOnly("uapi-json-get")(Schema.NumberFromString),
+    rxBytes: internalWireguardPeer.WireguardPeerConfigVariantSchema.FieldOnly("uapi")(Schema.NumberFromString),
 
     /** The number of transmitted bytes. */
-    txBytes: internalWireguardPeer.WireguardPeerConfigVariantSchema.FieldOnly("uapi-json-get")(Schema.NumberFromString),
+    txBytes: internalWireguardPeer.WireguardPeerConfigVariantSchema.FieldOnly("uapi")(Schema.NumberFromString),
 
     /**
      * The number of seconds since the most recent handshake, expressed relative
      * to the Unix epoch.
      */
-    lastHandshakeTimeSeconds: internalWireguardPeer.WireguardPeerConfigVariantSchema.FieldOnly("uapi-json-get")(
+    lastHandshakeTimeSeconds: internalWireguardPeer.WireguardPeerConfigVariantSchema.FieldOnly("uapi")(
         Schema.NumberFromString
     ),
 }) {}
@@ -245,7 +245,7 @@ export class WireguardIniPeer extends Schema.transformOrFail(WireguardPeer, Sche
  * @category Schemas
  * @see https://www.wireguard.com/xplatform/
  */
-export class WireguardUapiSetPeer extends Schema.transformOrFail(WireguardPeer["uapi-json-set"], Schema.String, {
+export class WireguardUapiSetPeer extends Schema.transformOrFail(WireguardPeer, Schema.String, {
     encode: (uapiPeer: string, _options, ast) =>
         ParseResult.fail(new ParseResult.Forbidden(ast, uapiPeer, "Can not encode a UAPI set peer")),
     decode: (peer: WireguardPeer, _options, _ast) => {
@@ -298,7 +298,7 @@ export class WireguardUapiSetPeer extends Schema.transformOrFail(WireguardPeer["
  * @category Schemas
  * @see https://www.wireguard.com/xplatform/
  */
-export class WireguardUapiGetPeer extends Schema.transformOrFail(Schema.String, WireguardPeer["uapi-json-get"], {
+export class WireguardUapiGetPeer extends Schema.transformOrFail(Schema.String, WireguardPeer["uapi"], {
     encode: (uapiPeer, _options, ast) =>
         ParseResult.fail(new ParseResult.Forbidden(ast, uapiPeer, "Can not decode a UAPI get peer")),
     decode: (uapiPeer: string) => {
