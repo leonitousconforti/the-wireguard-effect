@@ -46,20 +46,19 @@ const waitForHandshakes = (
     );
 
 /**
- * Attempts to connect to https://www.google.com to ensure that dns is still
- * working and we can connect to the internet when the wireguard tunnel is up.
+ * Attempts to connect to url to ensure that dns is still working and we can
+ * connect to the internet when the wireguard tunnel is up.
  */
-export const requestGoogle: Effect.Effect<
-    void,
-    HttpClientError.HttpClientError | Cause.TimeoutException,
-    HttpClient.HttpClient
-> = Function.pipe(
-    HttpClient.get("https://www.google.com"),
-    Effect.flatMap(HttpClientResponse.filterStatusOk),
-    Effect.timeout("10 seconds"),
-    Effect.scoped,
-    Effect.asVoid
-);
+export const httpRequest = (
+    url: string
+): Effect.Effect<string, HttpClientError.HttpClientError | Cause.TimeoutException, HttpClient.HttpClient> =>
+    Function.pipe(
+        HttpClient.get(url),
+        Effect.flatMap(HttpClientResponse.filterStatusOk),
+        Effect.flatMap(({ text }) => text),
+        Effect.timeout("10 seconds"),
+        Effect.scoped
+    );
 
 it.live(
     "wireguard e2e test using demo.wireguard.com",
@@ -78,10 +77,10 @@ it.live(
             yield* waitForHandshakes(networkInterface);
             yield* Console.log("Have handshake and traffic in both directions");
 
-            yield* requestGoogle;
+            yield* httpRequest("https://www.google.com");
             yield* Console.log("Connected to https://google.com (still have internet access)");
 
-            const hiddenPage = yield* WireguardServer.requestHiddenPage(hiddenPageUrl);
+            const hiddenPage = yield* httpRequest(hiddenPageUrl);
             yield* Console.log("Connected to hidden page");
             expect(hiddenPage).toMatchSnapshot();
         })
