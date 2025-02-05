@@ -83,23 +83,7 @@ it.live(
 
             const hiddenPage = yield* WireguardServer.requestHiddenPage(hiddenPageUrl);
             yield* Console.log("Connected to hidden page");
-            expect(hiddenPage).toMatchInlineSnapshot(`
-"<title>WireGuard Demo Configuration: Success!</title>
-<body bgcolor="#444444">
-<script src="snowstorm.js"></script>
-<script src="trail.js"></script>
-<center>
-<blink>
-<marquee width="100%" behavior="alternate" direction="right" scrollamount="10">
-<marquee height="100%" behavior="alternate" direction="down">
-<marquee width="100%" bgcolor="#33aadd" direction="right" behavior="alternate"><font face="comic sans ms" size="7" style="font-size: 3vw" color="#ddaa33">Congrats! You've successfully configured WireGuard!</font><br><marquee scrollamount="30"><img src="emblem.svg" width="20%"></marquee><br><marquee direction="left" scrollamount="40" behavior="alternate"><script>document.write('<iframe frameborder="0" height="80%" width="70%" src="/?' + (((document.location.search.substring(1)|0) + 1) % 4) + '"></iframe>');</script></marquee><br><br></marquee>
-</marquee>
-</marquee>
-</blink>
-</center>
-</body>
-"
-`);
+            expect(hiddenPage).toMatchSnapshot();
         })
             .pipe(Effect.scoped)
             .pipe(Effect.provide(testContext)),
