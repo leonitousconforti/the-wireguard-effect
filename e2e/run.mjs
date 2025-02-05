@@ -11,7 +11,7 @@ const e2eTests = [
     "./generate-lan-hub-and-spoke-access/",
 
     // FIXME: fix this e2e test
-    // "./generate-lan-to-lan-access/",
+    "./generate-lan-to-lan-access/",
 ];
 
 const cleanDockerE2E = (folder) => {
