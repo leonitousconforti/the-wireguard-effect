@@ -14,9 +14,9 @@ import * as Layer from "effect/Layer";
 import * as ParseResult from "effect/ParseResult";
 import * as Predicate from "effect/Predicate";
 import * as Stream from "effect/Stream";
+import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
 import * as exec from "node:child_process";
-import * as fs from "node:fs";
 
 import type * as WireguardConfig from "../WireguardConfig.js";
 import type * as _WireguardControl from "../WireguardControl.js";
@@ -99,30 +99,45 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                 });
 
                 subprocess.unref();
+                subprocess.on("exit", onExit);
+                subprocess.on("close", onClose);
+                subprocess.on("error", onError);
+                subprocess.on("disconnect", onDisconnect);
 
-                const timer = setInterval(() => {
-                    const data = fs.readFileSync(stdout, "utf8");
-                    if (data.includes("UAPI listener started")) {
-                        onStarted();
-                    }
-                }, 1000);
+                yield* Function.pipe(
+                    fileSystem.stream(stdout),
+                    Stream.decodeText("utf-8"),
+                    Stream.splitLines,
+                    Stream.takeWhile(String.includes("UAPI listener started")),
+                    Stream.runDrain
+                );
+
+                subprocess.off("exit", onExit);
+                subprocess.off("close", onClose);
+                subprocess.off("error", onError);
+                subprocess.off("disconnect", onDisconnect);
+                yield* Effect.sleep(5000);
+                resume(Effect.succeed(subprocess));
 
                 function onError(error: Error) {
-                    clearInterval(timer);
                     subprocess.off("exit", onExit);
                     subprocess.off("close", onClose);
                     subprocess.off("error", onError);
                     subprocess.off("disconnect", onDisconnect);
                     resume(
-                        Effect.fail(
-                            PlatformError.SystemError({
-                                reason: "Unknown",
-                                module: "Command",
-                                method: "wireguard-go.exe",
-                                pathOrDescriptor: command,
-                                message: `${error.message}\n${fs.readFileSync(stdout, "utf-8")}\n${fs.readFileSync(stderr, "utf8")}`,
-                            })
-                        )
+                        Effect.gen(function* () {
+                            const stdoutString = yield* fileSystem.readFileString(stdout, "utf-8");
+                            const stderrString = yield* fileSystem.readFileString(stderr, "utf-8");
+                            return yield* Effect.fail(
+                                PlatformError.SystemError({
+                                    reason: "Unknown",
+                                    module: "Command",
+                                    method: "wireguard-go.exe",
+                                    pathOrDescriptor: command,
+                                    message: `${error.message}\n${stdoutString}\n${stderrString}`,
+                                })
+                            );
+                        })
                     );
                 }
 
@@ -146,24 +161,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     return onError(new Error("Process disconnected unexpectedly."));
                 }
 
-                function onStarted() {
-                    clearInterval(timer);
-                    subprocess.off("exit", onExit);
-                    subprocess.off("close", onClose);
-                    subprocess.off("error", onError);
-                    subprocess.off("disconnect", onDisconnect);
-
-                    // FIXME: I hate this setTimeout, but it seems needed
-                    setTimeout(() => resume(Effect.succeed(subprocess)), 5000);
-                }
-
-                subprocess.on("exit", onExit);
-                subprocess.on("close", onClose);
-                subprocess.on("error", onError);
-                subprocess.on("disconnect", onDisconnect);
-
                 return Effect.sync(() => {
-                    clearInterval(timer);
                     subprocess.off("exit", onExit);
                     subprocess.off("close", onClose);
                     subprocess.off("error", onError);
