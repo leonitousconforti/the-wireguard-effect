@@ -2,6 +2,10 @@ stages:
   - build
   - test
 
+variables:
+  GIT_SUBMODULE_DEPTH: 1
+  GIT_SUBMODULE_STRATEGY: recursive
+
 include:
   - template: Security/Secret-Detection.gitlab-ci.yml
 
