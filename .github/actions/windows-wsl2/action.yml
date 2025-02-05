@@ -54,4 +54,4 @@ runs:
     - shell: pwsh
       run: wsl --distribution Ubuntu22.04 --user root --cd /root/the-wireguard-effect/ -- pnpm install
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root --cd /root/the-wireguard-effect/ -- pnpm test -- --run
+      run: wsl --distribution Ubuntu22.04 --user root --cd /root/the-wireguard-effect/ -- pnpm test --run
