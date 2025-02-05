@@ -25,6 +25,8 @@ runs:
     - shell: bash
       run: pnpm lint
     - shell: bash
+      run: pnpm circular
+    - shell: bash
       run: pnpm build
 
     # Clean up
