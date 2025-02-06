@@ -104,6 +104,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                 subprocess.on("error", onError);
                 subprocess.on("disconnect", onDisconnect);
 
+                console.log("before stream");
                 yield* Function.pipe(
                     fileSystem.stream(stdout),
                     Stream.decodeText("utf-8"),
@@ -111,6 +112,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     Stream.takeUntil(String.includes("UAPI listener started")),
                     Stream.runDrain
                 );
+                console.log("after stream");
 
                 subprocess.off("exit", onExit);
                 subprocess.off("close", onClose);
