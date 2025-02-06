@@ -2,6 +2,8 @@
 
 set -eo pipefail
 echo "🚀 Setting up the-wireguard-effect devcontainer..."
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 echo "Initializing submodules"
 sudo rm -rf submodules/osxcross/build
@@ -25,7 +27,7 @@ sudo chown -R root:wireguard-control /var/run/wireguard/
 pnpm build
 
 # echo "🧪 Testing..."
-pnpm test
+pnpm test --run
 
 echo "✅ Devcontainer setup complete!"
 echo "🙏 Thank you for contributing to the-wireguard-effect!"
