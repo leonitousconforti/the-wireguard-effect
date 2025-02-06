@@ -144,7 +144,7 @@ export const requestWireguardDemoConfig = (
                 const allowedIps = new Set([`${networkAddress.ip}${netmask}`] as const);
                 return yield* Schema.decode(WireguardConfig.WireguardConfig)({
                     ListenPort: 0,
-                    Dns: "1.1.1.1",
+                    Dns: "8.8.8.8",
                     Address: address,
                     PrivateKey: privateKey,
                     Peers: [

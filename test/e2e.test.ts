@@ -63,7 +63,6 @@ const waitForHandshakes = (
         ),
         Effect.map(({ stream }) => stream),
         Stream.unwrap,
-        Stream.tap(Console.log),
         Stream.timeout("10 seconds"),
         Stream.runDrain
     );
