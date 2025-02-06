@@ -262,15 +262,16 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
             const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
 
             if (process.platform === "win32") {
+                console.log("here0");
                 const runningWireguardGoProcess = yield* execCommandWireguardGoWindows(
                     bundledWireguardGoExecutablePath,
                     wireguardInterface.Name
                 );
-                console.log("here0");
-                yield* wireguardInterface.setConfig(wireguardConfig);
                 console.log("here1");
-                yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
+                yield* wireguardInterface.setConfig(wireguardConfig);
                 console.log("here2");
+                yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
+                console.log("here3");
                 return Tuple.make(wireguardInterface, runningWireguardGoProcess);
             } else {
                 yield* execCommand(bundledWireguardGoExecutablePath, wireguardInterface.Name);
