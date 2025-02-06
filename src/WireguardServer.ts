@@ -16,6 +16,7 @@ import * as Path from "@effect/platform/Path";
 import * as Socket from "@effect/platform/Socket";
 import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
+import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
@@ -142,8 +143,8 @@ export const requestWireguardDemoConfig = (
                 const networkAddress = yield* cidr.networkAddress();
                 const allowedIps = new Set([`${networkAddress.ip}${netmask}`] as const);
                 return yield* Schema.decode(WireguardConfig.WireguardConfig)({
-                    Dns: "1.1.1.1",
                     ListenPort: 0,
+                    Dns: "1.1.1.1",
                     Address: address,
                     PrivateKey: privateKey,
                     Peers: [
@@ -260,8 +261,10 @@ export const WireguardDemoServer = (options: {
                                         a: Schema.Schema.Type<(typeof WireguardPeer.WireguardPeer)["uapi"]>,
                                         b: Schema.Schema.Type<(typeof WireguardPeer.WireguardPeer)["uapi"]>
                                     ) => {
-                                        if (a.lastHandshakeTimeSeconds - b.lastHandshakeTimeSeconds <= -1) return -1;
-                                        else if (a.lastHandshakeTimeSeconds - b.lastHandshakeTimeSeconds >= 1) return 1;
+                                        const aLastHandshake = DateTime.toEpochMillis(a.lastHandshake);
+                                        const bLastHandshake = DateTime.toEpochMillis(b.lastHandshake);
+                                        if (aLastHandshake < bLastHandshake) return -1;
+                                        else if (aLastHandshake > bLastHandshake) return 1;
                                         else return 0;
                                     }
                                 ),

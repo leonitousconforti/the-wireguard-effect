@@ -122,8 +122,17 @@ export class WireguardPeer extends internalWireguardPeer.WireguardPeerConfigVari
      * The number of seconds since the most recent handshake, expressed relative
      * to the Unix epoch.
      */
-    lastHandshakeTimeSeconds: internalWireguardPeer.WireguardPeerConfigVariantSchema.FieldOnly("uapi")(
-        Schema.NumberFromString
+    lastHandshake: internalWireguardPeer.WireguardPeerConfigVariantSchema.FieldOnly("uapi")(
+        Function.pipe(
+            Schema.NumberFromString,
+            Schema.compose(
+                Schema.transform(Schema.Number, Schema.Number, {
+                    decode: Function.identity,
+                    encode: Number.multiply(1000),
+                })
+            ),
+            Schema.compose(Schema.DateTimeUtcFromNumber)
+        )
     ),
 }) {}
 
@@ -355,7 +364,7 @@ export class WireguardUapiGetPeer extends Schema.transformOrFail(Schema.String, 
             Endpoint: endpoint,
             PublicKey: publicKey,
             PresharedKey: presharedKey,
-            lastHandshakeTimeSeconds: last_handshake_time_sec,
+            lastHandshake: last_handshake_time_sec,
             AllowedIPs: allowedIps,
             PersistentKeepalive: keepAlive,
         });

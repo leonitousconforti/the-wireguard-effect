@@ -10,16 +10,19 @@ import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Config from "effect/Config";
 import * as Console from "effect/Console";
+import * as DateTime from "effect/DateTime";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as ParseResult from "effect/ParseResult";
+import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 import * as TestContext from "effect/TestContext";
 
 import * as WireguardControl from "the-wireguard-effect/WireguardControl";
 import * as WireguardInterface from "the-wireguard-effect/WireguardInterface";
+import * as WireguardPeer from "the-wireguard-effect/WireguardPeer";
 import * as WireguardServer from "the-wireguard-effect/WireguardServer";
 
 const portConfig = Config.number("WIREGUARD_DEMO_PORT").pipe(Config.withDefault(42912));
@@ -39,9 +42,28 @@ const testLayer = Layer.mergeAll(NodeHttp.layer, NodeContext.layer, TestContext.
 const waitForHandshakes = (
     wireguardInterface: WireguardInterface.WireguardInterface
 ): Effect.Effect<void, Cause.TimeoutException | Socket.SocketError | ParseResult.ParseError, never> =>
-    Function.pipe(
-        wireguardInterface.streamStats(),
-        Stream.takeUntil(Array.every((peer) => peer.lastHandshakeTimeSeconds > 0)),
+    Effect.Do.pipe(
+        Effect.bind("now", () => DateTime.now),
+        Effect.let(
+            "predicate",
+            ({ now }) =>
+                (peer: Schema.Schema.Type<(typeof WireguardPeer.WireguardPeer)["uapi"]>): boolean => {
+                    const lastRxBytes = peer.rxBytes;
+                    const lastTxBytes = peer.txBytes;
+                    const lastHandshake = peer.lastHandshake;
+                    return (
+                        lastRxBytes > 0 &&
+                        lastTxBytes > 0 &&
+                        DateTime.distanceDuration(now, lastHandshake) < Duration.seconds(30)
+                    );
+                }
+        ),
+        Effect.let("stream", ({ predicate }) =>
+            Stream.takeUntil(wireguardInterface.streamStats(), Array.every(predicate))
+        ),
+        Effect.map(({ stream }) => stream),
+        Stream.unwrap,
+        Stream.tap(Console.log),
         Stream.timeout("10 seconds"),
         Stream.runDrain
     );
