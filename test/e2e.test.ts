@@ -18,7 +18,6 @@ import * as Layer from "effect/Layer";
 import * as ParseResult from "effect/ParseResult";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
-import * as TestContext from "effect/TestContext";
 
 import * as WireguardControl from "the-wireguard-effect/WireguardControl";
 import * as WireguardInterface from "the-wireguard-effect/WireguardInterface";
@@ -33,7 +32,7 @@ const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
     WireguardControl.makeBundledWgQuickLayer({ sudo: process.platform !== "linux" })
 );
 
-const testLayer = Layer.mergeAll(NodeHttp.layer, NodeContext.layer, TestContext.TestContext, WireguardControlLive);
+const testLayer = Layer.mergeAll(NodeHttp.layer, NodeContext.layer, WireguardControlLive);
 
 /**
  * Waits for all peers on the interface to have a successful handshake as well
@@ -54,7 +53,7 @@ const waitForHandshakes = (
                     return (
                         lastRxBytes > 0 &&
                         lastTxBytes > 0 &&
-                        DateTime.distanceDuration(now, lastHandshake) < Duration.seconds(30)
+                        Duration.lessThanOrEqualTo(DateTime.distanceDuration(now, lastHandshake), Duration.seconds(30))
                     );
                 }
         ),
@@ -82,36 +81,36 @@ export const httpRequest = (
         Effect.scoped
     );
 
-it.layer(testLayer)((it) =>
-    it.scoped(
-        "wireguard e2e test using demo.wireguard.com",
-        () =>
-            Effect.gen(function* () {
-                const host = yield* hostConfig;
-                const port = yield* portConfig;
-                const hiddenPageUrl = yield* hiddenPageUrlConfig;
+it.live(
+    "wireguard e2e test using demo.wireguard.com",
+    () =>
+        Effect.gen(function* () {
+            const host = yield* hostConfig;
+            const port = yield* portConfig;
+            const hiddenPageUrl = yield* hiddenPageUrlConfig;
 
-                const config = yield* WireguardServer.requestWireguardDemoConfig({ host, port });
-                yield* Console.log("Got config from remote demo server");
+            const config = yield* WireguardServer.requestWireguardDemoConfig({ host, port });
+            yield* Console.log("Got config from remote demo server");
 
-                yield* httpRequest("https://www.google.com");
-                yield* Console.log("Can connect to https://google.com");
+            yield* httpRequest("https://www.google.com");
+            yield* Console.log("Can connect to https://google.com");
 
-                const networkInterface = yield* config.upScoped();
-                yield* Console.log("Interface is up");
+            const networkInterface = yield* config.upScoped();
+            yield* Console.log("Interface is up");
 
-                yield* waitForHandshakes(networkInterface);
-                yield* Console.log("Have handshake and traffic in both directions");
+            yield* waitForHandshakes(networkInterface);
+            yield* Console.log("Have handshake and traffic in both directions");
 
-                yield* httpRequest("https://www.google.com");
-                yield* Console.log("Connected to https://google.com again (still have internet access)");
+            yield* httpRequest("https://www.google.com");
+            yield* Console.log("Connected to https://google.com again (still have internet access)");
 
-                const hiddenPage = yield* httpRequest(hiddenPageUrl);
-                yield* Console.log("Connected to hidden page");
-                expect(hiddenPage).toMatchSnapshot();
-            }),
-        {
-            timeout: Function.pipe(1, Duration.minutes, Duration.toMillis),
-        }
-    )
+            const hiddenPage = yield* httpRequest(hiddenPageUrl);
+            yield* Console.log("Connected to hidden page");
+            expect(hiddenPage).toMatchSnapshot();
+        })
+            .pipe(Effect.scoped)
+            .pipe(Effect.provide(testLayer)),
+    {
+        timeout: Function.pipe(1, Duration.minutes, Duration.toMillis),
+    }
 );

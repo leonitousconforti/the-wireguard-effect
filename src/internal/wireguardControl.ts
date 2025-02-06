@@ -104,7 +104,6 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                 subprocess.on("error", onError);
                 subprocess.on("disconnect", onDisconnect);
 
-                console.log("before stream");
                 yield* Function.pipe(
                     fileSystem.stream(stdout),
                     Stream.decodeText("utf-8"),
@@ -112,17 +111,13 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     Stream.takeUntil(String.includes("UAPI listener started")),
                     Stream.runDrain
                 );
-                console.log("after stream");
-                yield* Effect.sleep(1000);
-                console.log("after sleep");
 
                 subprocess.off("exit", onExit);
                 subprocess.off("close", onClose);
                 subprocess.off("error", onError);
                 subprocess.off("disconnect", onDisconnect);
-                console.log("after off");
+                yield* Effect.sleep(3000);
                 resume(Effect.succeed(subprocess));
-                console.log("after resume");
 
                 function onError(error: Error) {
                     subprocess.off("exit", onExit);
@@ -166,7 +161,6 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     return onError(new Error("Process disconnected unexpectedly."));
                 }
 
-                console.log("before return");
                 return Effect.sync(() => {
                     subprocess.off("exit", onExit);
                     subprocess.off("close", onClose);
@@ -268,16 +262,12 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
             const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
 
             if (process.platform === "win32") {
-                console.log("here0");
                 const runningWireguardGoProcess = yield* execCommandWireguardGoWindows(
                     bundledWireguardGoExecutablePath,
                     wireguardInterface.Name
                 );
-                console.log("here1");
                 yield* wireguardInterface.setConfig(wireguardConfig);
-                console.log("here2");
                 yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
-                console.log("here3");
                 return Tuple.make(wireguardInterface, runningWireguardGoProcess);
             } else {
                 yield* execCommand(bundledWireguardGoExecutablePath, wireguardInterface.Name);
