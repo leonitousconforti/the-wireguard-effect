@@ -109,7 +109,8 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     Stream.decodeText("utf-8"),
                     Stream.splitLines,
                     Stream.tap(Console.log),
-                    Stream.runDrain
+                    Stream.runDrain,
+                    Effect.fork
                 );
                 yield* Effect.sleep(5000);
 
