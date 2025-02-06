@@ -16,6 +16,7 @@ import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as ParseResult from "effect/ParseResult";
 import * as Stream from "effect/Stream";
+import * as TestContext from "effect/TestContext";
 
 import * as WireguardControl from "the-wireguard-effect/WireguardControl";
 import * as WireguardInterface from "the-wireguard-effect/WireguardInterface";
@@ -29,7 +30,7 @@ const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
     WireguardControl.makeBundledWgQuickLayer({ sudo: process.platform !== "linux" })
 );
 
-const testLayer = Layer.mergeAll(NodeHttp.layer, NodeContext.layer, WireguardControlLive);
+const testLayer = Layer.mergeAll(NodeHttp.layer, NodeContext.layer, TestContext.TestContext, WireguardControlLive);
 
 /**
  * Waits for all peers on the interface to have a successful handshake as well
@@ -85,6 +86,8 @@ it.layer(testLayer)((it) =>
                 yield* Console.log("Connected to hidden page");
                 expect(hiddenPage).toMatchSnapshot();
             }),
-        { timeout: Function.pipe(1, Duration.minutes, Duration.toMillis) }
+        {
+            timeout: Function.pipe(1, Duration.minutes, Duration.toMillis),
+        }
     )
 );

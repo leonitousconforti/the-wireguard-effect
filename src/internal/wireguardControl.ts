@@ -7,6 +7,7 @@ import * as Socket from "@effect/platform/Socket";
 import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
+import * as Console from "effect/Console";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -108,6 +109,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     fileSystem.stream(stdout),
                     Stream.decodeText("utf-8"),
                     Stream.splitLines,
+                    Stream.tap(Console.log),
                     Stream.takeWhile(String.includes("UAPI listener started")),
                     Stream.runDrain
                 );
@@ -116,7 +118,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                 subprocess.off("close", onClose);
                 subprocess.off("error", onError);
                 subprocess.off("disconnect", onDisconnect);
-                yield* Effect.sleep(15000);
+                yield* Effect.sleep(5000);
                 resume(Effect.succeed(subprocess));
 
                 function onError(error: Error) {
@@ -220,7 +222,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                           })
                       );
             }),
-            Effect.timeout("1 minutes"),
+            Effect.timeout("10 seconds"),
             Effect.scoped
         );
 
@@ -235,7 +237,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
           ],
         Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.TimeoutException,
         FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
-    > = (wireguardConfig, wireguardInterface) =>
+    > = (wireguardConfig: WireguardConfig.WireguardConfig, wireguardInterface: WireguardInterface.WireguardInterface) =>
         Effect.gen(function* () {
             const path = yield* Path.Path;
             const fs = yield* FileSystem.FileSystem;
