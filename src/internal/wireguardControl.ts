@@ -7,7 +7,6 @@ import * as Socket from "@effect/platform/Socket";
 import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
-import * as Console from "effect/Console";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -15,6 +14,7 @@ import * as Layer from "effect/Layer";
 import * as ParseResult from "effect/ParseResult";
 import * as Predicate from "effect/Predicate";
 import * as Stream from "effect/Stream";
+import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
 import * as exec from "node:child_process";
 
@@ -108,17 +108,15 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     fileSystem.stream(stdout),
                     Stream.decodeText("utf-8"),
                     Stream.splitLines,
-                    Stream.tap(Console.log),
-                    Stream.runDrain,
-                    Effect.fork
+                    Stream.takeUntil(String.includes("UAPI listener started")),
+                    Stream.runDrain
                 );
-                yield* Effect.sleep(5000);
 
                 subprocess.off("exit", onExit);
                 subprocess.off("close", onClose);
                 subprocess.off("error", onError);
                 subprocess.off("disconnect", onDisconnect);
-                yield* Effect.sleep(5000);
+                yield* Effect.sleep(1000);
                 resume(Effect.succeed(subprocess));
 
                 function onError(error: Error) {
@@ -268,8 +266,11 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     bundledWireguardGoExecutablePath,
                     wireguardInterface.Name
                 );
+                console.log("here0");
                 yield* wireguardInterface.setConfig(wireguardConfig);
+                console.log("here1");
                 yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
+                console.log("here2");
                 return Tuple.make(wireguardInterface, runningWireguardGoProcess);
             } else {
                 yield* execCommand(bundledWireguardGoExecutablePath, wireguardInterface.Name);
