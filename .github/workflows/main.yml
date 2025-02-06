@@ -31,7 +31,7 @@ jobs:
       - uses: ./.github/actions/e2e
 
   linux-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 20
     needs: [build]
     steps:
