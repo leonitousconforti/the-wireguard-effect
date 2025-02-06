@@ -113,13 +113,16 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     Stream.runDrain
                 );
                 console.log("after stream");
+                yield* Effect.sleep(1000);
+                console.log("after sleep");
 
                 subprocess.off("exit", onExit);
                 subprocess.off("close", onClose);
                 subprocess.off("error", onError);
                 subprocess.off("disconnect", onDisconnect);
-                yield* Effect.sleep(1000);
+                console.log("after off");
                 resume(Effect.succeed(subprocess));
+                console.log("after resume");
 
                 function onError(error: Error) {
                     subprocess.off("exit", onExit);
@@ -163,6 +166,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     return onError(new Error("Process disconnected unexpectedly."));
                 }
 
+                console.log("before return");
                 return Effect.sync(() => {
                     subprocess.off("exit", onExit);
                     subprocess.off("close", onClose);
