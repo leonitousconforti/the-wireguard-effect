@@ -21,7 +21,7 @@ index f72daf6..0e3dcd6 100755
 @@ -102,32 +100,10 @@ parse_options() {
  	shopt -u nocasematch
  }
-
+ 
 -read_bool() {
 -	case "$2" in
 -	true) printf -v "$1" 1 ;;
@@ -33,7 +33,7 @@ index f72daf6..0e3dcd6 100755
  auto_su() {
  	[[ $UID == 0 ]] || exec sudo -p "$PROGRAM must be run as root. Please enter the password for %u to continue: " -- "$BASH" -- "$SELF" "${ARGS[@]}"
  }
-
+ 
 -add_if() {
 -	local ret rc
 -	if ret="$(cmd ifconfig wg create name "$INTERFACE" 2>&1 >/dev/null)"; then
@@ -67,12 +67,12 @@ index f72daf6..0e3dcd6 100755
 -	done < <(wg show "$INTERFACE" endpoints)
 +	done < <(freebsd-wg show "$INTERFACE" endpoints)
  }
-
+ 
  set_endpoint_direct_route() {
 @@ -336,48 +312,6 @@ add_route() {
  	fi
  }
-
+ 
 -set_config() {
 -	echo "$WG_CONFIG" | cmd wg setconf "$INTERFACE" /dev/stdin
 -}
@@ -121,7 +121,7 @@ index f72daf6..0e3dcd6 100755
 @@ -387,49 +321,17 @@ execute_hooks() {
  	done
  }
-
+ 
 -cmd_usage() {
 -	cat >&2 <<-_EOF
 -	Usage: $PROGRAM [ up | down | save | strip ] [ CONFIG_FILE | INTERFACE ]
@@ -171,7 +171,7 @@ index f72daf6..0e3dcd6 100755
  	[[ $AUTO_ROUTE4 -eq 1 || $AUTO_ROUTE6 -eq 1 ]] && set_endpoint_direct_route
 @@ -439,7 +341,7 @@ cmd_up() {
  }
-
+ 
  cmd_down() {
 -	[[ " $(wg show interfaces) " == *" $INTERFACE "* ]] || die "\`$INTERFACE' is not a WireGuard interface"
 +	[[ " $(freebsd-wg show interfaces) " == *" $INTERFACE "* ]] || die "\`$INTERFACE' is not a WireGuard interface"
@@ -181,7 +181,7 @@ index f72daf6..0e3dcd6 100755
 @@ -447,15 +349,6 @@ cmd_down() {
  	execute_hooks "${POST_DOWN[@]}"
  }
-
+ 
 -cmd_save() {
 -	[[ " $(wg show interfaces) " == *" $INTERFACE "* ]] || die "\`$INTERFACE' is not a WireGuard interface"
 -	save_config
@@ -192,7 +192,7 @@ index f72daf6..0e3dcd6 100755
 -}
 -
  # ~~ function override insertion point ~~
-
+ 
  make_temp
 @@ -471,16 +364,7 @@ elif [[ $# -eq 2 && $1 == down ]]; then
  	auto_su
@@ -210,3 +210,4 @@ index f72daf6..0e3dcd6 100755
 -	cmd_usage
  	exit 1
  fi
+ 
