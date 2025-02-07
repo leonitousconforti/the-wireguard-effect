@@ -16,6 +16,9 @@ Added in v1.0.0
 
 - [Datatypes](#datatypes)
   - [WireguardPeer (class)](#wireguardpeer-class)
+- [Refinements](#refinements)
+  - [hasBidirectionalTraffic](#hasbidirectionaltraffic)
+  - [hasHandshakedRecently](#hashandshakedrecently)
 - [Schemas](#schemas)
   - [WireguardUapiGetPeer (class)](#wireguarduapigetpeer-class)
   - [WireguardUapiSetPeer (class)](#wireguarduapisetpeer-class)
@@ -78,6 +81,32 @@ const peerSchemaInstantiation = Schema.decode(WireguardPeer)({
   AllowedIPs: ["192.168.0.0/24"],
   PersistentKeepalive: Duration.seconds(20)
 })
+```
+
+Added in v1.0.0
+
+# Refinements
+
+## hasBidirectionalTraffic
+
+**Signature**
+
+```ts
+export declare const hasBidirectionalTraffic: (
+  wireguardPeer: Schema.Schema.Type<(typeof WireguardPeer)["uapi"]>
+) => Effect.Effect<boolean, never, never>
+```
+
+Added in v1.0.0
+
+## hasHandshakedRecently
+
+**Signature**
+
+```ts
+export declare const hasHandshakedRecently: (
+  wireguardPeer: Schema.Schema.Type<(typeof WireguardPeer)["uapi"]>
+) => Effect.Effect<boolean, never, never>
 ```
 
 Added in v1.0.0
