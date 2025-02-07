@@ -268,6 +268,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                 );
                 yield* wireguardInterface.setConfig(wireguardConfig);
                 yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
+                yield* Effect.sleep(5000);
                 return Tuple.make(wireguardInterface, runningWireguardGoProcess);
             } else {
                 yield* execCommand(bundledWireguardGoExecutablePath, wireguardInterface.Name);
