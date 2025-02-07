@@ -102,7 +102,7 @@ it.live(
             yield* Console.log("Have handshake and traffic in both directions");
 
             yield* httpRequest("https://www.google.com");
-            yield* Console.log("Connected to https://google.com again (still have internet access)");
+            yield* Console.log("Can connect to https://google.com again (still have internet access)");
 
             const hiddenPage = yield* httpRequest(hiddenPageUrl);
             yield* Console.log("Connected to hidden page");
