@@ -2,6 +2,7 @@ import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import tsParser from "@typescript-eslint/parser";
 import codegen from "eslint-plugin-codegen";
+import prettierPlugin from "eslint-plugin-prettier";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import sortDestructureKeys from "eslint-plugin-sort-destructure-keys";
 import path from "node:path";
@@ -31,6 +32,7 @@ export default [
         plugins: {
             "sort-destructure-keys": sortDestructureKeys,
             "simple-import-sort": simpleImportSort,
+            prettier: prettierPlugin,
             codegen,
         },
 
@@ -57,6 +59,8 @@ export default [
             "no-case-declarations": "off",
             "codegen/codegen": "error",
             "object-shorthand": "error",
+            "@typescript-eslint/no-namespace": "off",
+            "@typescript-eslint/no-empty-object-type": "off",
             "sort-destructure-keys/sort-destructure-keys": "error",
             "@typescript-eslint/array-type": ["warn", { default: "generic", readonly: "generic" }],
             "@typescript-eslint/consistent-type-imports": "off",
