@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
       id-token: write
@@ -41,6 +41,8 @@ jobs:
         run: pnpm check
       - shell: bash
         run: pnpm lint
+      - shell: bash
+        run: pnpm circular
       - shell: bash
         run: pnpm build
 
