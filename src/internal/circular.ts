@@ -451,13 +451,13 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
      * @since 1.0.0
      * @category Wireguard control
      */
-    public streamStats: {
+    public streamPeerStats: {
         (): Stream.Stream<
             ReadonlyArray<Schema.Schema.Type<(typeof WireguardPeer.WireguardPeer)["uapi"]>>,
             Socket.SocketError | ParseResult.ParseError,
             never
         >;
-    } = () => streamStats(this);
+    } = () => streamPeerStats(this);
 }
 
 // --------------------------------------------
@@ -616,7 +616,7 @@ export const removePeer: {
     });
 
 /** @internal */
-export const streamStats = (
+export const streamPeerStats = (
     wireguardInterface: WireguardInterface
 ): Stream.Stream<
     ReadonlyArray<Schema.Schema.Type<(typeof WireguardPeer.WireguardPeer)["uapi"]>>,

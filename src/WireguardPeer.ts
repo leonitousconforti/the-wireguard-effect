@@ -6,6 +6,7 @@
 
 import * as Array from "effect/Array";
 import * as Brand from "effect/Brand";
+import * as DateTime from "effect/DateTime";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -373,3 +374,24 @@ export class WireguardUapiGetPeer extends Schema.transformOrFail(Schema.String, 
     identifier: "WireguardUapiGetPeer",
     description: "A wireguard uapi peer configuration",
 }) {}
+
+/**
+ * @since 1.0.0
+ * @category Refinements
+ */
+export const hasBidirectionalTraffic = (
+    wireguardPeer: Schema.Schema.Type<(typeof WireguardPeer)["uapi"]>
+): Effect.Effect<boolean, never, never> => Effect.succeed(wireguardPeer.rxBytes > 0 && wireguardPeer.txBytes > 0);
+
+/**
+ * @since 1.0.0
+ * @category Refinements
+ */
+export const hasHandshakedRecently = (
+    wireguardPeer: Schema.Schema.Type<(typeof WireguardPeer)["uapi"]>
+): Effect.Effect<boolean, never, never> =>
+    Effect.Do.pipe(
+        Effect.bind("now", () => DateTime.now),
+        Effect.let("threshold", () => Duration.lessThanOrEqualTo(Duration.seconds(30))),
+        Effect.map(({ now, threshold }) => threshold(DateTime.distanceDuration(wireguardPeer.lastHandshake, now)))
+    );

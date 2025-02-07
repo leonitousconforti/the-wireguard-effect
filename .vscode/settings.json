@@ -23,6 +23,7 @@
         "featurename",
         "fwmark",
         "gitsubmodule",
+        "Handshaked",
         "hardlink",
         "inet",
         "installtunnelservice",

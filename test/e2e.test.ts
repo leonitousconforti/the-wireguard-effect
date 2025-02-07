@@ -6,17 +6,14 @@ import * as HttpClient from "@effect/platform/HttpClient";
 import * as HttpClientError from "@effect/platform/HttpClientError";
 import * as HttpClientResponse from "@effect/platform/HttpClientResponse";
 import * as Socket from "@effect/platform/Socket";
-import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Config from "effect/Config";
 import * as Console from "effect/Console";
-import * as DateTime from "effect/DateTime";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as ParseResult from "effect/ParseResult";
-import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 
 import * as WireguardControl from "the-wireguard-effect/WireguardControl";
@@ -38,30 +35,13 @@ const testLayer = Layer.mergeAll(NodeHttp.layer, NodeContext.layer, WireguardCon
  * Waits for all peers on the interface to have a successful handshake as well
  * some bidirectional traffic.
  */
-const waitForHandshakes = (
+const waitForHealthy = (
     wireguardInterface: WireguardInterface.WireguardInterface
 ): Effect.Effect<void, Cause.TimeoutException | Socket.SocketError | ParseResult.ParseError, never> =>
-    Effect.Do.pipe(
-        Effect.bind("now", () => DateTime.now),
-        Effect.let(
-            "predicate",
-            ({ now }) =>
-                (peer: Schema.Schema.Type<(typeof WireguardPeer.WireguardPeer)["uapi"]>): boolean => {
-                    const lastRxBytes = peer.rxBytes;
-                    const lastTxBytes = peer.txBytes;
-                    const lastHandshake = peer.lastHandshake;
-                    return (
-                        lastRxBytes > 0 &&
-                        lastTxBytes > 0 &&
-                        Duration.lessThanOrEqualTo(DateTime.distanceDuration(now, lastHandshake), Duration.seconds(30))
-                    );
-                }
-        ),
-        Effect.let("stream", ({ predicate }) =>
-            Stream.takeUntil(wireguardInterface.streamStats(), Array.every(predicate))
-        ),
-        Effect.map(({ stream }) => stream),
-        Stream.unwrap,
+    Function.pipe(
+        wireguardInterface.streamPeerStats(),
+        Stream.takeUntilEffect(Effect.every(WireguardPeer.hasBidirectionalTraffic)),
+        Stream.takeUntilEffect(Effect.every(WireguardPeer.hasHandshakedRecently)),
         Stream.timeout("10 seconds"),
         Stream.runDrain
     );
@@ -98,7 +78,7 @@ it.live(
             const networkInterface = yield* config.upScoped();
             yield* Console.log("Interface is up");
 
-            yield* waitForHandshakes(networkInterface);
+            yield* waitForHealthy(networkInterface);
             yield* Console.log("Have handshake and traffic in both directions");
 
             yield* httpRequest("https://www.google.com");
