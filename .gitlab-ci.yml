@@ -20,6 +20,10 @@ typescript-build:
   timeout: 10 minutes
   tags:
     - ubuntu-24.04
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - /tmp/the-wireguard-effect.tar
   script:
     - sudo apt-get install --yes mingw-w64 libarchive-tools clang cmake libxml2-dev imagemagick librsvg2-bin
     - npm install --global corepack@latest
