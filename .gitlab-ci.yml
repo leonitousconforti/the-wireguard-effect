@@ -1,6 +1,9 @@
 stages:
+  - prepare
   - build
   - test
+  - release
+  - publish
 
 variables:
   GIT_SUBMODULE_DEPTH: 1
@@ -14,35 +17,98 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^renovate\/.+$/i
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/
 
-typescript-build:
+prepare_job:
+  stage: prepare
+  image: alpine:latest
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/'
+  script:
+    - apk add curl jq
+    - 'curl -H "PRIVATE-TOKEN: $CI_API_TOKEN" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/repository/changelog?version=$CI_COMMIT_TAG" | jq -r .notes > release_notes.md'
+    - 'curl -H "PRIVATE-TOKEN: $CI_API_TOKEN" -X POST "$CI_API_V4_URL/projects/$CI_PROJECT_ID/repository/changelog?version=$CI_COMMIT_TAG" --data-urlencode "notes=$(cat release_notes.md)"'
+  artifacts:
+    paths:
+      - release_notes.md
+
+typescript_job:
   stage: build
   timeout: 10 minutes
-  tags:
-    - ubuntu-24.04
+  image: node:latest
   artifacts:
-    expire_in: 1 week
     paths:
-      - /tmp/the-wireguard-effect.tar
+      - dist/
+    reports:
+      junit:
+        - coverage/junit.xml
   script:
     - sudo apt-get install --yes mingw-w64 libarchive-tools clang cmake libxml2-dev imagemagick librsvg2-bin
     - npm install --global corepack@latest
     - corepack install
     - corepack enable
     - pnpm install
-
     - pnpm check
     - pnpm lint
     - pnpm circular
     - pnpm build
+    - pnpm coverage
 
-    - sudo rm -rf .git/
-    - sudo rm -rf node_modules/
-    - sudo rm -rf submodules/wintun
-    - sudo rm -rf submodules/nvlist
-    - sudo rm -rf submodules/osxcross
-    - sudo rm -rf submodules/wireguard-apple
-    - sudo rm -rf submodules/wireguard-go
-    - sudo rm -rf submodules/wireguard-tools
-    - sudo rm -rf submodules/wireguard-windows
-    - tar -cvf /tmp/the-wireguard-effect.tar .
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs:
+    - job: typescript_job
+    - job: prepare_job
+      artifacts: true
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/'
+  script:
+    - echo "Creating release"
+  release:
+    name: "Release $CI_COMMIT_TAG"
+    description: release_notes.md
+    tag_name: "$CI_COMMIT_TAG"
+    ref: "$CI_COMMIT_SHA"
+
+publish_job:
+  stage: publish
+  image: node:latest
+  needs:
+    - job: release_job
+    - job: typescript_job
+      artifacts: true
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/'
+  script:
+    # Install pnpm
+    - npm install --global corepack@latest
+    - corepack install
+    - corepack enable
+
+    # Set version to match the git tag
+    - (cd dist && npm version --no-git-tag-version $CI_COMMIT_TAG)
+
+    # Add configuration to publish to GitLab's NPM registry and NPMJS
+    # For more information, see https://docs.gitlab.com/ee/user/packages/npm_registry/#with-the-npmrc-file
+    - echo "@${CI_PROJECT_ROOT_NAMESPACE}:registry=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/" >> .npmrc
+    - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> .npmrc
+    - echo "${CI_API_V4_URL#http*:}/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=\${CI_JOB_TOKEN}" >> .npmrc
+    - echo "Using the following .npmrc:"; cat .npmrc
+
+    # Publish to npm (before we change the scope of the package)
+    - pnpm publish --no-git-checks --access public --registry https://registry.npmjs.org/
+
+    # Validate that the package name is properly scoped to the project's root namespace.
+    # For more information, see https://docs.gitlab.com/ee/user/packages/npm_registry/#package-naming-convention
+    - (cd dist && npm init --yes --scope "@leoconforti")
+    - NPM_PACKAGE_NAME=$(node -p "require('./dist/package.json').name")
+    - |
+      if [[ ! $NPM_PACKAGE_NAME =~ ^@$CI_PROJECT_ROOT_NAMESPACE/ ]]; then
+        echo "Invalid package scope! Packages must be scoped in the root namespace of the project, e.g. \"@${CI_PROJECT_ROOT_NAMESPACE}/${CI_PROJECT_NAME}\""
+        echo 'For more information, see https://docs.gitlab.com/ee/user/packages/npm_registry/#package-naming-convention'
+        exit 1
+      fi
+
+    # Publish to gitlab
+    - pnpm publish --no-git-checks --access public --registry ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/

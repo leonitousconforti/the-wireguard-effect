@@ -41,6 +41,7 @@
         "nftables",
         "nodesource",
         "norestart",
+        "NPMJS",
         "nvlist",
         "openresolv",
         "osxcross",
