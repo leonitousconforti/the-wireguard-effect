@@ -32,13 +32,13 @@ typescript-build:
     - pnpm circular
     - pnpm build
 
-    - rm -rf .git/
-    - rm -rf node_modules/
-    - rm -rf submodules/wintun
-    - rm -rf submodules/nvlist
-    - rm -rf submodules/osxcross
-    - rm -rf submodules/wireguard-apple
-    - rm -rf submodules/wireguard-go
-    - rm -rf submodules/wireguard-tools
-    - rm -rf submodules/wireguard-windows
+    - sudo rm -rf .git/
+    - sudo rm -rf node_modules/
+    - sudo rm -rf submodules/wintun
+    - sudo rm -rf submodules/nvlist
+    - sudo rm -rf submodules/osxcross
+    - sudo rm -rf submodules/wireguard-apple
+    - sudo rm -rf submodules/wireguard-go
+    - sudo rm -rf submodules/wireguard-tools
+    - sudo rm -rf submodules/wireguard-windows
     - tar -cvf /tmp/the-wireguard-effect.tar .
