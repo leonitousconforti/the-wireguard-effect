@@ -43,7 +43,7 @@ typescript_job:
       junit:
         - coverage/junit.xml
   script:
-    - sudo apt-get install --yes mingw-w64 libarchive-tools clang cmake libxml2-dev imagemagick librsvg2-bin
+    - apt-get install --yes mingw-w64 libarchive-tools clang cmake libxml2-dev imagemagick librsvg2-bin
     - npm install --global corepack@latest
     - corepack install
     - corepack enable
