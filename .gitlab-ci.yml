@@ -21,11 +21,24 @@ typescript-build:
   tags:
     - ubuntu-24.04
   script:
-    - npm install -g corepack@latest
+    - apt-get install --yes mingw-w64 libarchive-tools clang cmake libxml2-dev imagemagick librsvg2-bin
+    - npm install --global corepack@latest
     - corepack install
     - corepack enable
     - pnpm install
+
     - pnpm check
     - pnpm lint
     - pnpm circular
     - pnpm build
+
+    - rm -rf .git/
+    - rm -rf node_modules/
+    - rm -rf submodules/wintun
+    - rm -rf submodules/nvlist
+    - rm -rf submodules/osxcross
+    - rm -rf submodules/wireguard-apple
+    - rm -rf submodules/wireguard-go
+    - rm -rf submodules/wireguard-tools
+    - rm -rf submodules/wireguard-windows
+    - tar -cvf /tmp/the-wireguard-effect.tar .
