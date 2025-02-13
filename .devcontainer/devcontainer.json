@@ -27,7 +27,8 @@
                 "eamodio.gitlens",
                 "mutantdino.resourcemonitor",
                 "GitHub.vscode-github-actions",
-                "yoavbls.pretty-ts-errors"
+                "yoavbls.pretty-ts-errors",
+                "redhat.vscode-yaml"
             ],
             "settings": {
                 "cSpell.enabled": true,
@@ -39,6 +40,12 @@
                 "editor.defaultFormatter": "EditorConfig.EditorConfig",
                 "[typescript][typescriptreact][javascript][javascriptreact][json][jsonc][yaml]": {
                     "editor.defaultFormatter": "esbenp.prettier-vscode"
+                },
+                "[yaml]": {
+                    "editor.tabSize": 2,
+                    "editor.insertSpaces": true,
+                    "editor.autoIndent": "advanced",
+                    "editor.defaultFormatter": "redhat.vscode-yaml"
                 },
                 "editor.codeActionsOnSave": {
                     "source.organizeImports": "always",
