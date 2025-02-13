@@ -35,7 +35,8 @@ prepare_job:
 typescript_job:
   stage: build
   timeout: 10 minutes
-  image: node:latest
+  tags:
+    - ubuntu-24.04
   artifacts:
     paths:
       - dist/
@@ -43,8 +44,7 @@ typescript_job:
       junit:
         - coverage/junit.xml
   script:
-    - apt-get update
-    - apt-get install --yes mingw-w64 libarchive-tools clang cmake libxml2-dev imagemagick librsvg2-bin
+    - sudo apt-get install --yes mingw-w64 libarchive-tools clang cmake libxml2-dev imagemagick librsvg2-bin
     - npm install --global corepack@latest
     - corepack install
     - corepack enable
