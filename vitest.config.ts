@@ -5,8 +5,8 @@ export default defineConfig({
     test: {
         include: ["./test/**/*.test.ts"],
         globals: true,
-        coverage: { provider: "v8" },
-        reporters: ["default", "hanging-process", ["junit", { outputFile: "coverage/junit.xml" }]],
+        coverage: { provider: "v8", include: ["src/**/*.ts"], reporter: ["cobertura", "text"] },
+        reporters: ["default", "hanging-process", ["junit", { outputFile: "./coverage/junit.xml" }]],
     },
     server: {
         watch: {
