@@ -23,10 +23,10 @@ sudo usermod -a -G wireguard-control root
 sudo mkdir -p /var/run/wireguard/
 sudo chown -R root:wireguard-control /var/run/wireguard/
 
-# echo "🏗️ Building..."
+echo "🏗️ Building..."
 pnpm build
 
-# echo "🧪 Testing..."
+echo "🧪 Testing..."
 pnpm test -- --run
 
 echo "✅ Devcontainer setup complete!"
