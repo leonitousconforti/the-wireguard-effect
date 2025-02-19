@@ -35,9 +35,9 @@ prepare_job:
 build_job:
   stage: build
   timeout: 10 minutes
-  image: node:latest
+  image: ubuntu:latest
   script:
-    - sudo apt-get install --yes mingw-w64 libarchive-tools clang cmake libxml2-dev imagemagick librsvg2-bin
+    - apt-get install --yes mingw-w64 libarchive-tools clang cmake libxml2-dev imagemagick librsvg2-bin
     - npm install --global corepack@latest
     - corepack install
     - corepack enable
