@@ -2,7 +2,7 @@
 
 the-wireguard-effect has turned into a couple of things. It started as a `Cross platform wireguard api client for nodejs built on wireguard-go with effect-ts`, but has since added a cross platform CLI to control some wireguard interfaces without needing to install anything, a wireguard demo server that implements the same protocol as demo.wireguard.com so it will work with all the existing examples, a lot of helpers and examples for config generation, and unit + e2e testing.
 
-[![pipeline status](https://git.ltgk.net/leoconforti/eftar/badges/main/pipeline.svg)](https://git.ltgk.net/leoconforti/eftar/-/commits/main) [![coverage report](https://git.ltgk.net/leoconforti/eftar/badges/main/coverage.svg?job=build_job)](https://git.ltgk.net/leoconforti/eftar/-/commits/main) [![Latest Release](https://git.ltgk.net/leoconforti/eftar/-/badges/release.svg)](https://git.ltgk.net/leoconforti/eftar/-/releases)
+[![pipeline status](https://git.ltgk.net/leoconforti/the-wireguard-effect/badges/main/pipeline.svg)](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commits/main) [![coverage report](https://git.ltgk.net/leoconforti/the-wireguard-effect/badges/main/coverage.svg?job=build_job)](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commits/main) [![Latest Release](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/badges/release.svg)](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/releases)
 
 ## Motivation/ideation :bulb:
 
