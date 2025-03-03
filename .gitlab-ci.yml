@@ -14,8 +14,8 @@ workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^renovate\/.+$/i
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/
+    # - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^renovate\/.+$/i
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
