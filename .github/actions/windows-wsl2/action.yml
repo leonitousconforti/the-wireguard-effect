@@ -49,6 +49,12 @@ runs:
       run: wsl --distribution Ubuntu22.04 --user root --exec mkdir -p /root/the-wireguard-effect/
     - shell: pwsh
       run: wsl --distribution Ubuntu22.04 --user root --exec tar -xvf /root/the-wireguard-effect.tar -C /root/the-wireguard-effect/
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root --cd /root/the-wireguard-effect/ -- npm install -g corepack@latest
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root --cd /root/the-wireguard-effect/ -- corepack enable
+    - shell: pwsh
+      run: wsl --distribution Ubuntu22.04 --user root --cd /root/the-wireguard-effect/ -- corepack install
 
     # This is where our testing starts
     - shell: pwsh
