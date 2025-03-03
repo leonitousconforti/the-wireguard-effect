@@ -1,13 +1,11 @@
 stages:
   - prepare
+  - devcontainer
   - build
   - test
   - release
   - publish
-
-variables:
-  GIT_SUBMODULE_DEPTH: 1
-  GIT_SUBMODULE_STRATEGY: recursive
+  - deploy
 
 include:
   - template: Security/Secret-Detection.gitlab-ci.yml
@@ -15,13 +13,20 @@ include:
 workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^renovate\/.+$/i
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .pnpm-store
+    - node_modules/
 
 prepare_job:
   stage: prepare
   image: alpine:latest
+  tags: [docker]
   rules:
     - if: '$CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/'
   script:
@@ -32,22 +37,61 @@ prepare_job:
     paths:
       - release_notes.md
 
+devcontainer_job:
+  stage: devcontainer
+  timeout: 10 minutes
+  tags: [docker]
+  image: docker:28.0.1
+  services:
+    - docker:28.0.1-dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: "/certs"
+    FQ_IMAGE_NAME: "$CI_REGISTRY_IMAGE/dev-container:$CI_COMMIT_REF_SLUG"
+  before_script:
+    - apk add --update nodejs npm python3 make g++
+    - npm install --global @devcontainers/cli
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+  script:
+    - docker pull $FQ_IMAGE_NAME || docker pull $CI_REGISTRY_IMAGE/dev-container:$CI_DEFAULT_BRANCH || true
+    - docker tag $CI_REGISTRY_IMAGE/dev-container:$CI_DEFAULT_BRANCH $FQ_IMAGE_NAME || true
+    - devcontainer build --cache-from $FQ_IMAGE_NAME --image-name $FQ_IMAGE_NAME --workspace-folder .
+    - docker push $FQ_IMAGE_NAME
+
 build_job:
   stage: build
   timeout: 10 minutes
-  image: node:latest
-  script:
-    - apt-get update
-    - apt-get install --yes mingw-w64 libarchive-tools clang cmake libxml2-dev imagemagick librsvg2-bin
-    - npm install --global corepack@latest
-    - corepack install
-    - corepack enable
-    - pnpm install
-    - pnpm check
-    - pnpm lint
-    - pnpm circular
-    - pnpm build
-    # - pnpm coverage
+  image: docker:28.0.1
+  tags: [docker]
+  services:
+    - docker:28.0.1-dind
+  needs:
+    - job: devcontainer_job
+  variables:
+    FQ_IMAGE_NAME: "$CI_REGISTRY_IMAGE/dev-container:$CI_COMMIT_REF_SLUG"
+  before_script:
+    - docker pull $FQ_IMAGE_NAME
+  script: |
+    #!/bin/sh
+    set -e
+    build_date="$(date +%s)"
+    apk add --update nodejs npm python3 make g++
+    npm install --global @devcontainers/cli
+
+    # Create a label for use during cleanup since the devcontainer CLI does
+    # not have a "remove" or "down" command yet (though this is planned).
+    id_label="ci-container=${build_date}"
+
+    # Run build
+    devcontainer up --id-label ${id_label} --workspace-folder .
+    set +e
+    devcontainer exec --id-label ${id_label} --workspace-folder . pnpm coverage --run
+    build_exit_code=$?
+    set -e
+
+    # Clean up.
+    docker rm -f $(docker ps -aq --filter label=${id_label})
+    exit ${build_exit_code}
   coverage: /All files(?:[^|]*\|){4}\s*(\S+)/
   artifacts:
     paths:
@@ -62,6 +106,7 @@ build_job:
 release_job:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
+  tags: [docker]
   needs:
     - job: build_job
     - job: prepare_job
@@ -79,6 +124,7 @@ release_job:
 publish_job:
   stage: publish
   image: node:latest
+  tags: [docker]
   needs:
     - job: release_job
     - job: build_job
@@ -117,3 +163,20 @@ publish_job:
 
     # Publish to gitlab
     - pnpm publish --no-git-checks --access public --registry ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/
+
+pages_job:
+  image: ruby:latest
+  stage: deploy
+  pages: true
+  tags: [docker]
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+  needs:
+    - job: build_job
+      artifacts: true
+  script:
+    - gem install github-pages
+    - github-pages build --source docs --destination public
+  artifacts:
+    paths:
+      - public
