@@ -8,6 +8,7 @@ export LC_ALL=en_US.UTF-8
 echo "Initializing submodules"
 sudo rm -rf submodules/osxcross/build
 sudo rm -rf submodules/osxcross/target
+git submodule update --init --recursive --depth 1
 
 echo "📦 Installing repo dependencies..."
 npm install -g corepack@latest
