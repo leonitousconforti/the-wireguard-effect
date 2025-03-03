@@ -39,7 +39,7 @@ prepare_job:
 
 devcontainer_job:
   stage: devcontainer
-  timeout: 10 minutes
+  timeout: 30 minutes
   tags: [docker]
   image: docker:28.0.1
   services:
@@ -60,7 +60,7 @@ devcontainer_job:
 
 build_job:
   stage: build
-  timeout: 10 minutes
+  timeout: 30 minutes
   image: docker:28.0.1
   tags: [docker]
   services:
