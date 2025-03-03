@@ -66,8 +66,6 @@
         }
     },
 
-    "privileged": true,
     "remoteUser": "vscode",
-    "runArgs": ["--cap-add=NET_ADMIN"],
     "postCreateCommand": "bash -i -c './.devcontainer/setup.sh'"
 }
