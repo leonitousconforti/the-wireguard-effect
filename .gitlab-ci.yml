@@ -45,8 +45,11 @@ devcontainer_job:
   services:
     - docker:28.0.1-dind
   variables:
-    DOCKER_DRIVER: overlay2
+    DOCKER_BUILDKIT: "1"
+    DOCKER_DRIVER: "overlay2"
     DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_BUILDKIT_INLINE_CACHE: "1"
+    DOCKER_CONTAINERD_IMAGE_STORE: "1"
     FQ_IMAGE_NAME: "$CI_REGISTRY_IMAGE/dev-container:$CI_COMMIT_REF_SLUG"
   before_script:
     - apk add --update nodejs npm python3 make g++
@@ -55,7 +58,7 @@ devcontainer_job:
   script:
     - docker pull $FQ_IMAGE_NAME || docker pull $CI_REGISTRY_IMAGE/dev-container:$CI_DEFAULT_BRANCH || true
     - docker tag $CI_REGISTRY_IMAGE/dev-container:$CI_DEFAULT_BRANCH $FQ_IMAGE_NAME || true
-    - devcontainer build --cache-from $FQ_IMAGE_NAME --image-name $FQ_IMAGE_NAME --workspace-folder .
+    - devcontainer build --cache-from $FQ_IMAGE_NAME --cache-to type=inline,mode=max --image-name $FQ_IMAGE_NAME --workspace-folder .
     - docker push $FQ_IMAGE_NAME
 
 build_job:
