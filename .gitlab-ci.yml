@@ -68,6 +68,8 @@ build_job:
   needs:
     - job: devcontainer_job
   variables:
+    GIT_SUBMODULE_DEPTH: 1
+    GIT_SUBMODULE_STRATEGY: recursive
     FQ_IMAGE_NAME: "$CI_REGISTRY_IMAGE/dev-container:$CI_COMMIT_REF_SLUG"
   before_script:
     - docker pull $FQ_IMAGE_NAME
