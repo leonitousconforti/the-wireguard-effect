@@ -73,10 +73,7 @@ A wireguard key, which is a 44 character base64 string.
 **Signature**
 
 ```ts
-export declare const WireguardKey: Schema.brand<
-  Schema.refine<string, Schema.Schema<string, string, never>>,
-  "WireguardKey"
->
+export declare const WireguardKey: Schema.brand<Schema.refine<string, typeof Schema.String>, "WireguardKey">
 ```
 
 Added in v1.0.0

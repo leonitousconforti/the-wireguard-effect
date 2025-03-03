@@ -49,7 +49,7 @@ export declare const WireguardDemoServerSchema: Schema.transform<
   Schema.TemplateLiteral<`OK:${string}:${number}:${string}\n`>,
   Schema.Struct<{
     serverPort: InternetSchemas.$Port
-    serverPublicKey: Schema.brand<Schema.refine<string, Schema.Schema<string, string, never>>, "WireguardKey">
+    serverPublicKey: Schema.brand<Schema.refine<string, typeof Schema.String>, "WireguardKey">
     yourWireguardAddress: InternetSchemas.$Address
   }>
 >
