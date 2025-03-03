@@ -55,10 +55,6 @@ devcontainer_job:
     - apk add --update nodejs npm python3 make g++
     - npm install --global @devcontainers/cli
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-    - git config --global --add safe.directory "$CI_PROJECT_DIR"
-    - git config --global --add safe.directory "$CI_PROJECT_DIR/osxcross"
-    - git config --global --add safe.directory "$CI_PROJECT_DIR/wireguard-go"
-    - git config --global --add safe.directory "$CI_PROJECT_DIR/wireguard-tools"
   script:
     - docker pull $FQ_IMAGE_NAME || docker pull $CI_REGISTRY_IMAGE/dev-container:$CI_DEFAULT_BRANCH || true
     - docker tag $CI_REGISTRY_IMAGE/dev-container:$CI_DEFAULT_BRANCH $FQ_IMAGE_NAME || true
