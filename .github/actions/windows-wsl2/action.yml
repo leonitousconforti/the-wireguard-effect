@@ -36,7 +36,7 @@ runs:
     - shell: pwsh
       run: wsl --distribution Ubuntu22.04 --user root --exec sudo apt-get install -y openresolv
     - shell: pwsh
-      run: wsl --distribution Ubuntu22.04 --user root --exec curl -sL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
+      run: wsl --distribution Ubuntu22.04 --user root --exec curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
     - shell: pwsh
       run: wsl --distribution Ubuntu22.04 --user root --exec sudo bash nodesource_setup.sh
     - shell: pwsh
