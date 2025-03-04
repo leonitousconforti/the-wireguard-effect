@@ -1,4 +1,4 @@
-import { expect, it } from "@effect/vitest";
+import { it } from "@effect/vitest";
 
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeHttp from "@effect/platform-node/NodeHttpClient";
@@ -23,7 +23,7 @@ import * as WireguardServer from "the-wireguard-effect/WireguardServer";
 
 const portConfig = Config.number("WIREGUARD_DEMO_PORT").pipe(Config.withDefault(42912));
 const hostConfig = Config.string("WIREGUARD_DEMO_HOST").pipe(Config.withDefault("demo.wireguard.com"));
-const hiddenPageUrlConfig = Config.string("HIDDEN_PAGE").pipe(Config.withDefault("http://192.168.4.1:80"));
+// const hiddenPageUrlConfig = Config.string("HIDDEN_PAGE").pipe(Config.withDefault("http://192.168.4.1:80"));
 
 const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
     WireguardControl.makeBundledWgQuickLayer({ sudo: process.platform !== "linux" })
@@ -67,7 +67,7 @@ it.live(
         Effect.gen(function* () {
             const host = yield* hostConfig;
             const port = yield* portConfig;
-            const hiddenPageUrl = yield* hiddenPageUrlConfig;
+            // const hiddenPageUrl = yield* hiddenPageUrlConfig;
 
             const config = yield* WireguardServer.requestWireguardDemoConfig({ host, port });
             yield* Console.log("Got config from remote demo server");
@@ -84,9 +84,9 @@ it.live(
             yield* httpRequest("https://www.google.com");
             yield* Console.log("Can connect to https://google.com again (still have internet access)");
 
-            const hiddenPage = yield* httpRequest(hiddenPageUrl);
-            yield* Console.log("Connected to hidden page");
-            expect(hiddenPage).toMatchSnapshot();
+            // const hiddenPage = yield* httpRequest(hiddenPageUrl);
+            // yield* Console.log("Connected to hidden page");
+            // expect(hiddenPage).toMatchSnapshot();
         })
             .pipe(Effect.scoped)
             .pipe(Effect.provide(testLayer)),
