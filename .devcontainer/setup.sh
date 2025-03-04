@@ -30,6 +30,9 @@ sudo mkdir -p /var/run/wireguard/
 sudo chown -R root:wireguard-control /var/run/wireguard/
 
 echo "🏗️ Building..."
+pnpm check
+pnpm lint
+pnpm circular
 pnpm build
 
 echo "🧪 Testing..."
