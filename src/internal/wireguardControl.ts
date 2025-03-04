@@ -109,8 +109,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     Stream.decodeText("utf-8"),
                     Stream.splitLines,
                     Stream.takeUntil(String.includes("UAPI listener started")),
-                    Stream.runDrain,
-                    Effect.andThen(Effect.sleep(7_000))
+                    Stream.runDrain
                 );
 
                 subprocess.off("exit", onExit);
