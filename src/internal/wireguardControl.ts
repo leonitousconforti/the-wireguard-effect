@@ -18,6 +18,7 @@ import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
 import * as exec from "node:child_process";
 
+import { Console } from "effect";
 import type * as WireguardConfig from "../WireguardConfig.js";
 import type * as _WireguardControl from "../WireguardControl.js";
 import type * as WireguardInterface from "../WireguardInterface.js";
@@ -266,12 +267,14 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     wireguardInterface.Name
                 );
                 yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
+                yield* Console.log("here0");
                 yield* wireguardInterface.setConfig(wireguardConfig);
+                yield* Console.log("here1");
                 return Tuple.make(wireguardInterface, runningWireguardGoProcess);
             } else {
                 yield* execCommand(bundledWireguardGoExecutablePath, wireguardInterface.Name);
-                yield* wireguardInterface.setConfig(wireguardConfig);
                 yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
+                yield* wireguardInterface.setConfig(wireguardConfig);
                 return Tuple.make(wireguardInterface);
             }
         });
