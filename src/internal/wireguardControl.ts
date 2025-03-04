@@ -18,7 +18,6 @@ import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
 import * as exec from "node:child_process";
 
-import { Console } from "effect";
 import type * as WireguardConfig from "../WireguardConfig.js";
 import type * as _WireguardControl from "../WireguardControl.js";
 import type * as WireguardInterface from "../WireguardInterface.js";
@@ -110,7 +109,6 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     Stream.decodeText("utf-8"),
                     Stream.splitLines,
                     Stream.takeUntil(String.includes("UAPI listener started")),
-                    Stream.tap(Console.log),
                     Stream.runDrain
                 );
 
@@ -125,7 +123,6 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     subprocess.off("close", onClose);
                     subprocess.off("error", onError);
                     subprocess.off("disconnect", onDisconnect);
-                    console.log("error", error);
                     resume(
                         Effect.gen(function* () {
                             const stdoutString = yield* fileSystem.readFileString(stdout, "utf-8");
@@ -144,7 +141,6 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                 }
 
                 function onExit(code: number | null) {
-                    console.log("exit", code);
                     if (Predicate.isNotNull(code)) {
                         return onError(new Error(`Process exited unexpectedly with code ${code}`));
                     } else {
@@ -153,7 +149,6 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                 }
 
                 function onClose(code: number | null) {
-                    console.log("close", code);
                     if (Predicate.isNotNull(code)) {
                         return onError(new Error(`Process closed unexpectedly with code ${code}`));
                     } else {
@@ -162,7 +157,6 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                 }
 
                 function onDisconnect() {
-                    console.log("disconnect");
                     return onError(new Error("Process disconnected unexpectedly."));
                 }
 
