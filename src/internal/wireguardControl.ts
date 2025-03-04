@@ -56,7 +56,7 @@ export const makeUserspaceLayer = (): _WireguardControl.WireguardControl => {
         wireguardInterface: WireguardInterface.WireguardInterface
     ) => {
         const _down = down(wireguardConfig, wireguardInterface).pipe(Effect.orDie);
-        const _up = wireguardInterface.setConfig(wireguardConfig).pipe(Effect.onError(() => _down));
+        const _up = wireguardInterface.setConfig(wireguardConfig);
         return Effect.acquireRelease(_up, () => _down);
     };
 
@@ -265,8 +265,8 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     bundledWireguardGoExecutablePath,
                     wireguardInterface.Name
                 );
-                yield* wireguardInterface.setConfig(wireguardConfig);
                 yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
+                yield* wireguardInterface.setConfig(wireguardConfig);
                 return Tuple.make(wireguardInterface, runningWireguardGoProcess);
             } else {
                 yield* execCommand(bundledWireguardGoExecutablePath, wireguardInterface.Name);
@@ -313,21 +313,22 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
     const upScoped: _WireguardControl.WireguardControl["upScoped"] = (wireguardConfig, wireguardInterface) => {
         const _down = (wireguardGoSubprocess?: exec.ChildProcess | undefined) =>
             down(wireguardConfig, wireguardInterface, wireguardGoSubprocess).pipe(Effect.orDie);
-        const _up = internalUp(wireguardConfig, wireguardInterface).pipe(Effect.onError(() => _down()));
-        return Effect.acquireRelease(_up, (data) => {
-            if (Array.isArray(data) && Tuple.isTupleOf(data, 2)) {
-                const [_, wireguardGoSubprocess] = data;
-                return _down(wireguardGoSubprocess);
-            } else {
-                return _down();
-            }
-        }).pipe(Effect.map((data) => (Tuple.isTupleOf(data, 2) ? Tuple.getFirst(data) : data[0])));
+        const _up = internalUp(wireguardConfig, wireguardInterface);
+        return Effect.map(
+            Effect.acquireRelease(_up, (data) => {
+                if (Array.isArray(data) && Tuple.isTupleOf(data, 2)) {
+                    const wireguardGoSubprocess = Tuple.getSecond(data);
+                    return _down(wireguardGoSubprocess);
+                } else {
+                    return _down();
+                }
+            }),
+            (data) => data[0]
+        );
     };
 
     const up: _WireguardControl.WireguardControl["up"] = (wireguardConfig, wireguardInterface) =>
-        internalUp(wireguardConfig, wireguardInterface).pipe(
-            Effect.map((data) => (Tuple.isTupleOf(data, 2) ? Tuple.getFirst(data) : data[0]))
-        );
+        Effect.map(internalUp(wireguardConfig, wireguardInterface), (data) => data[0]);
 
     return WireguardControl.of({
         [TypeId]: TypeId,
