@@ -4,13 +4,13 @@
     "image": "mcr.microsoft.com/devcontainers/base:bullseye",
 
     "features": {
-        "ghcr.io/devcontainers/features/go:1": {},
-        "ghcr.io/devcontainers/features/git:1": {},
-        "ghcr.io/devcontainers/features/node:1": {},
-        "ghcr.io/devcontainers/features/github-cli:1": {},
-        "ghcr.io/devcontainers/features/common-utils:2": {},
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-        "ghcr.io/devcontainers-contrib/features/apt-get-packages:1": {
+        "ghcr.io/devcontainers/features/go:1.3.1": {},
+        "ghcr.io/devcontainers/features/git:1.3.2": {},
+        "ghcr.io/devcontainers/features/node:1.6.0": {},
+        "ghcr.io/devcontainers/features/github-cli:1.0.13": {},
+        "ghcr.io/devcontainers/features/common-utils:2.5.1": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:2.12.0": {},
+        "ghcr.io/devcontainers-contrib/features/apt-get-packages:1.0.6": {
             "packages": "mingw-w64,libarchive-tools,clang,cmake,libxml2-dev,imagemagick,librsvg2-bin,openresolv"
         }
     },
