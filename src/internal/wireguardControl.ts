@@ -13,6 +13,7 @@ import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as ParseResult from "effect/ParseResult";
 import * as Predicate from "effect/Predicate";
+import * as Schedule from "effect/Schedule";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
@@ -266,7 +267,8 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     wireguardInterface.Name
                 );
                 yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
-                yield* wireguardInterface.setConfig(wireguardConfig);
+                const schedule = Schedule.compose(Schedule.recurs(5), Schedule.exponential(2_000));
+                yield* Effect.retry(wireguardInterface.setConfig(wireguardConfig), schedule);
                 return Tuple.make(wireguardInterface, runningWireguardGoProcess);
             } else {
                 yield* execCommand(bundledWireguardGoExecutablePath, wireguardInterface.Name);
