@@ -84,9 +84,9 @@ it.live(
             yield* httpRequest("https://www.google.com");
             yield* Console.log("Can connect to https://google.com again (still have internet access)");
 
-            // const hiddenPage = yield* httpRequest(hiddenPageUrl);
-            // yield* Console.log("Connected to hidden page");
-            // expect(hiddenPage).toMatchSnapshot();
+            const hiddenPage = yield* httpRequest(hiddenPageUrl);
+            yield* Console.log("Connected to hidden page");
+            expect(hiddenPage).toMatchSnapshot();
         })
             .pipe(Effect.scoped)
             .pipe(Effect.provide(testLayer)),
