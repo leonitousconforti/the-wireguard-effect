@@ -18,7 +18,6 @@ import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
 import * as exec from "node:child_process";
-import * as os from "node:os";
 
 import type * as WireguardConfig from "../WireguardConfig.js";
 import type * as _WireguardControl from "../WireguardControl.js";
@@ -268,26 +267,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     bundledWireguardGoExecutablePath,
                     wireguardInterface.Name
                 );
-                yield* Effect.retry(
-                    Effect.try({
-                        try: () => {
-                            if (!Object.keys(os.networkInterfaces()).includes(wireguardInterface.Name)) {
-                                throw new Error("Interface not added");
-                            }
-                        },
-                        catch: () =>
-                            PlatformError.SystemError({
-                                reason: "Unknown",
-                                module: "Command",
-                                pathOrDescriptor: bundledWireguardGoExecutablePath,
-                                method: "wireguard-go.exe",
-                                message: "Interface was not added",
-                            }),
-                    }),
-                    retrySchedule
-                );
                 yield* Effect.retry(wireguardInterface.setConfig(wireguardConfig), retrySchedule);
-                yield* Effect.sleep("8 seconds");
                 yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
                 return Tuple.make(wireguardInterface, runningWireguardGoProcess);
             } else {
