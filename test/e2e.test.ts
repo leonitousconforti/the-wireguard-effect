@@ -67,7 +67,7 @@ it.live(
         Effect.gen(function* () {
             const host = yield* hostConfig;
             const port = yield* portConfig;
-            // const hiddenPageUrl = yield* hiddenPageUrlConfig;
+            const hiddenPageUrl = yield* hiddenPageUrlConfig;
 
             const config = yield* WireguardServer.requestWireguardDemoConfig({ host, port });
             yield* Console.log("Got config from remote demo server");
