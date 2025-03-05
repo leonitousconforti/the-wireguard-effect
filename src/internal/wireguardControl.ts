@@ -117,7 +117,6 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                 subprocess.off("close", onClose);
                 subprocess.off("error", onError);
                 subprocess.off("disconnect", onDisconnect);
-                yield* Effect.sleep(5_000);
                 resume(Effect.succeed(subprocess));
 
                 function onError(error: Error) {
@@ -267,10 +266,9 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     bundledWireguardGoExecutablePath,
                     wireguardInterface.Name
                 );
+                yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
                 const schedule = Schedule.compose(Schedule.recurs(5), Schedule.exponential(2_000));
                 yield* Effect.retry(wireguardInterface.setConfig(wireguardConfig), schedule);
-                yield* wireguardInterface.setConfig(wireguardConfig)
-                yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
                 return Tuple.make(wireguardInterface, runningWireguardGoProcess);
             } else {
                 yield* execCommand(bundledWireguardGoExecutablePath, wireguardInterface.Name);
