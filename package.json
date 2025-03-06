@@ -102,7 +102,7 @@
         "@effect/platform-node": "0.73.6",
         "effect": "3.13.6"
     },
-    "packageManager": "pnpm@9.15.6",
+    "packageManager": "pnpm@9.15.7",
     "engines": {
         "node": ">=18.0.0"
     },
