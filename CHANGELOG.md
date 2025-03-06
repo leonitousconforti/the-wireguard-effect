@@ -1,3 +1,12 @@
+## 0.0.34 (2025-03-06)
+
+### changed (4 changes)
+
+- [Update Effect-ts](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/797b658694e089b67cf3bd2ed66dc09bc1e70d7f) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/80))
+- [Update vitest monorepo to v3.0.8](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/170406e7b9aed099c247647be72edd668cf53827) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/79))
+- [Update pnpm to v9.15.7](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/76c3fd3309bda71905b2feac52725eab271523ea) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/78))
+- [Update dependency @effect/language-service to v0.4.0](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/a4c970db28c14029b7ef9dd78e445a44f72abff6) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/76))
+
 ## 0.0.33 (2025-03-05)
 
 No changes.
