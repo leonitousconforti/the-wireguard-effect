@@ -10,6 +10,8 @@ on:
         options:
         - e2e
         - linux
+        - freebsd
+        - openbsd
         - windows
         - windows-wsl2
         - macos-intel
@@ -44,6 +46,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/linux
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ always() }}
+
+  freebsd-lab:
+    if: github.event.inputs.platform == 'freebsd'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/freebsd
+      - uses: mxschmitt/action-tmate@v3
+        if: ${{ always() }}
+
+  openbsd-lab:
+    if: github.event.inputs.platform == 'openbsd'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/openbsd
       - uses: mxschmitt/action-tmate@v3
         if: ${{ always() }}
 
