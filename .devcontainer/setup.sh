@@ -6,10 +6,11 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
 echo "Fixing git permissions"
-git config --global --add safe.directory "/workspaces/the-wireguard-effect"
-git config --global --add safe.directory "/workspaces/the-wireguard-effect/submodules/osxcross"
-git config --global --add safe.directory "/workspaces/the-wireguard-effect/submodules/wireguard-go"
-git config --global --add safe.directory "/workspaces/the-wireguard-effect/submodules/wireguard-tools"
+git config --global --add safe.directory "."
+git config --global --add safe.directory "./submodules/nvlist"
+git config --global --add safe.directory "./submodules/osxcross"
+git config --global --add safe.directory "./submodules/wireguard-go"
+git config --global --add safe.directory "./submodules/wireguard-tools"
 
 echo "Initializing submodules"
 sudo rm -rf submodules/osxcross/build
