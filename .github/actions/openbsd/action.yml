@@ -21,7 +21,9 @@ runs:
           pkg_add sudo-1.9.15.5 node bash
           npm -v
           node -v
-          npm install -g pnpm
+          npm install --global corepack@latest
+          corepack enable
+          corepack install
         run: |
           pnpm install
           chmod +x ./src/*
