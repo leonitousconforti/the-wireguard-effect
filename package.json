@@ -66,7 +66,7 @@
         "@effect/vitest": "0.19.5",
         "@eslint/compat": "1.2.7",
         "@eslint/eslintrc": "3.3.0",
-        "@eslint/js": "9.21.0",
+        "@eslint/js": "9.22.0",
         "@types/ini": "4.1.1",
         "@types/node": "22.13.9",
         "@typescript-eslint/eslint-plugin": "8.26.0",
