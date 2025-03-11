@@ -61,8 +61,7 @@ export const httpRequest = (
         ),
         Effect.flatMap((client) => client.get(url)),
         Effect.flatMap(HttpClientResponse.filterStatusOk),
-        Effect.flatMap(({ text }) => text),
-        Effect.scoped
+        Effect.flatMap(({ text }) => text)
     );
 
 it.live(
