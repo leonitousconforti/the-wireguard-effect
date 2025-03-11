@@ -1,3 +1,18 @@
+## 0.0.36 (2025-03-11)
+
+### changed (10 changes)
+
+- [Update dependency fast-check to v4](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/2bde7b455b68d28b83c109a6ab64c75f365ae8d4) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/93))
+- [Update Effect-ts](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/8522137f524bf58fc584cc7e15834d8866cf39d5) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/95))
+- [Update Effect-ts](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/1d34bdd8cfe358b59476925d7d54c882b80ccdf2) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/94))
+- [Update dependency eslint-import-resolver-typescript to v3.8.4](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/0ffe85716b45dd50f7a12c6b7a781b095ecb7f00) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/92))
+- [Update typescript-eslint monorepo to v8.26.1](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/17d9073a28155413e2d64259453c284b4f58846b) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/91))
+- [Update pnpm to v9.15.9](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/f2a7046dbcef2d8b31cd5054a0a289c8799fa460) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/90))
+- [Update Effect-ts](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/73af4443103db75cadb6d8a3a0e2fcf9e0240cd8) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/89))
+- [Update dependency @types/node to v22.13.10](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/7aa1fe966a852b2de6ee6fa0c518280e50b8b844) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/88))
+- [Update dependency eslint to v9.22.0](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/de3a1342a9de5ca244d69aa2bd264c47019c1708) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/87))
+- [Update dependency @eslint/js to v9.22.0](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/2d7096dfacaa9e0ab0127492a937b0a971acb9d5) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/86))
+
 ## 0.0.35 (2025-03-07)
 
 ### changed (5 changes)
