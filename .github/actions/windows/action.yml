@@ -25,4 +25,4 @@ runs:
         timeout_minutes: 3
         max_attempts: 3
         shell: pwsh
-        command: C:\\msys64\\usr\\bin\\bash.exe -lc "pnpm test"
+        command: pnpm test
