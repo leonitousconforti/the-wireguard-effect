@@ -20,13 +20,19 @@ export const SupportedArchitectures = ["x64", "arm64"] as const;
 export type SupportedArchitecture = (typeof SupportedArchitectures)[number];
 
 /** @internal */
-export const SupportedPlatforms = ["linux", "darwin", "win32"] as const;
+export const SupportedPlatforms = ["linux", "darwin", "openbsd", "freebsd", "win32"] as const;
 
 /** @internal */
 export type SupportedPlatform = (typeof SupportedPlatforms)[number];
 
 /** @internal */
 export const LinuxInterfaceNameRegExp: RegExp = /^wg\d+$/;
+
+/** @internal */
+export const OpenBSDInterfaceNameRegExp: RegExp = /^tun\d+$/;
+
+/** @internal */
+export const FreeBSDInterfaceNameRegExp: RegExp = /^eth\d+$/;
 
 /** @internal */
 export const DarwinInterfaceNameRegExp: RegExp = /^utun\d+$/;
