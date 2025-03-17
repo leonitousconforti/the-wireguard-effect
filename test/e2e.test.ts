@@ -14,7 +14,6 @@ import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as ParseResult from "effect/ParseResult";
-import * as Schedule from "effect/Schedule";
 import * as Stream from "effect/Stream";
 
 import * as WireguardControl from "the-wireguard-effect/WireguardControl";
@@ -55,10 +54,7 @@ export const httpRequest = (
     url: string
 ): Effect.Effect<string, HttpClientError.HttpClientError | Cause.TimeoutException, HttpClient.HttpClient> =>
     Function.pipe(
-        Effect.map(
-            HttpClient.HttpClient,
-            HttpClient.retry(Schedule.compose(Schedule.recurs(5), Schedule.exponential(2_000)))
-        ),
+        HttpClient.HttpClient,
         Effect.flatMap((client) => client.get(url)),
         Effect.flatMap(HttpClientResponse.filterStatusOk),
         Effect.flatMap(({ text }) => text)

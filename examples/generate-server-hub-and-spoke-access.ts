@@ -69,7 +69,7 @@ export const program = (
             Effect.map(Chunk.toReadonlyArray)
         );
 
-        assert(serverWireguardNetworkAddress !== undefined);
+        assert.ok(serverWireguardNetworkAddress !== undefined);
 
         /**
          * The server needs to be SetupData, which is a combination of a

@@ -69,8 +69,8 @@ export const program = (
             Effect.map(Array.map(({ ip }) => ip))
         );
 
-        assert(serverWireguardNetworkAddress !== undefined);
-        assert(clientAddresses[0] !== undefined);
+        assert.ok(serverWireguardNetworkAddress !== undefined);
+        assert.ok(clientAddresses[0] !== undefined);
 
         /**
          * The server needs to be SetupData, which is a combination of a
