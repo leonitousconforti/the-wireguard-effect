@@ -552,7 +552,7 @@ export const getConfig: {
     Effect.gen(function* () {
         const uapiConfig = yield* internalInterface.userspaceContact(wireguardInterface, "get=1\n\n");
         const [interfaceConfig, ...peers] = uapiConfig.split("public_key=");
-        const { fwmark, listen_port, private_key } = ini.decode(interfaceConfig!);
+        const { fwmark, listen_port, private_key } = ini.decode(interfaceConfig ?? "");
 
         const peerConfigs = yield* Function.pipe(
             peers,

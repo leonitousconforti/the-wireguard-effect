@@ -22,6 +22,7 @@ import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 import * as Tuple from "effect/Tuple";
 import * as esmMain from "es-main";
+import * as assert from "node:assert";
 
 import * as InternetSchemas from "the-wireguard-effect/InternetSchemas";
 import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
@@ -70,13 +71,16 @@ export const program = (
             Effect.map(Array.map(({ ip }) => ip))
         );
 
+        assert(server1WireguardNetworkAddress !== undefined);
+        assert(server2WireguardNetworkAddress !== undefined);
+
         /**
          * The server needs to be SetupData, which is a combination of a
          * hostname or IPv4 or IPv6 endpoint (public address on the internet)
          * and the address of the node in the network.
          */
-        const server1SetupData = yield* decodeSetupData(Tuple.make(server1Address, server1WireguardNetworkAddress!));
-        const server2SetupData = yield* decodeSetupData(Tuple.make(server2Address, server2WireguardNetworkAddress!));
+        const server1SetupData = yield* decodeSetupData(Tuple.make(server1Address, server1WireguardNetworkAddress));
+        const server2SetupData = yield* decodeSetupData(Tuple.make(server2Address, server2WireguardNetworkAddress));
 
         // Generate the network
         const network = WireguardGenerate.generateServerToServerAccess({

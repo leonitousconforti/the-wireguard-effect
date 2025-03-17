@@ -23,6 +23,7 @@ import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 import * as Tuple from "effect/Tuple";
 import * as esmMain from "es-main";
+import * as assert from "node:assert";
 
 import * as InternetSchemas from "the-wireguard-effect/InternetSchemas";
 import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
@@ -73,12 +74,15 @@ export const program = (
             Effect.map(Array.map(({ ip }) => ip))
         );
 
+        assert(serverWireguardNetworkAddress !== undefined);
+        assert(clientAddresses[0] !== undefined);
+
         /**
          * The server needs to be SetupData, which is a combination of a
          * hostname or IPv4 or IPv6 endpoint (public address on the internet)
          * and the address of the node in the network.
          */
-        const serverSetupData = yield* decodeSetupData(Tuple.make(serverAddress, serverWireguardNetworkAddress!));
+        const serverSetupData = yield* decodeSetupData(Tuple.make(serverAddress, serverWireguardNetworkAddress));
 
         /**
          * Since clients are expected to be roaming, they only need an address
@@ -86,7 +90,7 @@ export const program = (
          * instead of pulling IPs from the cidr block, just make sure this ip is
          * not one that would have been assigned to another client.
          */
-        const clientAddress = yield* decodeAddress(clientAddresses[0]!);
+        const clientAddress = yield* decodeAddress(clientAddresses[0]);
 
         // Generate the network
         const network = WireguardGenerate.generateRemoteTunneledAccess({
