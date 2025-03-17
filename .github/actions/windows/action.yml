@@ -25,4 +25,8 @@ runs:
         timeout_minutes: 3
         max_attempts: 3
         shell: pwsh
-        command: pnpm test
+        command: |
+          $env:MSYSTEM = "MINGW64"
+          $env:CHERE_INVOKING = "1"
+          $env:MSYS2_PATH_TYPE = "inherit"
+          C:\msys64\usr\bin\bash.exe -lc "pnpm test"
