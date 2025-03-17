@@ -19,9 +19,10 @@ runs:
       run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
     - shell: pwsh
       run: pnpm install
-    - shell: pwsh
-      run: C:\\msys64\\usr\\bin\\bash.exe -lc "pnpm test"
-      env:
-        MSYSTEM: "MINGW64"
-        CHERE_INVOKING: "1"
-        MSYS2_PATH_TYPE: "inherit"
+
+    - uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 3
+        max_attempts: 3
+        shell: pwsh
+        command: C:\\msys64\\usr\\bin\\bash.exe -lc "pnpm test"

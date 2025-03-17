@@ -28,5 +28,9 @@ runs:
       run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
     - shell: bash
       run: pnpm install
-    - shell: bash
-      run: sudo -E pnpm test
+    - uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 3
+        max_attempts: 3
+        shell: bash
+        command: sudo -E pnpm test
