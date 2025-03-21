@@ -4,7 +4,6 @@
  * @since 1.0.0
  */
 
-import * as SocketServer from "@effect/experimental/SocketServer";
 import * as NodeHttpServer from "@effect/platform-node/NodeHttpServer";
 import * as NodeSocket from "@effect/platform-node/NodeSocket";
 import * as CommandExecutor from "@effect/platform/CommandExecutor";
@@ -14,6 +13,7 @@ import * as HttpServer from "@effect/platform/HttpServer";
 import * as HttpServerResponse from "@effect/platform/HttpServerResponse";
 import * as Path from "@effect/platform/Path";
 import * as Socket from "@effect/platform/Socket";
+import * as SocketServer from "@effect/platform/SocketServer";
 import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as DateTime from "effect/DateTime";
