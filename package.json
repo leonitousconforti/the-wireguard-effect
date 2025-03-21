@@ -68,7 +68,7 @@
         "@effect/typeclass": "0.33.1",
         "@effect/vitest": "0.20.1",
         "@eslint/compat": "1.2.7",
-        "@eslint/eslintrc": "3.3.0",
+        "@eslint/eslintrc": "3.3.1",
         "@eslint/js": "9.22.0",
         "@types/ini": "4.1.1",
         "@types/node": "22.13.11",
