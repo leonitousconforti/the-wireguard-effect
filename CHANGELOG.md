@@ -1,3 +1,17 @@
+## 0.0.39 (2025-03-24)
+
+### changed (9 changes)
+
+- [Update dependency vite to v6.2.3](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/f1de74594d2be163ea70b71d7ee0220937ca1839) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/137))
+- [Update dependency @types/node to v22.13.13](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/48313f9505497a8040b1c553b2d981c1dcb53970) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/138))
+- [Update Effect-ts](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/a4dcf75354927c120393991a123da2313b1ea3bf) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/136))
+- [Update dependency @types/node to v22.13.12](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/ccd04d611e476417413a016eaa38d4e3a639cd51) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/135))
+- [Update dependency eslint-plugin-prettier to v5.2.4](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/4f5d0fe06b490ee8c037050239828f286e2d60d3) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/134))
+- [Lock file maintenance](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/0db2e53e450496e95180b6ee1aa5db5be349834f) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/133))
+- [Update dependency eslint to v9.23.0](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/afc760c2b9f489a8da501d119454670f22b60e5a) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/132))
+- [Update dependency @eslint/js to v9.23.0](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/5f1fb5305d5767a3b0b4763ac7d761079d816d6f) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/131))
+- [Update dependency @eslint/eslintrc to v3.3.1](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/6de0f6780dcd16cd5eff4abaf7219e6d8eb39489) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/130))
+
 ## 0.0.38 (2025-03-21)
 
 ### changed (1 change)
