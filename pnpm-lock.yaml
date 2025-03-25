@@ -118,10 +118,10 @@ importers:
         version: 10.1.1(eslint@9.23.0)
       eslint-import-resolver-typescript:
         specifier: 4.2.2
-        version: 4.2.2(eslint-plugin-import-x@4.9.1(eslint@9.23.0)(typescript@5.8.2))(eslint@9.23.0)
+        version: 4.2.2(eslint-plugin-import-x@4.9.2(eslint@9.23.0)(typescript@5.8.2))(eslint@9.23.0)
       eslint-plugin-import-x:
-        specifier: 4.9.1
-        version: 4.9.1(eslint@9.23.0)(typescript@5.8.2)
+        specifier: 4.9.2
+        version: 4.9.2(eslint@9.23.0)(typescript@5.8.2)
       eslint-plugin-prettier:
         specifier: 5.2.4
         version: 5.2.4(eslint-config-prettier@10.1.1(eslint@9.23.0))(eslint@9.23.0)(prettier@3.5.3)
@@ -1476,8 +1476,8 @@ packages:
       is-bun-module:
         optional: true
 
-  eslint-plugin-import-x@4.9.1:
-    resolution: {integrity: sha512-YJ9W12tfDBBYVUUI5FVls6ZrzbVmfrHcQkjeHrG6I7QxWAlIbueRD+G4zPTg1FwlBouunTYm9dhJMVJZdj9wwQ==}
+  eslint-plugin-import-x@4.9.2:
+    resolution: {integrity: sha512-wFuy/kJRziBoJBr/Nw3H0TIUAqOwqeUXeeTtKhffDuQLNzQTEDOWTOMJRVwkExErNJ8HYqpAM4rSzsCM4vfmxA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
@@ -4039,7 +4039,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@4.2.2(eslint-plugin-import-x@4.9.1(eslint@9.23.0)(typescript@5.8.2))(eslint@9.23.0):
+  eslint-import-resolver-typescript@4.2.2(eslint-plugin-import-x@4.9.2(eslint@9.23.0)(typescript@5.8.2))(eslint@9.23.0):
     dependencies:
       debug: 4.4.0
       eslint: 9.23.0
@@ -4048,11 +4048,11 @@ snapshots:
       stable-hash: 0.0.5
       tinyglobby: 0.2.12
     optionalDependencies:
-      eslint-plugin-import-x: 4.9.1(eslint@9.23.0)(typescript@5.8.2)
+      eslint-plugin-import-x: 4.9.2(eslint@9.23.0)(typescript@5.8.2)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import-x@4.9.1(eslint@9.23.0)(typescript@5.8.2):
+  eslint-plugin-import-x@4.9.2(eslint@9.23.0)(typescript@5.8.2):
     dependencies:
       '@types/doctrine': 0.0.9
       '@typescript-eslint/utils': 8.28.0(eslint@9.23.0)(typescript@5.8.2)
