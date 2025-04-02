@@ -58,7 +58,7 @@
         "@effect/docgen": "0.5.2",
         "@effect/eslint-plugin": "0.3.0",
         "@effect/experimental": "0.44.5",
-        "@effect/language-service": "0.5.0",
+        "@effect/language-service": "0.5.1",
         "@effect/platform": "0.80.5",
         "@effect/platform-node": "0.76.8",
         "@effect/printer": "0.42.5",
