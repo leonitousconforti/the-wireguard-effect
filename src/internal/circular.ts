@@ -1,10 +1,13 @@
-import * as CommandExecutor from "@effect/platform/CommandExecutor";
-import * as PlatformError from "@effect/platform/Error";
+import type * as CommandExecutor from "@effect/platform/CommandExecutor";
+import type * as PlatformError from "@effect/platform/Error";
+import type * as Socket from "@effect/platform/Socket";
+import type * as Cause from "effect/Cause";
+import type * as Ast from "effect/SchemaAST";
+import type * as Scope from "effect/Scope";
+
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as Path from "@effect/platform/Path";
-import * as Socket from "@effect/platform/Socket";
 import * as Array from "effect/Array";
-import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
 import * as Effect from "effect/Effect";
 import * as Either from "effect/Either";
@@ -16,8 +19,6 @@ import * as ParseResult from "effect/ParseResult";
 import * as Predicate from "effect/Predicate";
 import * as Schedule from "effect/Schedule";
 import * as Schema from "effect/Schema";
-import * as Ast from "effect/SchemaAST";
-import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as ini from "ini";

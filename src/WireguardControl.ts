@@ -4,22 +4,22 @@
  * @since 1.0.0
  */
 
-import * as CommandExecutor from "@effect/platform/CommandExecutor";
-import * as PlatformError from "@effect/platform/Error";
-import * as FileSystem from "@effect/platform/FileSystem";
-import * as Path from "@effect/platform/Path";
-import * as Socket from "@effect/platform/Socket";
-import * as Cause from "effect/Cause";
-import * as Context from "effect/Context";
-import * as Effect from "effect/Effect";
-import * as Layer from "effect/Layer";
-import * as ParseResult from "effect/ParseResult";
-import * as Scope from "effect/Scope";
-import * as exec from "node:child_process";
-
-import * as internal from "./internal/wireguardControl.js";
+import type * as CommandExecutor from "@effect/platform/CommandExecutor";
+import type * as PlatformError from "@effect/platform/Error";
+import type * as FileSystem from "@effect/platform/FileSystem";
+import type * as Path from "@effect/platform/Path";
+import type * as Socket from "@effect/platform/Socket";
+import type * as Cause from "effect/Cause";
+import type * as Context from "effect/Context";
+import type * as Effect from "effect/Effect";
+import type * as ParseResult from "effect/ParseResult";
+import type * as Scope from "effect/Scope";
+import type * as exec from "node:child_process";
 import type * as WireguardConfig from "./WireguardConfig.js";
 import type * as WireguardInterface from "./WireguardInterface.js";
+
+import * as Layer from "effect/Layer";
+import * as internal from "./internal/wireguardControl.js";
 
 /**
  * @since 1.0.0

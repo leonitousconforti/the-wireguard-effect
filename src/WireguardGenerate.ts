@@ -4,23 +4,24 @@
  * @since 1.0.0
  */
 
+import type * as ParseResult from "effect/ParseResult";
+
 import * as Array from "effect/Array";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Match from "effect/Match";
 import * as Option from "effect/Option";
-import * as ParseResult from "effect/ParseResult";
 import * as Predicate from "effect/Predicate";
 import * as Record from "effect/Record";
 import * as Schema from "effect/Schema";
 import * as Tuple from "effect/Tuple";
 import * as assert from "node:assert";
-
-import * as internalInternalSchemas from "./internal/internetSchemas.js";
 import * as InternetSchemas from "./InternetSchemas.js";
 import * as WireguardConfig from "./WireguardConfig.js";
 import * as WireguardErrors from "./WireguardErrors.js";
 import * as WireguardKey from "./WireguardKey.js";
+
+import * as internalInternalSchemas from "./internal/internetSchemas.js";
 
 /** A node in the network can either have an ipv4 or ipv6 address. */
 type WireguardIPv4RoamingPeer = InternetSchemas.IPv4;

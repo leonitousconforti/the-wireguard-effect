@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { describe, expect, it } from "@effect/vitest";
 
 import * as Effect from "effect/Effect";

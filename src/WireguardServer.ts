@@ -4,43 +4,44 @@
  * @since 1.0.0
  */
 
+import type * as CommandExecutor from "@effect/platform/CommandExecutor";
+import type * as PlatformError from "@effect/platform/Error";
+import type * as FileSystem from "@effect/platform/FileSystem";
+import type * as Path from "@effect/platform/Path";
+import type * as Cause from "effect/Cause";
+import type * as ParseResult from "effect/ParseResult";
+import type * as Scope from "effect/Scope";
+import type * as WireguardControl from "./WireguardControl.js";
+import type * as WireguardErrors from "./WireguardErrors.js";
+
 import * as NodeHttpServer from "@effect/platform-node/NodeHttpServer";
 import * as NodeSocket from "@effect/platform-node/NodeSocket";
-import * as CommandExecutor from "@effect/platform/CommandExecutor";
-import * as PlatformError from "@effect/platform/Error";
-import * as FileSystem from "@effect/platform/FileSystem";
 import * as HttpServer from "@effect/platform/HttpServer";
 import * as HttpServerResponse from "@effect/platform/HttpServerResponse";
-import * as Path from "@effect/platform/Path";
 import * as Socket from "@effect/platform/Socket";
 import * as SocketServer from "@effect/platform/SocketServer";
 import * as Array from "effect/Array";
-import * as Cause from "effect/Cause";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as HashMap from "effect/MutableHashMap";
 import * as Option from "effect/Option";
-import * as ParseResult from "effect/ParseResult";
 import * as Queue from "effect/Queue";
 import * as Schema from "effect/Schema";
-import * as Scope from "effect/Scope";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
 import * as dns from "node:dns";
 import * as http from "node:http";
-
-import * as internalInternetSchemas from "./internal/internetSchemas.js";
 import * as InternetSchemas from "./InternetSchemas.js";
 import * as WireguardConfig from "./WireguardConfig.js";
-import * as WireguardControl from "./WireguardControl.js";
-import * as WireguardErrors from "./WireguardErrors.js";
 import * as WireguardInterface from "./WireguardInterface.js";
 import * as WireguardKey from "./WireguardKey.js";
 import * as WireguardPeer from "./WireguardPeer.js";
+
+import * as internalInternetSchemas from "./internal/internetSchemas.js";
 
 /**
  * @since 1.0.0

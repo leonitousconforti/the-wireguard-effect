@@ -4,8 +4,9 @@
  * @since 1.0.0
  */
 
+import type * as Brand from "effect/Brand";
+
 import * as Array from "effect/Array";
-import * as Brand from "effect/Brand";
 import * as DateTime from "effect/DateTime";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
@@ -15,9 +16,9 @@ import * as Option from "effect/Option";
 import * as ParseResult from "effect/ParseResult";
 import * as Schema from "effect/Schema";
 import * as ini from "ini";
-
 import * as InternetSchemas from "./InternetSchemas.js";
 import * as WireguardKey from "./WireguardKey.js";
+
 import * as internalWireguardPeer from "./internal/wireguardPeer.js";
 
 /**

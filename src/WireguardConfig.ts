@@ -4,12 +4,12 @@
  * @since 1.0.0
  */
 
-import * as PlatformError from "@effect/platform/Error";
+import type * as PlatformError from "@effect/platform/Error";
+import type * as ParseResult from "effect/ParseResult";
+
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as Effect from "effect/Effect";
-import * as ParseResult from "effect/ParseResult";
 import * as Schema from "effect/Schema";
-
 import * as circular from "./internal/circular.js";
 
 export {

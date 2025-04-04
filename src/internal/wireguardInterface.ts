@@ -1,17 +1,17 @@
+import type * as Socket from "@effect/platform/Socket";
+import type * as ParseResult from "effect/ParseResult";
+import type * as WireguardInterface from "../WireguardInterface.js";
+
 import * as NodeSocket from "@effect/platform-node/NodeSocket";
-import * as Socket from "@effect/platform/Socket";
 import * as Chunk from "effect/Chunk";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Option from "effect/Option";
-import * as ParseResult from "effect/ParseResult";
 import * as Schema from "effect/Schema";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
-
 import * as WireguardErrors from "../WireguardErrors.js";
-import type * as WireguardInterface from "../WireguardInterface.js";
 
 /** @internal */
 export const SupportedArchitectures = ["x64", "arm64"] as const;

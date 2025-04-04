@@ -12,13 +12,16 @@
  *      tsx examples/generate-server-hub-and-spoke-access.ts
  */
 
+import type * as ParseResult from "effect/ParseResult";
+import type * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
+import type * as WireguardErrors from "the-wireguard-effect/WireguardErrors";
+
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as Chunk from "effect/Chunk";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
-import * as ParseResult from "effect/ParseResult";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 import * as Tuple from "effect/Tuple";
@@ -26,8 +29,6 @@ import * as esmMain from "es-main";
 import * as assert from "node:assert";
 
 import * as InternetSchemas from "the-wireguard-effect/InternetSchemas";
-import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
-import * as WireguardErrors from "the-wireguard-effect/WireguardErrors";
 import * as WireguardGenerate from "the-wireguard-effect/WireguardGenerate";
 
 export const program = (

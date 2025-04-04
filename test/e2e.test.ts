@@ -1,24 +1,25 @@
 import { expect, it } from "@effect/vitest";
 
+import type * as HttpClientError from "@effect/platform/HttpClientError";
+import type * as Socket from "@effect/platform/Socket";
+import type * as Cause from "effect/Cause";
+import type * as ParseResult from "effect/ParseResult";
+import type * as WireguardInterface from "the-wireguard-effect/WireguardInterface";
+
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeHttp from "@effect/platform-node/NodeHttpClient";
 import * as HttpClient from "@effect/platform/HttpClient";
-import * as HttpClientError from "@effect/platform/HttpClientError";
 import * as HttpClientResponse from "@effect/platform/HttpClientResponse";
-import * as Socket from "@effect/platform/Socket";
-import * as Cause from "effect/Cause";
 import * as Config from "effect/Config";
 import * as Console from "effect/Console";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
-import * as ParseResult from "effect/ParseResult";
 import * as Schedule from "effect/Schedule";
 import * as Stream from "effect/Stream";
 
 import * as WireguardControl from "the-wireguard-effect/WireguardControl";
-import * as WireguardInterface from "the-wireguard-effect/WireguardInterface";
 import * as WireguardPeer from "the-wireguard-effect/WireguardPeer";
 import * as WireguardServer from "the-wireguard-effect/WireguardServer";
 
