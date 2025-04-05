@@ -57,7 +57,7 @@
         "@effect/cluster": "0.29.10",
         "@effect/docgen": "0.5.2",
         "@effect/experimental": "0.44.6",
-        "@effect/language-service": "0.5.1",
+        "@effect/language-service": "0.6.0",
         "@effect/platform": "0.80.6",
         "@effect/platform-node": "0.76.10",
         "@effect/printer": "0.42.6",
