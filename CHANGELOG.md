@@ -1,3 +1,9 @@
+## 0.0.42 (2025-04-16)
+
+### changed (1 change)
+
+- [Update Effect-ts](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/commit/866965e1caf17ce8945433a74427a49c7b5bd00b) ([merge request](https://git.ltgk.net/leoconforti/the-wireguard-effect/-/merge_requests/221))
+
 ## 0.0.41 (2025-04-16)
 
 ### changed (53 changes)
