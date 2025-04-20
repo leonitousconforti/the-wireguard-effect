@@ -17,10 +17,11 @@ sudo rm -rf submodules/osxcross/target
 git submodule update --init --recursive --depth 1
 
 echo "📦 Installing repo dependencies..."
-npm install -g corepack@latest
+npm install --global corepack@latest
 corepack install
 corepack enable
 pnpm install
+pnpm clean
 
 echo "🔧 Setting up groups and permissions for \"sudo-less\" testing"
 sudo groupadd wireguard-control
@@ -34,6 +35,7 @@ pnpm check
 pnpm lint
 pnpm circular
 pnpm build
+pnpm docgen
 
 echo "🧪 Testing..."
 pnpm coverage --run

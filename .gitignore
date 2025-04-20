@@ -1,9 +1,12 @@
-*.tsbuildinfo
+.env
 .DS_Store
+.tsbuildinfo
 
 /dist/
 /build/
+/.direnv/
 /coverage/
+/.pnpm-store/
 /node_modules/
 /docs/examples/
 /.devcontainer/.devpod-internal/
