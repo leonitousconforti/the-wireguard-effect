@@ -119,7 +119,7 @@ secret_detection:
 release:
   stage: release
   rules:
-    - if: $CI_PROJECT_PATH == "leoconforti/eftar" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PROJECT_PATH == "leoconforti/the-wireguard-effect" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   needs:
     - job: build_job
       artifacts: true
@@ -152,7 +152,7 @@ pages_job:
   stage: deploy
   pages: true
   rules:
-    - if: $CI_PROJECT_PATH == "leoconforti/eftar" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_PROJECT_PATH == "leoconforti/the-wireguard-effect" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
   needs:
     - job: build_job
       artifacts: true
