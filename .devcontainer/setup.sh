@@ -5,12 +5,6 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 echo "🚀 Setting up the-wireguard-effect devcontainer..."
 
-echo "Fixing git permissions"
-git config --global --add safe.directory "/workspaces/the-wireguard-effect"
-git config --global --add safe.directory "/workspaces/the-wireguard-effect/submodules/osxcross"
-git config --global --add safe.directory "/workspaces/the-wireguard-effect/submodules/wireguard-go"
-git config --global --add safe.directory "/workspaces/the-wireguard-effect/submodules/wireguard-tools"
-
 echo "Initializing submodules"
 git submodule update --init --recursive --depth 1
 
