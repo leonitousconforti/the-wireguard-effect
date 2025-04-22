@@ -1,19 +1,11 @@
 #!/bin/bash -i
 
 set -eo pipefail
-echo "🚀 Setting up the-wireguard-effect devcontainer..."
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
-
-echo "Fixing git permissions"
-git config --global --add safe.directory "/workspaces/the-wireguard-effect"
-git config --global --add safe.directory "/workspaces/the-wireguard-effect/submodules/osxcross"
-git config --global --add safe.directory "/workspaces/the-wireguard-effect/submodules/wireguard-go"
-git config --global --add safe.directory "/workspaces/the-wireguard-effect/submodules/wireguard-tools"
+echo "🚀 Setting up the-wireguard-effect devcontainer..."
 
 echo "Initializing submodules"
-sudo rm -rf submodules/osxcross/build
-sudo rm -rf submodules/osxcross/target
 git submodule update --init --recursive --depth 1
 
 echo "📦 Installing repo dependencies..."
