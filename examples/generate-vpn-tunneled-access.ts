@@ -10,6 +10,10 @@
  *     tsx examples/generate-vpn-tunneled-access.ts
  */
 
+import type * as ParseResult from "effect/ParseResult";
+import type * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
+import type * as WireguardErrors from "the-wireguard-effect/WireguardErrors";
+
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as Array from "effect/Array";
@@ -17,15 +21,13 @@ import * as Chunk from "effect/Chunk";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
-import * as ParseResult from "effect/ParseResult";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 import * as Tuple from "effect/Tuple";
 import * as esmMain from "es-main";
+import * as assert from "node:assert";
 
 import * as InternetSchemas from "the-wireguard-effect/InternetSchemas";
-import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
-import * as WireguardErrors from "the-wireguard-effect/WireguardErrors";
 import * as WireguardGenerate from "the-wireguard-effect/WireguardGenerate";
 
 export const program = (
@@ -65,15 +67,19 @@ export const program = (
             Stream.take(2),
             Stream.runCollect,
             Effect.map(Chunk.toReadonlyArray),
-            Effect.map(Array.map(({ ip }) => ip))
+            Effect.map(Array.map(({ ip }) => ip)),
+            Effect.map((x) => x)
         );
+
+        assert.ok(serverWireguardNetworkAddress !== undefined);
+        assert.ok(clientAddresses[0] !== undefined);
 
         /**
          * The server needs to be SetupData, which is a combination of a
          * hostname or IPv4 or IPv6 endpoint (public address on the internet)
          * and the address of the node in the network.
          */
-        const serverSetupData = yield* decodeSetupData(Tuple.make(serverAddress, serverWireguardNetworkAddress!));
+        const serverSetupData = yield* decodeSetupData(Tuple.make(serverAddress, serverWireguardNetworkAddress));
 
         /**
          * Since clients are expected to be roaming, they only need an address
@@ -81,7 +87,7 @@ export const program = (
          * instead of pulling IPs from the cidr block, just make sure this ip is
          * not one that would have been assigned to another client.
          */
-        const clientAddress = yield* decodeAddress(clientAddresses[0]!);
+        const clientAddress = yield* decodeAddress(clientAddresses[0]);
 
         // Generate the network
         const network = WireguardGenerate.generateVpnTunneledAccess({

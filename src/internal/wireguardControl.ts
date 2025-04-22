@@ -1,27 +1,27 @@
+import type * as Socket from "@effect/platform/Socket";
+import type * as Cause from "effect/Cause";
+import type * as ParseResult from "effect/ParseResult";
+import type * as WireguardConfig from "../WireguardConfig.js";
+import type * as _WireguardControl from "../WireguardControl.js";
+import type * as WireguardInterface from "../WireguardInterface.js";
+
 import * as Command from "@effect/platform/Command";
 import * as CommandExecutor from "@effect/platform/CommandExecutor";
 import * as PlatformError from "@effect/platform/Error";
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as Path from "@effect/platform/Path";
-import * as Socket from "@effect/platform/Socket";
 import * as Array from "effect/Array";
-import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
-import * as ParseResult from "effect/ParseResult";
 import * as Predicate from "effect/Predicate";
 import * as Schedule from "effect/Schedule";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
 import * as exec from "node:child_process";
-
-import type * as WireguardConfig from "../WireguardConfig.js";
-import type * as _WireguardControl from "../WireguardControl.js";
-import type * as WireguardInterface from "../WireguardInterface.js";
 
 /** @internal */
 export const TypeId: _WireguardControl.TypeId = Symbol.for(

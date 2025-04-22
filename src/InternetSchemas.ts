@@ -14,6 +14,7 @@ import * as Predicate from "effect/Predicate";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
+import * as Tuple from "effect/Tuple";
 import * as net from "node:net";
 
 import * as internal from "./internal/internetSchemas.js";
@@ -514,9 +515,10 @@ export const IPv6Bigint: $IPv6Bigint = Schema.transformOrFail(
             let groups: Array<string> = [];
             const halves = ip.split("::");
 
-            if (halves.length === 2) {
-                let first = halves[0]!.split(":");
-                let last = halves[1]!.split(":");
+            // if (halves.length === 2) {
+            if (Tuple.isTupleOf(2)(halves)) {
+                let first = halves[0].split(":");
+                let last = halves[1].split(":");
 
                 if (first.length === 1 && first[0] === "") {
                     first = [];

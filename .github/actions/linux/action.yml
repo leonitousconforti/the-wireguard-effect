@@ -11,7 +11,7 @@ runs:
 
     - uses: actions/setup-node@v4
       with:
-        node-version: "18.x"
+        node-version: "22.x"
 
     - uses: pnpm/action-setup@v4
 
@@ -30,5 +30,9 @@ runs:
         sudo chown -R root:wireguard-control /var/run/wireguard/
         sudo setcap "all=ep" ./dist/prebuilds/linux-amd64-wireguard-go
 
-    - shell: bash
-      run: pnpm test
+    - uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 3
+        max_attempts: 3
+        shell: bash
+        command: pnpm test

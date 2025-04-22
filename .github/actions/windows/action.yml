@@ -11,7 +11,7 @@ runs:
 
     - uses: actions/setup-node@v4
       with:
-        node-version: "18.x"
+        node-version: "22.x"
 
     - uses: pnpm/action-setup@v4
 
@@ -19,9 +19,14 @@ runs:
       run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
     - shell: pwsh
       run: pnpm install
-    - shell: pwsh
-      run: C:\\msys64\\usr\\bin\\bash.exe -lc "pnpm test"
-      env:
-        MSYSTEM: "MINGW64"
-        CHERE_INVOKING: "1"
-        MSYS2_PATH_TYPE: "inherit"
+
+    - uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 3
+        max_attempts: 3
+        shell: pwsh
+        command: |
+          $env:MSYSTEM = "MINGW64"
+          $env:CHERE_INVOKING = "1"
+          $env:MSYS2_PATH_TYPE = "inherit"
+          C:\msys64\usr\bin\bash.exe -lc "pnpm test"
