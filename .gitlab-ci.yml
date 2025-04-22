@@ -40,7 +40,7 @@ comment:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   variables:
-    GITLAB_TOKEN: $CI_API_TOKEN
+    GITLAB_TOKEN: $CI_COMMENT_TOKEN
   script:
     - pnpm changesets-gitlab comment
     - pnpm changesets-gitlab comment
@@ -114,33 +114,45 @@ build_job:
 
 secret_detection:
   before_script: []
+  cache: []
 
 release:
   stage: release
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PROJECT_PATH == "leoconforti/eftar" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   needs:
     - job: build_job
       artifacts: true
   script:
     - apk add --update git
+    - touch ${GITHUB_ENV}
     - |
-      cat << EOF > ".npmrc"
+      cat << EOF > "$HOME/.npmrc"
         //registry.npmjs.org/:_authToken=$NPM_TOKEN
+        //${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}
+        @${CI_PROJECT_ROOT_NAMESPACE}:registry=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/
       EOF
     - pnpm changesets-gitlab
+    - PUBLISHED=$(sed -n '/^PUBLISHED<<.*$/,/^.*ghadelimiter_.*$/p' ${GITHUB_ENV} | sed '1d;$d')
+    - |
+      if [ "$PUBLISHED" = "true" ]; then
+        pnpm publish --access public --registry ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/ --no-git-checks
+      else
+        echo "Skipping publish to GitLab NPM registry"
+      fi
   variables:
     GITLAB_TOKEN: $CI_API_TOKEN
-    INPUT_PUBLISH: pnpm changeset publish
     INPUT_REMOVE_SOURCE_BRANCH: true
     INPUT_CREATE_GITLAB_RELEASES: true
+    INPUT_PUBLISH: pnpm changeset publish
+    GITHUB_ENV: "${CI_PROJECT_DIR}/.github-env-file"
 
 pages_job:
   image: ruby:latest@sha256:07c880a5e0fd72fa6cf0ff353633c488899082839578776201266e5f9fa95de0
   stage: deploy
   pages: true
   rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_PROJECT_PATH == "leoconforti/eftar" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
   needs:
     - job: build_job
       artifacts: true
