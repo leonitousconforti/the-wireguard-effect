@@ -36,7 +36,7 @@
         "build-submodules": "(cd submodules && ./build.bash)",
         "check": "tsc -b tsconfig.json",
         "circular": "node ./scripts/circular.mjs",
-        "clean": "rimraf .tsbuildinfo docs build dist coverage",
+        "clean": "rimraf .tsbuildinfo docs build dist coverage && rimraf --glob src/*-wireguard-go src/*-wg-quick src/*-wintun.dll src/LICENSE-* src/*.exe src/*-bzImage src/*-wg src/wintun.dll",
         "codegen": "build-utils prepare-v2",
         "coverage": "vitest --coverage",
         "lint": "eslint \"**/{src,test,examples,scripts,dtslint}/**/*.{ts,mjs}\"",
