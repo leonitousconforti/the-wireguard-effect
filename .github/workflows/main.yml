@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           submodules: "true"
       - uses: ./.github/actions/build
@@ -27,7 +27,7 @@ jobs:
     timeout-minutes: 20
     needs: [build]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: ./.github/actions/e2e
 
   linux-test:
@@ -35,7 +35,7 @@ jobs:
     timeout-minutes: 20
     needs: [build]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: ./.github/actions/linux
 
   freebsd-test:
@@ -59,7 +59,7 @@ jobs:
     timeout-minutes: 20
     needs: [build]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: ./.github/actions/mac-intel
 
   macos-apple-silicon-test:
@@ -67,7 +67,7 @@ jobs:
     timeout-minutes: 20
     needs: [build]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: ./.github/actions/mac-apple-silicon
 
   windows-test:
@@ -75,7 +75,7 @@ jobs:
     timeout-minutes: 20
     needs: [build]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: ./.github/actions/windows
 
   windows-wsl2-test:
@@ -83,5 +83,5 @@ jobs:
     timeout-minutes: 20
     needs: [build]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: ./.github/actions/windows-wsl2

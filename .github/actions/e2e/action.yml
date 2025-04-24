@@ -4,16 +4,16 @@ description: "Reusable e2e test action"
 runs:
   using: "composite"
   steps:
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
       with:
         name: the-wireguard-effect
         path: /tmp/the-wireguard-effect
 
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
       with:
         node-version: "22.x"
 
-    - uses: pnpm/action-setup@v4
+    - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4
 
     - shell: bash
       run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar

@@ -4,7 +4,7 @@ description: "Reusable windows wsl2 test action"
 runs:
   using: "composite"
   steps:
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
       with:
         name: the-wireguard-effect
         path: the-wireguard-effect-artifact
