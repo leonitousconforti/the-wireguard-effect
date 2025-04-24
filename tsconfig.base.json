@@ -34,11 +34,6 @@
         "incremental": true,
         "declaration": true,
         "declarationMap": true,
-        "baseUrl": ".",
-        "paths": {
-            "the-wireguard-effect": ["./src/index.js"],
-            "the-wireguard-effect/*": ["./src/*.js"]
-        },
         "types": ["node"],
         "plugins": [
             {
