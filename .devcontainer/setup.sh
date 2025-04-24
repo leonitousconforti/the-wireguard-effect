@@ -16,7 +16,7 @@ pnpm install
 pnpm clean
 
 echo "🔧 Setting up groups and permissions for \"sudo-less\" testing"
-sudo groupadd wireguard-control
+sudo groupadd --force wireguard-control
 sudo usermod -a -G wireguard-control vscode
 sudo usermod -a -G wireguard-control root
 sudo mkdir -p /var/run/wireguard/
