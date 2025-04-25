@@ -4,15 +4,15 @@ nav_order: 9
 parent: Modules
 ---
 
-## WireguardPeer overview
+## WireguardPeer.ts overview
 
 Wireguard peer schema definitions
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Datatypes](#datatypes)
   - [WireguardPeer (class)](#wireguardpeer-class)
@@ -32,12 +32,6 @@ Added in v1.0.0
 ## WireguardPeer (class)
 
 A wireguard peer configuration.
-
-**Signature**
-
-```ts
-export declare class WireguardPeer
-```
 
 **Example**
 
@@ -83,7 +77,15 @@ const peerSchemaInstantiation = Schema.decode(WireguardPeer)({
 })
 ```
 
-Added in v1.0.0
+**Signature**
+
+```ts
+declare class WireguardPeer
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L71)
+
+Since v1.0.0
 
 # Refinements
 
@@ -92,58 +94,68 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const hasBidirectionalTraffic: (
+declare const hasBidirectionalTraffic: (
   wireguardPeer: Schema.Schema.Type<(typeof WireguardPeer)["uapi"]>
 ) => Effect.Effect<boolean, never, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L383)
+
+Since v1.0.0
 
 ## hasHandshakedRecently
 
 **Signature**
 
 ```ts
-export declare const hasHandshakedRecently: (
+declare const hasHandshakedRecently: (
   wireguardPeer: Schema.Schema.Type<(typeof WireguardPeer)["uapi"]>
 ) => Effect.Effect<boolean, never, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L391)
+
+Since v1.0.0
 
 # Schemas
 
 ## WireguardUapiGetPeer (class)
 
+**See**
+
+- https://www.wireguard.com/xplatform/
+
 **Signature**
 
 ```ts
-export declare class WireguardUapiGetPeer
+declare class WireguardUapiGetPeer
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L312)
+
+Since v1.0.0
 
 ## WireguardUapiSetPeer (class)
 
+**See**
+
+- https://www.wireguard.com/xplatform/
+
 **Signature**
 
 ```ts
-export declare class WireguardUapiSetPeer
+declare class WireguardUapiSetPeer
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L259)
+
+Since v1.0.0
 
 # Transformations
 
 ## WireguardIniPeer (class)
 
 A wireguard peer configuration encoded in INI format.
-
-**Signature**
-
-```ts
-export declare class WireguardIniPeer
-```
 
 **Example**
 
@@ -172,4 +184,16 @@ const iniPeer = Function.pipe(
 )
 ```
 
-Added in v1.0.0
+**See**
+
+- `WireguardPeer`
+
+**Signature**
+
+```ts
+declare class WireguardIniPeer
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L173)
+
+Since v1.0.0

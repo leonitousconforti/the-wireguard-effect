@@ -4,15 +4,15 @@ nav_order: 6
 parent: Modules
 ---
 
-## WireguardGenerate overview
+## WireguardGenerate.ts overview
 
 Tools to help generate wireguard configs for common situations.
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [AllowedIPs Transformers](#allowedips-transformers)
   - [addAllowedIPs](#addallowedips)
@@ -53,7 +53,7 @@ Adds an allowed IP to a node in the network.
 **Signature**
 
 ```ts
-export declare const addAllowedIPs: (<
+declare const addAllowedIPs: (<
   Nodes extends
     | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
     | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
@@ -78,7 +78,9 @@ export declare const addAllowedIPs: (<
   ) => AllowedIPsLayer<Nodes>)
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L375)
+
+Since v1.0.0
 
 ## computeAllowedIPsFromConnections
 
@@ -88,7 +90,7 @@ connections is has to the other nodes.
 **Signature**
 
 ```ts
-export declare const computeAllowedIPsFromConnections: <
+declare const computeAllowedIPsFromConnections: <
   Nodes extends
     | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
     | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
@@ -97,7 +99,9 @@ export declare const computeAllowedIPsFromConnections: <
 ) => AllowedIPsLayer<Nodes>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L352)
+
+Since v1.0.0
 
 # Connection Transformers
 
@@ -108,7 +112,7 @@ Adds a direct connection between two nodes in the network.
 **Signature**
 
 ```ts
-export declare const addConnection: (<
+declare const addConnection: (<
   Nodes extends
     | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
     | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
@@ -127,7 +131,9 @@ export declare const addConnection: (<
   ) => ConnectionsLayer<Nodes>)
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L301)
+
+Since v1.0.0
 
 ## generateHubAndSpokeConnections
 
@@ -137,7 +143,7 @@ network.
 **Signature**
 
 ```ts
-export declare const generateHubAndSpokeConnections: <
+declare const generateHubAndSpokeConnections: <
   Nodes extends
     | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
     | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
@@ -146,7 +152,9 @@ export declare const generateHubAndSpokeConnections: <
 ) => ConnectionsLayer<Nodes>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L271)
+
+Since v1.0.0
 
 ## generateStarConnections
 
@@ -155,7 +163,7 @@ Generates connections in a star pattern for all nodes in the network.
 **Signature**
 
 ```ts
-export declare const generateStarConnections: <
+declare const generateStarConnections: <
   Nodes extends
     | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
     | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
@@ -164,7 +172,9 @@ export declare const generateStarConnections: <
 ) => ConnectionsLayer<Nodes>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L237)
+
+Since v1.0.0
 
 # Generator
 
@@ -175,7 +185,7 @@ Converts a network into configs.
 **Signature**
 
 ```ts
-export declare const toConfigs: <
+declare const toConfigs: <
   Nodes extends
     | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
     | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
@@ -196,7 +206,9 @@ export declare const toConfigs: <
 >
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L460)
+
+Since v1.0.0
 
 # Generators
 
@@ -208,7 +220,7 @@ LAN as well.
 **Signature**
 
 ```ts
-export declare const generateLanHubAndSpokeAccess: <
+declare const generateLanHubAndSpokeAccess: <
   Nodes extends
     | readonly [server: WireguardIPv4Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv4Node>]
     | readonly [server: WireguardIPv6Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv6Node>],
@@ -229,7 +241,9 @@ export declare const generateLanHubAndSpokeAccess: <
 }) => WireguardNetwork<Nodes>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L751)
+
+Since v1.0.0
 
 ## generateLanToLanAccess
 
@@ -239,7 +253,7 @@ communicate.
 **Signature**
 
 ```ts
-export declare const generateLanToLanAccess: <
+declare const generateLanToLanAccess: <
   Nodes extends
     | readonly [server1: WireguardIPv4Server, server2: WireguardIPv4Server]
     | readonly [server1: WireguardIPv6Server, server2: WireguardIPv6Server],
@@ -266,7 +280,9 @@ export declare const generateLanToLanAccess: <
 }) => WireguardNetwork<Nodes>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L651)
+
+Since v1.0.0
 
 ## generateRemoteAccessToLan
 
@@ -276,7 +292,7 @@ as well.
 **Signature**
 
 ```ts
-export declare const generateRemoteAccessToLan: <
+declare const generateRemoteAccessToLan: <
   Nodes extends
     | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
     | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
@@ -297,7 +313,9 @@ export declare const generateRemoteAccessToLan: <
 }) => WireguardNetwork<Nodes>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L588)
+
+Since v1.0.0
 
 ## generateRemoteAccessToServer
 
@@ -306,7 +324,7 @@ Use your phone or computer to remotely access just the wireguard server.
 **Signature**
 
 ```ts
-export declare const generateRemoteAccessToServer: <
+declare const generateRemoteAccessToServer: <
   Nodes extends
     | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
     | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
@@ -321,7 +339,9 @@ export declare const generateRemoteAccessToServer: <
 }) => WireguardNetwork<Nodes>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L566)
+
+Since v1.0.0
 
 ## generateRemoteTunneledAccess
 
@@ -331,7 +351,7 @@ traffic through the VPN and out the server's internet connection.
 **Signature**
 
 ```ts
-export declare const generateRemoteTunneledAccess: <
+declare const generateRemoteTunneledAccess: <
   Nodes extends
     | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
     | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
@@ -352,7 +372,9 @@ export declare const generateRemoteTunneledAccess: <
 }) => WireguardNetwork<Nodes>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L822)
+
+Since v1.0.0
 
 ## generateServerHubAndSpokeAccess
 
@@ -363,7 +385,7 @@ through the server.
 **Signature**
 
 ```ts
-export declare const generateServerHubAndSpokeAccess: <
+declare const generateServerHubAndSpokeAccess: <
   Nodes extends
     | readonly [server: WireguardIPv4Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv4Node>]
     | readonly [server: WireguardIPv6Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv6Node>],
@@ -378,7 +400,9 @@ export declare const generateServerHubAndSpokeAccess: <
 }) => WireguardNetwork<Nodes>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L702)
+
+Since v1.0.0
 
 ## generateServerToServerAccess
 
@@ -387,7 +411,7 @@ Allows two servers to connect to each other.
 **Signature**
 
 ```ts
-export declare const generateServerToServerAccess: <
+declare const generateServerToServerAccess: <
   Nodes extends
     | readonly [server1: WireguardIPv4Server, server2: WireguardIPv4Server]
     | readonly [server1: WireguardIPv6Server, server2: WireguardIPv6Server],
@@ -402,7 +426,9 @@ export declare const generateServerToServerAccess: <
 }) => WireguardNetwork<Nodes>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L624)
+
+Since v1.0.0
 
 ## generateVpnTunneledAccess
 
@@ -411,7 +437,7 @@ Route specific traffic through a commercial WireGuard VPN provider.
 **Signature**
 
 ```ts
-export declare const generateVpnTunneledAccess: <
+declare const generateVpnTunneledAccess: <
   Nodes extends
     | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
     | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
@@ -426,7 +452,9 @@ export declare const generateVpnTunneledAccess: <
 }) => WireguardNetwork<Nodes>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L797)
+
+Since v1.0.0
 
 # Key Transformers
 
@@ -437,7 +465,7 @@ Generates preshare keys for all nodes in the network.
 **Signature**
 
 ```ts
-export declare const addPreshareKeys: <
+declare const addPreshareKeys: <
   Nodes extends
     | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
     | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
@@ -446,7 +474,9 @@ export declare const addPreshareKeys: <
 ) => keysLayer<Nodes>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L212)
+
+Since v1.0.0
 
 ## generateKeys
 
@@ -455,7 +485,7 @@ Generates private+public keys for all nodes in the network.
 **Signature**
 
 ```ts
-export declare const generateKeys: <
+declare const generateKeys: <
   Nodes extends
     | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
     | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
@@ -464,7 +494,9 @@ export declare const generateKeys: <
 ) => keysLayer<Nodes>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L194)
+
+Since v1.0.0
 
 # WireguardGenerate
 
@@ -475,11 +507,7 @@ Layer containing the allowed IPs for each node in the network.
 **Signature**
 
 ```ts
-export type AllowedIPsLayer<
-  Nodes extends
-    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
-    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
-> = ConnectionsLayer<Nodes> & {
+type AllowedIPsLayer<Nodes> = ConnectionsLayer<Nodes> & {
   allowedIPs: Record.ReadonlyRecord<
     Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
     Array.NonEmptyReadonlyArray<{
@@ -490,7 +518,9 @@ export type AllowedIPsLayer<
 }
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L118)
+
+Since v1.0.0
 
 ## ConnectionsLayer (type alias)
 
@@ -499,11 +529,7 @@ Layer containing the connections for each node in the network.
 **Signature**
 
 ```ts
-export type ConnectionsLayer<
-  Nodes extends
-    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
-    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
-> = keysLayer<Nodes> & {
+type ConnectionsLayer<Nodes> = keysLayer<Nodes> & {
   connections: Record.ReadonlyRecord<
     Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
     Array.NonEmptyReadonlyArray<
@@ -513,7 +539,9 @@ export type ConnectionsLayer<
 }
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L99)
+
+Since v1.0.0
 
 ## NodesLayer (type alias)
 
@@ -522,11 +550,7 @@ Base layer containing just the nodes in the network.
 **Signature**
 
 ```ts
-export type NodesLayer<
-  Nodes extends
-    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
-    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
-> = {
+type NodesLayer<Nodes> = {
   nodes: Nodes
   wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
     ? InternetSchemas.IPv4CidrBlock
@@ -536,7 +560,9 @@ export type NodesLayer<
 }
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L63)
+
+Since v1.0.0
 
 ## WireguardNetwork (type alias)
 
@@ -545,14 +571,12 @@ The final network type.
 **Signature**
 
 ```ts
-export type WireguardNetwork<
-  Nodes extends
-    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
-    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
-> = AllowedIPsLayer<Nodes>
+type WireguardNetwork<Nodes> = AllowedIPsLayer<Nodes>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L138)
+
+Since v1.0.0
 
 ## keysLayer (type alias)
 
@@ -561,11 +585,7 @@ Layer containing the keys for each node in the network.
 **Signature**
 
 ```ts
-export type keysLayer<
-  Nodes extends
-    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
-    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
-> = NodesLayer<Nodes> & {
+type keysLayer<Nodes> = NodesLayer<Nodes> & {
   keys: Record.ReadonlyRecord<
     Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
     Keys
@@ -573,4 +593,6 @@ export type keysLayer<
 }
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L82)
+
+Since v1.0.0

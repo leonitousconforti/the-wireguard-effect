@@ -4,15 +4,15 @@ nav_order: 5
 parent: Modules
 ---
 
-## WireguardErrors overview
+## WireguardErrors.ts overview
 
 Wireguard errors
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Errors](#errors)
   - [SuccessErrno](#successerrno)
@@ -30,27 +30,33 @@ A wireguard userspace api Errno return message.
 **Signature**
 
 ```ts
-export declare const SuccessErrno: Schema.brand<Schema.SchemaClass<"errno=0", "errno=0", never>, "SuccessErrno">
+declare const SuccessErrno: Schema.brand<Schema.SchemaClass<"errno=0", "errno=0", never>, "SuccessErrno">
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardErrors.ts#L17)
+
+Since v1.0.0
 
 ## SuccessErrno (type alias)
 
 **Signature**
 
 ```ts
-export type SuccessErrno = Schema.Schema.Type<typeof SuccessErrno>
+type SuccessErrno = Schema.Schema.Type<typeof SuccessErrno>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardErrors.ts#L27)
+
+Since v1.0.0
 
 ## WireguardError (class)
 
 **Signature**
 
 ```ts
-export declare class WireguardError
+declare class WireguardError
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardErrors.ts#L33)
+
+Since v1.0.0

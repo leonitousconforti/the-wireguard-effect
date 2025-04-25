@@ -4,34 +4,34 @@ nav_order: 1
 parent: Modules
 ---
 
-## index overview
+## index.ts overview
 
 Internet schemas for wireguard configuration.
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
-- [exports](#exports)
-  - [From "./InternetSchemas.js"](#from-internetschemasjs)
-  - [From "./WireguardConfig.js"](#from-wireguardconfigjs)
-  - [From "./WireguardControl.js"](#from-wireguardcontroljs)
-  - [From "./WireguardErrors.js"](#from-wireguarderrorsjs)
-  - [From "./WireguardGenerate.js"](#from-wireguardgeneratejs)
-  - [From "./WireguardInterface.js"](#from-wireguardinterfacejs)
-  - [From "./WireguardKey.js"](#from-wireguardkeyjs)
-  - [From "./WireguardPeer.js"](#from-wireguardpeerjs)
-  - [From "./WireguardServer.js"](#from-wireguardserverjs)
+- [utils](#utils)
+  - [InternetSchemas (namespace export)](#internetschemas-namespace-export)
+  - [WireguardConfig (namespace export)](#wireguardconfig-namespace-export)
+  - [WireguardControl (namespace export)](#wireguardcontrol-namespace-export)
+  - [WireguardErrors (namespace export)](#wireguarderrors-namespace-export)
+  - [WireguardGenerate (namespace export)](#wireguardgenerate-namespace-export)
+  - [WireguardInterface (namespace export)](#wireguardinterface-namespace-export)
+  - [WireguardKey (namespace export)](#wireguardkey-namespace-export)
+  - [WireguardPeer (namespace export)](#wireguardpeer-namespace-export)
+  - [WireguardServer (namespace export)](#wireguardserver-namespace-export)
 
 ---
 
-# exports
+# utils
 
-## From "./InternetSchemas.js"
+## InternetSchemas (namespace export)
 
-Internet schemas for wireguard configuration.
+Re-exports all named exports from the "./InternetSchemas.js" module as `InternetSchemas`.
 
 **Signature**
 
@@ -39,11 +39,13 @@ Internet schemas for wireguard configuration.
 export * as InternetSchemas from "./InternetSchemas.js"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L6)
 
-## From "./WireguardConfig.js"
+Since v1.0.0
 
-Wireguard config schema definitions
+## WireguardConfig (namespace export)
+
+Re-exports all named exports from the "./WireguardConfig.js" module as `WireguardConfig`.
 
 **Signature**
 
@@ -51,11 +53,13 @@ Wireguard config schema definitions
 export * as WireguardConfig from "./WireguardConfig.js"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L13)
 
-## From "./WireguardControl.js"
+Since v1.0.0
 
-Wireguard control mechanisms.
+## WireguardControl (namespace export)
+
+Re-exports all named exports from the "./WireguardControl.js" module as `WireguardControl`.
 
 **Signature**
 
@@ -63,11 +67,13 @@ Wireguard control mechanisms.
 export * as WireguardControl from "./WireguardControl.js"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L20)
 
-## From "./WireguardErrors.js"
+Since v1.0.0
 
-Wireguard errors
+## WireguardErrors (namespace export)
+
+Re-exports all named exports from the "./WireguardErrors.js" module as `WireguardErrors`.
 
 **Signature**
 
@@ -75,11 +81,13 @@ Wireguard errors
 export * as WireguardErrors from "./WireguardErrors.js"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L27)
 
-## From "./WireguardGenerate.js"
+Since v1.0.0
 
-Tools to help generate wireguard configs for common situations.
+## WireguardGenerate (namespace export)
+
+Re-exports all named exports from the "./WireguardGenerate.js" module as `WireguardGenerate`.
 
 **Signature**
 
@@ -87,11 +95,13 @@ Tools to help generate wireguard configs for common situations.
 export * as WireguardGenerate from "./WireguardGenerate.js"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L34)
 
-## From "./WireguardInterface.js"
+Since v1.0.0
 
-Wireguard interface helpers
+## WireguardInterface (namespace export)
+
+Re-exports all named exports from the "./WireguardInterface.js" module as `WireguardInterface`.
 
 **Signature**
 
@@ -99,11 +109,13 @@ Wireguard interface helpers
 export * as WireguardInterface from "./WireguardInterface.js"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L41)
 
-## From "./WireguardKey.js"
+Since v1.0.0
 
-Wireguard key schemas and helpers
+## WireguardKey (namespace export)
+
+Re-exports all named exports from the "./WireguardKey.js" module as `WireguardKey`.
 
 **Signature**
 
@@ -111,11 +123,13 @@ Wireguard key schemas and helpers
 export * as WireguardKey from "./WireguardKey.js"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L48)
 
-## From "./WireguardPeer.js"
+Since v1.0.0
 
-Wireguard peer schema definitions
+## WireguardPeer (namespace export)
+
+Re-exports all named exports from the "./WireguardPeer.js" module as `WireguardPeer`.
 
 **Signature**
 
@@ -123,11 +137,13 @@ Wireguard peer schema definitions
 export * as WireguardPeer from "./WireguardPeer.js"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L55)
 
-## From "./WireguardServer.js"
+Since v1.0.0
 
-Utilities for connecting to the Wireguard demo server at demo.wireguard.com
+## WireguardServer (namespace export)
+
+Re-exports all named exports from the "./WireguardServer.js" module as `WireguardServer`.
 
 **Signature**
 
@@ -135,4 +151,6 @@ Utilities for connecting to the Wireguard demo server at demo.wireguard.com
 export * as WireguardServer from "./WireguardServer.js"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L62)
+
+Since v1.0.0
