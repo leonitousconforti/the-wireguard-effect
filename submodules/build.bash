@@ -31,16 +31,6 @@ mkdir -p ../dist/prebuilds
 # Wireguard-windows prebuilds
 (cd ./wireguard-windows && unset GOROOT && make clean && make amd64/wireguard.exe && cp amd64/wireguard.exe ../../dist/prebuilds/win32-amd64-wireguard.exe)
 
-# Symlink prebuilds
-(cd ../src && ln -s ../dist/prebuilds/* .)
-(cd ../dist/dist/cjs && ln -s ../../prebuilds/* .)
-(cd ../dist/dist/esm && ln -s ../../prebuilds/* .)
-
-# Copy licenses
-(cd ./wintun && cp ./LICENSE.txt ../../dist/prebuilds/LICENSE-wintun)
-(cd ./wireguard-go && cp ./LICENSE ../../dist/prebuilds/LICENSE-wireguard-go)
-(cd ./wireguard-tools && cp ./COPYING ../../dist/prebuilds/LICENSE-wireguard-tools)
-
 # For testing locally in the devcontainer
 sudo setcap "all=ep" ../dist/prebuilds/linux-amd64-wireguard-go
 sudo setcap "all=ep" ../dist/prebuilds/linux-arm64-wireguard-go
