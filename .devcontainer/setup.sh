@@ -25,9 +25,7 @@ sudo chown -R root:wireguard-control /var/run/wireguard/
 echo "🏗️ Building..."
 pnpm check
 pnpm lint
-ls -la src/
 pnpm circular
-ls -la src/
 pnpm build
 pnpm docgen
 
