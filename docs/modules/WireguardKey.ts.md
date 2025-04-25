@@ -32,18 +32,18 @@ Generates a wireguard public private key pair.
 
 **Example**
 
-````ts
-      import { generateKeyPair } from "the-wireguard-effect/WireguardKey";
-      const { privateKey, publicKey } = generateKeyPair();
-      ```;
+```ts
+import { generateKeyPair } from "the-wireguard-effect/WireguardKey"
+const { privateKey, publicKey } = generateKeyPair()
+```
 
 **Signature**
 
 ```ts
-declare const generateKeyPair: () => { readonly privateKey: WireguardKey; readonly publicKey: WireguardKey; }
-````
+declare const generateKeyPair: () => { readonly privateKey: WireguardKey; readonly publicKey: WireguardKey }
+```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardKey.ts#L44)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardKey.ts#L42)
 
 Since v1.0.0
 
@@ -64,7 +64,7 @@ const preshareKey = generatePreshareKey()
 declare const generatePreshareKey: () => WireguardKey
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardKey.ts#L63)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardKey.ts#L61)
 
 Since v1.0.0
 

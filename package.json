@@ -22,7 +22,7 @@
     "exports": {
         "./package.json": "./package.json",
         ".": "./src/index.ts",
-        "./*.ts": "./src/*.ts",
+        "./*": "./src/*.ts",
         "./internal/*": null
     },
     "main": "./dist/cjs/index.js",
