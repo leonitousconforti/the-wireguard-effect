@@ -72,7 +72,7 @@
         "@effect/rpc": "0.56.2",
         "@effect/sql": "0.33.14",
         "@effect/typeclass": "0.33.14",
-        "@effect/vitest": "0.20.14",
+        "@effect/vitest": "0.20.15",
         "@eslint/js": "9.25.1",
         "@types/ini": "4.1.1",
         "@types/node": "22.15.2",
@@ -103,13 +103,13 @@
         "vitest": "3.1.2"
     },
     "peerDependencies": {
-        "@effect/cluster": "0.29.22",
-        "@effect/experimental": "0.44.12",
-        "@effect/platform": "0.80.12",
-        "@effect/platform-node": "0.76.22",
-        "@effect/rpc": "0.55.17",
-        "@effect/sql": "0.33.12",
-        "effect": "3.14.12"
+        "@effect/cluster": "0.30.2",
+        "@effect/experimental": "0.44.14",
+        "@effect/platform": "0.80.14",
+        "@effect/platform-node": "0.77.2",
+        "@effect/rpc": "0.56.2",
+        "@effect/sql": "0.33.14",
+        "effect": "3.14.14"
     },
     "packageManager": "pnpm@9.15.9",
     "engines": {
