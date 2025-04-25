@@ -4,15 +4,15 @@ nav_order: 7
 parent: Modules
 ---
 
-## WireguardInterface overview
+## WireguardInterface.ts overview
 
 Wireguard interface helpers
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Datatypes](#datatypes)
   - [WireguardInterface](#wireguardinterface)
@@ -28,7 +28,9 @@ A wireguard interface name.
 **Signature**
 
 ```ts
-export declare const WireguardInterface: typeof WireguardInterface
+declare const WireguardInterface: typeof WireguardInterface
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardInterface.ts#L14)
+
+Since v1.0.0

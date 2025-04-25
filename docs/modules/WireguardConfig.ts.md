@@ -4,15 +4,15 @@ nav_order: 3
 parent: Modules
 ---
 
-## WireguardConfig overview
+## WireguardConfig.ts overview
 
 Wireguard config schema definitions
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Constructors](#constructors)
   - [fromConfigFile](#fromconfigfile)
@@ -32,7 +32,7 @@ Loads a wireguard interface configuration from an INI file.
 **Signature**
 
 ```ts
-export declare const fromConfigFile: (
+declare const fromConfigFile: (
   file: string
 ) => Effect.Effect<
   circular.WireguardConfig,
@@ -41,7 +41,9 @@ export declare const fromConfigFile: (
 >
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardConfig.ts#L43)
+
+Since v1.0.0
 
 # Schema Transformations
 
@@ -49,13 +51,19 @@ Added in v1.0.0
 
 A wireguard configuration encoded in the INI format.
 
+**See**
+
+- `WireguardConfig`
+
 **Signature**
 
 ```ts
-export declare const WireguardIniConfig: typeof circular.WireguardIniConfig
+declare const WireguardIniConfig: typeof circular.WireguardIniConfig
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardConfig.ts#L33)
+
+Since v1.0.0
 
 # Schemas
 
@@ -66,7 +74,9 @@ A wireguard configuration.
 **Signature**
 
 ```ts
-export declare const WireguardConfig: typeof circular.WireguardConfig
+declare const WireguardConfig: typeof circular.WireguardConfig
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardConfig.ts#L22)
+
+Since v1.0.0

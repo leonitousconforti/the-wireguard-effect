@@ -4,15 +4,15 @@ nav_order: 2
 parent: Modules
 ---
 
-## InternetSchemas overview
+## InternetSchemas.ts overview
 
 Internet schemas for wireguard configuration.
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Api interface](#api-interface)
   - [$Address (type alias)](#address-type-alias)
@@ -151,37 +151,43 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type $Address = Schema.Union<[$IPv4, $IPv6]>
+type $Address = Schema.Union<[$IPv4, $IPv6]>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L586)
+
+Since v1.0.0
 
 ## $AddressBigint (type alias)
 
 **Signature**
 
 ```ts
-export type $AddressBigint = Schema.Union<[$IPv4Bigint, $IPv6Bigint]>
+type $AddressBigint = Schema.Union<[$IPv4Bigint, $IPv6Bigint]>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L633)
+
+Since v1.0.0
 
 ## $CidrBlock (type alias)
 
 **Signature**
 
 ```ts
-export type $CidrBlock = Schema.Union<[$IPv4CidrBlock, $IPv6CidrBlock]>
+type $CidrBlock = Schema.Union<[$IPv4CidrBlock, $IPv6CidrBlock]>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1224)
+
+Since v1.0.0
 
 ## $CidrBlockFromString (type alias)
 
 **Signature**
 
 ```ts
-export type $CidrBlockFromString = Schema.Annotable<
+type $CidrBlockFromString = Schema.Annotable<
   $CidrBlockFromString,
   CidrBlockBase<"ipv4"> | CidrBlockBase<"ipv6">,
   `${string}/${number}`,
@@ -189,34 +195,40 @@ export type $CidrBlockFromString = Schema.Annotable<
 >
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1236)
+
+Since v1.0.0
 
 ## $Endpoint (type alias)
 
 **Signature**
 
 ```ts
-export type $Endpoint = Schema.Union<[$IPv4Endpoint, $IPv6Endpoint, $HostnameEndpoint]>
+type $Endpoint = Schema.Union<[$IPv4Endpoint, $IPv6Endpoint, $HostnameEndpoint]>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1539)
+
+Since v1.0.0
 
 ## $Family (type alias)
 
 **Signature**
 
 ```ts
-export type $Family = Schema.Union<[$IPv4Family, $IPv6Family]>
+type $Family = Schema.Union<[$IPv4Family, $IPv6Family]>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L563)
+
+Since v1.0.0
 
 ## $HostnameEndpoint (type alias)
 
 **Signature**
 
 ```ts
-export type $HostnameEndpoint = Schema.Annotable<
+type $HostnameEndpoint = Schema.Annotable<
   $HostnameEndpoint,
   { readonly host: string; readonly natPort: PortBrand; readonly listenPort: PortBrand },
   | `${string}:${number}`
@@ -227,34 +239,40 @@ export type $HostnameEndpoint = Schema.Annotable<
 >
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1473)
+
+Since v1.0.0
 
 ## $HostnameIPv4SetupData (type alias)
 
 **Signature**
 
 ```ts
-export type $HostnameIPv4SetupData = Schema.Tuple<[$HostnameEndpoint, $IPv4]>
+type $HostnameIPv4SetupData = Schema.Tuple<[$HostnameEndpoint, $IPv4]>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1689)
+
+Since v1.0.0
 
 ## $HostnameIPv6SetupData (type alias)
 
 **Signature**
 
 ```ts
-export type $HostnameIPv6SetupData = Schema.Tuple<[$HostnameEndpoint, $IPv6]>
+type $HostnameIPv6SetupData = Schema.Tuple<[$HostnameEndpoint, $IPv6]>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1720)
+
+Since v1.0.0
 
 ## $IPv4 (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv4 = Schema.transform<
+type $IPv4 = Schema.transform<
   Schema.filter<typeof Schema.String>,
   Schema.Struct<{
     family: $IPv4Family
@@ -263,14 +281,16 @@ export type $IPv4 = Schema.transform<
 >
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L148)
+
+Since v1.0.0
 
 ## $IPv4Bigint (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv4Bigint = Schema.transformOrFail<
+type $IPv4Bigint = Schema.transformOrFail<
   $IPv4,
   Schema.Struct<{
     family: $IPv4Family
@@ -280,14 +300,16 @@ export type $IPv4Bigint = Schema.transformOrFail<
 >
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L221)
+
+Since v1.0.0
 
 ## $IPv4CidrBlock (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv4CidrBlock = Schema.Annotable<
+type $IPv4CidrBlock = Schema.Annotable<
   $IPv4CidrBlock,
   CidrBlockBase<"ipv4">,
   {
@@ -298,14 +320,16 @@ export type $IPv4CidrBlock = Schema.Annotable<
 >
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1033)
+
+Since v1.0.0
 
 ## $IPv4CidrBlockFromString (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv4CidrBlockFromString = Schema.Annotable<
+type $IPv4CidrBlockFromString = Schema.Annotable<
   $IPv4CidrBlockFromString,
   CidrBlockBase<"ipv4">,
   `${string}/${number}`,
@@ -313,29 +337,28 @@ export type $IPv4CidrBlockFromString = Schema.Annotable<
 >
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1090)
+
+Since v1.0.0
 
 ## $IPv4CidrMask (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv4CidrMask = Schema.Annotable<
-  $IPv4CidrMask,
-  IPv4CidrMaskBrand,
-  Brand.Brand.Unbranded<IPv4CidrMaskBrand>,
-  never
->
+type $IPv4CidrMask = Schema.Annotable<$IPv4CidrMask, IPv4CidrMaskBrand, Brand.Brand.Unbranded<IPv4CidrMaskBrand>, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L674)
+
+Since v1.0.0
 
 ## $IPv4Endpoint (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv4Endpoint = Schema.Annotable<
+type $IPv4Endpoint = Schema.Annotable<
   $IPv4Endpoint,
   { readonly address: IPv4; readonly natPort: PortBrand; readonly listenPort: PortBrand },
   | `${string}:${number}`
@@ -346,34 +369,40 @@ export type $IPv4Endpoint = Schema.Annotable<
 >
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1280)
+
+Since v1.0.0
 
 ## $IPv4Family (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv4Family = Schema.Literal<["ipv4"]>
+type $IPv4Family = Schema.Literal<["ipv4"]>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L115)
+
+Since v1.0.0
 
 ## $IPv4SetupData (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv4SetupData = Schema.Tuple<[$IPv4Endpoint, $IPv4]>
+type $IPv4SetupData = Schema.Tuple<[$IPv4Endpoint, $IPv4]>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1613)
+
+Since v1.0.0
 
 ## $IPv6 (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv6 = Schema.transform<
+type $IPv6 = Schema.transform<
   Schema.filter<typeof Schema.String>,
   Schema.Struct<{
     family: $IPv6Family
@@ -382,14 +411,16 @@ export type $IPv6 = Schema.transform<
 >
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L355)
+
+Since v1.0.0
 
 ## $IPv6Bigint (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv6Bigint = Schema.transformOrFail<
+type $IPv6Bigint = Schema.transformOrFail<
   $IPv6,
   Schema.Struct<{
     family: $IPv6Family
@@ -399,14 +430,16 @@ export type $IPv6Bigint = Schema.transformOrFail<
 >
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L432)
+
+Since v1.0.0
 
 ## $IPv6CidrBlock (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv6CidrBlock = Schema.transformOrFail<
+type $IPv6CidrBlock = Schema.transformOrFail<
   Schema.Struct<{
     address: $IPv6
     mask: $IPv6CidrMask
@@ -416,14 +449,16 @@ export type $IPv6CidrBlock = Schema.transformOrFail<
 >
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1134)
+
+Since v1.0.0
 
 ## $IPv6CidrBlockFromString (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv6CidrBlockFromString = Schema.Annotable<
+type $IPv6CidrBlockFromString = Schema.Annotable<
   $IPv6CidrBlockFromString,
   CidrBlockBase<"ipv6">,
   `${string}/${number}`,
@@ -431,29 +466,28 @@ export type $IPv6CidrBlockFromString = Schema.Annotable<
 >
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1180)
+
+Since v1.0.0
 
 ## $IPv6CidrMask (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv6CidrMask = Schema.Annotable<
-  $IPv6CidrMask,
-  IPv6CidrMaskBrand,
-  Brand.Brand.Unbranded<IPv6CidrMaskBrand>,
-  never
->
+type $IPv6CidrMask = Schema.Annotable<$IPv6CidrMask, IPv6CidrMaskBrand, Brand.Brand.Unbranded<IPv6CidrMaskBrand>, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L738)
+
+Since v1.0.0
 
 ## $IPv6Endpoint (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv6Endpoint = Schema.Annotable<
+type $IPv6Endpoint = Schema.Annotable<
   $IPv6Endpoint,
   { readonly address: IPv6; readonly natPort: PortBrand; readonly listenPort: PortBrand },
   | `[${string}]:${number}`
@@ -464,57 +498,69 @@ export type $IPv6Endpoint = Schema.Annotable<
 >
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1366)
+
+Since v1.0.0
 
 ## $IPv6Family (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv6Family = Schema.Literal<["ipv6"]>
+type $IPv6Family = Schema.Literal<["ipv6"]>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L322)
+
+Since v1.0.0
 
 ## $IPv6SetupData (type alias)
 
 **Signature**
 
 ```ts
-export type $IPv6SetupData = Schema.Tuple<[$IPv6Endpoint, $IPv6]>
+type $IPv6SetupData = Schema.Tuple<[$IPv6Endpoint, $IPv6]>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1651)
+
+Since v1.0.0
 
 ## $Port (type alias)
 
 **Signature**
 
 ```ts
-export type $Port = Schema.Annotable<$Port, PortBrand, Brand.Brand.Unbranded<PortBrand>, never>
+type $Port = Schema.Annotable<$Port, PortBrand, Brand.Brand.Unbranded<PortBrand>, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L83)
+
+Since v1.0.0
 
 ## $SetupData (type alias)
 
 **Signature**
 
 ```ts
-export type $SetupData = Schema.Union<[$IPv4SetupData, $IPv6SetupData, $HostnameIPv4SetupData, $HostnameIPv6SetupData]>
+type $SetupData = Schema.Union<[$IPv4SetupData, $IPv6SetupData, $HostnameIPv4SetupData, $HostnameIPv6SetupData]>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1750)
+
+Since v1.0.0
 
 ## CidrBlockBase (class)
 
 **Signature**
 
 ```ts
-export declare class CidrBlockBase<_Family>
+declare class CidrBlockBase<_Family>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L790)
+
+Since v1.0.0
 
 ### networkAddress (method)
 
@@ -524,14 +570,16 @@ referred to as the Network Address.
 **Signature**
 
 ```ts
-public networkAddress(): _Family extends IPv4Family
-        ? Effect.Effect<IPv4, ParseResult.ParseError, never>
-        : _Family extends IPv6Family
-          ? Effect.Effect<IPv6, ParseResult.ParseError, never>
-          : never
+declare const networkAddress: () => _Family extends IPv4Family
+  ? Effect.Effect<IPv4, ParseResult.ParseError, never>
+  : _Family extends IPv6Family
+    ? Effect.Effect<IPv6, ParseResult.ParseError, never>
+    : never
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L856)
+
+Since v1.0.0
 
 ### broadcastAddress (method)
 
@@ -541,14 +589,16 @@ referred to as the Broadcast Address.
 **Signature**
 
 ```ts
-public broadcastAddress(): _Family extends IPv4Family
-        ? Effect.Effect<IPv4, ParseResult.ParseError, never>
-        : _Family extends IPv6Family
-          ? Effect.Effect<IPv6, ParseResult.ParseError, never>
-          : never
+declare const broadcastAddress: () => _Family extends IPv4Family
+  ? Effect.Effect<IPv4, ParseResult.ParseError, never>
+  : _Family extends IPv6Family
+    ? Effect.Effect<IPv6, ParseResult.ParseError, never>
+    : never
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L910)
+
+Since v1.0.0
 
 ### family (property)
 
@@ -558,7 +608,9 @@ Added in v1.0.0
 readonly family: "ipv4" | "ipv6"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L795)
+
+Since v1.0.0
 
 # Branded constructors
 
@@ -567,70 +619,84 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const IPv4BigintBrand: Brand.Brand.Constructor<IPv4BigintBrand>
+declare const IPv4BigintBrand: Brand.Brand.Constructor<IPv4BigintBrand>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L215)
+
+Since v1.0.0
 
 ## IPv4Brand
 
 **Signature**
 
 ```ts
-export declare const IPv4Brand: Brand.Brand.Constructor<IPv4Brand>
+declare const IPv4Brand: Brand.Brand.Constructor<IPv4Brand>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L142)
+
+Since v1.0.0
 
 ## IPv4CidrMaskBrand
 
 **Signature**
 
 ```ts
-export declare const IPv4CidrMaskBrand: Brand.Brand.Constructor<IPv4CidrMaskBrand>
+declare const IPv4CidrMaskBrand: Brand.Brand.Constructor<IPv4CidrMaskBrand>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L668)
+
+Since v1.0.0
 
 ## IPv6BigintBrand
 
 **Signature**
 
 ```ts
-export declare const IPv6BigintBrand: Brand.Brand.Constructor<IPv6BigintBrand>
+declare const IPv6BigintBrand: Brand.Brand.Constructor<IPv6BigintBrand>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L426)
+
+Since v1.0.0
 
 ## IPv6Brand
 
 **Signature**
 
 ```ts
-export declare const IPv6Brand: Brand.Brand.Constructor<IPv6Brand>
+declare const IPv6Brand: Brand.Brand.Constructor<IPv6Brand>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L349)
+
+Since v1.0.0
 
 ## IPv6CidrMaskBrand
 
 **Signature**
 
 ```ts
-export declare const IPv6CidrMaskBrand: Brand.Brand.Constructor<IPv6CidrMaskBrand>
+declare const IPv6CidrMaskBrand: Brand.Brand.Constructor<IPv6CidrMaskBrand>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L732)
+
+Since v1.0.0
 
 ## PortBrand
 
 **Signature**
 
 ```ts
-export declare const PortBrand: Brand.Brand.Constructor<PortBrand>
+declare const PortBrand: Brand.Brand.Constructor<PortBrand>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L77)
+
+Since v1.0.0
 
 # Branded types
 
@@ -639,70 +705,84 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type IPv4BigintBrand = bigint & Brand.Brand<"IPv4Bigint">
+type IPv4BigintBrand = bigint & Brand.Brand<"IPv4Bigint">
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L209)
+
+Since v1.0.0
 
 ## IPv4Brand (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4Brand = string & Brand.Brand<"IPv4">
+type IPv4Brand = string & Brand.Brand<"IPv4">
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L136)
+
+Since v1.0.0
 
 ## IPv4CidrMaskBrand (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4CidrMaskBrand = number & Brand.Brand<"IPv4CidrMask">
+type IPv4CidrMaskBrand = number & Brand.Brand<"IPv4CidrMask">
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L662)
+
+Since v1.0.0
 
 ## IPv6BigintBrand (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6BigintBrand = bigint & Brand.Brand<"IPv6Bigint">
+type IPv6BigintBrand = bigint & Brand.Brand<"IPv6Bigint">
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L420)
+
+Since v1.0.0
 
 ## IPv6Brand (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6Brand = string & Brand.Brand<"IPv6">
+type IPv6Brand = string & Brand.Brand<"IPv6">
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L343)
+
+Since v1.0.0
 
 ## IPv6CidrMaskBrand (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6CidrMaskBrand = number & Brand.Brand<"IPv6CidrMask">
+type IPv6CidrMaskBrand = number & Brand.Brand<"IPv6CidrMask">
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L726)
+
+Since v1.0.0
 
 ## PortBrand (type alias)
 
 **Signature**
 
 ```ts
-export type PortBrand = number & Brand.Brand<"Port">
+type PortBrand = number & Brand.Brand<"Port">
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L71)
+
+Since v1.0.0
 
 # Decoded types
 
@@ -711,250 +791,300 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type Address = Schema.Schema.Type<$Address>
+type Address = Schema.Schema.Type<$Address>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L592)
+
+Since v1.0.0
 
 ## AddressBigint (type alias)
 
 **Signature**
 
 ```ts
-export type AddressBigint = Schema.Schema.Type<$AddressBigint>
+type AddressBigint = Schema.Schema.Type<$AddressBigint>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L639)
+
+Since v1.0.0
 
 ## CidrBlockFromString (type alias)
 
 **Signature**
 
 ```ts
-export type CidrBlockFromString = Schema.Schema.Type<$CidrBlockFromString>
+type CidrBlockFromString = Schema.Schema.Type<$CidrBlockFromString>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1247)
+
+Since v1.0.0
 
 ## Endpoint (type alias)
 
 **Signature**
 
 ```ts
-export type Endpoint = Schema.Schema.Type<$Endpoint>
+type Endpoint = Schema.Schema.Type<$Endpoint>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1545)
+
+Since v1.0.0
 
 ## Family (type alias)
 
 **Signature**
 
 ```ts
-export type Family = Schema.Schema.Type<$Family>
+type Family = Schema.Schema.Type<$Family>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L569)
+
+Since v1.0.0
 
 ## HostnameEndpoint (type alias)
 
 **Signature**
 
 ```ts
-export type HostnameEndpoint = Schema.Schema.Type<$HostnameEndpoint>
+type HostnameEndpoint = Schema.Schema.Type<$HostnameEndpoint>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1487)
+
+Since v1.0.0
 
 ## HostnameIPv4SetupData (type alias)
 
 **Signature**
 
 ```ts
-export type HostnameIPv4SetupData = Schema.Schema.Type<$HostnameIPv4SetupData>
+type HostnameIPv4SetupData = Schema.Schema.Type<$HostnameIPv4SetupData>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1695)
+
+Since v1.0.0
 
 ## HostnameIPv6SetupData (type alias)
 
 **Signature**
 
 ```ts
-export type HostnameIPv6SetupData = Schema.Schema.Type<$HostnameIPv6SetupData>
+type HostnameIPv6SetupData = Schema.Schema.Type<$HostnameIPv6SetupData>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1726)
+
+Since v1.0.0
 
 ## IPv4 (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4 = Schema.Schema.Type<$IPv4>
+type IPv4 = Schema.Schema.Type<$IPv4>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L160)
+
+Since v1.0.0
 
 ## IPv4Bigint (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4Bigint = Schema.Schema.Type<$IPv4Bigint>
+type IPv4Bigint = Schema.Schema.Type<$IPv4Bigint>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L234)
+
+Since v1.0.0
 
 ## IPv4CidrBlock (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4CidrBlock = CidrBlockBase<"ipv4">
+type IPv4CidrBlock = CidrBlockBase<"ipv4">
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1057)
+
+Since v1.0.0
 
 ## IPv4CidrBlockFromString (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4CidrBlockFromString = Schema.Schema.Type<$IPv4CidrBlockFromString>
+type IPv4CidrBlockFromString = Schema.Schema.Type<$IPv4CidrBlockFromString>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1101)
+
+Since v1.0.0
 
 ## IPv4CidrMask (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4CidrMask = Schema.Schema.Type<$IPv4CidrMask>
+type IPv4CidrMask = Schema.Schema.Type<$IPv4CidrMask>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L685)
+
+Since v1.0.0
 
 ## IPv4Endpoint (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4Endpoint = Schema.Schema.Type<$IPv4Endpoint>
+type IPv4Endpoint = Schema.Schema.Type<$IPv4Endpoint>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1294)
+
+Since v1.0.0
 
 ## IPv4Family (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4Family = Schema.Schema.Type<$IPv4Family>
+type IPv4Family = Schema.Schema.Type<$IPv4Family>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L121)
+
+Since v1.0.0
 
 ## IPv4SetupData (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4SetupData = Schema.Schema.Type<$IPv4SetupData>
+type IPv4SetupData = Schema.Schema.Type<$IPv4SetupData>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1619)
+
+Since v1.0.0
 
 ## IPv6 (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6 = Schema.Schema.Type<$IPv6>
+type IPv6 = Schema.Schema.Type<$IPv6>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L367)
+
+Since v1.0.0
 
 ## IPv6Bigint (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6Bigint = Schema.Schema.Type<$IPv6Bigint>
+type IPv6Bigint = Schema.Schema.Type<$IPv6Bigint>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L445)
+
+Since v1.0.0
 
 ## IPv6CidrBlock (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6CidrBlock = CidrBlockBase<"ipv6">
+type IPv6CidrBlock = CidrBlockBase<"ipv6">
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1147)
+
+Since v1.0.0
 
 ## IPv6CidrBlockFromString (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6CidrBlockFromString = Schema.Schema.Type<$IPv6CidrBlockFromString>
+type IPv6CidrBlockFromString = Schema.Schema.Type<$IPv6CidrBlockFromString>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1191)
+
+Since v1.0.0
 
 ## IPv6CidrMask (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6CidrMask = Schema.Schema.Type<$IPv6CidrMask>
+type IPv6CidrMask = Schema.Schema.Type<$IPv6CidrMask>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L749)
+
+Since v1.0.0
 
 ## IPv6Endpoint (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6Endpoint = Schema.Schema.Type<$IPv6Endpoint>
+type IPv6Endpoint = Schema.Schema.Type<$IPv6Endpoint>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1380)
+
+Since v1.0.0
 
 ## IPv6Family (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6Family = Schema.Schema.Type<$IPv6Family>
+type IPv6Family = Schema.Schema.Type<$IPv6Family>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L328)
+
+Since v1.0.0
 
 ## IPv6SetupData (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6SetupData = Schema.Schema.Type<$IPv6SetupData>
+type IPv6SetupData = Schema.Schema.Type<$IPv6SetupData>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1657)
+
+Since v1.0.0
 
 ## SetupData (type alias)
 
 **Signature**
 
 ```ts
-export type SetupData = Schema.Schema.Type<$SetupData>
+type SetupData = Schema.Schema.Type<$SetupData>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1756)
+
+Since v1.0.0
 
 # Encoded types
 
@@ -963,232 +1093,270 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type AddressBigintEncoded = Schema.Schema.Encoded<$AddressBigint>
+type AddressBigintEncoded = Schema.Schema.Encoded<$AddressBigint>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L645)
+
+Since v1.0.0
 
 ## AddressEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type AddressEncoded = Schema.Schema.Encoded<$Address>
+type AddressEncoded = Schema.Schema.Encoded<$Address>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L598)
+
+Since v1.0.0
 
 ## CidrBlockFromStringEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type CidrBlockFromStringEncoded = Schema.Schema.Encoded<$CidrBlockFromString>
+type CidrBlockFromStringEncoded = Schema.Schema.Encoded<$CidrBlockFromString>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1253)
+
+Since v1.0.0
 
 ## EndpointEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type EndpointEncoded = Schema.Schema.Encoded<$Endpoint>
+type EndpointEncoded = Schema.Schema.Encoded<$Endpoint>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1551)
+
+Since v1.0.0
 
 ## HostnameEndpointEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type HostnameEndpointEncoded = Schema.Schema.Encoded<$HostnameEndpoint>
+type HostnameEndpointEncoded = Schema.Schema.Encoded<$HostnameEndpoint>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1493)
+
+Since v1.0.0
 
 ## HostnameIPv4SetupDataEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type HostnameIPv4SetupDataEncoded = Schema.Schema.Encoded<$HostnameIPv4SetupData>
+type HostnameIPv4SetupDataEncoded = Schema.Schema.Encoded<$HostnameIPv4SetupData>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1701)
+
+Since v1.0.0
 
 ## HostnameIPv6SetupDataEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type HostnameIPv6SetupDataEncoded = Schema.Schema.Encoded<$HostnameIPv6SetupData>
+type HostnameIPv6SetupDataEncoded = Schema.Schema.Encoded<$HostnameIPv6SetupData>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1732)
+
+Since v1.0.0
 
 ## IPv4BigintEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4BigintEncoded = Schema.Schema.Encoded<$IPv4Bigint>
+type IPv4BigintEncoded = Schema.Schema.Encoded<$IPv4Bigint>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L240)
+
+Since v1.0.0
 
 ## IPv4CidrBlockEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4CidrBlockEncoded = Schema.Schema.Encoded<$IPv4CidrBlock>
+type IPv4CidrBlockEncoded = Schema.Schema.Encoded<$IPv4CidrBlock>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1063)
+
+Since v1.0.0
 
 ## IPv4CidrBlockFromStringEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4CidrBlockFromStringEncoded = Schema.Schema.Encoded<$IPv4CidrBlockFromString>
+type IPv4CidrBlockFromStringEncoded = Schema.Schema.Encoded<$IPv4CidrBlockFromString>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1107)
+
+Since v1.0.0
 
 ## IPv4CidrMaskEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4CidrMaskEncoded = Schema.Schema.Encoded<$IPv4CidrMask>
+type IPv4CidrMaskEncoded = Schema.Schema.Encoded<$IPv4CidrMask>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L691)
+
+Since v1.0.0
 
 ## IPv4Encoded (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4Encoded = Schema.Schema.Encoded<$IPv4>
+type IPv4Encoded = Schema.Schema.Encoded<$IPv4>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L166)
+
+Since v1.0.0
 
 ## IPv4EndpointEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4EndpointEncoded = Schema.Schema.Encoded<$IPv4Endpoint>
+type IPv4EndpointEncoded = Schema.Schema.Encoded<$IPv4Endpoint>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1300)
+
+Since v1.0.0
 
 ## IPv4SetupDataEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type IPv4SetupDataEncoded = Schema.Schema.Encoded<$IPv4SetupData>
+type IPv4SetupDataEncoded = Schema.Schema.Encoded<$IPv4SetupData>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1625)
+
+Since v1.0.0
 
 ## IPv6BigintEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6BigintEncoded = Schema.Schema.Encoded<$IPv6Bigint>
+type IPv6BigintEncoded = Schema.Schema.Encoded<$IPv6Bigint>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L451)
+
+Since v1.0.0
 
 ## IPv6CidrBlockEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6CidrBlockEncoded = Schema.Schema.Encoded<$IPv6CidrBlock>
+type IPv6CidrBlockEncoded = Schema.Schema.Encoded<$IPv6CidrBlock>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1153)
+
+Since v1.0.0
 
 ## IPv6CidrBlockFromStringEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6CidrBlockFromStringEncoded = Schema.Schema.Encoded<$IPv6CidrBlockFromString>
+type IPv6CidrBlockFromStringEncoded = Schema.Schema.Encoded<$IPv6CidrBlockFromString>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1197)
+
+Since v1.0.0
 
 ## IPv6CidrMaskEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6CidrMaskEncoded = Schema.Schema.Encoded<$IPv6CidrMask>
+type IPv6CidrMaskEncoded = Schema.Schema.Encoded<$IPv6CidrMask>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L755)
+
+Since v1.0.0
 
 ## IPv6Encoded (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6Encoded = Schema.Schema.Encoded<$IPv6>
+type IPv6Encoded = Schema.Schema.Encoded<$IPv6>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L373)
+
+Since v1.0.0
 
 ## IPv6EndpointEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6EndpointEncoded = Schema.Schema.Encoded<$IPv6Endpoint>
+type IPv6EndpointEncoded = Schema.Schema.Encoded<$IPv6Endpoint>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1386)
+
+Since v1.0.0
 
 ## IPv6SetupDataEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type IPv6SetupDataEncoded = Schema.Schema.Encoded<$IPv6SetupData>
+type IPv6SetupDataEncoded = Schema.Schema.Encoded<$IPv6SetupData>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1663)
+
+Since v1.0.0
 
 ## SetupDataEncoded (type alias)
 
 **Signature**
 
 ```ts
-export type SetupDataEncoded = Schema.Schema.Encoded<$SetupData>
+type SetupDataEncoded = Schema.Schema.Encoded<$SetupData>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1762)
+
+Since v1.0.0
 
 # Schemas
 
 ## Address
 
 An IP address, which is either an IPv4 or IPv6 address.
-
-**Signature**
-
-```ts
-export declare const Address: $Address
-```
 
 **Example**
 
@@ -1205,7 +1373,20 @@ assert.doesNotThrow(() => decodeAddress("1.1.1.2"))
 assert.doesNotThrow(() => decodeAddress("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
 ```
 
-Added in v1.0.0
+**See**
+
+- `IPv4`
+- `IPv6`
+
+**Signature**
+
+```ts
+declare const Address: $Address
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L624)
+
+Since v1.0.0
 
 ## AddressBigint
 
@@ -1214,20 +1395,24 @@ An IP address as a bigint.
 **Signature**
 
 ```ts
-export declare const AddressBigint: $AddressBigint
+declare const AddressBigint: $AddressBigint
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L653)
+
+Since v1.0.0
 
 ## CidrBlock
 
 **Signature**
 
 ```ts
-export declare const CidrBlock: $CidrBlock
+declare const CidrBlock: $CidrBlock
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1230)
+
+Since v1.0.0
 
 ## CidrBlockFromString
 
@@ -1236,20 +1421,16 @@ A schema that transforms a `string` into a `CidrBlock`.
 **Signature**
 
 ```ts
-export declare const CidrBlockFromString: $CidrBlockFromString
+declare const CidrBlockFromString: $CidrBlockFromString
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1261)
+
+Since v1.0.0
 
 ## DurationFromSeconds (class)
 
 Transforms a `number` of seconds into a `Duration`.
-
-**Signature**
-
-```ts
-export declare class DurationFromSeconds
-```
 
 **Example**
 
@@ -1263,17 +1444,19 @@ const duration = decodeDuration(11)
 assert.strictEqual(Duration.toSeconds(duration), 11)
 ```
 
-Added in v1.0.0
+**Signature**
+
+```ts
+declare class DurationFromSeconds
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L36)
+
+Since v1.0.0
 
 ## DurationFromSecondsString (class)
 
 Transforms a `string` of seconds into a `Duration`.
-
-**Signature**
-
-```ts
-export declare class DurationFromSecondsString
-```
 
 **Example**
 
@@ -1287,17 +1470,19 @@ const duration = decodeDurationString("12")
 assert.strictEqual(Duration.toSeconds(duration), 12)
 ```
 
-Added in v1.0.0
+**Signature**
+
+```ts
+declare class DurationFromSecondsString
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L60)
+
+Since v1.0.0
 
 ## Endpoint
 
 A wireguard endpoint, which is either an IPv4 or IPv6 endpoint.
-
-**Signature**
-
-```ts
-export declare const Endpoint: $Endpoint
-```
 
 **Example**
 
@@ -1340,17 +1525,38 @@ const endpoint8: Endpoint = decodeEndpoint({
 })
 ```
 
-Added in v1.0.0
+**See**
 
-## Family
+- `IPv4Endpoint`
+- `IPv6Endpoint`
+- `HostnameEndpoint`
 
 **Signature**
 
 ```ts
-export declare const Family: $Family
+declare const Endpoint: $Endpoint
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1604)
+
+Since v1.0.0
+
+## Family
+
+**See**
+
+- `IPv4Family`
+- `IPv6Family`
+
+**Signature**
+
+```ts
+declare const Family: $Family
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L577)
+
+Since v1.0.0
 
 ## HostnameEndpoint
 
@@ -1361,44 +1567,54 @@ assumed that the nat port and listen port are the same.
 **Signature**
 
 ```ts
-export declare const HostnameEndpoint: $HostnameEndpoint
+declare const HostnameEndpoint: $HostnameEndpoint
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1503)
+
+Since v1.0.0
 
 ## HostnameIPv4SetupData
 
 A wireguard setup data, which consists of an endpoint followed by an address.
 
+**See**
+
+- `IPv4`
+- `HostnameEndpoint`
+
 **Signature**
 
 ```ts
-export declare const HostnameIPv4SetupData: $HostnameIPv4SetupData
+declare const HostnameIPv4SetupData: $HostnameIPv4SetupData
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1711)
+
+Since v1.0.0
 
 ## HostnameIPv6SetupData
 
 A wireguard setup data, which consists of an endpoint followed by an address.
 
+**See**
+
+- `IPv6`
+- `HostnameEndpoint`
+
 **Signature**
 
 ```ts
-export declare const HostnameIPv6SetupData: $HostnameIPv6SetupData
+declare const HostnameIPv6SetupData: $HostnameIPv6SetupData
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1742)
+
+Since v1.0.0
 
 ## IPv4
 
 An IPv4 address.
-
-**Signature**
-
-```ts
-export declare const IPv4: $IPv4
-```
 
 **Example**
 
@@ -1416,17 +1632,19 @@ assert.throws(() => decodeIPv4("1.1.a.1"))
 assert.doesNotThrow(() => decodeIPv4("1.1.1.2"))
 ```
 
-Added in v1.0.0
+**Signature**
+
+```ts
+declare const IPv4: $IPv4
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L186)
+
+Since v1.0.0
 
 ## IPv4Bigint
 
 An IPv4 as a bigint.
-
-**Signature**
-
-```ts
-export declare const IPv4Bigint: $IPv4Bigint
-```
 
 **Example**
 
@@ -1465,17 +1683,27 @@ assert.strictEqual(
 )
 ```
 
-Added in v1.0.0
+**Signature**
+
+```ts
+declare const IPv4Bigint: $IPv4Bigint
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L284)
+
+Since v1.0.0
 
 ## IPv4CidrBlock
 
 **Signature**
 
 ```ts
-export declare const IPv4CidrBlock: $IPv4CidrBlock
+declare const IPv4CidrBlock: $IPv4CidrBlock
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1069)
+
+Since v1.0.0
 
 ## IPv4CidrBlockFromString
 
@@ -1484,20 +1712,16 @@ A schema that transforms a `string` into a `CidrBlock`.
 **Signature**
 
 ```ts
-export declare const IPv4CidrBlockFromString: $IPv4CidrBlockFromString
+declare const IPv4CidrBlockFromString: $IPv4CidrBlockFromString
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1115)
+
+Since v1.0.0
 
 ## IPv4CidrMask
 
 An ipv4 cidr mask, which is a number between 0 and 32.
-
-**Signature**
-
-```ts
-export declare const IPv4CidrMask: $IPv4CidrMask
-```
 
 **Example**
 
@@ -1516,19 +1740,21 @@ assert.doesNotThrow(() => decodeMask(0))
 assert.doesNotThrow(() => decodeMask(32))
 ```
 
-Added in v1.0.0
+**Signature**
+
+```ts
+declare const IPv4CidrMask: $IPv4CidrMask
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L715)
+
+Since v1.0.0
 
 ## IPv4Endpoint
 
 An IPv4 wireguard endpoint, which consists of an IPv4 address followed by a
 nat port then an optional local port. If only one port is provided, it is
 assumed that the nat port and listen port are the same.
-
-**Signature**
-
-```ts
-export declare const IPv4Endpoint: $IPv4Endpoint
-```
 
 **Example**
 
@@ -1554,27 +1780,31 @@ const endpoint4 = decodeEndpoint({
 })
 ```
 
-Added in v1.0.0
+**Signature**
+
+```ts
+declare const IPv4Endpoint: $IPv4Endpoint
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1330)
+
+Since v1.0.0
 
 ## IPv4Family
 
 **Signature**
 
 ```ts
-export declare const IPv4Family: $IPv4Family
+declare const IPv4Family: $IPv4Family
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L127)
+
+Since v1.0.0
 
 ## IPv4SetupData
 
 A wireguard setup data, which consists of an endpoint followed by an address.
-
-**Signature**
-
-```ts
-export declare const IPv4SetupData: $IPv4SetupData
-```
 
 **Example**
 
@@ -1586,17 +1816,24 @@ const decodeSetupData = Schema.decodeSync(SetupData)
 const setupData = decodeSetupData(["1.1.1.1:51280", "10.0.0.1"])
 ```
 
-Added in v1.0.0
+**See**
 
-## IPv6
-
-An IPv6 address.
+- `IPv4`
+- `IPv4EndpointSchema`
 
 **Signature**
 
 ```ts
-export declare const IPv6: $IPv6
+declare const IPv4SetupData: $IPv4SetupData
 ```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1642)
+
+Since v1.0.0
+
+## IPv6
+
+An IPv6 address.
 
 **Example**
 
@@ -1615,17 +1852,19 @@ assert.throws(() => decodeIPv6("2001::85a3::0000::0370:7334"))
 assert.doesNotThrow(() => decodeIPv6("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
 ```
 
-Added in v1.0.0
+**Signature**
+
+```ts
+declare const IPv6: $IPv6
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L398)
+
+Since v1.0.0
 
 ## IPv6Bigint
 
 An IPv6 as a bigint.
-
-**Signature**
-
-```ts
-export declare const IPv6Bigint: $IPv6Bigint
-```
 
 **Example**
 
@@ -1664,17 +1903,27 @@ assert.deepEqual(
 )
 ```
 
-Added in v1.0.0
+**Signature**
+
+```ts
+declare const IPv6Bigint: $IPv6Bigint
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L495)
+
+Since v1.0.0
 
 ## IPv6CidrBlock
 
 **Signature**
 
 ```ts
-export declare const IPv6CidrBlock: $IPv6CidrBlock
+declare const IPv6CidrBlock: $IPv6CidrBlock
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1159)
+
+Since v1.0.0
 
 ## IPv6CidrBlockFromString
 
@@ -1683,20 +1932,16 @@ A schema that transforms a `string` into a `CidrBlock`.
 **Signature**
 
 ```ts
-export declare const IPv6CidrBlockFromString: $IPv6CidrBlockFromString
+declare const IPv6CidrBlockFromString: $IPv6CidrBlockFromString
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1205)
+
+Since v1.0.0
 
 ## IPv6CidrMask
 
 An ipv6 cidr mask, which is a number between 0 and 128.
-
-**Signature**
-
-```ts
-export declare const IPv6CidrMask: $IPv6CidrMask
-```
 
 **Example**
 
@@ -1715,19 +1960,21 @@ assert.doesNotThrow(() => decodeMask(0))
 assert.doesNotThrow(() => decodeMask(128))
 ```
 
-Added in v1.0.0
+**Signature**
+
+```ts
+declare const IPv6CidrMask: $IPv6CidrMask
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L779)
+
+Since v1.0.0
 
 ## IPv6Endpoint
 
 An IPv6 wireguard endpoint, which consists of an IPv6 address in square
 brackets followed by a nat port then an optional local port. If only one port
 is provided, it is assumed that the nat port and listen port are the same.
-
-**Signature**
-
-```ts
-export declare const IPv6Endpoint: $IPv6Endpoint
-```
 
 **Example**
 
@@ -1753,27 +2000,31 @@ const endpoint4 = decodeEndpoint({
 })
 ```
 
-Added in v1.0.0
+**Signature**
+
+```ts
+declare const IPv6Endpoint: $IPv6Endpoint
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1420)
+
+Since v1.0.0
 
 ## IPv6Family
 
 **Signature**
 
 ```ts
-export declare const IPv6Family: $IPv6Family
+declare const IPv6Family: $IPv6Family
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L334)
+
+Since v1.0.0
 
 ## IPv6SetupData
 
 A wireguard setup data, which consists of an endpoint followed by an address.
-
-**Signature**
-
-```ts
-export declare const IPv6SetupData: $IPv6SetupData
-```
 
 **Example**
 
@@ -1785,17 +2036,24 @@ const decodeSetupData = Schema.decodeSync(SetupData)
 const setupData = decodeSetupData(["1.1.1.1:51280", "10.0.0.1"])
 ```
 
-Added in v1.0.0
+**See**
 
-## Port
-
-An operating system port number.
+- `IPv6`
+- `IPv6EndpointSchema`
 
 **Signature**
 
 ```ts
-export declare const Port: $Port
+declare const IPv6SetupData: $IPv6SetupData
 ```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1680)
+
+Since v1.0.0
+
+## Port
+
+An operating system port number.
 
 **Example**
 
@@ -1813,17 +2071,19 @@ assert.throws(() => decodePort(65536))
 assert.doesNotThrow(() => decodePort(8080))
 ```
 
-Added in v1.0.0
+**Signature**
+
+```ts
+declare const Port: $Port
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L103)
+
+Since v1.0.0
 
 ## SetupData
 
 A wireguard setup data, which consists of an endpoint followed by an address.
-
-**Signature**
-
-```ts
-export declare const SetupData: $SetupData
-```
 
 **Example**
 
@@ -1835,4 +2095,17 @@ const decodeSetupData = Schema.decodeSync(SetupData)
 const setupData = decodeSetupData(["1.1.1.1:51280", "10.0.0.1"])
 ```
 
-Added in v1.0.0
+**See**
+
+- `Address`
+- `Endpoint`
+
+**Signature**
+
+```ts
+declare const SetupData: $SetupData
+```
+
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L1779)
+
+Since v1.0.0

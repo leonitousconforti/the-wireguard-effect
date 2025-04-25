@@ -4,15 +4,15 @@ nav_order: 4
 parent: Modules
 ---
 
-## WireguardControl overview
+## WireguardControl.ts overview
 
 Wireguard control mechanisms.
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Constructors](#constructors)
   - [makeBundledWgQuickLayer](#makebundledwgquicklayer)
@@ -37,20 +37,24 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const makeBundledWgQuickLayer: (options: { sudo: boolean }) => WireguardControl
+declare const makeBundledWgQuickLayer: (options: { sudo: boolean }) => WireguardControl
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L82)
+
+Since v1.0.0
 
 ## makeUserspaceLayer
 
 **Signature**
 
 ```ts
-export declare const makeUserspaceLayer: () => WireguardControl
+declare const makeUserspaceLayer: () => WireguardControl
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L89)
+
+Since v1.0.0
 
 # Layers
 
@@ -59,20 +63,24 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const BundledWgQuickLayer: Layer.Layer<WireguardControl, never, never>
+declare const BundledWgQuickLayer: Layer.Layer<WireguardControl, never, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L101)
+
+Since v1.0.0
 
 ## UserspaceLayer
 
 **Signature**
 
 ```ts
-export declare const UserspaceLayer: Layer.Layer<WireguardControl, never, never>
+declare const UserspaceLayer: Layer.Layer<WireguardControl, never, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L95)
+
+Since v1.0.0
 
 # Models
 
@@ -114,7 +122,9 @@ export interface WireguardControl {
 }
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L40)
+
+Since v1.0.0
 
 # Tags
 
@@ -123,10 +133,12 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const WireguardControl: Context.Tag<WireguardControl, WireguardControl>
+declare const WireguardControl: Context.Tag<WireguardControl, WireguardControl>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L76)
+
+Since v1.0.0
 
 # Type ids
 
@@ -135,17 +147,21 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const TypeId: typeof TypeId
+declare const TypeId: unique symbol
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L28)
+
+Since v1.0.0
 
 ## TypeId (type alias)
 
 **Signature**
 
 ```ts
-export type TypeId = typeof TypeId
+type TypeId = typeof TypeId
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L34)
+
+Since v1.0.0
