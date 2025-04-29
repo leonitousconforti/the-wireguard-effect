@@ -15,6 +15,8 @@ runs:
 
     # Install build deps
     - shell: bash
+      run: sudo apt-get update --yes
+    - shell: bash
       run: sudo apt-get -y install mingw-w64 libarchive-tools clang cmake libxml2-dev imagemagick librsvg2-bin libtool libtool-bin debhelper fakeroot
 
     # Check, lint, and build
