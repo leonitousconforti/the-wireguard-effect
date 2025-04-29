@@ -23,11 +23,11 @@ mkdir -p ../dist/prebuilds
 (cd ./wintun && cp wintun-amd64.dll ../../dist/prebuilds/wintun.dll)
 
 # nvlist prebuilds (for wg-quick freebsd)
-(cd ./nvlist && git reset --hard && git apply ../../patches/nvlist.patch && cd pkg && make deb && make clean)
+(cd ./nvlist && git apply ../../patches/nvlist.patch && cd pkg && make deb && make clean && rm -r ./debian/{.debhelper,libnv-dev,libnv1,libnv1-dbg,tmp,*.log,*.substvars,files,debhelper-build-stamp})
 sudo apt-get install ./nvlist/libnv1_0.0.1_amd64.deb
 sudo apt-get install ./nvlist/libnv-dev_0.0.1_amd64.deb
 sudo ldconfig
-(cd ./nvlist && git reset --hard && git clean --force -d)
+(cd ./nvlist && rm -r {*.deb,*.buildinfo,*.changes} && git apply -R ../../patches/nvlist.patch)
 
 # osxcross for cross compiling wg to darwin
 (cd ./osxcross/tarballs && wget -nc https://s3.dockerproject.org/darwin/v2/MacOSX10.10.sdk.tar.xz)
