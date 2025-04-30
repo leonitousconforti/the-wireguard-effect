@@ -72,8 +72,8 @@ importers:
         specifier: 0.33.16
         version: 0.33.16(effect@3.14.16)
       '@effect/vitest':
-        specifier: 0.20.16
-        version: 0.20.16(effect@3.14.16)(vitest@3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(tsx@4.19.4)(yaml@2.7.1))
+        specifier: 0.20.17
+        version: 0.20.17(effect@3.14.16)(vitest@3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(tsx@4.19.4)(yaml@2.7.1))
       '@eslint/js':
         specifier: 9.25.1
         version: 9.25.1
@@ -435,10 +435,10 @@ packages:
     peerDependencies:
       effect: ^3.14.16
 
-  '@effect/vitest@0.20.16':
-    resolution: {integrity: sha512-jFbeqeuEff9BeFvTa4DSyv9D1T3UOx1furG/VBRhzi2nvMNMmCUzQQYlB5oMkQDWAGWHMUftwdzE2Bo4klP/ZA==}
+  '@effect/vitest@0.20.17':
+    resolution: {integrity: sha512-CFieUpcFCMkaeppdTztMaXEQTA6SikCQig5fAQDbS7HxSeEf2NBeoojht0//357tKiueEqM6GRG05x9axO+5iw==}
     peerDependencies:
-      effect: ^3.14.15
+      effect: ^3.14.16
       vitest: ^3.0.0
 
   '@emnapi/core@1.4.3':
@@ -3675,7 +3675,7 @@ snapshots:
     dependencies:
       effect: 3.14.16
 
-  '@effect/vitest@0.20.16(effect@3.14.16)(vitest@3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(tsx@4.19.4)(yaml@2.7.1))':
+  '@effect/vitest@0.20.17(effect@3.14.16)(vitest@3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(tsx@4.19.4)(yaml@2.7.1))':
     dependencies:
       effect: 3.14.16
       vitest: 3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(tsx@4.19.4)(yaml@2.7.1)
