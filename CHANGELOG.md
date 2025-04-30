@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.46
+
+### Patch Changes
+
+- fa71b6c: Update @effect/cli @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/printer @effect/printer-ansi @effect/rpc @effect/rpc @effect/sql @effect/sql @effect/typeclass effect effect
+
 ## 0.0.45
 
 ### Patch Changes
