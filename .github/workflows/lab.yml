@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: ./.github/actions/e2e
-      - uses: mxschmitt/action-tmate@c606f8612a802e46b3742322514c09fbc8c4afee # v3
+      - uses: mxschmitt/action-tmate@7b6a61a73bbb9793cb80ad69b8dd8ac19261834c # v3
         if: ${{ always() }}
 
   linux-lab:
@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: ./.github/actions/linux
-      - uses: mxschmitt/action-tmate@c606f8612a802e46b3742322514c09fbc8c4afee # v3
+      - uses: mxschmitt/action-tmate@7b6a61a73bbb9793cb80ad69b8dd8ac19261834c # v3
         if: ${{ always() }}
 
   macos-intel-lab:
@@ -55,7 +55,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: ./.github/actions/mac-intel
-      - uses: mxschmitt/action-tmate@c606f8612a802e46b3742322514c09fbc8c4afee # v3
+      - uses: mxschmitt/action-tmate@7b6a61a73bbb9793cb80ad69b8dd8ac19261834c # v3
         if: ${{ always() }}
 
   macos-apple-silicon-lab:
@@ -66,7 +66,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: ./.github/actions/mac-apple-silicon
-      - uses: mxschmitt/action-tmate@c606f8612a802e46b3742322514c09fbc8c4afee # v3
+      - uses: mxschmitt/action-tmate@7b6a61a73bbb9793cb80ad69b8dd8ac19261834c # v3
         if: ${{ always() }}
 
   windows-lab:
@@ -77,7 +77,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: ./.github/actions/windows
-      - uses: mxschmitt/action-tmate@c606f8612a802e46b3742322514c09fbc8c4afee # v3
+      - uses: mxschmitt/action-tmate@7b6a61a73bbb9793cb80ad69b8dd8ac19261834c # v3
         if: ${{ always() }}
 
   windows-wsl2-lab:
@@ -88,5 +88,5 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: ./.github/actions/windows-wsl2
-      - uses: mxschmitt/action-tmate@c606f8612a802e46b3742322514c09fbc8c4afee # v3
+      - uses: mxschmitt/action-tmate@7b6a61a73bbb9793cb80ad69b8dd8ac19261834c # v3
         if: ${{ always() }}
