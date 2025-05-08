@@ -48,8 +48,8 @@ importers:
         specifier: 0.44.21
         version: 0.44.21(@effect/platform@0.80.21(effect@3.14.21))(effect@3.14.21)
       '@effect/language-service':
-        specifier: 0.10.2
-        version: 0.10.2
+        specifier: 0.11.0
+        version: 0.11.0
       '@effect/platform':
         specifier: 0.80.21
         version: 0.80.21(effect@3.14.21)
@@ -377,8 +377,8 @@ packages:
       lmdb:
         optional: true
 
-  '@effect/language-service@0.10.2':
-    resolution: {integrity: sha512-7G0dDnLjUz7hgVTjVNlynkqawkLQf4jPvWWI5ArMtnmC3+nVw5YNdWKlsn9lH03JT9RoczpRKBYMjQ+uQNgTzg==}
+  '@effect/language-service@0.11.0':
+    resolution: {integrity: sha512-srm9Kr/1cvURcQ3qCDuolKiwG2MfYtLrOZJ8nZv1NIRk3n4PE+bBaDs5vqUf8GLjy/BCULrlITr9bnBOJ5vtuw==}
 
   '@effect/markdown-toc@0.1.0':
     resolution: {integrity: sha512-IRfvvwqQLabVTIw9hhIj4scOGIYPfa13QuEFv+dBWE6p47R+RR0J8jQvfDINFf0Vn80XXVjNRtZxkZpkKXLx2A==}
@@ -3808,7 +3808,7 @@ snapshots:
       effect: 3.14.21
       uuid: 11.1.0
 
-  '@effect/language-service@0.10.2': {}
+  '@effect/language-service@0.11.0': {}
 
   '@effect/markdown-toc@0.1.0':
     dependencies:
