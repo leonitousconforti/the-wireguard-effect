@@ -64,7 +64,7 @@
         "@effect/cluster": "0.30.10",
         "@effect/docgen": "https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@57ff897",
         "@effect/experimental": "0.44.20",
-        "@effect/language-service": "0.9.2",
+        "@effect/language-service": "0.10.0",
         "@effect/platform": "0.80.20",
         "@effect/platform-node": "0.77.10",
         "@effect/printer": "0.42.20",
