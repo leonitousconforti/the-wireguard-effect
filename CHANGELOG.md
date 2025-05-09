@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.51
+
+### Patch Changes
+
+- 2be4d62: Update @effect/cli @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/printer @effect/printer-ansi @effect/rpc @effect/rpc @effect/sql @effect/sql @effect/typeclass @effect/vitest effect effect
+- 8b53fd4: Update @effect/cli @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/rpc @effect/rpc @effect/sql @effect/sql
+
 ## 0.0.50
 
 ### Patch Changes
