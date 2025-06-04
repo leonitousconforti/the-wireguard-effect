@@ -309,6 +309,10 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
                     return fromString({ Name: `eth${nextAvailableInterfaceIndex}` });
                 case "linux":
                     return fromString({ Name: `wg${nextAvailableInterfaceIndex}` });
+                case "openbsd":
+                    return fromString({ Name: `tun${nextAvailableInterfaceIndex}` });
+                case "freebsd":
+                    return fromString({ Name: `eth${nextAvailableInterfaceIndex}` });
                 case "darwin":
                     return fromString({ Name: `utun${nextAvailableInterfaceIndex}` });
                 default:
@@ -328,6 +332,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
             Match.when(String.endsWith(":linux"), () => Effect.succeed(internalInterface.LinuxInterfaceNameRegExp)),
             Match.when(String.endsWith(":win32"), () => Effect.succeed(internalInterface.WindowsInterfaceNameRegExp)),
             Match.when(String.endsWith(":darwin"), () => Effect.succeed(internalInterface.DarwinInterfaceNameRegExp)),
+            Match.when(String.endsWith(":openbsd"), () => Effect.succeed(internalInterface.OpenBSDInterfaceNameRegExp)),
+            Match.when(String.endsWith(":freebsd"), () => Effect.succeed(internalInterface.FreeBSDInterfaceNameRegExp)),
             Match.orElse((bad) =>
                 Effect.fail(new WireguardErrors.WireguardError({ message: `Unsupported platform ${bad}` }))
             )
@@ -341,6 +347,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         Match.type<(typeof internalInterface.SupportedPlatforms)[number]>(),
         Match.when("linux", () => `/var/run/wireguard/${this.Name}.sock`),
         Match.when("darwin", () => `/var/run/wireguard/${this.Name}.sock`),
+        Match.when("freebsd", () => `/var/run/wireguard/${this.Name}.sock`),
+        Match.when("openbsd", () => `/var/run/wireguard/${this.Name}.sock`),
         Match.when("win32", () => `\\\\.\\pipe\\ProtectedPrefix\\Administrators\\WireGuard\\${this.Name}`),
         Match.exhaustive
     )(Function.unsafeCoerce(process.platform));
