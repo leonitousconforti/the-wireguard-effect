@@ -129,12 +129,12 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                             const stdoutString = yield* fileSystem.readFileString(stdout, "utf-8");
                             const stderrString = yield* fileSystem.readFileString(stderr, "utf-8");
                             return yield* Effect.fail(
-                                PlatformError.SystemError({
+                                new PlatformError.SystemError({
                                     reason: "Unknown",
                                     module: "Command",
                                     method: "wireguard-go.exe",
                                     pathOrDescriptor: command,
-                                    message: `${error.message}\n${stdoutString}\n${stderrString}`,
+                                    description: `${error.message}\n${stdoutString}\n${stderrString}`,
                                 })
                             );
                         })
@@ -211,12 +211,12 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                 return exitCode === 0
                     ? Effect.void
                     : Effect.fail(
-                          PlatformError.SystemError({
+                          new PlatformError.SystemError({
                               reason: "Unknown",
                               module: "Command",
                               pathOrDescriptor: command,
                               method: `${command} ${args.join(" ")}`,
-                              message: `Process exited with code ${exitCode}: ${stdout.join("\n")}, ${stderr.join("\n")}`,
+                              description: `Process exited with code ${exitCode}: ${stdout.join("\n")}, ${stderr.join("\n")}`,
                           })
                       );
             }),
