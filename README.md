@@ -66,4 +66,4 @@ Contributions, suggestions, and questions are welcome! If you are interested in 
 
 ## License :page_facing_up:
 
-If the GNU General Public License v3.0 does not work for you, please reach out and let me know, I can be accommodating
+If the GNU General Public License v3.0 does not work for you, please reach out and let me know, I can be accommodating.
