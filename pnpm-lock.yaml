@@ -32,13 +32,13 @@ importers:
         version: 0.8.9
       '@effect/cli':
         specifier: 0.69.2
-        version: 0.69.2(@effect/platform@0.90.9(effect@3.17.13))(@effect/printer-ansi@0.45.0(@effect/typeclass@0.36.0(effect@3.17.13))(effect@3.17.13))(@effect/printer@0.45.0(@effect/typeclass@0.36.0(effect@3.17.13))(effect@3.17.13))(effect@3.17.13)
+        version: 0.69.2(@effect/platform@0.90.9(effect@3.17.13))(@effect/printer@0.45.0(@effect/typeclass@0.36.0(effect@3.17.13))(effect@3.17.13))(effect@3.17.13)
       '@effect/cluster':
         specifier: 0.48.5
         version: 0.48.5(@effect/platform@0.90.9(effect@3.17.13))(@effect/rpc@0.69.2(@effect/platform@0.90.9(effect@3.17.13))(effect@3.17.13))(@effect/sql@0.44.2(@effect/experimental@0.54.6(@effect/platform@0.90.9(effect@3.17.13))(effect@3.17.13))(@effect/platform@0.90.9(effect@3.17.13))(effect@3.17.13))(@effect/workflow@0.9.5(@effect/platform@0.90.9(effect@3.17.13))(@effect/rpc@0.69.2(@effect/platform@0.90.9(effect@3.17.13))(effect@3.17.13))(effect@3.17.13))(effect@3.17.13)
       '@effect/docgen':
-        specifier: https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@57ff897
-        version: https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@57ff897(tsx@4.20.5)(typescript@5.9.2)
+        specifier: https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@49e99a2
+        version: https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@49e99a2(tsx@4.20.5)(typescript@5.9.2)
       '@effect/experimental':
         specifier: 0.54.6
         version: 0.54.6(@effect/platform@0.90.9(effect@3.17.13))(effect@3.17.13)
@@ -52,9 +52,6 @@ importers:
         specifier: 0.96.1
         version: 0.96.1(@effect/cluster@0.48.5(@effect/platform@0.90.9(effect@3.17.13))(@effect/rpc@0.69.2(@effect/platform@0.90.9(effect@3.17.13))(effect@3.17.13))(@effect/sql@0.44.2(@effect/experimental@0.54.6(@effect/platform@0.90.9(effect@3.17.13))(effect@3.17.13))(@effect/platform@0.90.9(effect@3.17.13))(effect@3.17.13))(@effect/workflow@0.9.5(@effect/platform@0.90.9(effect@3.17.13))(@effect/rpc@0.69.2(@effect/platform@0.90.9(effect@3.17.13))(effect@3.17.13))(effect@3.17.13))(effect@3.17.13))(@effect/platform@0.90.9(effect@3.17.13))(@effect/rpc@0.69.2(@effect/platform@0.90.9(effect@3.17.13))(effect@3.17.13))(@effect/sql@0.44.2(@effect/experimental@0.54.6(@effect/platform@0.90.9(effect@3.17.13))(effect@3.17.13))(@effect/platform@0.90.9(effect@3.17.13))(effect@3.17.13))(effect@3.17.13)
       '@effect/printer':
-        specifier: 0.45.0
-        version: 0.45.0(@effect/typeclass@0.36.0(effect@3.17.13))(effect@3.17.13)
-      '@effect/printer-ansi':
         specifier: 0.45.0
         version: 0.45.0(@effect/typeclass@0.36.0(effect@3.17.13))(effect@3.17.13)
       '@effect/rpc':
@@ -382,8 +379,8 @@ packages:
       '@effect/workflow': ^0.9.4
       effect: ^3.17.13
 
-  '@effect/docgen@https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@57ff897':
-    resolution: {tarball: https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@57ff897}
+  '@effect/docgen@https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@49e99a2':
+    resolution: {tarball: https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@49e99a2}
     version: 0.5.2
     engines: {node: '>=18.0.0'}
     hasBin: true
@@ -435,12 +432,6 @@ packages:
     resolution: {integrity: sha512-ZLyGMenOXGERsaJ7urioWwugkluWjhrcQgr0/vfgxqe/TCumL3CK93YZKSlJtohDrFSfWjaXCbXyhqz3iypFUg==}
     peerDependencies:
       effect: ^3.17.13
-
-  '@effect/printer-ansi@0.45.0':
-    resolution: {integrity: sha512-3MS02RP83eZaBJX98PRI4f5kyoEVyNfg2Qu/XUWQMFRp4wvmgNwEy18RjO9G6s7uB8NaYXTpQVDmtUoKARx7fA==}
-    peerDependencies:
-      '@effect/typeclass': ^0.36.0
-      effect: ^3.17.0
 
   '@effect/printer@0.45.0':
     resolution: {integrity: sha512-UpFBH2JKAgakSWpue6yKkIAXMq+3md/CPb9s/NGl28vDu1P33cvDeeDL/1EOzFk8WqhIs3oKwPMDnd3jUhjzdg==}
@@ -3712,11 +3703,10 @@ snapshots:
       micromatch: 4.0.8
       pkg-entry-points: 1.1.1
 
-  '@effect/cli@0.69.2(@effect/platform@0.90.9(effect@3.17.13))(@effect/printer-ansi@0.45.0(@effect/typeclass@0.36.0(effect@3.17.13))(effect@3.17.13))(@effect/printer@0.45.0(@effect/typeclass@0.36.0(effect@3.17.13))(effect@3.17.13))(effect@3.17.13)':
+  '@effect/cli@0.69.2(@effect/platform@0.90.9(effect@3.17.13))(@effect/printer@0.45.0(@effect/typeclass@0.36.0(effect@3.17.13))(effect@3.17.13))(effect@3.17.13)':
     dependencies:
       '@effect/platform': 0.90.9(effect@3.17.13)
       '@effect/printer': 0.45.0(@effect/typeclass@0.36.0(effect@3.17.13))(effect@3.17.13)
-      '@effect/printer-ansi': 0.45.0(@effect/typeclass@0.36.0(effect@3.17.13))(effect@3.17.13)
       effect: 3.17.13
       ini: 4.1.3
       toml: 3.0.0
@@ -3730,7 +3720,7 @@ snapshots:
       '@effect/workflow': 0.9.5(@effect/platform@0.90.9(effect@3.17.13))(@effect/rpc@0.69.2(@effect/platform@0.90.9(effect@3.17.13))(effect@3.17.13))(effect@3.17.13)
       effect: 3.17.13
 
-  '@effect/docgen@https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@57ff897(tsx@4.20.5)(typescript@5.9.2)':
+  '@effect/docgen@https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@49e99a2(tsx@4.20.5)(typescript@5.9.2)':
     dependencies:
       '@babel/code-frame': 7.27.1
       '@effect/markdown-toc': 0.1.0
@@ -3798,12 +3788,6 @@ snapshots:
       find-my-way-ts: 0.1.6
       msgpackr: 1.11.5
       multipasta: 0.2.7
-
-  '@effect/printer-ansi@0.45.0(@effect/typeclass@0.36.0(effect@3.17.13))(effect@3.17.13)':
-    dependencies:
-      '@effect/printer': 0.45.0(@effect/typeclass@0.36.0(effect@3.17.13))(effect@3.17.13)
-      '@effect/typeclass': 0.36.0(effect@3.17.13)
-      effect: 3.17.13
 
   '@effect/printer@0.45.0(@effect/typeclass@0.36.0(effect@3.17.13))(effect@3.17.13)':
     dependencies:

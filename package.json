@@ -63,7 +63,7 @@
         "@effect/build-utils": "0.8.9",
         "@effect/cli": "0.69.2",
         "@effect/cluster": "0.48.5",
-        "@effect/docgen": "https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@57ff897",
+        "@effect/docgen": "https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@49e99a2",
         "@effect/experimental": "0.54.6",
         "@effect/language-service": "0.40.0",
         "@effect/platform": "0.90.9",
