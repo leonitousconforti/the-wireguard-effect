@@ -317,5 +317,5 @@ export const WireguardDemoServer = (options: {
             )
             .pipe(Effect.runFork);
 
-        yield* server.run(requestHandler);
+        return yield* server.run(requestHandler);
     });

@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: false
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  '@effect/build-utils':
-    hash: suhirx7sdd4dgvpfmcfuyzpkaa
-    path: patches/@effect__build-utils.patch
-
 importers:
 
   .:
@@ -34,7 +29,7 @@ importers:
         version: 2.29.3
       '@effect/build-utils':
         specifier: 0.8.3
-        version: 0.8.3(patch_hash=suhirx7sdd4dgvpfmcfuyzpkaa)
+        version: 0.8.3
       '@effect/cli':
         specifier: 0.60.1
         version: 0.60.1(@effect/platform@0.81.1(effect@3.14.22))(@effect/printer-ansi@0.42.22(@effect/typeclass@0.33.22(effect@3.14.22))(effect@3.14.22))(@effect/printer@0.42.22(@effect/typeclass@0.33.22(effect@3.14.22))(effect@3.14.22))(effect@3.14.22)
@@ -48,8 +43,8 @@ importers:
         specifier: 0.45.1
         version: 0.45.1(@effect/platform@0.81.1(effect@3.14.22))(effect@3.14.22)
       '@effect/language-service':
-        specifier: 0.12.0
-        version: 0.12.0
+        specifier: 0.40.0
+        version: 0.40.0
       '@effect/platform':
         specifier: 0.81.1
         version: 0.81.1(effect@3.14.22)
@@ -377,8 +372,9 @@ packages:
       lmdb:
         optional: true
 
-  '@effect/language-service@0.12.0':
-    resolution: {integrity: sha512-Ki4XOvghwa4/PT2BwlA45fy7+NAMN2sVTD13PgdAMNjPIjhbT3ra17oM/4jtfeh6sjrFkxkMluXzAtjGEDoDLw==}
+  '@effect/language-service@0.40.0':
+    resolution: {integrity: sha512-VHikOhYXm+ECy+mLSszHgCfP9YyKQyB9GLFGBKY2nbnru9xwgCnar8pBLA0AkSUjAgn3hc/mdcFdb/XL9uywLQ==}
+    hasBin: true
 
   '@effect/markdown-toc@0.1.0':
     resolution: {integrity: sha512-IRfvvwqQLabVTIw9hhIj4scOGIYPfa13QuEFv+dBWE6p47R+RR0J8jQvfDINFf0Vn80XXVjNRtZxkZpkKXLx2A==}
@@ -3759,7 +3755,7 @@ snapshots:
       gonzales-pe: 4.3.0
       node-source-walk: 7.0.1
 
-  '@effect/build-utils@0.8.3(patch_hash=suhirx7sdd4dgvpfmcfuyzpkaa)':
+  '@effect/build-utils@0.8.3':
     dependencies:
       micromatch: 4.0.8
       pkg-entry-points: 1.1.1
@@ -3797,7 +3793,7 @@ snapshots:
       effect: 3.14.22
       uuid: 11.1.0
 
-  '@effect/language-service@0.12.0': {}
+  '@effect/language-service@0.40.0': {}
 
   '@effect/markdown-toc@0.1.0':
     dependencies:

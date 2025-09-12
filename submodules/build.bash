@@ -18,18 +18,15 @@ mkdir -p ../dist/prebuilds
 # (cd ./wintun && cp wintun-arm64.dll ../../dist/prebuilds/win32-arm64-wintun.dll)
 (cd ./wintun && cp wintun-amd64.dll ../../dist/prebuilds/wintun.dll)
 
-# osxcross for cross compiling wg to darwin
-(cd ./osxcross/tarballs && wget -nc https://s3.dockerproject.org/darwin/v2/MacOSX10.10.sdk.tar.xz)
-(cd ./osxcross && sudo UNATTENDED=1 TARGET_DIR=/usr/local/osxcross ./build.sh)
-
 # wg-quick prebuilds
 (cd ./wireguard-tools/src && make clean && PLATFORM=linux make && cp ./wg ../../../dist/prebuilds/linux-wg && chmod +x ../../../dist/prebuilds/linux-wg)
-(cd ./wireguard-tools/src && make clean && PATH=/usr/local/osxcross/bin/:$PATH PLATFORM=darwin CC=o64-clang make && cp ./wg ../../../dist/prebuilds/darwin-wg && chmod +x ../../../dist/prebuilds/darwin-wg)
+(cd ./wireguard-tools/src && make clean && docker run --rm -v "$(pwd)":/workdir -e PLATFORM=darwin -e CROSS_TRIPLE=x86_64-apple-darwin multiarch/crossbuild make && cp ./wg ../../../dist/prebuilds/darwin-wg && chmod +x ../../../dist/prebuilds/darwin-wg)
+
 (cd ./wireguard-tools && git apply ../../patches/wg-quick-linux.patch && cp src/wg-quick/linux.bash ../../dist/prebuilds/linux-wg-quick && chmod +x ../../dist/prebuilds/linux-wg-quick && git apply -R ../../patches/wg-quick-linux.patch)
 (cd ./wireguard-tools && git apply ../../patches/wg-quick-darwin.patch && cp src/wg-quick/darwin.bash ../../dist/prebuilds/darwin-wg-quick && chmod +x ../../dist/prebuilds/darwin-wg-quick && git apply -R ../../patches/wg-quick-darwin.patch)
 
 # Wireguard-windows prebuilds
-(cd ./wireguard-windows && unset GOROOT && make clean && make amd64/wireguard.exe && cp amd64/wireguard.exe ../../dist/prebuilds/win32-amd64-wireguard.exe)
+# (cd ./wireguard-windows && unset GOROOT && make clean && make amd64/wireguard.exe && cp amd64/wireguard.exe ../../dist/prebuilds/win32-amd64-wireguard.exe)
 
 # Symlink prebuilds
 (cd ../src && ln -s ../dist/prebuilds/* .)
@@ -42,5 +39,5 @@ mkdir -p ../dist/prebuilds
 (cd ./wireguard-tools && cp ./COPYING ../../dist/prebuilds/LICENSE-wireguard-tools)
 
 # For testing locally in the devcontainer
-sudo setcap "all=ep" ../dist/prebuilds/linux-amd64-wireguard-go
-sudo setcap "all=ep" ../dist/prebuilds/linux-arm64-wireguard-go
+# sudo setcap "all=ep" ../dist/prebuilds/linux-amd64-wireguard-go
+# sudo setcap "all=ep" ../dist/prebuilds/linux-arm64-wireguard-go

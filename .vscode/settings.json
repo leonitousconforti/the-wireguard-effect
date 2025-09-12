@@ -1,10 +1,45 @@
 {
+    "direnv.restart.automatic": true,
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "editor.defaultFormatter": "EditorConfig.EditorConfig",
+    "[typescript][typescriptreact][javascript][javascriptreact][json][jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/.direnv": true,
+        "**/.tsbuildinfo": true,
+        "**/build": true,
+        "**/coverage": true,
+        "**/dist": true
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/*.code-search": true,
+        "submodules/nvlist/**": true,
+        "submodules/osxcross/**": true,
+        "submodules/wintun/**": true,
+        "submodules/wireguard-apple/**": true,
+        "submodules/wireguard-go/**": true,
+        "submodules/wireguard-tools/**": true,
+        "submodules/wireguard-windows/**": true
+    },
+
+    "cSpell.enabled": true,
     "cSpell.words": [
         "AEIMQUYcgkosw",
         "Annotable",
         "bgcolor",
         "bufferutil",
         "BUILDKIT",
+        "buildvcs",
         "ccache",
         "CERTDIR",
         "cloudimg",
@@ -12,11 +47,13 @@
         "compat",
         "Conforti",
         "CONTAINERD",
+        "crossbuild",
         "Datatypes",
         "debhelper",
         "Devcontainer",
         "devcontainers",
         "dind",
+        "direnv",
         "dism",
         "distfiles",
         "distros",
@@ -27,6 +64,9 @@
         "featurename",
         "fwmark",
         "gitsubmodule",
+        "GOARCH",
+        "GOFLAGS",
+        "GOROOT",
         "Handshaked",
         "hardlink",
         "inet",
@@ -40,6 +80,7 @@
         "libelf",
         "librsvg",
         "Millis",
+        "multiarch",
         "mxschmitt",
         "netsh",
         "nftables",
@@ -77,17 +118,5 @@
         "wintun",
         "wslconfig",
         "Xplatform"
-    ],
-    "search.exclude": {
-        "**/node_modules": true,
-        "**/bower_components": true,
-        "**/*.code-search": true,
-        "submodules/nvlist/**": true,
-        "submodules/osxcross/**": true,
-        "submodules/wintun/**": true,
-        "submodules/wireguard-apple/**": true,
-        "submodules/wireguard-go/**": true,
-        "submodules/wireguard-tools/**": true,
-        "submodules/wireguard-windows/**": true
-    }
+    ]
 }
