@@ -26,7 +26,9 @@ mkdir -p ../dist/prebuilds
 (cd ./wireguard-tools && git apply ../../patches/wg-quick-darwin.patch && cp src/wg-quick/darwin.bash ../../dist/prebuilds/darwin-wg-quick && chmod +x ../../dist/prebuilds/darwin-wg-quick && git apply -R ../../patches/wg-quick-darwin.patch)
 
 # Wireguard-windows prebuilds
-# (cd ./wireguard-windows && unset GOROOT && make clean && make amd64/wireguard.exe && cp amd64/wireguard.exe ../../dist/prebuilds/win32-amd64-wireguard.exe)
+(cd ./wireguard-windows && git apply ../../patches/wireguard-windows-makefile.patch)
+(cd ./wireguard-windows && unset GOROOT && make clean && make amd64/wireguard.exe && cp amd64/wireguard.exe ../../dist/prebuilds/win32-amd64-wireguard.exe)
+(cd ./wireguard-windows && git apply -R ../../patches/wireguard-windows-makefile.patch)
 
 # Symlink prebuilds
 (cd ../src && ln -s ../dist/prebuilds/* .)

@@ -23,6 +23,8 @@
           libxml2
           openssl
           zlib
+          imagemagick
+          pkgsCross.mingwW64.buildPackages.gcc
         ];
       };
     });
