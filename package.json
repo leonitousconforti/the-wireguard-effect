@@ -29,11 +29,7 @@
     },
     "files": [
         "src/**/*.ts",
-        "dist/**/*.js",
-        "dist/**/*.js.map",
-        "dist/**/*.d.ts",
-        "dist/**/*.d.ts.map",
-        "dist/prebuilds/**/*"
+        "dist/**/*"
     ],
     "scripts": {
         "build": "pnpm clean && pnpm codegen && tsc -b tsconfig.build.json && babel dist --plugins annotate-pure-calls --out-dir dist --source-maps && pnpm build-submodules",
@@ -115,16 +111,16 @@
     "publishConfig": {
         "access": "public",
         "executableFiles": [
-            "prebuilds/linux-wg",
-            "prebuilds/darwin-wg",
-            "prebuilds/linux-wg-quick",
-            "prebuilds/darwin-wg-quick",
-            "prebuilds/linux-amd64-wireguard-go",
-            "prebuilds/linux-arm64-wireguard-go",
-            "prebuilds/darwin-amd64-wireguard-go",
-            "prebuilds/darwin-arm64-wireguard-go",
-            "prebuilds/win32-amd64-wireguard-go",
-            "prebuilds/win32-arm64-wireguard-go"
+            "dist/prebuilds/linux-wg",
+            "dist/prebuilds/darwin-wg",
+            "dist/prebuilds/linux-wg-quick",
+            "dist/prebuilds/darwin-wg-quick",
+            "dist/prebuilds/linux-amd64-wireguard-go",
+            "dist/prebuilds/linux-arm64-wireguard-go",
+            "dist/prebuilds/darwin-amd64-wireguard-go",
+            "dist/prebuilds/darwin-arm64-wireguard-go",
+            "dist/prebuilds/win32-amd64-wireguard-go",
+            "dist/prebuilds/win32-arm64-wireguard-go"
         ],
         "exports": {
             "./package.json": "./package.json",
