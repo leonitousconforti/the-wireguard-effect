@@ -28,7 +28,7 @@ runs:
         sudo usermod -a -G wireguard-control runner
         sudo mkdir -p /var/run/wireguard/
         sudo chown -R root:wireguard-control /var/run/wireguard/
-        sudo setcap "all=ep" ./dist/prebuilds/linux-amd64-wireguard-go
+        sudo setcap "all=ep" ./dist/linux-amd64-wireguard-go
 
     - uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3
       with:
