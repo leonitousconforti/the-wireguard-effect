@@ -2,7 +2,9 @@
  * This example demonstrates how to decode a single wireguard configuration. You
  * can run this example with:
  *
- *      tsx examples/generate-single-node.ts
+ * ```
+ *  tsx examples/generate-single-node.ts
+ * ```
  */
 
 import * as Schema from "effect/Schema";

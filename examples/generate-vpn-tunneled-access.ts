@@ -7,7 +7,9 @@
  * example is used in the unit tests and e2e tests as well) and this example can
  * be ran with:
  *
- *     tsx examples/generate-vpn-tunneled-access.ts
+ * ```
+ * tsx examples/generate-vpn-tunneled-access.ts
+ * ```
  */
 
 import type * as ParseResult from "effect/ParseResult";

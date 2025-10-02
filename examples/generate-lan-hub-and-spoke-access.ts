@@ -10,7 +10,9 @@
  * example is used in the unit tests and e2e tests as well) and this example can
  * be ran with:
  *
- *      tsx examples/generate-lan-hub-and-spoke-access.ts
+ * ```
+ *  tsx examples/generate-lan-hub-and-spoke-access.ts
+ * ```
  */
 
 import type * as ParseResult from "effect/ParseResult";

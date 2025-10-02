@@ -8,7 +8,9 @@
  * example is used in the unit tests and e2e tests as well) and this example can
  * be ran with:
  *
- *      tsx examples/generate-remote-access-to-lan.ts
+ * ```
+ *  tsx examples/generate-remote-access-to-lan.ts
+ * ```
  */
 
 import type * as ParseResult from "effect/ParseResult";

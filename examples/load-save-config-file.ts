@@ -2,7 +2,9 @@
  * This example demonstrates how to load and save a wireguard configuration file
  * from disk. You can run this example with:
  *
- *      tsx examples/load-save-config-file.ts
+ * ```
+ *  tsx examples/load-save-config-file.ts
+ * ```
  */
 
 import type * as ParseResult from "effect/ParseResult";
