@@ -19,6 +19,7 @@ docs/examples/
 .DS_Store
 
 # Build artifacts
+submodules/prebuilds/
 src/*-wireguard-go
 src/*-wg-quick
 src/LICENSE-*

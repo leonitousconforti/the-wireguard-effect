@@ -1,6 +1,6 @@
 {
     "name": "the-wireguard-effect",
-    "version": "0.0.54",
+    "version": "0.0.55",
     "description": "Cross platform wireguard api client for nodejs built on wireguard-go with effect-ts",
     "keywords": [
         "wireguard",
@@ -36,7 +36,7 @@
         "build-submodules": "(cd submodules && ./build.bash)",
         "check": "tsc -b tsconfig.json",
         "circular": "madge --circular src/*.ts",
-        "clean": "rimraf .tsbuildinfo docs build dist coverage && rimraf --glob src/*-wireguard-go src/*-wg-quick src/*-wintun.dll src/LICENSE-* src/*.exe src/*-bzImage src/*-wg src/wintun.dll",
+        "clean": "rimraf .tsbuildinfo docs build dist coverage submodules/prebuilds && rimraf --glob src/*-wireguard-go src/*-wg-quick src/*-wintun.dll src/LICENSE-* src/*.exe src/*-bzImage src/*-wg src/wintun.dll",
         "codegen": "build-utils prepare-v4",
         "coverage": "vitest --coverage",
         "e2e-tests": "node ./e2e/run.mjs",
@@ -111,16 +111,16 @@
     "publishConfig": {
         "access": "public",
         "executableFiles": [
-            "dist/prebuilds/linux-wg",
-            "dist/prebuilds/darwin-wg",
-            "dist/prebuilds/linux-wg-quick",
-            "dist/prebuilds/darwin-wg-quick",
-            "dist/prebuilds/linux-amd64-wireguard-go",
-            "dist/prebuilds/linux-arm64-wireguard-go",
-            "dist/prebuilds/darwin-amd64-wireguard-go",
-            "dist/prebuilds/darwin-arm64-wireguard-go",
-            "dist/prebuilds/win32-amd64-wireguard-go",
-            "dist/prebuilds/win32-arm64-wireguard-go"
+            "dist/linux-wg",
+            "dist/darwin-wg",
+            "dist/linux-wg-quick",
+            "dist/darwin-wg-quick",
+            "dist/linux-amd64-wireguard-go",
+            "dist/linux-arm64-wireguard-go",
+            "dist/darwin-amd64-wireguard-go",
+            "dist/darwin-arm64-wireguard-go",
+            "dist/win32-amd64-wireguard-go",
+            "dist/win32-arm64-wireguard-go"
         ],
         "exports": {
             "./package.json": "./package.json",
