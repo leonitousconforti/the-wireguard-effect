@@ -1,10 +1,24 @@
 {
-    "extends": "./tsconfig.base.json",
-    "include": ["e2e/**/*.ts"],
+    "$schema": "http://json.schemastore.org/tsconfig",
+    "extends": "./tsconfig.base.jsonc",
+    "include": ["e2e"],
     "references": [{ "path": "./tsconfig.src.json" }, { "path": "./tsconfig.examples.json" }],
     "compilerOptions": {
+        "tsBuildInfoFile": ".tsbuildinfo/e2e.tsbuildinfo",
+        "outDir": ".tsbuildinfo/e2e",
         "noEmit": true,
-        "rootDir": "e2e",
-        "tsBuildInfoFile": ".tsbuildinfo/e2e.tsbuildinfo"
+        "erasableSyntaxOnly": false,
+        "baseUrl": ".",
+        "paths": {
+            "the-wireguard-effect": ["src/index.ts"],
+            "the-wireguard-effect/*": ["src/*.ts"]
+        },
+        "types": ["node"],
+        "plugins": [
+            {
+                "name": "@effect/language-service",
+                "namespaceImportPackages": []
+            }
+        ]
     }
 }

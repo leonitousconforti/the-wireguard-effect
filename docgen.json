@@ -9,11 +9,11 @@
         "moduleResolution": "Bundler",
         "module": "ES2022",
         "target": "ES2022",
-        "lib": ["ES2022"],
-        "baseUrl": "../../",
+        "rewriteRelativeImportExtensions": true,
+        "allowImportingTsExtensions": true,
         "paths": {
-            "the-wireguard-effect": ["./src/index.js"],
-            "the-wireguard-effect/*": ["./src/*.js"]
+            "the-wireguard-effect": ["../../src/index.ts"],
+            "the-wireguard-effect/*": ["../../src/*.ts"]
         }
     }
 }

@@ -6,5 +6,7 @@
     "endOfLine": "auto",
     "singleQuote": false,
     "jsdocPrintWidth": 80,
-    "trailingComma": "es5"
+    "trailingComma": "es5",
+    "jsdocPreferCodeFences": true,
+    "jsdocKeepUnParseAbleExampleIndent": true
 }
