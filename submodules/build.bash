@@ -32,7 +32,7 @@ mkdir -p ./prebuilds
 
 # Symlink prebuilds
 (cd ../src && ln -s ../submodules/prebuilds/* .)
-(cd ../dist && ln -s ../submodules/prebuilds/* .)
+(cd ../dist && cp ../submodules/prebuilds/* .)
 
 # Copy licenses
 (cd ./wintun && cp ./LICENSE.txt ../../dist/LICENSE-wintun)
