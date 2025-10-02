@@ -1,6 +1,6 @@
 {
     "name": "the-wireguard-effect",
-    "version": "0.0.52",
+    "version": "0.0.53",
     "description": "Cross platform wireguard api client for nodejs built on wireguard-go with effect-ts",
     "keywords": [
         "wireguard",
@@ -32,7 +32,8 @@
         "dist/**/*.js",
         "dist/**/*.js.map",
         "dist/**/*.d.ts",
-        "dist/**/*.d.ts.map"
+        "dist/**/*.d.ts.map",
+        "dist/prebuilds/**/*"
     ],
     "scripts": {
         "build": "pnpm clean && pnpm codegen && tsc -b tsconfig.build.json && babel dist --plugins annotate-pure-calls --out-dir dist --source-maps && pnpm build-submodules",
