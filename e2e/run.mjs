@@ -15,12 +15,12 @@ const e2eTests = [
 ];
 
 const cleanDockerE2E = (folder) => {
-    const cwd = url.fileURLToPath(new URL(folder, import.meta.url));
+    const cwd = url.fileURLToPath(new url.URL(folder, import.meta.url));
     exec.execSync("docker compose down", { cwd, stdio: "inherit" });
 };
 
 const runDockerE2E = (folder) => {
-    const cwd = url.fileURLToPath(new URL(folder, import.meta.url));
+    const cwd = url.fileURLToPath(new url.URL(folder, import.meta.url));
     try {
         exec.execSync("tsx generate-configs.ts", { cwd, stdio: "inherit" });
         exec.execSync("docker compose build", { cwd, stdio: "inherit" });

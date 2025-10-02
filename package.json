@@ -40,7 +40,7 @@
         "codegen": "build-utils prepare-v4",
         "coverage": "vitest --coverage",
         "e2e-tests": "node ./e2e/run.mjs",
-        "lint": "eslint \"**/{src,test,examples,scripts,dtslint}/**/*.{ts,mjs}\"",
+        "lint": "eslint \"{src,test,examples,e2e,bin}/**/*.{ts,mjs}\"",
         "lint-fix": "pnpm lint --fix",
         "prepare": "effect-language-service patch",
         "test": "vitest"
