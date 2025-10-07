@@ -20,6 +20,7 @@ import type * as WireguardErrors from "the-wireguard-effect/WireguardErrors";
 
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
+import * as InternetSchemas from "effect-schemas/Internet";
 import * as Chunk from "effect/Chunk";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
@@ -30,12 +31,12 @@ import * as Tuple from "effect/Tuple";
 import * as esmMain from "es-main";
 import * as assert from "node:assert";
 
-import * as InternetSchemas from "the-wireguard-effect/InternetSchemas";
+import * as WireguardInternetSchemas from "the-wireguard-effect/InternetSchemas";
 import * as WireguardGenerate from "the-wireguard-effect/WireguardGenerate";
 
 export const program = (
     /** The network cidr block that the wireguard network will use. */
-    wireguardNetworkCidr: InternetSchemas.IPv4CidrBlockFromStringEncoded = "10.0.0.1/24" as const,
+    wireguardNetworkCidr: Schema.Schema.Encoded<InternetSchemas.IPv4CidrBlockFromString> = "10.0.0.1/24" as const,
 
     /** Server's public address */
     serverAddress: `${string}:${number}` | `${string}:${number}:${number}` = "server.wireguard.com:51820" as const
@@ -53,7 +54,7 @@ export const program = (
         const decodeAddress = Schema.decode(InternetSchemas.IPv4);
         const decodeCidr = Schema.decode(InternetSchemas.IPv4CidrBlockFromString);
         const decodeSetupData = Schema.decode(
-            Schema.Union(InternetSchemas.IPv4SetupData, InternetSchemas.HostnameIPv4SetupData)
+            Schema.Union(WireguardInternetSchemas.IPv4SetupData, WireguardInternetSchemas.HostnameIPv4SetupData)
         );
 
         /** Decode the CIDR blocks */

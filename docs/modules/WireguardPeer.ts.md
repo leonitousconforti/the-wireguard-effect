@@ -35,55 +35,33 @@ A wireguard peer configuration.
 
 **Example**
 
-```ts
-import * as Schema from "effect/Schema"
-import * as Duration from "effect/Duration"
-import * as Option from "effect/Option"
-import * as InternetSchemas from "the-wireguard-effect/InternetSchemas"
-import * as WireguardKey from "the-wireguard-effect/WireguardKey"
+````ts
 
-import { WireguardPeer } from "the-wireguard-effect/WireguardPeer"
+    import * as Schema from "effect/Schema";
+    import * as WireguardKey from "the-wireguard-effect/WireguardKey";
 
-const preshareKey = WireguardKey.generatePreshareKey()
-const { publicKey, privateKey: _privateKey } = WireguardKey.generateKeyPair()
+    import { WireguardPeer } from "the-wireguard-effect/WireguardPeer";
 
-// WireguardPeer
-const peerDirectInstantiation = new WireguardPeer({
-  PublicKey: publicKey,
-  AllowedIPs: [
-    InternetSchemas.CidrBlock({
-      ipv4: InternetSchemas.IPv4("192.168.0.0"),
-      mask: InternetSchemas.IPv4CidrMask(24)
-    })
-  ],
-  Endpoint: InternetSchemas.Endpoint(
-    InternetSchemas.IPv4Endpoint({
-      ip: InternetSchemas.IPv4("192.168.0.1"),
-      natPort: InternetSchemas.Port(51820),
-      listenPort: InternetSchemas.Port(51820)
-    })
-  ),
-  PersistentKeepalive: Duration.seconds(20),
-  PresharedKey: Option.none()
-})
+    const preshareKey = WireguardKey.generatePreshareKey();
+    const { publicKey, privateKey: _privateKey } =
+        WireguardKey.generateKeyPair();
 
-// Effect.Effect<WireguardPeer, ParseResult.ParseError, never>
-const peerSchemaInstantiation = Schema.decode(WireguardPeer)({
-  PublicKey: publicKey,
-  PresharedKey: preshareKey,
-  Endpoint: "192.168.0.1:51820",
-  AllowedIPs: ["192.168.0.0/24"],
-  PersistentKeepalive: Duration.seconds(20)
-})
-```
+    const peerSchemaInstantiation = Schema.decode(WireguardPeer)({
+        PublicKey: publicKey,
+        PresharedKey: preshareKey,
+        Endpoint: "192.168.0.1:51820",
+        AllowedIPs: new Set(["192.168.0.0/24"]),
+        PersistentKeepalive: 20,
+    });
+    ```;
 
 **Signature**
 
 ```ts
 declare class WireguardPeer
-```
+````
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L71)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L51)
 
 Since v1.0.0
 
@@ -99,7 +77,7 @@ declare const hasBidirectionalTraffic: (
 ) => Effect.Effect<boolean, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L383)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L366)
 
 Since v1.0.0
 
@@ -113,7 +91,7 @@ declare const hasHandshakedRecently: (
 ) => Effect.Effect<boolean, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L391)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L374)
 
 Since v1.0.0
 
@@ -131,7 +109,7 @@ Since v1.0.0
 declare class WireguardUapiGetPeer
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L312)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L295)
 
 Since v1.0.0
 
@@ -147,7 +125,7 @@ Since v1.0.0
 declare class WireguardUapiSetPeer
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L259)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L242)
 
 Since v1.0.0
 
@@ -159,30 +137,32 @@ A wireguard peer configuration encoded in INI format.
 
 **Example**
 
-```ts
-import * as Effect from "effect/Effect"
-import * as Function from "effect/Function"
-import * as Schema from "effect/Schema"
-import * as WireguardKey from "the-wireguard-effect/WireguardKey"
-import * as WireguardPeer from "the-wireguard-effect/WireguardPeer"
+````ts
 
-const preshareKey = WireguardKey.generatePreshareKey()
-const { publicKey, privateKey: _privateKey } = WireguardKey.generateKeyPair()
+    import * as Effect from "effect/Effect";
+    import * as Function from "effect/Function";
+    import * as Schema from "effect/Schema";
+    import * as WireguardKey from "the-wireguard-effect/WireguardKey";
+    import * as WireguardPeer from "the-wireguard-effect/WireguardPeer";
 
-const peer = Schema.decode(WireguardPeer.WireguardPeer)({
-  PublicKey: publicKey,
-  PresharedKey: preshareKey,
-  AllowedIPs: new Set(["192.168.0.0/24"]),
-  Endpoint: "192.168.0.1:51820",
-  PersistentKeepalive: 20
-})
+    const preshareKey = WireguardKey.generatePreshareKey();
+    const { publicKey, privateKey: _privateKey } =
+        WireguardKey.generateKeyPair();
 
-const iniPeer = Function.pipe(
-  peer,
-  Effect.flatMap(Schema.encode(WireguardPeer.WireguardPeer)),
-  Effect.flatMap(Schema.decode(WireguardPeer.WireguardIniPeer))
-)
-```
+    const peer = Schema.decode(WireguardPeer.WireguardPeer)({
+        PublicKey: publicKey,
+        PresharedKey: preshareKey,
+        AllowedIPs: new Set(["192.168.0.0/24"]),
+        Endpoint: "192.168.0.1:51820",
+        PersistentKeepalive: 20,
+    });
+
+    const iniPeer = Function.pipe(
+        peer,
+        Effect.flatMap(Schema.encode(WireguardPeer.WireguardPeer)),
+        Effect.flatMap(Schema.decode(WireguardPeer.WireguardIniPeer))
+    );
+    ```;
 
 **See**
 
@@ -192,8 +172,8 @@ const iniPeer = Function.pipe(
 
 ```ts
 declare class WireguardIniPeer
-```
+````
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L173)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L156)
 
 Since v1.0.0

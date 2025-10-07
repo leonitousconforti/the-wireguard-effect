@@ -3,11 +3,11 @@ import * as Options from "@effect/cli/Options";
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as SocketServerNode from "@effect/platform-node/NodeSocketServer";
+import * as InternetSchemas from "effect-schemas/Internet";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Schema from "effect/Schema";
 
-import * as InternetSchemas from "../src/InternetSchemas.js";
 import * as WireguardControl from "../src/WireguardControl.js";
 import * as WireguardServer from "../src/WireguardServer.js";
 

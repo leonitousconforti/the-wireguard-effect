@@ -36,8 +36,11 @@ export type WireguardKey = Schema.Schema.Type<typeof WireguardKey>;
  * @since 1.0.0
  * @category Crypto
  * @example
+ *     ```ts
+ *
  *     import { generateKeyPair } from "the-wireguard-effect/WireguardKey";
  *     const { privateKey, publicKey } = generateKeyPair();
+ *     ```;
  */
 export const generateKeyPair = (): { readonly privateKey: WireguardKey; readonly publicKey: WireguardKey } => {
     const keys = crypto.generateKeyPairSync("x25519", {
@@ -55,8 +58,11 @@ export const generateKeyPair = (): { readonly privateKey: WireguardKey; readonly
  * @since 1.0.0
  * @category Crypto
  * @example
+ *     ```ts
+ *
  *     import { generatePreshareKey } from "the-wireguard-effect/WireguardKey";
  *     const preshareKey = generatePreshareKey();
+ *     ```;
  */
 export const generatePreshareKey = (): WireguardKey => {
     const key = crypto.generateKeySync("hmac", { length: 256 });

@@ -8,11 +8,12 @@ import type * as CommandExecutor from "@effect/platform/CommandExecutor";
 import type * as PlatformError from "@effect/platform/Error";
 import type * as FileSystem from "@effect/platform/FileSystem";
 import type * as Path from "@effect/platform/Path";
+import * as InternetSchemas from "effect-schemas/Internet";
 import type * as Cause from "effect/Cause";
 import type * as ParseResult from "effect/ParseResult";
 import type * as Scope from "effect/Scope";
-import type * as WireguardControl from "./WireguardControl.js";
-import type * as WireguardErrors from "./WireguardErrors.js";
+import type * as WireguardControl from "./WireguardControl.ts";
+import type * as WireguardErrors from "./WireguardErrors.ts";
 
 import * as NodeHttpServer from "@effect/platform-node/NodeHttpServer";
 import * as NodeSocket from "@effect/platform-node/NodeSocket";
@@ -35,31 +36,19 @@ import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
 import * as dns from "node:dns";
 import * as http from "node:http";
-import * as InternetSchemas from "./InternetSchemas.js";
-import * as WireguardConfig from "./WireguardConfig.js";
-import * as WireguardInterface from "./WireguardInterface.js";
-import * as WireguardKey from "./WireguardKey.js";
-import * as WireguardPeer from "./WireguardPeer.js";
+import type * as WireguardInternetSchemas from "./InternetSchemas.ts";
+import * as WireguardConfig from "./WireguardConfig.ts";
+import * as WireguardInterface from "./WireguardInterface.ts";
+import * as WireguardKey from "./WireguardKey.ts";
+import * as WireguardPeer from "./WireguardPeer.ts";
 
-import * as internalInternetSchemas from "./internal/internetSchemas.js";
-
-/**
- * @since 1.0.0
- * @category Unbranded types
- */
-export type WireguardDemoServerSchema = Schema.Schema.Type<typeof WireguardDemoServerSchema>;
-
-/**
- * @since 1.0.0
- * @category Encoded types
- */
-export type WireguardDemoServerSchemaEncoded = Schema.Schema.Encoded<typeof WireguardDemoServerSchema>;
+import * as internalInternetSchemas from "./internal/internetSchemas.ts";
 
 /**
  * @since 1.0.0
  * @category Schema
  */
-export const WireguardDemoServerSchema = Schema.transform(
+export class WireguardDemoServerSchema extends Schema.transform(
     Schema.TemplateLiteral(
         Schema.Literal("OK"),
         Schema.Literal(":"),
@@ -90,7 +79,7 @@ export const WireguardDemoServerSchema = Schema.transform(
 ).annotations({
     identifier: "WireguardDemoSchema",
     description: "Wireguard demo server response",
-});
+}) {}
 
 /**
  * Attempts a DNS lookup of the given host (needed because wireguard will not
@@ -141,7 +130,7 @@ export const requestWireguardDemoConfig = (
                 const host = yield* dnsLookup(connectOptions.host);
                 const address = `${serverResponse.yourWireguardAddress.ip}${netmask}` as const;
                 const cidr = yield* Schema.decode(InternetSchemas.CidrBlockFromString)(address);
-                const networkAddress = yield* cidr.networkAddress();
+                const networkAddress = cidr.networkAddress;
                 const allowedIps = new Set([`${networkAddress.ip}${netmask}`] as const);
                 return yield* Schema.decode(WireguardConfig.WireguardConfig)({
                     ListenPort: 0,
@@ -186,8 +175,8 @@ const hiddenPageContent = `<title>WireGuard Demo Configuration: Success!</title>
  */
 export const WireguardDemoServer = (options: {
     maxPeers?: number | undefined;
-    serverEndpoint: InternetSchemas.Endpoint;
-    wireguardNetwork: InternetSchemas.CidrBlockFromStringEncoded;
+    serverEndpoint: Schema.Schema.Type<WireguardInternetSchemas.Endpoint>;
+    wireguardNetwork: Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>;
 }): Effect.Effect<
     void,
     | Socket.SocketError
@@ -209,18 +198,25 @@ export const WireguardDemoServer = (options: {
         // Generate the server's wireguard keys and network
         const serverWireguardKeys = WireguardKey.generateKeyPair();
         const wireguardNetwork = yield* Schema.decode(InternetSchemas.CidrBlockFromString)(options.wireguardNetwork);
-        const networkSize = yield* wireguardNetwork.total;
+        const networkSize = wireguardNetwork.total;
 
         // Setup the wireguard peer address pool
-        const serverWireguardAddressPool = yield* Queue.dropping<InternetSchemas.Address>(
+        const serverWireguardAddressPool = yield* Queue.dropping<Schema.Schema.Type<InternetSchemas.Address>>(
             Math.min(options?.maxPeers || 256, Number(networkSize))
         );
         yield* Function.pipe(
-            wireguardNetwork.range as Stream.Stream<InternetSchemas.Address, ParseResult.ParseError, never>,
+            wireguardNetwork.range as Stream.Stream<
+                Schema.Schema.Type<InternetSchemas.Address>,
+                ParseResult.ParseError,
+                never
+            >,
             Stream.drop(2),
             Stream.run(Sink.fromQueue(serverWireguardAddressPool))
         );
-        const addressReservationLookup = HashMap.empty<WireguardKey.WireguardKey, InternetSchemas.Address>();
+        const addressReservationLookup = HashMap.empty<
+            WireguardKey.WireguardKey,
+            Schema.Schema.Type<InternetSchemas.Address>
+        >();
 
         // Setup the wireguard interface and wireguard server config
         const serverWireguardInterface = yield* WireguardInterface.WireguardInterface.getNextAvailableInterface;
@@ -233,7 +229,7 @@ export const WireguardDemoServer = (options: {
 
         const requestHandler = (socket: Socket.Socket) =>
             Effect.gen(function* () {
-                const responses = yield* Queue.unbounded<WireguardDemoServerSchemaEncoded>();
+                const responses = yield* Queue.unbounded<Schema.Schema.Encoded<WireguardDemoServerSchema>>();
 
                 yield* Stream.fromQueue(responses).pipe(
                     Stream.pipeThroughChannel(Socket.toChannel(socket)),

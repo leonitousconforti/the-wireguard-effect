@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      effect-schemas:
+        specifier: 0.0.2
+        version: 0.0.2(effect@3.18.1)
       ini:
         specifier: ^5.0.0
         version: 5.0.0
@@ -1627,6 +1630,12 @@ packages:
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
+
+  effect-schemas@0.0.2:
+    resolution: {integrity: sha512-9d9brmNv8IcuRYzEwvA4x4O9z8124fJdZZXXu58JGiTonkqm4KthQvgDZjrkWcg4NLvG3KUrM9rPb25oo+KBSA==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      effect: 3.18.1
 
   effect@3.18.1:
     resolution: {integrity: sha512-5aJ7yRlvvkBplMSnhPyol7WYvPenvau12asO3HJhG/126SySWV9D8bscGTbV52XxtC5bwO/VUd5ffjE6uep/1A==}
@@ -4851,6 +4860,10 @@ snapshots:
       gopd: 1.2.0
 
   eastasianwidth@0.2.0: {}
+
+  effect-schemas@0.0.2(effect@3.18.1):
+    dependencies:
+      effect: 3.18.1
 
   effect@3.18.1:
     dependencies:

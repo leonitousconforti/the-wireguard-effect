@@ -1,9 +1,9 @@
 import type * as Socket from "@effect/platform/Socket";
 import type * as Cause from "effect/Cause";
 import type * as ParseResult from "effect/ParseResult";
-import type * as WireguardConfig from "../WireguardConfig.js";
-import type * as _WireguardControl from "../WireguardControl.js";
-import type * as WireguardInterface from "../WireguardInterface.js";
+import type * as WireguardConfig from "../WireguardConfig.ts";
+import type * as _WireguardControl from "../WireguardControl.ts";
+import type * as WireguardInterface from "../WireguardInterface.ts";
 
 import * as Command from "@effect/platform/Command";
 import * as CommandExecutor from "@effect/platform/CommandExecutor";

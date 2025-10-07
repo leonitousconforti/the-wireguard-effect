@@ -10,7 +10,7 @@ import type * as ParseResult from "effect/ParseResult";
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as Effect from "effect/Effect";
 import * as Schema from "effect/Schema";
-import * as circular from "./internal/circular.js";
+import * as circular from "./internal/circular.ts";
 
 export {
     /**
@@ -20,7 +20,7 @@ export {
      * @category Schemas
      */
     WireguardConfig,
-} from "./internal/circular.js";
+} from "./internal/circular.ts";
 
 export {
     /**
@@ -31,7 +31,7 @@ export {
      * @see {@link WireguardConfig}
      */
     WireguardIniConfig,
-} from "./internal/circular.js";
+} from "./internal/circular.ts";
 
 /**
  * Loads a wireguard interface configuration from an INI file.

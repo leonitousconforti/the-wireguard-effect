@@ -6,8 +6,6 @@ parent: Modules
 
 ## index.ts overview
 
-Internet schemas for wireguard configuration.
-
 Since v1.0.0
 
 ---
@@ -31,126 +29,126 @@ Since v1.0.0
 
 ## InternetSchemas (namespace export)
 
-Re-exports all named exports from the "./InternetSchemas.js" module as `InternetSchemas`.
+Re-exports all named exports from the "./InternetSchemas.ts" module as `InternetSchemas`.
 
 **Signature**
 
 ```ts
-export * as InternetSchemas from "./InternetSchemas.js"
+export * as InternetSchemas from "./InternetSchemas.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L6)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L10)
 
 Since v1.0.0
 
 ## WireguardConfig (namespace export)
 
-Re-exports all named exports from the "./WireguardConfig.js" module as `WireguardConfig`.
+Re-exports all named exports from the "./WireguardConfig.ts" module as `WireguardConfig`.
 
 **Signature**
 
 ```ts
-export * as WireguardConfig from "./WireguardConfig.js"
+export * as WireguardConfig from "./WireguardConfig.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L13)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L17)
 
 Since v1.0.0
 
 ## WireguardControl (namespace export)
 
-Re-exports all named exports from the "./WireguardControl.js" module as `WireguardControl`.
+Re-exports all named exports from the "./WireguardControl.ts" module as `WireguardControl`.
 
 **Signature**
 
 ```ts
-export * as WireguardControl from "./WireguardControl.js"
+export * as WireguardControl from "./WireguardControl.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L20)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L24)
 
 Since v1.0.0
 
 ## WireguardErrors (namespace export)
 
-Re-exports all named exports from the "./WireguardErrors.js" module as `WireguardErrors`.
+Re-exports all named exports from the "./WireguardErrors.ts" module as `WireguardErrors`.
 
 **Signature**
 
 ```ts
-export * as WireguardErrors from "./WireguardErrors.js"
+export * as WireguardErrors from "./WireguardErrors.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L27)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L31)
 
 Since v1.0.0
 
 ## WireguardGenerate (namespace export)
 
-Re-exports all named exports from the "./WireguardGenerate.js" module as `WireguardGenerate`.
+Re-exports all named exports from the "./WireguardGenerate.ts" module as `WireguardGenerate`.
 
 **Signature**
 
 ```ts
-export * as WireguardGenerate from "./WireguardGenerate.js"
+export * as WireguardGenerate from "./WireguardGenerate.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L34)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L38)
 
 Since v1.0.0
 
 ## WireguardInterface (namespace export)
 
-Re-exports all named exports from the "./WireguardInterface.js" module as `WireguardInterface`.
+Re-exports all named exports from the "./WireguardInterface.ts" module as `WireguardInterface`.
 
 **Signature**
 
 ```ts
-export * as WireguardInterface from "./WireguardInterface.js"
+export * as WireguardInterface from "./WireguardInterface.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L41)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L45)
 
 Since v1.0.0
 
 ## WireguardKey (namespace export)
 
-Re-exports all named exports from the "./WireguardKey.js" module as `WireguardKey`.
+Re-exports all named exports from the "./WireguardKey.ts" module as `WireguardKey`.
 
 **Signature**
 
 ```ts
-export * as WireguardKey from "./WireguardKey.js"
+export * as WireguardKey from "./WireguardKey.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L48)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L52)
 
 Since v1.0.0
 
 ## WireguardPeer (namespace export)
 
-Re-exports all named exports from the "./WireguardPeer.js" module as `WireguardPeer`.
+Re-exports all named exports from the "./WireguardPeer.ts" module as `WireguardPeer`.
 
 **Signature**
 
 ```ts
-export * as WireguardPeer from "./WireguardPeer.js"
+export * as WireguardPeer from "./WireguardPeer.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L55)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L59)
 
 Since v1.0.0
 
 ## WireguardServer (namespace export)
 
-Re-exports all named exports from the "./WireguardServer.js" module as `WireguardServer`.
+Re-exports all named exports from the "./WireguardServer.ts" module as `WireguardServer`.
 
 **Signature**
 
 ```ts
-export * as WireguardServer from "./WireguardServer.js"
+export * as WireguardServer from "./WireguardServer.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L62)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L66)
 
 Since v1.0.0

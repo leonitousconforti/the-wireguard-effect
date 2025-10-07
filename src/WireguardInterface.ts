@@ -12,4 +12,4 @@ export {
      * @category Datatypes
      */
     WireguardInterface,
-} from "./internal/circular.js";
+} from "./internal/circular.ts";

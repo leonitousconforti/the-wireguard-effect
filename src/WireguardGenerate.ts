@@ -6,6 +6,7 @@
 
 import type * as ParseResult from "effect/ParseResult";
 
+import * as InternetSchemas from "effect-schemas/Internet";
 import * as Array from "effect/Array";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -16,24 +17,28 @@ import * as Record from "effect/Record";
 import * as Schema from "effect/Schema";
 import * as Tuple from "effect/Tuple";
 import * as assert from "node:assert";
-import * as InternetSchemas from "./InternetSchemas.js";
-import * as WireguardConfig from "./WireguardConfig.js";
-import * as WireguardErrors from "./WireguardErrors.js";
-import * as WireguardKey from "./WireguardKey.js";
+import * as WireguardInternetSchemas from "./InternetSchemas.ts";
+import * as WireguardConfig from "./WireguardConfig.ts";
+import * as WireguardErrors from "./WireguardErrors.ts";
+import * as WireguardKey from "./WireguardKey.ts";
 
-import * as internalInternalSchemas from "./internal/internetSchemas.js";
+import * as internalInternalSchemas from "./internal/internetSchemas.ts";
 
 /** A node in the network can either have an ipv4 or ipv6 address. */
-type WireguardIPv4RoamingPeer = InternetSchemas.IPv4;
-type WireguardIPv6RoamingPeer = InternetSchemas.IPv6;
+type WireguardIPv4RoamingPeer = Schema.Schema.Type<InternetSchemas.IPv4>;
+type WireguardIPv6RoamingPeer = Schema.Schema.Type<InternetSchemas.IPv6>;
 type WireguardRoamingPeer = WireguardIPv4RoamingPeer | WireguardIPv6RoamingPeer;
 
 /**
  * A server in the network can either have an ipv4 address pool or ipv6 address
  * pool.
  */
-type WireguardIPv4Server = InternetSchemas.IPv4SetupData | InternetSchemas.HostnameIPv4SetupData;
-type WireguardIPv6Server = InternetSchemas.IPv6SetupData | InternetSchemas.HostnameIPv6SetupData;
+type WireguardIPv4Server =
+    | Schema.Schema.Type<WireguardInternetSchemas.IPv4SetupData>
+    | Schema.Schema.Type<WireguardInternetSchemas.HostnameIPv4SetupData>;
+type WireguardIPv6Server =
+    | Schema.Schema.Type<WireguardInternetSchemas.IPv6SetupData>
+    | Schema.Schema.Type<WireguardInternetSchemas.HostnameIPv6SetupData>;
 type WireguardServer = WireguardIPv4Server | WireguardIPv6Server;
 
 /**
@@ -123,7 +128,7 @@ export type AllowedIPsLayer<
     allowedIPs: Record.ReadonlyRecord<
         Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
         Array.NonEmptyReadonlyArray<{
-            block: InternetSchemas.CidrBlockFromStringEncoded;
+            block: Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>;
             from: Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"];
         }>
     >;
@@ -147,10 +152,10 @@ export const ipForNode = Function.pipe(
     Match.when(Schema.is(InternetSchemas.IPv4), ({ ip }) => ip),
     Match.when(Schema.is(InternetSchemas.IPv6), ({ ip }) => ip),
     Match.whenOr(
-        Schema.is(InternetSchemas.IPv4SetupData),
-        Schema.is(InternetSchemas.IPv6SetupData),
-        Schema.is(InternetSchemas.HostnameIPv4SetupData),
-        Schema.is(InternetSchemas.HostnameIPv6SetupData),
+        Schema.is(WireguardInternetSchemas.IPv4SetupData),
+        Schema.is(WireguardInternetSchemas.IPv6SetupData),
+        Schema.is(WireguardInternetSchemas.HostnameIPv4SetupData),
+        Schema.is(WireguardInternetSchemas.HostnameIPv6SetupData),
         ([_, { ip }]) => ip
     ),
     Match.exhaustive
@@ -383,7 +388,9 @@ export const addAllowedIPs = Function.dual<
             | Extract<Nodes[number], WireguardRoamingPeer>["ip"]
             | Extract<Nodes[number], WireguardServer>[1]["ip"],
         cidrs: Array.NonEmptyReadonlyArray<
-            InternetSchemas.IPv4CidrBlock | InternetSchemas.IPv6CidrBlock | InternetSchemas.CidrBlockFromStringEncoded
+            | InternetSchemas.IPv4CidrBlock
+            | InternetSchemas.IPv6CidrBlock
+            | Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>
         >
     ) => (allowedIPsLayer: AllowedIPsLayer<Nodes>) => AllowedIPsLayer<Nodes>,
     <
@@ -397,7 +404,9 @@ export const addAllowedIPs = Function.dual<
             | Extract<Nodes[number], WireguardRoamingPeer>["ip"]
             | Extract<Nodes[number], WireguardServer>[1]["ip"],
         cidrs: Array.NonEmptyReadonlyArray<
-            InternetSchemas.IPv4CidrBlock | InternetSchemas.IPv6CidrBlock | InternetSchemas.CidrBlockFromStringEncoded
+            | InternetSchemas.IPv4CidrBlock
+            | InternetSchemas.IPv6CidrBlock
+            | Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>
         >
     ) => AllowedIPsLayer<Nodes>
 >(
@@ -413,7 +422,9 @@ export const addAllowedIPs = Function.dual<
             | Extract<Nodes[number], WireguardRoamingPeer>["ip"]
             | Extract<Nodes[number], WireguardServer>[1]["ip"],
         cidrs: Array.NonEmptyReadonlyArray<
-            InternetSchemas.IPv4CidrBlock | InternetSchemas.IPv6CidrBlock | InternetSchemas.CidrBlockFromStringEncoded
+            | InternetSchemas.IPv4CidrBlock
+            | InternetSchemas.IPv6CidrBlock
+            | Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>
         >
     ): AllowedIPsLayer<Nodes> => {
         const oldCidrs = Record.get(allowedIPsLayer.allowedIPs, nodeToIp);
@@ -423,13 +434,18 @@ export const addAllowedIPs = Function.dual<
                 Match.value(cidr),
                 Match.when(
                     Schema.is(InternetSchemas.IPv4CidrBlock),
-                    ({ address, mask }): InternetSchemas.CidrBlockFromStringEncoded => `${address.ip}/${mask}` as const
+                    ({ address, mask }): Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString> =>
+                        `${address.ip}/${mask}` as const
                 ),
                 Match.when(
                     Schema.is(InternetSchemas.IPv6CidrBlock),
-                    ({ address, mask }): InternetSchemas.CidrBlockFromStringEncoded => `${address.ip}/${mask}` as const
+                    ({ address, mask }): Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString> =>
+                        `${address.ip}/${mask}` as const
                 ),
-                Match.when(Predicate.isString, Function.identity<InternetSchemas.CidrBlockFromStringEncoded>),
+                Match.when(
+                    Predicate.isString,
+                    Function.identity<Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>>
+                ),
                 Match.exhaustive
             )
         );
@@ -489,11 +505,11 @@ export const toConfigs = <
                 const keysForNode = Record.get(keys, ipForNode(node)).pipe(Option.getOrThrow);
                 const endpointForNode = Record.get(endpointsByIp, ipForNode(node)).pipe(Option.getOrThrow);
 
-                const endpointForNodeEncoded = yield* Schema.is(InternetSchemas.SetupData)(endpointForNode)
-                    ? Schema.encode(InternetSchemas.SetupData)(endpointForNode).pipe(Effect.map((x) => x[0]))
+                const endpointForNodeEncoded = yield* Schema.is(WireguardInternetSchemas.SetupData)(endpointForNode)
+                    ? Schema.encode(WireguardInternetSchemas.SetupData)(endpointForNode).pipe(Effect.map((x) => x[0]))
                     : Effect.succeed(undefined);
 
-                const address = Schema.is(InternetSchemas.SetupData)(endpointForNode)
+                const address = Schema.is(WireguardInternetSchemas.SetupData)(endpointForNode)
                     ? endpointForNode[1].ip
                     : endpointForNode.ip;
 
@@ -513,11 +529,11 @@ export const toConfigs = <
             const endpointForNode = Record.get(endpointsByIp, ipForNode(node)).pipe(Option.getOrThrow);
             const allowedIPsForNode = Record.get(allowedIPs, ipForNode(node)).pipe(Option.getOrThrow);
 
-            const address = Schema.is(InternetSchemas.SetupData)(endpointForNode)
+            const address = Schema.is(WireguardInternetSchemas.SetupData)(endpointForNode)
                 ? endpointForNode[1].ip
                 : endpointForNode.ip;
 
-            const listenPort = Schema.is(InternetSchemas.SetupData)(endpointForNode)
+            const listenPort = Schema.is(WireguardInternetSchemas.SetupData)(endpointForNode)
                 ? endpointForNode[0].listenPort
                 : 0;
 
@@ -611,7 +627,13 @@ export const generateRemoteAccessToLan = <
             ipForNode(options.nodes[0]),
             Array.isArray(options.lanNetworkCidr)
                 ? options.lanNetworkCidr
-                : Array.of(options.lanNetworkCidr as InternetSchemas.CidrBlockBase<InternetSchemas.Family>)
+                : Array.of(
+                      options.lanNetworkCidr as Nodes[0] extends WireguardIPv4Server
+                          ? InternetSchemas.IPv4CidrBlock
+                          : Nodes[0] extends WireguardIPv6Server
+                            ? InternetSchemas.IPv6CidrBlock
+                            : never
+                  )
         )
     )(options);
 
@@ -680,14 +702,26 @@ export const generateLanToLanAccess = <
             ipForNode(options.nodes[0]),
             Array.isArray(options.server1Lan)
                 ? options.server1Lan
-                : Array.of(options.server1Lan as InternetSchemas.CidrBlockBase<InternetSchemas.Family>)
+                : Array.of(
+                      options.server1Lan as Nodes[0] extends WireguardIPv4Server
+                          ? InternetSchemas.IPv4CidrBlock
+                          : Nodes[0] extends WireguardIPv6Server
+                            ? InternetSchemas.IPv6CidrBlock
+                            : never
+                  )
         ),
         addAllowedIPs(
             ipForNode(options.nodes[0]),
             ipForNode(options.nodes[1]),
             Array.isArray(options.server2Lan)
                 ? options.server2Lan
-                : Array.of(options.server2Lan as InternetSchemas.CidrBlockBase<InternetSchemas.Family>)
+                : Array.of(
+                      options.server2Lan as Nodes[1] extends WireguardIPv4Server
+                          ? InternetSchemas.IPv4CidrBlock
+                          : Nodes[1] extends WireguardIPv6Server
+                            ? InternetSchemas.IPv6CidrBlock
+                            : never
+                  )
         )
     )(options);
 
@@ -778,7 +812,13 @@ export const generateLanHubAndSpokeAccess = <
                     ipForNode(options.nodes[0]),
                     Array.isArray(options.lanNetworkCidr)
                         ? options.lanNetworkCidr
-                        : Array.of(options.lanNetworkCidr as InternetSchemas.CidrBlockBase<InternetSchemas.Family>)
+                        : Array.of(
+                              options.lanNetworkCidr as Nodes[0] extends WireguardIPv4Server
+                                  ? InternetSchemas.IPv4CidrBlock
+                                  : Nodes[0] extends WireguardIPv6Server
+                                    ? InternetSchemas.IPv6CidrBlock
+                                    : never
+                          )
                 ),
                 acc
             )

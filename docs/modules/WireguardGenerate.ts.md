@@ -61,7 +61,9 @@ declare const addAllowedIPs: (<
   nodeToIp: Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
   nodeFromIp: Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
   cidrs: Array.NonEmptyReadonlyArray<
-    InternetSchemas.IPv4CidrBlock | InternetSchemas.IPv6CidrBlock | InternetSchemas.CidrBlockFromStringEncoded
+    | InternetSchemas.IPv4CidrBlock
+    | InternetSchemas.IPv6CidrBlock
+    | Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>
   >
 ) => (allowedIPsLayer: AllowedIPsLayer<Nodes>) => AllowedIPsLayer<Nodes>) &
   (<
@@ -73,12 +75,14 @@ declare const addAllowedIPs: (<
     nodeToIp: Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
     nodeFromIp: Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
     cidrs: Array.NonEmptyReadonlyArray<
-      InternetSchemas.IPv4CidrBlock | InternetSchemas.IPv6CidrBlock | InternetSchemas.CidrBlockFromStringEncoded
+      | InternetSchemas.IPv4CidrBlock
+      | InternetSchemas.IPv6CidrBlock
+      | Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>
     >
   ) => AllowedIPsLayer<Nodes>)
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L375)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L380)
 
 Since v1.0.0
 
@@ -99,7 +103,7 @@ declare const computeAllowedIPsFromConnections: <
 ) => AllowedIPsLayer<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L352)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L357)
 
 Since v1.0.0
 
@@ -131,7 +135,7 @@ declare const addConnection: (<
   ) => ConnectionsLayer<Nodes>)
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L301)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L306)
 
 Since v1.0.0
 
@@ -152,7 +156,7 @@ declare const generateHubAndSpokeConnections: <
 ) => ConnectionsLayer<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L271)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L276)
 
 Since v1.0.0
 
@@ -172,7 +176,7 @@ declare const generateStarConnections: <
 ) => ConnectionsLayer<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L237)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L242)
 
 Since v1.0.0
 
@@ -206,7 +210,7 @@ declare const toConfigs: <
 >
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L460)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L476)
 
 Since v1.0.0
 
@@ -241,7 +245,7 @@ declare const generateLanHubAndSpokeAccess: <
 }) => WireguardNetwork<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L751)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L785)
 
 Since v1.0.0
 
@@ -280,7 +284,7 @@ declare const generateLanToLanAccess: <
 }) => WireguardNetwork<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L651)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L673)
 
 Since v1.0.0
 
@@ -313,7 +317,7 @@ declare const generateRemoteAccessToLan: <
 }) => WireguardNetwork<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L588)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L604)
 
 Since v1.0.0
 
@@ -339,7 +343,7 @@ declare const generateRemoteAccessToServer: <
 }) => WireguardNetwork<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L566)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L582)
 
 Since v1.0.0
 
@@ -372,7 +376,7 @@ declare const generateRemoteTunneledAccess: <
 }) => WireguardNetwork<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L822)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L862)
 
 Since v1.0.0
 
@@ -400,7 +404,7 @@ declare const generateServerHubAndSpokeAccess: <
 }) => WireguardNetwork<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L702)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L736)
 
 Since v1.0.0
 
@@ -426,7 +430,7 @@ declare const generateServerToServerAccess: <
 }) => WireguardNetwork<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L624)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L646)
 
 Since v1.0.0
 
@@ -452,7 +456,7 @@ declare const generateVpnTunneledAccess: <
 }) => WireguardNetwork<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L797)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L837)
 
 Since v1.0.0
 
@@ -474,7 +478,7 @@ declare const addPreshareKeys: <
 ) => keysLayer<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L212)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L217)
 
 Since v1.0.0
 
@@ -494,7 +498,7 @@ declare const generateKeys: <
 ) => keysLayer<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L194)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L199)
 
 Since v1.0.0
 
@@ -511,14 +515,14 @@ type AllowedIPsLayer<Nodes> = ConnectionsLayer<Nodes> & {
   allowedIPs: Record.ReadonlyRecord<
     Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
     Array.NonEmptyReadonlyArray<{
-      block: InternetSchemas.CidrBlockFromStringEncoded
+      block: Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>
       from: Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"]
     }>
   >
 }
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L118)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L123)
 
 Since v1.0.0
 
@@ -539,7 +543,7 @@ type ConnectionsLayer<Nodes> = keysLayer<Nodes> & {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L99)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L104)
 
 Since v1.0.0
 
@@ -560,7 +564,7 @@ type NodesLayer<Nodes> = {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L63)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L68)
 
 Since v1.0.0
 
@@ -574,7 +578,7 @@ The final network type.
 type WireguardNetwork<Nodes> = AllowedIPsLayer<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L138)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L143)
 
 Since v1.0.0
 
@@ -593,6 +597,6 @@ type keysLayer<Nodes> = NodesLayer<Nodes> & {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L82)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardGenerate.ts#L87)
 
 Since v1.0.0

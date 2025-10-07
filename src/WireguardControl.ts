@@ -15,11 +15,11 @@ import type * as Effect from "effect/Effect";
 import type * as ParseResult from "effect/ParseResult";
 import type * as Scope from "effect/Scope";
 import type * as exec from "node:child_process";
-import type * as WireguardConfig from "./WireguardConfig.js";
-import type * as WireguardInterface from "./WireguardInterface.js";
+import type * as WireguardConfig from "./WireguardConfig.ts";
+import type * as WireguardInterface from "./WireguardInterface.ts";
 
 import * as Layer from "effect/Layer";
-import * as internal from "./internal/wireguardControl.js";
+import * as internal from "./internal/wireguardControl.ts";
 
 /**
  * @since 1.0.0

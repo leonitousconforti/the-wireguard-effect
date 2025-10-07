@@ -46,6 +46,7 @@
         "test": "vitest"
     },
     "dependencies": {
+        "effect-schemas": "0.0.2",
         "ini": "^5.0.0"
     },
     "devDependencies": {

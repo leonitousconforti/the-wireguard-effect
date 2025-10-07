@@ -7,6 +7,7 @@ import type * as Scope from "effect/Scope";
 
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as Path from "@effect/platform/Path";
+import * as InternetSchemas from "effect-schemas/Internet";
 import * as Array from "effect/Array";
 import * as Chunk from "effect/Chunk";
 import * as Effect from "effect/Effect";
@@ -25,13 +26,12 @@ import * as ini from "ini";
 import * as assert from "node:assert";
 import * as os from "node:os";
 
-import * as InternetSchemas from "../InternetSchemas.js";
-import * as WireguardControl from "../WireguardControl.js";
-import * as WireguardErrors from "../WireguardErrors.js";
-import * as WireguardKey from "../WireguardKey.js";
-import * as WireguardPeer from "../WireguardPeer.js";
-import * as internalWireguardConfig from "./wireguardConfig.js";
-import * as internalInterface from "./wireguardInterface.js";
+import * as WireguardControl from "../WireguardControl.ts";
+import * as WireguardErrors from "../WireguardErrors.ts";
+import * as WireguardKey from "../WireguardKey.ts";
+import * as WireguardPeer from "../WireguardPeer.ts";
+import * as internalWireguardConfig from "./wireguardConfig.ts";
+import * as internalInterface from "./wireguardInterface.ts";
 
 // --------------------------------------------
 // WireguardConfig.ts
@@ -418,13 +418,13 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
      */
     public getConfig: {
         (
-            address: InternetSchemas.CidrBlockFromStringEncoded
+            address: Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>
         ): Effect.Effect<
             Schema.Schema.Type<(typeof WireguardConfig)["uapi"]>,
             Socket.SocketError | ParseResult.ParseError,
             never
         >;
-    } = (address: InternetSchemas.CidrBlockFromStringEncoded) => getConfig(this, address);
+    } = (address: Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>) => getConfig(this, address);
 
     /**
      * Adds a peer to this interface.
@@ -543,13 +543,13 @@ export const setConfig: {
 export const getConfig: {
     (
         wireguardInterface: WireguardInterface,
-        address: InternetSchemas.CidrBlockFromStringEncoded
+        address: Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>
     ): Effect.Effect<
         Schema.Schema.Type<(typeof WireguardConfig)["uapi"]>,
         Socket.SocketError | ParseResult.ParseError,
         never
     >;
-} = (wireguardInterface: WireguardInterface, address: InternetSchemas.CidrBlockFromStringEncoded) =>
+} = (wireguardInterface: WireguardInterface, address: Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>) =>
     Effect.gen(function* () {
         const uapiConfig = yield* internalInterface.userspaceContact(wireguardInterface, "get=1\n\n");
         const [interfaceConfig, ...peers] = uapiConfig.split("public_key=");

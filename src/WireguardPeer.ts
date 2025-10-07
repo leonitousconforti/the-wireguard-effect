@@ -6,6 +6,7 @@
 
 import type * as Brand from "effect/Brand";
 
+import * as InternetSchemas from "effect-schemas/Internet";
 import * as Array from "effect/Array";
 import * as DateTime from "effect/DateTime";
 import * as Duration from "effect/Duration";
@@ -16,10 +17,10 @@ import * as Option from "effect/Option";
 import * as ParseResult from "effect/ParseResult";
 import * as Schema from "effect/Schema";
 import * as ini from "ini";
-import * as InternetSchemas from "./InternetSchemas.js";
-import * as WireguardKey from "./WireguardKey.js";
+import * as WireguardInternetSchemas from "./InternetSchemas.ts";
+import * as WireguardKey from "./WireguardKey.ts";
 
-import * as internalWireguardPeer from "./internal/wireguardPeer.js";
+import * as internalWireguardPeer from "./internal/wireguardPeer.ts";
 
 /**
  * A wireguard peer configuration.
@@ -27,10 +28,9 @@ import * as internalWireguardPeer from "./internal/wireguardPeer.js";
  * @since 1.0.0
  * @category Datatypes
  * @example
+ *     ```ts
+ *
  *     import * as Schema from "effect/Schema";
- *     import * as Duration from "effect/Duration";
- *     import * as Option from "effect/Option";
- *     import * as InternetSchemas from "the-wireguard-effect/InternetSchemas";
  *     import * as WireguardKey from "the-wireguard-effect/WireguardKey";
  *
  *     import { WireguardPeer } from "the-wireguard-effect/WireguardPeer";
@@ -39,34 +39,14 @@ import * as internalWireguardPeer from "./internal/wireguardPeer.js";
  *     const { publicKey, privateKey: _privateKey } =
  *         WireguardKey.generateKeyPair();
  *
- *     // WireguardPeer
- *     const peerDirectInstantiation = new WireguardPeer({
- *         PublicKey: publicKey,
- *         AllowedIPs: [
- *             InternetSchemas.CidrBlock({
- *                 ipv4: InternetSchemas.IPv4("192.168.0.0"),
- *                 mask: InternetSchemas.IPv4CidrMask(24),
- *             }),
- *         ],
- *         Endpoint: InternetSchemas.Endpoint(
- *             InternetSchemas.IPv4Endpoint({
- *                 ip: InternetSchemas.IPv4("192.168.0.1"),
- *                 natPort: InternetSchemas.Port(51820),
- *                 listenPort: InternetSchemas.Port(51820),
- *             })
- *         ),
- *         PersistentKeepalive: Duration.seconds(20),
- *         PresharedKey: Option.none(),
- *     });
- *
- *     // Effect.Effect<WireguardPeer, ParseResult.ParseError, never>
  *     const peerSchemaInstantiation = Schema.decode(WireguardPeer)({
  *         PublicKey: publicKey,
  *         PresharedKey: preshareKey,
  *         Endpoint: "192.168.0.1:51820",
- *         AllowedIPs: ["192.168.0.0/24"],
- *         PersistentKeepalive: Duration.seconds(20),
+ *         AllowedIPs: new Set(["192.168.0.0/24"]),
+ *         PersistentKeepalive: 20,
  *     });
+ *     ```;
  */
 export class WireguardPeer extends internalWireguardPeer.WireguardPeerConfigVariantSchema.Class<WireguardPeer>(
     "WireguardPeer"
@@ -79,7 +59,7 @@ export class WireguardPeer extends internalWireguardPeer.WireguardPeerConfigVari
      * request, so it will remain the same as it was before the update, whereas
      * Option.some(0) will disable the keep alive setting.
      */
-    PersistentKeepalive: Schema.optionalWith(InternetSchemas.DurationFromSeconds, {
+    PersistentKeepalive: Schema.optionalWith(WireguardInternetSchemas.DurationFromSeconds, {
         as: "Option",
         nullable: true,
     }),
@@ -102,7 +82,7 @@ export class WireguardPeer extends internalWireguardPeer.WireguardPeerConfigVari
      * client will just send requests back to the remote peer's source IP and
      * port.
      */
-    Endpoint: Schema.optionalWith(InternetSchemas.Endpoint, { nullable: true }),
+    Endpoint: Schema.optionalWith(WireguardInternetSchemas.Endpoint, { nullable: true }),
 
     /** Lowercase hex-encoded public key of the new peer entry. */
     PublicKey: WireguardKey.WireguardKey,
@@ -144,6 +124,8 @@ export class WireguardPeer extends internalWireguardPeer.WireguardPeerConfigVari
  * @since 1.0.0
  * @category Transformations
  * @example
+ *     ```ts
+ *
  *     import * as Effect from "effect/Effect";
  *     import * as Function from "effect/Function";
  *     import * as Schema from "effect/Schema";
@@ -167,6 +149,7 @@ export class WireguardPeer extends internalWireguardPeer.WireguardPeerConfigVari
  *         Effect.flatMap(Schema.encode(WireguardPeer.WireguardPeer)),
  *         Effect.flatMap(Schema.decode(WireguardPeer.WireguardIniPeer))
  *     );
+ *     ```;
  *
  * @see {@link WireguardPeer}
  */
@@ -182,7 +165,7 @@ export class WireguardIniPeer extends Schema.transformOrFail(WireguardPeer, Sche
             Option.getOrElse(() => "" as const)
         );
 
-        const endpoint: "" | `Endpoint = ${string}:${InternetSchemas.PortBrand}\n` = Function.pipe(
+        const endpoint: "" | `Endpoint = ${string}:${Schema.Schema.Type<InternetSchemas.Port>}\n` = Function.pipe(
             peer.Endpoint,
             Option.fromNullable,
             Option.map((endpoint) => {
@@ -219,10 +202,10 @@ export class WireguardIniPeer extends Schema.transformOrFail(WireguardPeer, Sche
                     PublicKey: string;
                     PresharedKey?: string | undefined | null;
                     PersistentKeepalive?: string | undefined | null;
-                    Endpoint?: InternetSchemas.EndpointEncoded | undefined | null;
+                    Endpoint?: Schema.Schema.Encoded<WireguardInternetSchemas.Endpoint> | undefined | null;
                     AllowedIPs?:
-                        | Array<InternetSchemas.CidrBlockFromStringEncoded>
-                        | InternetSchemas.CidrBlockFromStringEncoded
+                        | Array<Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>>
+                        | Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>
                         | undefined
                         | null;
                 },
@@ -273,7 +256,7 @@ export class WireguardUapiSetPeer extends Schema.transformOrFail(WireguardPeer, 
             Option.getOrElse(() => "" as const)
         );
 
-        const endpoint: "" | `endpoint=${string}:${InternetSchemas.PortBrand}\n` = Function.pipe(
+        const endpoint: "" | `endpoint=${string}:${Schema.Schema.Type<InternetSchemas.Port>}\n` = Function.pipe(
             peer.Endpoint,
             Option.fromNullable,
             Option.map((endpoint) => {
@@ -326,11 +309,11 @@ export class WireguardUapiGetPeer extends Schema.transformOrFail(Schema.String, 
             tx_bytes,
         } = data as {
             allowed_ip:
-                | InternetSchemas.CidrBlockFromStringEncoded
-                | Array<InternetSchemas.CidrBlockFromStringEncoded>
+                | Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>
+                | Array<Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>>
                 | undefined
                 | null;
-            endpoint: InternetSchemas.EndpointEncoded | undefined | null;
+            endpoint: Schema.Schema.Encoded<WireguardInternetSchemas.Endpoint> | undefined | null;
             last_handshake_time_sec: string;
             persistent_keepalive_interval: string | undefined | null;
             preshared_key: string | undefined | null;
