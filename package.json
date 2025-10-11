@@ -46,7 +46,7 @@
         "test": "vitest"
     },
     "dependencies": {
-        "effect-schemas": "0.0.4",
+        "effect-schemas": "0.0.6",
         "ini": "^5.0.0"
     },
     "devDependencies": {
@@ -60,7 +60,7 @@
         "@effect/cluster": "0.50.4",
         "@effect/docgen": "https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@49e99a2",
         "@effect/experimental": "0.56.0",
-        "@effect/language-service": "0.43.1",
+        "@effect/language-service": "0.44.0",
         "@effect/platform": "0.92.1",
         "@effect/platform-node": "0.98.3",
         "@effect/printer": "0.46.0",
@@ -72,7 +72,7 @@
         "@effect/workflow": "0.11.3",
         "@eslint/js": "9.37.0",
         "@types/ini": "4.1.1",
-        "@types/node": "24.7.0",
+        "@types/node": "24.7.2",
         "@typescript-eslint/parser": "8.46.0",
         "@vitest/coverage-v8": "3.2.4",
         "babel-plugin-annotate-pure-calls": "0.5.0",
