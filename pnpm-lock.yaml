@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       effect-schemas:
-        specifier: 0.0.6
-        version: 0.0.6(effect@3.18.4)
+        specifier: 0.0.7
+        version: 0.0.7(effect@3.18.4)
       ini:
         specifier: ^5.0.0
         version: 5.0.0
@@ -1390,8 +1390,8 @@ packages:
     resolution: {integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==}
     engines: {node: '>=6'}
 
-  caniuse-lite@1.0.30001749:
-    resolution: {integrity: sha512-0rw2fJOmLfnzCRbkm8EyHL8SvI2Apu5UbnQuTsJ0ClgrH8hcwFooJ1s5R0EP8o8aVrFu8++ae29Kt9/gZAZp/Q==}
+  caniuse-lite@1.0.30001750:
+    resolution: {integrity: sha512-cuom0g5sdX6rw00qOoLNSFCJ9/mYIsuSOA+yzpDw8eopiFqcVwQvZHqov0vmEighRxX++cfC0Vg1G+1Iy/mSpQ==}
 
   chai@5.3.3:
     resolution: {integrity: sha512-4zNhdJD/iOjSH0A05ea+Ke6MU5mmpQcbQsSOkgdaUMJ9zTlDTD/GYlwohmIE2u0gaxHYiVHEn1Fw9mZ/ktJWgw==}
@@ -1622,8 +1622,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  effect-schemas@0.0.6:
-    resolution: {integrity: sha512-a2F/ijzojzLhA/cUD4jJG4my30Lo4/PHxLGGbIsS0XJA51iiW1FUGB9G1iowc5unIqhCbBaYdZ355jOjkDHHPw==}
+  effect-schemas@0.0.7:
+    resolution: {integrity: sha512-Uk78D/g3Qxn0iagwbZpUiw8GheLwgreObwzc8rde0raXN0M56xepX1bUDR6LWFHfbxhp9+Ufm27+3KYCcz48MQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       effect: 3.18.4
@@ -4577,7 +4577,7 @@ snapshots:
   browserslist@4.26.3:
     dependencies:
       baseline-browser-mapping: 2.8.16
-      caniuse-lite: 1.0.30001749
+      caniuse-lite: 1.0.30001750
       electron-to-chromium: 1.5.234
       node-releases: 2.0.23
       update-browserslist-db: 1.1.3(browserslist@4.26.3)
@@ -4603,7 +4603,7 @@ snapshots:
 
   callsites@3.1.0: {}
 
-  caniuse-lite@1.0.30001749: {}
+  caniuse-lite@1.0.30001750: {}
 
   chai@5.3.3:
     dependencies:
@@ -4851,7 +4851,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  effect-schemas@0.0.6(effect@3.18.4):
+  effect-schemas@0.0.7(effect@3.18.4):
     dependencies:
       effect: 3.18.4
 
