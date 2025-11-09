@@ -1,5 +1,5 @@
 diff --git a/src/wg-quick/linux.bash b/src/wg-quick/linux.bash
-index 4193ce5..7a89dd3 100755
+index 34fa5f9..4b719b0 100755
 --- a/src/wg-quick/linux.bash
 +++ b/src/wg-quick/linux.bash
 @@ -22,7 +22,6 @@ PRE_UP=( )
@@ -10,15 +10,15 @@ index 4193ce5..7a89dd3 100755
  CONFIG_FILE=""
  PROGRAM="${0##*/}"
  ARGS=( "$@" )
-@@ -65,7 +64,6 @@ parse_options() {
- 			PreDown) PRE_DOWN+=( "$value" ); continue ;;
- 			PostUp) POST_UP+=( "$value" ); continue ;;
- 			PostDown) POST_DOWN+=( "$value" ); continue ;;
+@@ -66,7 +65,6 @@ parse_options() {
+ 			PreDown) PRE_DOWN+=( "$unstripped_value" ); continue ;;
+ 			PostUp) POST_UP+=( "$unstripped_value" ); continue ;;
+ 			PostDown) POST_DOWN+=( "$unstripped_value" ); continue ;;
 -			SaveConfig) read_bool SAVE_CONFIG "$value"; continue ;;
  			esac
  		fi
  		WG_CONFIG+="$line"$'\n'
-@@ -73,33 +71,15 @@ parse_options() {
+@@ -74,33 +72,15 @@ parse_options() {
  	shopt -u nocasematch
  }
  
@@ -36,7 +36,7 @@ index 4193ce5..7a89dd3 100755
  
 -add_if() {
 -	local ret
--	if ! cmd ip link add "$INTERFACE" type wireguard; then
+-	if ! cmd ip link add dev "$INTERFACE" type wireguard; then
 -		ret=$?
 -		[[ -e /sys/module/wireguard ]] || ! command -v "${WG_QUICK_USERSPACE_IMPLEMENTATION:-wireguard-go}" >/dev/null && exit $ret
 -		echo "[!] Missing WireGuard kernel module. Falling back to slow userspace implementation." >&2
@@ -53,16 +53,16 @@ index 4193ce5..7a89dd3 100755
  		while [[ $(ip -4 rule show 2>/dev/null) == *"lookup $table"* ]]; do
  			cmd ip -4 rule delete table $table
  		done
-@@ -132,7 +112,7 @@ set_mtu_up() {
+@@ -133,7 +113,7 @@ set_mtu_up() {
  		[[ $endpoint =~ ^\[?([a-z0-9:.]+)\]?:[0-9]+$ ]] || continue
  		output="$(ip route get "${BASH_REMATCH[1]}" || true)"
- 		[[ ( $output =~ mtu\ ([0-9]+) || ( $output =~ dev\ ([^ ]+) && $(ip link show dev "${BASH_REMATCH[1]}") =~ mtu\ ([0-9]+) ) ) && ${BASH_REMATCH[1]} -gt $mtu ]] && mtu="${BASH_REMATCH[1]}"
+ 		[[ ( $output =~ mtu\ ([0-9]+) || ( $output =~ dev\ ([^ ]+) && $(ip link show dev "${BASH_REMATCH[1]}") =~ mtu\ ([0-9]+) ) ) && ${BASH_REMATCH[1]} -lt $mtu ]] && mtu="${BASH_REMATCH[1]}"
 -	done < <(wg show "$INTERFACE" endpoints)
 +	done < <(linux-wg show "$INTERFACE" endpoints)
- 	if [[ $mtu -eq 0 ]]; then
+ 	if [[ $mtu -eq 2147483647 ]]; then
  		read -r output < <(ip route show default || true) || true
- 		[[ ( $output =~ mtu\ ([0-9]+) || ( $output =~ dev\ ([^ ]+) && $(ip link show dev "${BASH_REMATCH[1]}") =~ mtu\ ([0-9]+) ) ) && ${BASH_REMATCH[1]} -gt $mtu ]] && mtu="${BASH_REMATCH[1]}"
-@@ -180,7 +160,7 @@ add_route() {
+ 		[[ ( $output =~ mtu\ ([0-9]+) || ( $output =~ dev\ ([^ ]+) && $(ip link show dev "${BASH_REMATCH[1]}") =~ mtu\ ([0-9]+) ) ) && ${BASH_REMATCH[1]} -lt $mtu ]] && mtu="${BASH_REMATCH[1]}"
+@@ -181,7 +161,7 @@ add_route() {
  
  get_fwmark() {
  	local fwmark
@@ -71,7 +71,7 @@ index 4193ce5..7a89dd3 100755
  	[[ -n $fwmark && $fwmark != off ]] || return 1
  	printf -v "$1" "%d" "$fwmark"
  	return 0
-@@ -216,7 +196,7 @@ add_default() {
+@@ -217,7 +197,7 @@ add_default() {
  		while [[ -n $(ip -4 route show table $table 2>/dev/null) || -n $(ip -6 route show table $table 2>/dev/null) ]]; do
  			((table++))
  		done
@@ -80,7 +80,7 @@ index 4193ce5..7a89dd3 100755
  	fi
  	local proto=-4 iptables=iptables pf=ip
  	[[ $1 == *:* ]] && proto=-6 iptables=ip6tables pf=ip6
-@@ -224,7 +204,7 @@ add_default() {
+@@ -225,7 +205,7 @@ add_default() {
  	cmd ip $proto rule add table main suppress_prefixlength 0
  	cmd ip $proto route add "$1" dev "$INTERFACE" table $table
  
@@ -89,12 +89,12 @@ index 4193ce5..7a89dd3 100755
  	printf -v nftcmd '%sadd table %s %s\n' "$nftcmd" "$pf" "$nftable"
  	printf -v nftcmd '%sadd chain %s %s preraw { type filter hook prerouting priority -300; }\n' "$nftcmd" "$pf" "$nftable"
  	printf -v nftcmd '%sadd chain %s %s premangle { type filter hook prerouting priority -150; }\n' "$nftcmd" "$pf" "$nftable"
-@@ -247,46 +227,6 @@ add_default() {
+@@ -248,46 +228,6 @@ add_default() {
  	return 0
  }
  
 -set_config() {
--	cmd wg setconf "$INTERFACE" <(echo "$WG_CONFIG")
+-	cmd wg addconf "$INTERFACE" <(echo "$WG_CONFIG")
 -}
 -
 -save_config() {
@@ -136,7 +136,7 @@ index 4193ce5..7a89dd3 100755
  execute_hooks() {
  	local hook
  	for hook in "$@"; do
-@@ -296,46 +236,16 @@ execute_hooks() {
+@@ -297,46 +237,16 @@ execute_hooks() {
  	done
  }
  
@@ -184,7 +184,7 @@ index 4193ce5..7a89dd3 100755
  		add_route "$i"
  	done
  	execute_hooks "${POST_UP[@]}"
-@@ -343,24 +253,14 @@ cmd_up() {
+@@ -344,24 +254,14 @@ cmd_up() {
  }
  
  cmd_down() {
@@ -210,7 +210,7 @@ index 4193ce5..7a89dd3 100755
  # ~~ function override insertion point ~~
  
  if [[ $# -eq 1 && ( $1 == --help || $1 == -h || $1 == help ) ]]; then
-@@ -373,16 +273,7 @@ elif [[ $# -eq 2 && $1 == down ]]; then
+@@ -374,16 +274,7 @@ elif [[ $# -eq 2 && $1 == down ]]; then
  	auto_su
  	parse_options "$2"
  	cmd_down
