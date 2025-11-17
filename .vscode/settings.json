@@ -7,18 +7,6 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
 
-    "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/.DS_Store": true,
-        "**/Thumbs.db": true,
-        "**/.direnv": true,
-        "**/.tsbuildinfo": true,
-        "**/build": true,
-        "**/coverage": true,
-        "**/dist": true
-    },
     "search.exclude": {
         "**/node_modules": true,
         "**/bower_components": true,
