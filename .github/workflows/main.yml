@@ -39,7 +39,7 @@ jobs:
       - uses: ./.github/actions/linux
 
   macos-intel-test:
-    runs-on: macos-13
+    runs-on: macos-15-intel
     timeout-minutes: 20
     needs: [build]
     steps:
