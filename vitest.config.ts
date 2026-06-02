@@ -7,7 +7,7 @@ export default defineConfig({
         tsconfigPaths: true,
     },
     test: {
-        setupFiles: [path.join(__dirname, "vitest.setup.ts")],
+        setupFiles: [path.join(__dirname, "test", "vitest.setup.ts")],
         fakeTimers: {
             toFake: undefined,
         },
