@@ -7,22 +7,25 @@
  * ```
  */
 
-import type * as ParseResult from "effect/ParseResult";
+import type * as PlatformError from "effect/PlatformError";
+import type * as Schema from "effect/Schema";
 
-import * as Platform from "@effect/platform";
-import * as PlatformNode from "@effect/platform-node";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
+import * as FileSystem from "effect/FileSystem";
+import * as Path from "effect/Path";
 
+import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
+import * as NodeServices from "@effect/platform-node/NodeServices";
 import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
 
 const program: Effect.Effect<
     void,
-    ParseResult.ParseError | Platform.Error.PlatformError,
-    Platform.FileSystem.FileSystem | Platform.Path.Path
+    Schema.SchemaError | PlatformError.PlatformError | PlatformError.BadArgument,
+    FileSystem.FileSystem | Path.Path
 > = Effect.gen(function* () {
-    const path = yield* Platform.Path.Path;
-    const fileSystem = yield* Platform.FileSystem.FileSystem;
+    const path = yield* Path.Path;
+    const fileSystem = yield* FileSystem.FileSystem;
 
     // Find the config file
     const thisFolder = yield* path.fromFileUrl(new URL(".", import.meta.url));
@@ -37,6 +40,4 @@ const program: Effect.Effect<
     yield* config.writeToFile(configFile);
 });
 
-Effect.suspend(() => program)
-    .pipe(Effect.provide(PlatformNode.NodeContext.layer))
-    .pipe(PlatformNode.NodeRuntime.runMain);
+Effect.suspend(() => program).pipe(Effect.provide(NodeServices.layer), NodeRuntime.runMain);

@@ -1,4 +1,4 @@
-import * as VariantSchema from "@effect/experimental/VariantSchema";
+import * as VariantSchema from "effect/unstable/schema/VariantSchema";
 
 /**
  * We use a variant schema for the WireguardConfig schema to allow for different

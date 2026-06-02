@@ -1,9 +1,3 @@
-import * as Array from "effect/Array";
-import * as Function from "effect/Function";
-import * as HashSet from "effect/HashSet";
-import * as Record from "effect/Record";
-import * as Tuple from "effect/Tuple";
-
 /** @internal */
 export type Tail<T extends ReadonlyArray<unknown>> = T extends
     | [infer _First, ...infer Rest]
@@ -26,18 +20,3 @@ export const splitLiteral = <Str extends string, Delimiter extends string>(
     str: Str,
     delimiter: Delimiter
 ): Split<Str, Delimiter> => str.split(delimiter) as Split<Str, Delimiter>;
-
-/** @internal */
-export const transposeSet: {
-    <Key extends string, Value extends string>(
-        record: Record.ReadonlyRecord<Key, HashSet.HashSet<Value>>
-    ): Record<Record.ReadonlyRecord.NonLiteralKey<Value>, HashSet.HashSet<Key>>;
-} = Function.flow(
-    Record.map(HashSet.values),
-    Record.map(Array.fromIterable),
-    Record.collect((key, values) => Array.map(values, (value) => Tuple.make(value, key))),
-    Array.flatten,
-    Array.groupBy(Tuple.getFirst),
-    Record.map(Array.map(Tuple.getSecond)),
-    Record.map(HashSet.fromIterable)
-);

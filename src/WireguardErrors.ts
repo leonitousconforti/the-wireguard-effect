@@ -15,8 +15,8 @@ import * as Schema from "effect/Schema";
  * @category Errors
  */
 export const SuccessErrno = Function.pipe(
-    Schema.TemplateLiteral("errno=", Schema.Literal(0)),
-    Schema.annotations({ identifier: "SuccessErrno", description: "A successful errno" }),
+    Schema.TemplateLiteral(["errno=", Schema.Literal(0)]),
+    Schema.annotate({ identifier: "SuccessErrno", description: "A successful errno" }),
     Schema.brand("SuccessErrno")
 );
 

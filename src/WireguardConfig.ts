@@ -4,12 +4,12 @@
  * @since 1.0.0
  */
 
-import type * as PlatformError from "@effect/platform/Error";
-import type * as ParseResult from "effect/ParseResult";
+import type * as PlatformError from "effect/PlatformError";
 
-import * as FileSystem from "@effect/platform/FileSystem";
 import * as Effect from "effect/Effect";
+import * as FileSystem from "effect/FileSystem";
 import * as Schema from "effect/Schema";
+
 import * as circular from "./internal/circular.ts";
 
 export {
@@ -43,16 +43,12 @@ export {
 export const fromConfigFile: {
     (
         file: string
-    ): Effect.Effect<
-        circular.WireguardConfig,
-        ParseResult.ParseError | PlatformError.PlatformError,
-        FileSystem.FileSystem
-    >;
+    ): Effect.Effect<circular.WireguardConfig, Schema.SchemaError | PlatformError.PlatformError, FileSystem.FileSystem>;
 } = (file: string) =>
     Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const fsConfig = yield* fs.readFileString(file);
-        const iniConfigEncoded = yield* Schema.encode(circular.WireguardIniConfig)(fsConfig);
-        const config = yield* Schema.decode(circular.WireguardConfig)(iniConfigEncoded);
+        const iniConfigEncoded = yield* Schema.encodeEffect(circular.WireguardIniConfig)(fsConfig);
+        const config = yield* Schema.decodeEffect(circular.WireguardConfig)(iniConfigEncoded);
         return config;
     });

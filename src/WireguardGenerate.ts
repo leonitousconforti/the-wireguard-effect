@@ -4,9 +4,6 @@
  * @since 1.0.0
  */
 
-import type * as ParseResult from "effect/ParseResult";
-
-import * as InternetSchemas from "effect-schemas/Internet";
 import * as Array from "effect/Array";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -14,19 +11,23 @@ import * as Match from "effect/Match";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
 import * as Record from "effect/Record";
+import * as Result from "effect/Result";
 import * as Schema from "effect/Schema";
 import * as Tuple from "effect/Tuple";
+
 import * as assert from "node:assert";
+
+import * as InternetSchemas from "effect-schemas/Internet";
+
+import * as internalInternalSchemas from "./internal/internetSchemas.ts";
 import * as WireguardInternetSchemas from "./InternetSchemas.ts";
 import * as WireguardConfig from "./WireguardConfig.ts";
 import * as WireguardErrors from "./WireguardErrors.ts";
 import * as WireguardKey from "./WireguardKey.ts";
 
-import * as internalInternalSchemas from "./internal/internetSchemas.ts";
-
 /** A node in the network can either have an ipv4 or ipv6 address. */
-type WireguardIPv4RoamingPeer = Schema.Schema.Type<InternetSchemas.IPv4>;
-type WireguardIPv6RoamingPeer = Schema.Schema.Type<InternetSchemas.IPv6>;
+type WireguardIPv4RoamingPeer = Schema.Schema.Type<typeof InternetSchemas.IPv4>;
+type WireguardIPv6RoamingPeer = Schema.Schema.Type<typeof InternetSchemas.IPv6>;
 type WireguardRoamingPeer = WireguardIPv4RoamingPeer | WireguardIPv6RoamingPeer;
 
 /**
@@ -34,11 +35,11 @@ type WireguardRoamingPeer = WireguardIPv4RoamingPeer | WireguardIPv6RoamingPeer;
  * pool.
  */
 type WireguardIPv4Server =
-    | Schema.Schema.Type<WireguardInternetSchemas.IPv4SetupData>
-    | Schema.Schema.Type<WireguardInternetSchemas.HostnameIPv4SetupData>;
+    | Schema.Schema.Type<typeof WireguardInternetSchemas.IPv4SetupData>
+    | Schema.Schema.Type<typeof WireguardInternetSchemas.HostnameIPv4SetupData>;
 type WireguardIPv6Server =
-    | Schema.Schema.Type<WireguardInternetSchemas.IPv6SetupData>
-    | Schema.Schema.Type<WireguardInternetSchemas.HostnameIPv6SetupData>;
+    | Schema.Schema.Type<typeof WireguardInternetSchemas.IPv6SetupData>
+    | Schema.Schema.Type<typeof WireguardInternetSchemas.HostnameIPv6SetupData>;
 type WireguardServer = WireguardIPv4Server | WireguardIPv6Server;
 
 /**
@@ -128,7 +129,7 @@ export type AllowedIPsLayer<
     allowedIPs: Record.ReadonlyRecord<
         Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
         Array.NonEmptyReadonlyArray<{
-            block: Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>;
+            block: (typeof InternetSchemas.CidrBlockFromString)["Encoded"];
             from: Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"];
         }>
     >;
@@ -253,7 +254,7 @@ export const generateStarConnections = <
         makeEmptyContext,
         Record.map((_, currentNode) => {
             const neighbors = Array.filter(allNodeIps, (ip) => ip !== currentNode);
-            assert.ok(Array.isNonEmptyReadonlyArray(neighbors), "There must be at least one neighbor");
+            assert.ok(Array.isReadonlyArrayNonEmpty(neighbors), "There must be at least one neighbor");
             return neighbors;
         })
     );
@@ -390,7 +391,7 @@ export const addAllowedIPs = Function.dual<
         cidrs: Array.NonEmptyReadonlyArray<
             | InternetSchemas.IPv4CidrBlock
             | InternetSchemas.IPv6CidrBlock
-            | Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>
+            | (typeof InternetSchemas.CidrBlockFromString)["Encoded"]
         >
     ) => (allowedIPsLayer: AllowedIPsLayer<Nodes>) => AllowedIPsLayer<Nodes>,
     <
@@ -406,7 +407,7 @@ export const addAllowedIPs = Function.dual<
         cidrs: Array.NonEmptyReadonlyArray<
             | InternetSchemas.IPv4CidrBlock
             | InternetSchemas.IPv6CidrBlock
-            | Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>
+            | (typeof InternetSchemas.CidrBlockFromString)["Encoded"]
         >
     ) => AllowedIPsLayer<Nodes>
 >(
@@ -424,7 +425,7 @@ export const addAllowedIPs = Function.dual<
         cidrs: Array.NonEmptyReadonlyArray<
             | InternetSchemas.IPv4CidrBlock
             | InternetSchemas.IPv6CidrBlock
-            | Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>
+            | (typeof InternetSchemas.CidrBlockFromString)["Encoded"]
         >
     ): AllowedIPsLayer<Nodes> => {
         const oldCidrs = Record.get(allowedIPsLayer.allowedIPs, nodeToIp);
@@ -434,17 +435,17 @@ export const addAllowedIPs = Function.dual<
                 Match.value(cidr),
                 Match.when(
                     Schema.is(InternetSchemas.IPv4CidrBlock),
-                    ({ address, mask }): Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString> =>
+                    ({ address, mask }): (typeof InternetSchemas.CidrBlockFromString)["Encoded"] =>
                         `${address.ip}/${mask}` as const
                 ),
                 Match.when(
                     Schema.is(InternetSchemas.IPv6CidrBlock),
-                    ({ address, mask }): Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString> =>
+                    ({ address, mask }): (typeof InternetSchemas.CidrBlockFromString)["Encoded"] =>
                         `${address.ip}/${mask}` as const
                 ),
                 Match.when(
                     Predicate.isString,
-                    Function.identity<Schema.Schema.Encoded<InternetSchemas.CidrBlockFromString>>
+                    Function.identity<(typeof InternetSchemas.CidrBlockFromString)["Encoded"]>
                 ),
                 Match.exhaustive
             )
@@ -489,7 +490,7 @@ export const toConfigs = <
         WireguardConfig.WireguardConfig,
         ...ReadonlyArray<WireguardConfig.WireguardConfig>,
     ],
-    ParseResult.ParseError | WireguardErrors.WireguardError,
+    Schema.SchemaError | WireguardErrors.WireguardError,
     never
 > => {
     const endpointsByIp = nodesByIp(nodes) as Record.ReadonlyRecord<
@@ -506,8 +507,10 @@ export const toConfigs = <
                 const endpointForNode = Record.get(endpointsByIp, ipForNode(node)).pipe(Option.getOrThrow);
 
                 const endpointForNodeEncoded = yield* Schema.is(WireguardInternetSchemas.SetupData)(endpointForNode)
-                    ? Schema.encode(WireguardInternetSchemas.SetupData)(endpointForNode).pipe(Effect.map((x) => x[0]))
-                    : Effect.succeed(undefined);
+                    ? Schema.encodeEffect(WireguardInternetSchemas.SetupData)(endpointForNode).pipe(
+                          Effect.map((x) => x[0])
+                      )
+                    : Effect.sync(() => undefined);
 
                 const address = Schema.is(WireguardInternetSchemas.SetupData)(endpointForNode)
                     ? endpointForNode[1].ip
@@ -541,8 +544,9 @@ export const toConfigs = <
                 connections,
                 Record.get(ipForNode(node)),
                 Option.getOrThrow,
-                Array.filterMap((peerAddress) => Record.get(peerConfigsByIp, peerAddress)),
-                Effect.allWith()
+                Array.map((peerAddress) => Record.get(peerConfigsByIp, peerAddress)),
+                Array.filterMap(Result.fromOption(() => Result.failVoid)),
+                Effect.all
             );
 
             const dcsWithAllowedIPs = Array.map(directConnectionsForNode, (dc) => ({
@@ -557,7 +561,7 @@ export const toConfigs = <
                 ),
             }));
 
-            return yield* Schema.decode(WireguardConfig.WireguardConfig)({
+            return yield* Schema.decodeEffect(WireguardConfig.WireguardConfig)({
                 ListenPort: listenPort,
                 Peers: dcsWithAllowedIPs,
                 PrivateKey: keysForNode.privateKey,

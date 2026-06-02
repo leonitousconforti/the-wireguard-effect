@@ -8,12 +8,12 @@ on:
         required: true
         description: Which platform to start a lab instance on
         options:
-        - e2e
-        - linux
-        - windows
-        - windows-wsl2
-        - macos-intel
-        - macos-apple-silicon
+          - e2e
+          - linux
+          - windows
+          - windows-wsl2
+          - macos-intel
+          - macos-apple-silicon
 
 jobs:
   build:

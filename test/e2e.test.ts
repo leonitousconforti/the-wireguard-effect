@@ -1,15 +1,8 @@
-import { expect, it } from "@effect/vitest";
-
-import type * as HttpClientError from "@effect/platform/HttpClientError";
-import type * as Socket from "@effect/platform/Socket";
 import type * as Cause from "effect/Cause";
-import type * as ParseResult from "effect/ParseResult";
-import type * as WireguardInterface from "the-wireguard-effect/WireguardInterface";
+import type * as Schema from "effect/Schema";
+import type * as HttpClientError from "effect/unstable/http/HttpClientError";
+import type * as Socket from "effect/unstable/socket/Socket";
 
-import * as NodeContext from "@effect/platform-node/NodeContext";
-import * as NodeHttp from "@effect/platform-node/NodeHttpClient";
-import * as HttpClient from "@effect/platform/HttpClient";
-import * as HttpClientResponse from "@effect/platform/HttpClientResponse";
 import * as Config from "effect/Config";
 import * as Console from "effect/Console";
 import * as Duration from "effect/Duration";
@@ -18,7 +11,14 @@ import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Schedule from "effect/Schedule";
 import * as Stream from "effect/Stream";
+import * as HttpClient from "effect/unstable/http/HttpClient";
+import * as HttpClientResponse from "effect/unstable/http/HttpClientResponse";
 
+import type * as WireguardInterface from "the-wireguard-effect/WireguardInterface";
+
+import * as NodeHttp from "@effect/platform-node/NodeHttpClient";
+import * as NodeServices from "@effect/platform-node/NodeServices";
+import { expect, it } from "@effect/vitest";
 import * as WireguardControl from "the-wireguard-effect/WireguardControl";
 import * as WireguardPeer from "the-wireguard-effect/WireguardPeer";
 import * as WireguardServer from "the-wireguard-effect/WireguardServer";
@@ -31,7 +31,7 @@ const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
     WireguardControl.makeBundledWgQuickLayer({ sudo: process.platform !== "linux" })
 );
 
-const testLayer = Layer.mergeAll(NodeHttp.layer, NodeContext.layer, WireguardControlLive);
+const testLayer = Layer.mergeAll(NodeHttp.layerFetch, NodeServices.layer, WireguardControlLive);
 
 /**
  * Waits for all peers on the interface to have a successful handshake as well
@@ -39,11 +39,12 @@ const testLayer = Layer.mergeAll(NodeHttp.layer, NodeContext.layer, WireguardCon
  */
 const waitForHealthy = (
     wireguardInterface: WireguardInterface.WireguardInterface
-): Effect.Effect<void, Cause.TimeoutException | Socket.SocketError | ParseResult.ParseError, never> =>
+): Effect.Effect<void, Cause.TimeoutError | Socket.SocketError | Schema.SchemaError, never> =>
     Function.pipe(
         wireguardInterface.streamPeerStats(),
-        Stream.takeUntilEffect(Effect.every(WireguardPeer.hasBidirectionalTraffic)),
-        Stream.takeUntilEffect(Effect.every(WireguardPeer.hasHandshakedRecently)),
+        Stream.flattenIterable,
+        Stream.takeUntilEffect(WireguardPeer.hasBidirectionalTraffic),
+        Stream.takeUntilEffect(WireguardPeer.hasHandshakedRecently),
         Stream.timeout("10 seconds"),
         Stream.runDrain
     );
@@ -54,11 +55,11 @@ const waitForHealthy = (
  */
 export const httpRequest = (
     url: string
-): Effect.Effect<string, HttpClientError.HttpClientError | Cause.TimeoutException, HttpClient.HttpClient> =>
+): Effect.Effect<string, HttpClientError.HttpClientError | Cause.TimeoutError, HttpClient.HttpClient> =>
     Function.pipe(
         Effect.map(
             HttpClient.HttpClient,
-            HttpClient.retry(Schedule.compose(Schedule.recurs(5), Schedule.exponential(2_000)))
+            HttpClient.retry(Schedule.both(Schedule.recurs(5), Schedule.exponential(2_000)))
         ),
         Effect.flatMap((client) => client.get(url)),
         Effect.flatMap(HttpClientResponse.filterStatusOk),
@@ -91,9 +92,7 @@ it.live(
             const hiddenPage = yield* httpRequest(hiddenPageUrl);
             yield* Console.log("Connected to hidden page");
             expect(hiddenPage).toMatchSnapshot();
-        })
-            .pipe(Effect.scoped)
-            .pipe(Effect.provide(testLayer)),
+        }).pipe(Effect.scoped, Effect.provide(testLayer)),
     {
         timeout: Function.pipe(3, Duration.minutes, Duration.toMillis),
     }

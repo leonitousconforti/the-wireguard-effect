@@ -6,6 +6,7 @@
 
 import * as Function from "effect/Function";
 import * as Schema from "effect/Schema";
+
 import * as crypto from "node:crypto";
 
 /**
@@ -19,8 +20,8 @@ import * as crypto from "node:crypto";
  */
 export const WireguardKey = Function.pipe(
     Schema.String,
-    Schema.pattern(/^[\d+/A-Za-z]{42}[048AEIMQUYcgkosw]=$/),
-    Schema.annotations({ identifier: "WireguardKey", description: "A wireguard key" }),
+    Schema.check(Schema.isPattern(/^[\d+/A-Za-z]{42}[048AEIMQUYcgkosw]=$/)),
+    Schema.annotate({ identifier: "WireguardKey", description: "A wireguard key" }),
     Schema.brand("WireguardKey")
 );
 

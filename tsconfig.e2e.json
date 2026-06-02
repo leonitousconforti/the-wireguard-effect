@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json.schemastore.org/tsconfig",
+    "$schema": "https://json.schemastore.org/tsconfig",
     "extends": "./tsconfig.base.jsonc",
     "include": ["e2e"],
     "references": [{ "path": "./tsconfig.src.json" }, { "path": "./tsconfig.examples.json" }],
@@ -8,10 +8,9 @@
         "outDir": ".tsbuildinfo/e2e",
         "noEmit": true,
         "erasableSyntaxOnly": false,
-        "baseUrl": ".",
         "paths": {
-            "the-wireguard-effect": ["src/index.ts"],
-            "the-wireguard-effect/*": ["src/*.ts"]
+            "the-wireguard-effect": ["./src/index.ts"],
+            "the-wireguard-effect/*": ["./src/*.ts"]
         },
         "types": ["node"],
         "plugins": [

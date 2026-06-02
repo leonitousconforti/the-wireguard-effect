@@ -1,27 +1,26 @@
-import type * as Socket from "@effect/platform/Socket";
 import type * as Cause from "effect/Cause";
-import type * as ParseResult from "effect/ParseResult";
-import type * as WireguardConfig from "../WireguardConfig.ts";
-import type * as _WireguardControl from "../WireguardControl.ts";
-import type * as WireguardInterface from "../WireguardInterface.ts";
+import type * as Schema from "effect/Schema";
+import type * as Socket from "effect/unstable/socket/Socket";
 
-import * as Command from "@effect/platform/Command";
-import * as CommandExecutor from "@effect/platform/CommandExecutor";
-import * as PlatformError from "@effect/platform/Error";
-import * as FileSystem from "@effect/platform/FileSystem";
-import * as Path from "@effect/platform/Path";
 import * as Array from "effect/Array";
-import * as Chunk from "effect/Chunk";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
+import * as FileSystem from "effect/FileSystem";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
-import * as Predicate from "effect/Predicate";
+import * as Path from "effect/Path";
+import * as PlatformError from "effect/PlatformError";
 import * as Schedule from "effect/Schedule";
+import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
-import * as exec from "node:child_process";
+import * as ChildProcess from "effect/unstable/process/ChildProcess";
+import * as ChildProcessSpawner from "effect/unstable/process/ChildProcessSpawner";
+
+import type * as WireguardConfig from "../WireguardConfig.ts";
+import type * as _WireguardControl from "../WireguardControl.ts";
+import type * as WireguardInterface from "../WireguardInterface.ts";
 
 /** @internal */
 export const TypeId: _WireguardControl.TypeId = Symbol.for(
@@ -29,7 +28,7 @@ export const TypeId: _WireguardControl.TypeId = Symbol.for(
 ) as _WireguardControl.TypeId;
 
 /** @internal */
-export const WireguardControl = Context.GenericTag<_WireguardControl.WireguardControl>(
+export const WireguardControl = Context.Service<_WireguardControl.WireguardControl>(
     "@leonitousconforti/the-wireguard-effect/WireguardControl"
 );
 
@@ -78,129 +77,67 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
     const execCommandWireguardGoWindows = (
         command: string,
         ...args: Array<string>
-    ): Effect.Effect<exec.ChildProcess, PlatformError.PlatformError | Cause.TimeoutException, FileSystem.FileSystem> =>
-        Effect.asyncEffect<
-            exec.ChildProcess,
-            PlatformError.PlatformError,
-            never,
-            never,
-            PlatformError.PlatformError,
-            FileSystem.FileSystem
-        >((resume) =>
-            Effect.gen(function* () {
-                const fileSystem = yield* FileSystem.FileSystem;
-                const stdout = yield* fileSystem.makeTempFile();
-                const stderr = yield* fileSystem.makeTempFile();
-                const { fd: stdoutFd } = yield* fileSystem.open(stdout, { flag: "r+" });
-                const { fd: stderrFd } = yield* fileSystem.open(stderr, { flag: "r+" });
+    ): Effect.Effect<
+        ChildProcessSpawner.ChildProcessHandle,
+        PlatformError.PlatformError | Cause.TimeoutError,
+        ChildProcessSpawner.ChildProcessSpawner
+    > =>
+        Effect.gen(function* () {
+            const scope = Scope.makeUnsafe();
 
-                const subprocess = exec.spawn(command, args, {
-                    detached: true,
-                    stdio: ["ignore", stdoutFd, stderrFd],
-                });
+            const subprocess = yield* ChildProcess.make(command, args, {
+                forceKillAfter: "5 seconds",
+                stdin: "ignore",
+                detached: true,
+            }).pipe(Scope.provide(scope));
 
-                subprocess.unref();
-                subprocess.on("exit", onExit);
-                subprocess.on("close", onClose);
-                subprocess.on("error", onError);
-                subprocess.on("disconnect", onDisconnect);
+            yield* subprocess.unref.pipe(Effect.asVoid);
+            yield* subprocess.all.pipe(
+                Stream.decodeText({
+                    encoding: "utf-8",
+                }),
+                Stream.splitLines,
+                Stream.takeUntil(String.includes("UAPI listener started")),
+                Stream.timeout("1 minutes"),
+                Stream.runDrain
+            );
 
-                yield* Function.pipe(
-                    fileSystem.stream(stdout),
-                    Stream.decodeText("utf-8"),
-                    Stream.splitLines,
-                    Stream.takeUntil(String.includes("UAPI listener started")),
-                    Stream.runDrain
-                );
-
-                subprocess.off("exit", onExit);
-                subprocess.off("close", onClose);
-                subprocess.off("error", onError);
-                subprocess.off("disconnect", onDisconnect);
-                resume(Effect.succeed(subprocess));
-
-                function onError(error: Error) {
-                    subprocess.off("exit", onExit);
-                    subprocess.off("close", onClose);
-                    subprocess.off("error", onError);
-                    subprocess.off("disconnect", onDisconnect);
-                    resume(
-                        Effect.gen(function* () {
-                            const stdoutString = yield* fileSystem.readFileString(stdout, "utf-8");
-                            const stderrString = yield* fileSystem.readFileString(stderr, "utf-8");
-                            return yield* Effect.fail(
-                                new PlatformError.SystemError({
-                                    reason: "Unknown",
-                                    module: "Command",
-                                    method: "wireguard-go.exe",
-                                    pathOrDescriptor: command,
-                                    description: `${error.message}\n${stdoutString}\n${stderrString}`,
-                                })
-                            );
-                        })
-                    );
-                }
-
-                function onExit(code: number | null) {
-                    if (Predicate.isNotNull(code)) {
-                        return onError(new Error(`Process exited unexpectedly with code ${code}`));
-                    } else {
-                        return onError(new Error("Process exited unexpectedly."));
-                    }
-                }
-
-                function onClose(code: number | null) {
-                    if (Predicate.isNotNull(code)) {
-                        return onError(new Error(`Process closed unexpectedly with code ${code}`));
-                    } else {
-                        return onError(new Error("Process closed unexpectedly."));
-                    }
-                }
-
-                function onDisconnect() {
-                    return onError(new Error("Process disconnected unexpectedly."));
-                }
-
-                return Effect.sync(() => {
-                    subprocess.off("exit", onExit);
-                    subprocess.off("close", onClose);
-                    subprocess.off("error", onError);
-                    subprocess.off("disconnect", onDisconnect);
-                });
-            }).pipe(Effect.scoped)
-        ).pipe(Effect.timeout("1 minutes"));
+            return subprocess;
+        });
 
     const execCommand = (
         command: string,
         ...args: Array<string>
     ): Effect.Effect<
         void,
-        PlatformError.PlatformError | Cause.TimeoutException,
-        CommandExecutor.CommandExecutor | FileSystem.FileSystem
+        PlatformError.SystemError | PlatformError.PlatformError | Cause.TimeoutError,
+        ChildProcessSpawner.ChildProcessSpawner | FileSystem.FileSystem
     > =>
         Function.pipe(
-            CommandExecutor.CommandExecutor,
+            ChildProcessSpawner.ChildProcessSpawner,
             Effect.flatMap((executor) =>
-                executor.start(
+                executor.spawn(
                     options.sudo && process.platform !== "win32"
-                        ? Command.make("sudo", command, ...args)
-                        : Command.make(command, ...args)
+                        ? ChildProcess.make("sudo", [command, ...args])
+                        : ChildProcess.make(command, args)
                 )
             ),
             Effect.flatMap((process) =>
                 Effect.all(
                     [
                         process.stdout.pipe(
-                            Stream.decodeText("utf-8"),
+                            Stream.decodeText({
+                                encoding: "utf-8",
+                            }),
                             Stream.splitLines,
-                            Stream.runCollect,
-                            Effect.map(Chunk.toReadonlyArray)
+                            Stream.runCollect
                         ),
                         process.stderr.pipe(
-                            Stream.decodeText("utf-8"),
+                            Stream.decodeText({
+                                encoding: "utf-8",
+                            }),
                             Stream.splitLines,
-                            Stream.runCollect,
-                            Effect.map(Chunk.toReadonlyArray)
+                            Stream.runCollect
                         ),
                         process.exitCode,
                     ],
@@ -212,7 +149,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
                     ? Effect.void
                     : Effect.fail(
                           new PlatformError.SystemError({
-                              reason: "Unknown",
+                              _tag: "Unknown",
                               module: "Command",
                               pathOrDescriptor: command,
                               method: `${command} ${args.join(" ")}`,
@@ -231,10 +168,15 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
         | readonly [wireguardInterface: WireguardInterface.WireguardInterface]
         | readonly [
               wireguardInterface: WireguardInterface.WireguardInterface,
-              wireguardGoSubprocess: exec.ChildProcess,
+              wireguardGoSubprocess: ChildProcessSpawner.ChildProcessHandle,
           ],
-        Socket.SocketError | ParseResult.ParseError | PlatformError.PlatformError | Cause.TimeoutException,
-        FileSystem.FileSystem | Path.Path | CommandExecutor.CommandExecutor
+        | Socket.SocketError
+        | Schema.SchemaError
+        | PlatformError.PlatformError
+        | PlatformError.BadArgument
+        | PlatformError.SystemError
+        | Cause.TimeoutError,
+        FileSystem.FileSystem | Path.Path | ChildProcessSpawner.ChildProcessSpawner
     > = (wireguardConfig: WireguardConfig.WireguardConfig, wireguardInterface: WireguardInterface.WireguardInterface) =>
         Effect.gen(function* () {
             const path = yield* Path.Path;
@@ -262,7 +204,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
             const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
 
             if (process.platform === "win32") {
-                const retrySchedule = Schedule.compose(Schedule.recurs(5), Schedule.exponential(2_000));
+                const retrySchedule = Schedule.both(Schedule.recurs(5), Schedule.exponential(2_000));
                 const runningWireguardGoProcess = yield* execCommandWireguardGoWindows(
                     bundledWireguardGoExecutablePath,
                     wireguardInterface.Name
@@ -287,7 +229,7 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
             const path = yield* Path.Path;
             const fs = yield* FileSystem.FileSystem;
 
-            if (wireguardGoSubprocess) wireguardGoSubprocess.kill();
+            if (wireguardGoSubprocess) yield* wireguardGoSubprocess.kill();
             const tempDirectory = yield* fs.makeTempDirectory();
             const file = path.join(tempDirectory, `${wireguardInterface.Name}.conf`);
             yield* wireguardConfig.writeToFile(file);
@@ -313,13 +255,13 @@ export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardC
         });
 
     const upScoped: _WireguardControl.WireguardControl["upScoped"] = (wireguardConfig, wireguardInterface) => {
-        const _down = (wireguardGoSubprocess?: exec.ChildProcess | undefined) =>
+        const _down = (wireguardGoSubprocess?: ChildProcessSpawner.ChildProcessHandle | undefined) =>
             down(wireguardConfig, wireguardInterface, wireguardGoSubprocess).pipe(Effect.orDie);
         const _up = internalUp(wireguardConfig, wireguardInterface);
         return Effect.map(
             Effect.acquireRelease(_up, (data) => {
                 if (Array.isArray(data) && Tuple.isTupleOf(data, 2)) {
-                    const wireguardGoSubprocess = Tuple.getSecond(data);
+                    const wireguardGoSubprocess = data[1];
                     return _down(wireguardGoSubprocess);
                 } else {
                     return _down();
@@ -350,4 +292,8 @@ export const UserspaceLayer = Layer.sync(WireguardControl, makeUserspaceLayer);
  * @since 1.0.0
  * @category Layers
  */
-export const BundledWgQuickLayer = Layer.sync(WireguardControl, () => makeBundledWgQuickLayer({ sudo: true }));
+export const BundledWgQuickLayer = Layer.sync(WireguardControl, () =>
+    makeBundledWgQuickLayer({
+        sudo: true,
+    })
+);

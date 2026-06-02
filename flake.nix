@@ -2,31 +2,29 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
   };
-  outputs = {nixpkgs, ...}: let
-    forAllSystems = function:
-      nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed (
-        system: function nixpkgs.legacyPackages.${system}
-      );
-  in {
-    formatter = forAllSystems (pkgs: pkgs.alejandra);
-    devShells = forAllSystems (pkgs: {
-      default = pkgs.mkShell {
-        packages = with pkgs; [
-          bun
-          deno
-          corepack
-          go
-          nodejs_24
-          python3
-          wget
-          cmake
-          libxml2
-          openssl
-          zlib
-          imagemagick
-          pkgsCross.mingwW64.buildPackages.gcc
-        ];
-      };
-    });
-  };
+  outputs =
+    { nixpkgs, ... }:
+    let
+      forAllSystems =
+        function:
+        nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed (
+          system: function nixpkgs.legacyPackages.${system}
+        );
+    in
+    {
+      formatter = forAllSystems (pkgs: pkgs.alejandra);
+      devShells = forAllSystems (pkgs: {
+        default = pkgs.mkShell {
+          packages = with pkgs; [
+            nixd
+            nixfmt
+            bun
+            deno
+            corepack
+            nodejs-slim_26
+            python3
+          ];
+        };
+      });
+    };
 }

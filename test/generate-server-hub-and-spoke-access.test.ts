@@ -1,8 +1,9 @@
-import { describe, expect, it } from "@effect/vitest";
-
 import * as Effect from "effect/Effect";
 import * as Schema from "effect/Schema";
+
+import { describe, expect, it } from "@effect/vitest";
 import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
+
 import * as GenerateExample from "../examples/generate-server-hub-and-spoke-access.js";
 
 describe("wireguard generate server hub and spoke access", () => {
@@ -11,10 +12,10 @@ describe("wireguard generate server hub and spoke access", () => {
             const configs = yield* GenerateExample.program();
             expect(configs).toHaveLength(4);
 
-            const config0 = yield* Schema.encode(WireguardConfig.WireguardConfig)(configs[0]);
-            const config1 = yield* Schema.encode(WireguardConfig.WireguardConfig)(configs[1]);
-            const config2 = yield* Schema.encode(WireguardConfig.WireguardConfig)(configs[2]!);
-            const config3 = yield* Schema.encode(WireguardConfig.WireguardConfig)(configs[3]!);
+            const config0 = yield* Schema.encodeEffect(WireguardConfig.WireguardConfig)(configs[0]);
+            const config1 = yield* Schema.encodeEffect(WireguardConfig.WireguardConfig)(configs[1]);
+            const config2 = yield* Schema.encodeEffect(WireguardConfig.WireguardConfig)(configs[2]!);
+            const config3 = yield* Schema.encodeEffect(WireguardConfig.WireguardConfig)(configs[3]!);
 
             const keyMatcher = expect.stringMatching(/^[\d+/A-Za-z]{42}[048AEIMQUYcgkosw]=$/);
             const peerEntryMatcher = { PublicKey: keyMatcher, PresharedKey: keyMatcher };

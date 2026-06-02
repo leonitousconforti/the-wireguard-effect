@@ -1,9 +1,6 @@
-import type * as Socket from "@effect/platform/Socket";
-import type * as ParseResult from "effect/ParseResult";
-import type * as WireguardInterface from "../WireguardInterface.ts";
+import type * as Socket from "effect/unstable/socket/Socket";
 
-import * as NodeSocket from "@effect/platform-node/NodeSocket";
-import * as Chunk from "effect/Chunk";
+import * as Array from "effect/Array";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Option from "effect/Option";
@@ -11,6 +8,11 @@ import * as Schema from "effect/Schema";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
+
+import type * as WireguardInterface from "../WireguardInterface.ts";
+
+import * as NodeSocket from "@effect/platform-node/NodeSocket";
+
 import * as WireguardErrors from "../WireguardErrors.ts";
 
 /** @internal */
@@ -38,7 +40,7 @@ export const WindowsInterfaceNameRegExp: RegExp = /^eth\d+$/;
 export const userspaceContact = (
     wireguardInterface: WireguardInterface.WireguardInterface,
     content: string
-): Effect.Effect<string, Socket.SocketError | ParseResult.ParseError, never> =>
+): Effect.Effect<string, Socket.SocketError | Schema.SchemaError, never> =>
     Function.pipe(
         Stream.make(content),
         Stream.pipeThroughChannelOrFail(
@@ -50,7 +52,9 @@ export const userspaceContact = (
         Stream.flatMap(Function.compose(String.linesIterator, Stream.fromIterable)),
         Stream.map(String.trimEnd),
         Stream.filter(String.isNonEmpty),
-        Stream.run(Sink.collectAll()),
-        Effect.tap(Function.flow(Chunk.last, Option.getOrThrow, Schema.decodeUnknown(WireguardErrors.SuccessErrno))),
-        Effect.map(Chunk.join("\n"))
+        Stream.run(Sink.collect()),
+        Effect.tap(
+            Function.flow(Array.last, Option.getOrThrow, Schema.decodeUnknownEffect(WireguardErrors.SuccessErrno))
+        ),
+        Effect.map(Array.join("\n"))
     );
