@@ -11,6 +11,7 @@
         "target": "ES2022",
         "rewriteRelativeImportExtensions": true,
         "allowImportingTsExtensions": true,
+        "types": ["node"],
         "paths": {
             "the-wireguard-effect": ["../../src/index.ts"],
             "the-wireguard-effect/*": ["../../src/*.ts"]
