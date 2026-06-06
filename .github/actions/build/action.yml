@@ -36,6 +36,8 @@ runs:
       run: |
         sudo rm -rf .git/
         sudo rm -rf node_modules/
+        sudo rm -rf repos/effect
+        sudo rm -rf repos/effect-smol
         sudo rm -rf submodules/wintun
         sudo rm -rf submodules/nvlist
         sudo rm -rf submodules/osxcross
