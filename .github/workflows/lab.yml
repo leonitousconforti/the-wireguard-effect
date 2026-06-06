@@ -60,7 +60,7 @@ jobs:
 
   macos-apple-silicon-lab:
     if: github.event.inputs.platform == 'macos-apple-silicon'
-    runs-on: macos-14
+    runs-on: macos-26
     timeout-minutes: 60
     needs: [build]
     steps:
