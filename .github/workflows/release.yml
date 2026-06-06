@@ -32,6 +32,11 @@ jobs:
           node-version: 24
           registry-url: "https://registry.npmjs.org"
 
+      - shell: bash
+        run: sudo apt-get update --yes
+      - shell: bash
+        run: sudo apt-get -y install mingw-w64 libarchive-tools clang cmake libxml2-dev imagemagick librsvg2-bin
+
       - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6
 
       - run: pnpm install
