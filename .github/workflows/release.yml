@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          # This is required to ensure the `GITHUB_TOKEN` we provide below is
+          # **always** used when pushing updates to the changesets release branch.
+          # Otherwise the default token will be used, and actions on that versioned
+          # release branch will not be triggered.
+          persist-credentials: false
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24
+          registry-url: "https://registry.npmjs.org"
+
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6
+
+      - run: pnpm install
+
+      - name: Upgrade npm for OIDC support
+        run: npm install -g npm@latest
+
+      - uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
+        with:
+          publish: pnpm changeset-publish
+          version: pnpm changeset-version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

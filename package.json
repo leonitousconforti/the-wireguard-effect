@@ -52,7 +52,7 @@
             "dist/win32-amd64-wireguard-go",
             "dist/win32-arm64-wireguard-go"
         ],
-        "provenance": false
+        "provenance": true
     },
     "scripts": {
         "build-submodules": "(cd submodules && ./build.bash)",
@@ -65,8 +65,8 @@
         "test": "vitest",
         "coverage": "vitest --coverage",
         "e2e-tests": "node ./e2e/run.mjs",
-        "lint": "oxlint && oxfmt --check",
-        "lint-fix": "oxlint --fix && oxfmt --write",
+        "lint": "oxlint --disable-nested-config && oxfmt --check !repos/** !submodules/**",
+        "lint-fix": "oxlint --disable-nested-config --fix && oxfmt --write !repos/** !submodules/**",
         "changeset-version": "changeset version",
         "changeset-publish": "pnpm build && changeset publish",
         "prepare": "effect-language-service patch"

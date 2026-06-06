@@ -9,3 +9,7 @@ publicHoistPattern:
     - "@types/*"
     - "@vitest/*"
     - "@effect/vitest"
+
+allowBuilds:
+    esbuild: true
+    msgpackr-extract: true
