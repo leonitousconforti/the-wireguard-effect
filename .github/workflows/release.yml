@@ -39,7 +39,7 @@ jobs:
       - shell: bash
         run: sudo apt-get -y install mingw-w64 libarchive-tools clang cmake libxml2-dev imagemagick librsvg2-bin
 
-      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
 
       - run: pnpm install
 
