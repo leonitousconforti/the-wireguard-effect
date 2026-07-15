@@ -76,10 +76,10 @@
         "ini": "^7.0.0"
     },
     "devDependencies": {
-        "@babel/cli": "7.29.7",
-        "@babel/core": "7.29.7",
-        "@babel/plugin-transform-export-namespace-from": "7.29.7",
-        "@babel/plugin-transform-modules-commonjs": "7.29.7",
+        "@babel/cli": "8.0.4",
+        "@babel/core": "8.0.1",
+        "@babel/plugin-transform-export-namespace-from": "8.0.1",
+        "@babel/plugin-transform-modules-commonjs": "8.0.1",
         "@changesets/cli": "2.31.0",
         "@effect/build-utils": "0.8.9",
         "@effect/docgen": "https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@e57e5f5",
