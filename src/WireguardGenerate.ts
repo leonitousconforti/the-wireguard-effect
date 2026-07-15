@@ -587,11 +587,11 @@ export const generateRemoteAccessToServer = <
     Nodes extends
         | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
         | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
-    NetworkCidr extends Nodes[0] extends WireguardIPv4Node
+    NetworkCidr extends (Nodes[0] extends WireguardIPv4Node
         ? InternetSchemas.IPv4CidrBlock
         : Nodes[0] extends WireguardIPv6Node
           ? InternetSchemas.IPv6CidrBlock
-          : never,
+          : never),
 >(options: {
     nodes: Nodes;
     wireguardNetworkCidr: NetworkCidr;
@@ -609,16 +609,16 @@ export const generateRemoteAccessToLan = <
     Nodes extends
         | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
         | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
-    NetworkCidr1 extends Nodes[0] extends WireguardIPv4Node
+    NetworkCidr1 extends (Nodes[0] extends WireguardIPv4Node
         ? InternetSchemas.IPv4CidrBlock
         : Nodes[0] extends WireguardIPv6Node
           ? InternetSchemas.IPv6CidrBlock
-          : never,
-    NetworkCidr2 extends Nodes[0] extends WireguardIPv4Server
+          : never),
+    NetworkCidr2 extends (Nodes[0] extends WireguardIPv4Server
         ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
         : Nodes[0] extends WireguardIPv6Server
           ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
-          : never,
+          : never),
 >(options: {
     nodes: Nodes;
     wireguardNetworkCidr: NetworkCidr1;
@@ -651,11 +651,11 @@ export const generateServerToServerAccess = <
     Nodes extends
         | readonly [server1: WireguardIPv4Server, server2: WireguardIPv4Server]
         | readonly [server1: WireguardIPv6Server, server2: WireguardIPv6Server],
-    NetworkCidr extends Nodes[0] extends WireguardIPv4Node
+    NetworkCidr extends (Nodes[0] extends WireguardIPv4Node
         ? InternetSchemas.IPv4CidrBlock
         : Nodes[0] extends WireguardIPv6Node
           ? InternetSchemas.IPv6CidrBlock
-          : never,
+          : never),
 >(options: {
     nodes: Nodes;
     wireguardNetworkCidr: NetworkCidr;
@@ -678,21 +678,21 @@ export const generateLanToLanAccess = <
     Nodes extends
         | readonly [server1: WireguardIPv4Server, server2: WireguardIPv4Server]
         | readonly [server1: WireguardIPv6Server, server2: WireguardIPv6Server],
-    NetworkCidr1 extends Nodes[0] extends WireguardIPv4Node
+    NetworkCidr1 extends (Nodes[0] extends WireguardIPv4Node
         ? InternetSchemas.IPv4CidrBlock
         : Nodes[0] extends WireguardIPv6Node
           ? InternetSchemas.IPv6CidrBlock
-          : never,
-    NetworkCidr2 extends Nodes[0] extends WireguardIPv4Server
+          : never),
+    NetworkCidr2 extends (Nodes[0] extends WireguardIPv4Server
         ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
         : Nodes[0] extends WireguardIPv6Server
           ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
-          : never,
-    NetworkCidr3 extends Nodes[1] extends WireguardIPv4Server
+          : never),
+    NetworkCidr3 extends (Nodes[1] extends WireguardIPv4Server
         ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
         : Nodes[1] extends WireguardIPv6Server
           ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
-          : never,
+          : never),
 >(options: {
     nodes: Nodes;
     server1Lan: NetworkCidr2;
@@ -741,11 +741,11 @@ export const generateServerHubAndSpokeAccess = <
     Nodes extends
         | readonly [server: WireguardIPv4Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv4Node>]
         | readonly [server: WireguardIPv6Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv6Node>],
-    NetworkCidr extends Nodes[0] extends WireguardIPv4Node
+    NetworkCidr extends (Nodes[0] extends WireguardIPv4Node
         ? InternetSchemas.IPv4CidrBlock
         : Nodes[0] extends WireguardIPv6Node
           ? InternetSchemas.IPv6CidrBlock
-          : never,
+          : never),
 >(options: {
     nodes: Nodes;
     wireguardNetworkCidr: NetworkCidr;
@@ -790,16 +790,16 @@ export const generateLanHubAndSpokeAccess = <
     Nodes extends
         | readonly [server: WireguardIPv4Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv4Node>]
         | readonly [server: WireguardIPv6Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv6Node>],
-    NetworkCidr extends Nodes[0] extends WireguardIPv4Node
+    NetworkCidr extends (Nodes[0] extends WireguardIPv4Node
         ? InternetSchemas.IPv4CidrBlock
         : Nodes[0] extends WireguardIPv6Node
           ? InternetSchemas.IPv6CidrBlock
-          : never,
-    NetworkCidr2 extends Nodes[0] extends WireguardIPv4Server
+          : never),
+    NetworkCidr2 extends (Nodes[0] extends WireguardIPv4Server
         ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
         : Nodes[0] extends WireguardIPv6Server
           ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
-          : never,
+          : never),
 >(options: {
     nodes: Nodes;
     lanNetworkCidr: NetworkCidr2;
@@ -842,11 +842,11 @@ export const generateVpnTunneledAccess = <
     Nodes extends
         | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
         | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
-    NetworkCidr extends Nodes[0] extends WireguardIPv4Node
+    NetworkCidr extends (Nodes[0] extends WireguardIPv4Node
         ? InternetSchemas.IPv4CidrBlock
         : Nodes[0] extends WireguardIPv6Node
           ? InternetSchemas.IPv6CidrBlock
-          : never,
+          : never),
 >(options: {
     nodes: Nodes;
     wireguardNetworkCidr: NetworkCidr;
@@ -867,16 +867,16 @@ export const generateRemoteTunneledAccess = <
     Nodes extends
         | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
         | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
-    NetworkCidr1 extends Nodes[0] extends WireguardIPv4Node
+    NetworkCidr1 extends (Nodes[0] extends WireguardIPv4Node
         ? InternetSchemas.IPv4CidrBlock
         : Nodes[0] extends WireguardIPv6Node
           ? InternetSchemas.IPv6CidrBlock
-          : never,
-    NetworkCidr2 extends Nodes[0] extends WireguardIPv4Server
+          : never),
+    NetworkCidr2 extends (Nodes[0] extends WireguardIPv4Server
         ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
         : Nodes[0] extends WireguardIPv6Server
           ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
-          : never,
+          : never),
 >(options: {
     nodes: Nodes;
     lanNetworkCidr: NetworkCidr2;
