@@ -13,6 +13,3 @@ publicHoistPattern:
 allowBuilds:
     esbuild: true
     msgpackr-extract: true
-
-packages:
-    - "."
