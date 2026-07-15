@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
@@ -31,7 +31,7 @@ jobs:
       - uses: ./.github/actions/e2e
 
   linux-test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     needs: [build]
     steps:
