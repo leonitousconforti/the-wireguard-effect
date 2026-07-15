@@ -18,7 +18,5 @@ Schema.decodeSync(WireguardConfig.WireguardConfig)({
     Address: "10.0.0.1/24" as const,
     ListenPort: 0,
     PrivateKey: privateKey,
-    Peers: [
-        /* ... */
-    ],
+    Peers: [/* ... */],
 });
