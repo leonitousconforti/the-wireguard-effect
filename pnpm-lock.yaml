@@ -13,8 +13,8 @@ importers:
   .:
     dependencies:
       effect-schemas:
-        specifier: 0.0.13
-        version: 0.0.13(effect@4.0.0-beta.69)
+        specifier: 0.0.14
+        version: 0.0.14(effect@4.0.0-beta.69)
       ini:
         specifier: ^7.0.0
         version: 7.0.0
@@ -1291,8 +1291,8 @@ packages:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
 
-  effect-schemas@0.0.13:
-    resolution: {integrity: sha512-9WaYV1BlQcsbp+hVgMnolIYDu+UqGHzFDFAbaUebUPYtVUj0kJRo8h7Np4U7Six5DjV33VaR9mXTtX2exVnmkQ==}
+  effect-schemas@0.0.14:
+    resolution: {integrity: sha512-+8BvhsEim1RnMANIxYHIG+39wnagusLVJK2RR1B+g8w5Ak6LUcIhgTUVFPWizdnF1/Wqjka9TNI6V+VgEb+BLA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       effect: 4.0.0-beta.69
@@ -3630,7 +3630,7 @@ snapshots:
     dependencies:
       esutils: 2.0.3
 
-  effect-schemas@0.0.13(effect@4.0.0-beta.69):
+  effect-schemas@0.0.14(effect@4.0.0-beta.69):
     dependencies:
       effect: 4.0.0-beta.69
 
