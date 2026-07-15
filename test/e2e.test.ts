@@ -27,11 +27,12 @@ const portConfig = Config.number("WIREGUARD_DEMO_PORT").pipe(Config.withDefault(
 const hostConfig = Config.string("WIREGUARD_DEMO_HOST").pipe(Config.withDefault("demo.wireguard.com"));
 const hiddenPageUrlConfig = Config.string("HIDDEN_PAGE").pipe(Config.withDefault("http://192.168.4.1:80"));
 
-const WireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
+const WireguardControlLive = Layer.effect(
+    WireguardControl.WireguardControl,
     WireguardControl.makeBundledWgQuickLayer({ sudo: process.platform !== "linux" })
 );
 
-const testLayer = Layer.mergeAll(NodeHttp.layerFetch, NodeServices.layer, WireguardControlLive);
+const testLayer = Layer.provideMerge(WireguardControlLive, Layer.mergeAll(NodeHttp.layerFetch, NodeServices.layer));
 
 /**
  * Waits for all peers on the interface to have a successful handshake as well

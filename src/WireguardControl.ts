@@ -8,14 +8,13 @@ import type * as Cause from "effect/Cause";
 import type * as Context from "effect/Context";
 import type * as Effect from "effect/Effect";
 import type * as FileSystem from "effect/FileSystem";
+import type * as Layer from "effect/Layer";
 import type * as Path from "effect/Path";
 import type * as PlatformError from "effect/PlatformError";
 import type * as Schema from "effect/Schema";
 import type * as Scope from "effect/Scope";
 import type * as ChildProcessSpawner from "effect/unstable/process/ChildProcessSpawner";
 import type * as Socket from "effect/unstable/socket/Socket";
-
-import * as Layer from "effect/Layer";
 
 import type * as WireguardConfig from "./WireguardConfig.ts";
 import type * as WireguardInterface from "./WireguardInterface.ts";
@@ -52,7 +51,7 @@ export interface WireguardControl {
         | PlatformError.BadArgument
         | PlatformError.PlatformError
         | Cause.TimeoutError,
-        FileSystem.FileSystem | Path.Path | ChildProcessSpawner.ChildProcessSpawner
+        never
     >;
 
     readonly down: (
@@ -66,7 +65,7 @@ export interface WireguardControl {
         | PlatformError.PlatformError
         | Schema.SchemaError
         | Cause.TimeoutError,
-        FileSystem.FileSystem | Path.Path | ChildProcessSpawner.ChildProcessSpawner
+        never
     >;
 
     readonly upScoped: (
@@ -80,7 +79,7 @@ export interface WireguardControl {
         | PlatformError.BadArgument
         | PlatformError.PlatformError
         | Cause.TimeoutError,
-        FileSystem.FileSystem | Path.Path | Scope.Scope | ChildProcessSpawner.ChildProcessSpawner
+        Scope.Scope
     >;
 }
 
@@ -94,23 +93,33 @@ export const WireguardControl: Context.Service<WireguardControl, WireguardContro
  * @since 1.0.0
  * @category Constructors
  */
-export const makeBundledWgQuickLayer: (options: { sudo: boolean }) => WireguardControl =
-    internal.makeBundledWgQuickLayer;
+export const makeBundledWgQuickLayer: (options: {
+    sudo: boolean;
+}) => Effect.Effect<
+    WireguardControl,
+    never,
+    ChildProcessSpawner.ChildProcessSpawner | FileSystem.FileSystem | Path.Path
+> = internal.makeBundledWgQuickLayer;
 
 /**
  * @since 1.0.0
  * @category Constructors
  */
-export const makeUserspaceLayer: () => WireguardControl = internal.makeUserspaceLayer;
+export const makeUserspaceLayer: Effect.Effect<WireguardControl, never, FileSystem.FileSystem> =
+    internal.makeUserspaceLayer;
 
 /**
  * @since 1.0.0
  * @category Layers
  */
-export const UserspaceLayer = Layer.sync(WireguardControl, makeUserspaceLayer);
+export const UserspaceLayer: Layer.Layer<WireguardControl, never, FileSystem.FileSystem> = internal.UserspaceLayer;
 
 /**
  * @since 1.0.0
  * @category Layers
  */
-export const BundledWgQuickLayer = Layer.sync(WireguardControl, () => makeBundledWgQuickLayer({ sudo: true }));
+export const BundledWgQuickLayer: Layer.Layer<
+    WireguardControl,
+    never,
+    ChildProcessSpawner.ChildProcessSpawner | FileSystem.FileSystem | Path.Path
+> = internal.BundledWgQuickLayer;

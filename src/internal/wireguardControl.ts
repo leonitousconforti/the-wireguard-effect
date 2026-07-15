@@ -36,263 +36,272 @@ export const WireguardControl = Context.Service<_WireguardControl.WireguardContr
  * @since 1.0.0
  * @category Constructors
  */
-export const makeUserspaceLayer = (): _WireguardControl.WireguardControl => {
-    const up: _WireguardControl.WireguardControl["up"] = (
-        wireguardConfig: WireguardConfig.WireguardConfig,
-        wireguardInterface: WireguardInterface.WireguardInterface
-    ) => wireguardInterface.setConfig(wireguardConfig);
+export const makeUserspaceLayer: Effect.Effect<_WireguardControl.WireguardControl, never, FileSystem.FileSystem> =
+    Effect.gen(function* () {
+        const fs = yield* FileSystem.FileSystem;
 
-    const down: _WireguardControl.WireguardControl["down"] = (
-        _wireguardConfig: WireguardConfig.WireguardConfig,
-        wireguardInterface: WireguardInterface.WireguardInterface
-    ) =>
-        Effect.map(
-            Effect.flatMap(FileSystem.FileSystem, (fs) => fs.remove(wireguardInterface.SocketLocation)),
-            () => wireguardInterface
-        );
+        const up: _WireguardControl.WireguardControl["up"] = (
+            wireguardConfig: WireguardConfig.WireguardConfig,
+            wireguardInterface: WireguardInterface.WireguardInterface
+        ) => wireguardInterface.setConfig(wireguardConfig);
 
-    const upScoped: _WireguardControl.WireguardControl["upScoped"] = (
-        wireguardConfig: WireguardConfig.WireguardConfig,
-        wireguardInterface: WireguardInterface.WireguardInterface
-    ) => {
-        const _down = down(wireguardConfig, wireguardInterface).pipe(Effect.orDie);
-        const _up = wireguardInterface.setConfig(wireguardConfig);
-        return Effect.acquireRelease(_up, () => _down);
-    };
+        const down: _WireguardControl.WireguardControl["down"] = (
+            _wireguardConfig: WireguardConfig.WireguardConfig,
+            wireguardInterface: WireguardInterface.WireguardInterface
+        ) => fs.remove(wireguardInterface.SocketLocation).pipe(Effect.as(wireguardInterface));
 
-    return WireguardControl.of({
-        [TypeId]: TypeId,
-        up,
-        down,
-        upScoped,
+        const upScoped: _WireguardControl.WireguardControl["upScoped"] = (
+            wireguardConfig: WireguardConfig.WireguardConfig,
+            wireguardInterface: WireguardInterface.WireguardInterface
+        ) => {
+            const _down = down(wireguardConfig, wireguardInterface).pipe(Effect.orDie);
+            const _up = wireguardInterface.setConfig(wireguardConfig);
+            return Effect.acquireRelease(_up, () => _down);
+        };
+
+        return WireguardControl.of({
+            [TypeId]: TypeId,
+            up,
+            down,
+            upScoped,
+        });
     });
-};
 
 /**
  * @since 1.0.0
  * @category Constructors
  */
-export const makeBundledWgQuickLayer = (options: { sudo: boolean }): _WireguardControl.WireguardControl => {
-    // process.platform === "win32" && command.includes("-wireguard-go.exe")
-    const execCommandWireguardGoWindows = (
-        command: string,
-        ...args: Array<string>
-    ): Effect.Effect<
-        ChildProcessSpawner.ChildProcessHandle,
-        PlatformError.PlatformError | Cause.TimeoutError,
-        ChildProcessSpawner.ChildProcessSpawner
-    > =>
-        Effect.gen(function* () {
-            const scope = Scope.makeUnsafe();
+export const makeBundledWgQuickLayer = (options: {
+    sudo: boolean;
+}): Effect.Effect<
+    _WireguardControl.WireguardControl,
+    never,
+    ChildProcessSpawner.ChildProcessSpawner | FileSystem.FileSystem | Path.Path
+> =>
+    Effect.gen(function* () {
+        const executor = yield* ChildProcessSpawner.ChildProcessSpawner;
+        const fs = yield* FileSystem.FileSystem;
+        const path = yield* Path.Path;
 
-            const subprocess = yield* ChildProcess.make(command, args, {
-                forceKillAfter: "5 seconds",
-                stdin: "ignore",
-                detached: true,
-            }).pipe(Scope.provide(scope));
+        // process.platform === "win32" && command.includes("-wireguard-go.exe")
+        const execCommandWireguardGoWindows = (
+            command: string,
+            ...args: Array<string>
+        ): Effect.Effect<
+            ChildProcessSpawner.ChildProcessHandle,
+            PlatformError.PlatformError | Cause.TimeoutError,
+            never
+        > =>
+            Effect.gen(function* () {
+                const scope = Scope.makeUnsafe();
 
-            yield* subprocess.unref.pipe(Effect.asVoid);
-            yield* subprocess.all.pipe(
-                Stream.decodeText({
-                    encoding: "utf-8",
-                }),
-                Stream.splitLines,
-                Stream.takeUntil(String.includes("UAPI listener started")),
-                Stream.timeout("1 minutes"),
-                Stream.runDrain
-            );
+                const subprocess = yield* ChildProcess.make(command, args, {
+                    forceKillAfter: "5 seconds",
+                    stdin: "ignore",
+                    detached: true,
+                }).pipe(Scope.provide(scope));
 
-            return subprocess;
-        });
+                yield* subprocess.unref.pipe(Effect.asVoid);
+                yield* subprocess.all.pipe(
+                    Stream.decodeText({
+                        encoding: "utf-8",
+                    }),
+                    Stream.splitLines,
+                    Stream.takeUntil(String.includes("UAPI listener started")),
+                    Stream.timeout("1 minutes"),
+                    Stream.runDrain
+                );
 
-    const execCommand = (
-        command: string,
-        ...args: Array<string>
-    ): Effect.Effect<
-        void,
-        PlatformError.SystemError | PlatformError.PlatformError | Cause.TimeoutError,
-        ChildProcessSpawner.ChildProcessSpawner | FileSystem.FileSystem
-    > =>
-        Function.pipe(
-            ChildProcessSpawner.ChildProcessSpawner,
-            Effect.flatMap((executor) =>
+                return subprocess;
+            }).pipe(Effect.provideService(ChildProcessSpawner.ChildProcessSpawner, executor));
+
+        const execCommand = (
+            command: string,
+            ...args: Array<string>
+        ): Effect.Effect<void, PlatformError.SystemError | PlatformError.PlatformError | Cause.TimeoutError, never> =>
+            Function.pipe(
                 executor.spawn(
                     options.sudo && process.platform !== "win32"
                         ? ChildProcess.make("sudo", [command, ...args])
                         : ChildProcess.make(command, args)
-                )
-            ),
-            Effect.flatMap((process) =>
-                Effect.all(
-                    [
-                        process.stdout.pipe(
-                            Stream.decodeText({
-                                encoding: "utf-8",
-                            }),
-                            Stream.splitLines,
-                            Stream.runCollect
-                        ),
-                        process.stderr.pipe(
-                            Stream.decodeText({
-                                encoding: "utf-8",
-                            }),
-                            Stream.splitLines,
-                            Stream.runCollect
-                        ),
-                        process.exitCode,
-                    ],
-                    { concurrency: 3 }
-                )
-            ),
-            Effect.flatMap(([stdout, stderr, exitCode]) => {
-                return exitCode === 0
-                    ? Effect.void
-                    : Effect.fail(
-                          new PlatformError.SystemError({
-                              _tag: "Unknown",
-                              module: "Command",
-                              pathOrDescriptor: command,
-                              method: `${command} ${args.join(" ")}`,
-                              description: `Process exited with code ${exitCode}: ${stdout.join("\n")}, ${stderr.join("\n")}`,
-                          })
-                      );
-            }),
-            Effect.timeout("10 seconds"),
-            Effect.scoped
-        );
+                ),
+                Effect.flatMap((process) =>
+                    Effect.all(
+                        [
+                            process.stdout.pipe(
+                                Stream.decodeText({
+                                    encoding: "utf-8",
+                                }),
+                                Stream.splitLines,
+                                Stream.runCollect
+                            ),
+                            process.stderr.pipe(
+                                Stream.decodeText({
+                                    encoding: "utf-8",
+                                }),
+                                Stream.splitLines,
+                                Stream.runCollect
+                            ),
+                            process.exitCode,
+                        ],
+                        { concurrency: 3 }
+                    )
+                ),
+                Effect.flatMap(([stdout, stderr, exitCode]) => {
+                    return exitCode === 0
+                        ? Effect.void
+                        : Effect.fail(
+                              new PlatformError.SystemError({
+                                  _tag: "Unknown",
+                                  module: "Command",
+                                  pathOrDescriptor: command,
+                                  method: `${command} ${args.join(" ")}`,
+                                  description: `Process exited with code ${exitCode}: ${stdout.join("\n")}, ${stderr.join("\n")}`,
+                              })
+                          );
+                }),
+                Effect.timeout("10 seconds"),
+                Effect.scoped
+            );
 
-    const internalUp: (
-        wireguardConfig: WireguardConfig.WireguardConfig,
-        wireguardInterface: WireguardInterface.WireguardInterface
-    ) => Effect.Effect<
-        | readonly [wireguardInterface: WireguardInterface.WireguardInterface]
-        | readonly [
-              wireguardInterface: WireguardInterface.WireguardInterface,
-              wireguardGoSubprocess: ChildProcessSpawner.ChildProcessHandle,
-          ],
-        | Socket.SocketError
-        | Schema.SchemaError
-        | PlatformError.PlatformError
-        | PlatformError.BadArgument
-        | PlatformError.SystemError
-        | Cause.TimeoutError,
-        FileSystem.FileSystem | Path.Path | ChildProcessSpawner.ChildProcessSpawner
-    > = (wireguardConfig: WireguardConfig.WireguardConfig, wireguardInterface: WireguardInterface.WireguardInterface) =>
-        Effect.gen(function* () {
-            const path = yield* Path.Path;
-            const fs = yield* FileSystem.FileSystem;
-            const tempDirectory = yield* fs.makeTempDirectory();
-            const file = path.join(tempDirectory, `${wireguardInterface.Name}.conf`);
-            yield* wireguardConfig.writeToFile(file);
+        const internalUp: (
+            wireguardConfig: WireguardConfig.WireguardConfig,
+            wireguardInterface: WireguardInterface.WireguardInterface
+        ) => Effect.Effect<
+            | readonly [wireguardInterface: WireguardInterface.WireguardInterface]
+            | readonly [
+                  wireguardInterface: WireguardInterface.WireguardInterface,
+                  wireguardGoSubprocess: ChildProcessSpawner.ChildProcessHandle,
+              ],
+            | Socket.SocketError
+            | Schema.SchemaError
+            | PlatformError.PlatformError
+            | PlatformError.BadArgument
+            | PlatformError.SystemError
+            | Cause.TimeoutError,
+            never
+        > = (
+            wireguardConfig: WireguardConfig.WireguardConfig,
+            wireguardInterface: WireguardInterface.WireguardInterface
+        ) =>
+            Effect.gen(function* () {
+                const tempDirectory = yield* fs.makeTempDirectory();
+                const file = path.join(tempDirectory, `${wireguardInterface.Name}.conf`);
+                yield* wireguardConfig
+                    .writeToFile(file)
+                    .pipe(Effect.provideService(FileSystem.FileSystem, fs), Effect.provideService(Path.Path, path));
 
-            const arch = process.arch === "x64" ? "amd64" : process.arch;
-            const extension = process.platform === "win32" ? ".exe" : "";
-            const wireguardGoUrl = new URL(`../${process.platform}-${arch}-wireguard-go${extension}`, import.meta.url);
-            const bundledWireguardGoExecutablePath = yield* path.fromFileUrl(wireguardGoUrl);
-            yield* fs.access(bundledWireguardGoExecutablePath, { ok: true });
-
-            const wgQuickUrl = new URL(`../${process.platform}-wg-quick`, import.meta.url);
-            const bundledWgQuickExecutablePath = yield* path.fromFileUrl(wgQuickUrl);
-            if (process.platform !== "win32") yield* fs.access(bundledWgQuickExecutablePath, { ok: true });
-
-            const wgWindowsUrl = new URL(`../win32-${arch}-wireguard.exe`, import.meta.url);
-            const bundledWgWindowsExecutablePath = yield* path.fromFileUrl(wgWindowsUrl);
-            if (process.platform === "win32") yield* fs.access(bundledWgWindowsExecutablePath, { ok: true });
-
-            const wgQuickCommandNix = [bundledWgQuickExecutablePath, "up", file] as const;
-            const wgQuickCommandWin = [bundledWgWindowsExecutablePath, "/installtunnelservice", file] as const;
-            const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
-
-            if (process.platform === "win32") {
-                const retrySchedule = Schedule.both(Schedule.recurs(5), Schedule.exponential(2_000));
-                const runningWireguardGoProcess = yield* execCommandWireguardGoWindows(
-                    bundledWireguardGoExecutablePath,
-                    wireguardInterface.Name
+                const arch = process.arch === "x64" ? "amd64" : process.arch;
+                const extension = process.platform === "win32" ? ".exe" : "";
+                const wireguardGoUrl = new URL(
+                    `../${process.platform}-${arch}-wireguard-go${extension}`,
+                    import.meta.url
                 );
-                yield* Effect.retry(wireguardInterface.setConfig(wireguardConfig), retrySchedule);
-                yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
-                return Tuple.make(wireguardInterface, runningWireguardGoProcess);
-            } else {
-                yield* execCommand(bundledWireguardGoExecutablePath, wireguardInterface.Name);
-                yield* wireguardInterface.setConfig(wireguardConfig);
-                yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
-                return Tuple.make(wireguardInterface);
-            }
-        });
+                const bundledWireguardGoExecutablePath = yield* path.fromFileUrl(wireguardGoUrl);
+                yield* fs.access(bundledWireguardGoExecutablePath, { ok: true });
 
-    const down: _WireguardControl.WireguardControl["down"] = (
-        wireguardConfig,
-        wireguardInterface,
-        wireguardGoSubprocess
-    ) =>
-        Effect.gen(function* () {
-            const path = yield* Path.Path;
-            const fs = yield* FileSystem.FileSystem;
+                const wgQuickUrl = new URL(`../${process.platform}-wg-quick`, import.meta.url);
+                const bundledWgQuickExecutablePath = yield* path.fromFileUrl(wgQuickUrl);
+                if (process.platform !== "win32") yield* fs.access(bundledWgQuickExecutablePath, { ok: true });
 
-            if (wireguardGoSubprocess) yield* wireguardGoSubprocess.kill();
-            const tempDirectory = yield* fs.makeTempDirectory();
-            const file = path.join(tempDirectory, `${wireguardInterface.Name}.conf`);
-            yield* wireguardConfig.writeToFile(file);
+                const wgWindowsUrl = new URL(`../win32-${arch}-wireguard.exe`, import.meta.url);
+                const bundledWgWindowsExecutablePath = yield* path.fromFileUrl(wgWindowsUrl);
+                if (process.platform === "win32") yield* fs.access(bundledWgWindowsExecutablePath, { ok: true });
 
-            const arch = process.arch === "x64" ? "amd64" : process.arch;
-            const wgQuickUrl = new URL(`../${process.platform}-wg-quick`, import.meta.url);
-            const bundledWgQuickExecutablePath = yield* path.fromFileUrl(wgQuickUrl);
-            if (process.platform !== "win32") yield* fs.access(bundledWgQuickExecutablePath, { ok: true });
+                const wgQuickCommandNix = [bundledWgQuickExecutablePath, "up", file] as const;
+                const wgQuickCommandWin = [bundledWgWindowsExecutablePath, "/installtunnelservice", file] as const;
+                const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
 
-            const wgWindowsUrl = new URL(`../win32-${arch}-wireguard.exe`, import.meta.url);
-            const bundledWgWindowsExecutablePath = yield* path.fromFileUrl(wgWindowsUrl);
-            if (process.platform === "win32") yield* fs.access(bundledWgWindowsExecutablePath, { ok: true });
-
-            const wgQuickCommandWin = [
-                bundledWgWindowsExecutablePath,
-                "/uninstalltunnelservice",
-                wireguardInterface.Name,
-            ] as const;
-            const wgQuickCommandNix = [bundledWgQuickExecutablePath, "down", file] as const;
-            const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
-            yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
-            return wireguardInterface;
-        });
-
-    const upScoped: _WireguardControl.WireguardControl["upScoped"] = (wireguardConfig, wireguardInterface) => {
-        const _down = (wireguardGoSubprocess?: ChildProcessSpawner.ChildProcessHandle | undefined) =>
-            down(wireguardConfig, wireguardInterface, wireguardGoSubprocess).pipe(Effect.orDie);
-        const _up = internalUp(wireguardConfig, wireguardInterface);
-        return Effect.map(
-            Effect.acquireRelease(_up, (data) => {
-                if (Array.isArray(data) && Tuple.isTupleOf(data, 2)) {
-                    const wireguardGoSubprocess = data[1];
-                    return _down(wireguardGoSubprocess);
+                if (process.platform === "win32") {
+                    const retrySchedule = Schedule.both(Schedule.recurs(5), Schedule.exponential(2_000));
+                    const runningWireguardGoProcess = yield* execCommandWireguardGoWindows(
+                        bundledWireguardGoExecutablePath,
+                        wireguardInterface.Name
+                    );
+                    yield* Effect.retry(wireguardInterface.setConfig(wireguardConfig), retrySchedule);
+                    yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
+                    return Tuple.make(wireguardInterface, runningWireguardGoProcess);
                 } else {
-                    return _down();
+                    yield* execCommand(bundledWireguardGoExecutablePath, wireguardInterface.Name);
+                    yield* wireguardInterface.setConfig(wireguardConfig);
+                    yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
+                    return Tuple.make(wireguardInterface);
                 }
-            }),
-            (data) => data[0]
-        );
-    };
+            });
 
-    const up: _WireguardControl.WireguardControl["up"] = (wireguardConfig, wireguardInterface) =>
-        Effect.map(internalUp(wireguardConfig, wireguardInterface), (data) => data[0]);
+        const down: _WireguardControl.WireguardControl["down"] = (
+            wireguardConfig,
+            wireguardInterface,
+            wireguardGoSubprocess
+        ) =>
+            Effect.gen(function* () {
+                if (wireguardGoSubprocess) yield* wireguardGoSubprocess.kill();
+                const tempDirectory = yield* fs.makeTempDirectory();
+                const file = path.join(tempDirectory, `${wireguardInterface.Name}.conf`);
+                yield* wireguardConfig
+                    .writeToFile(file)
+                    .pipe(Effect.provideService(FileSystem.FileSystem, fs), Effect.provideService(Path.Path, path));
 
-    return WireguardControl.of({
-        [TypeId]: TypeId,
-        up,
-        down,
-        upScoped,
+                const arch = process.arch === "x64" ? "amd64" : process.arch;
+                const wgQuickUrl = new URL(`../${process.platform}-wg-quick`, import.meta.url);
+                const bundledWgQuickExecutablePath = yield* path.fromFileUrl(wgQuickUrl);
+                if (process.platform !== "win32") yield* fs.access(bundledWgQuickExecutablePath, { ok: true });
+
+                const wgWindowsUrl = new URL(`../win32-${arch}-wireguard.exe`, import.meta.url);
+                const bundledWgWindowsExecutablePath = yield* path.fromFileUrl(wgWindowsUrl);
+                if (process.platform === "win32") yield* fs.access(bundledWgWindowsExecutablePath, { ok: true });
+
+                const wgQuickCommandWin = [
+                    bundledWgWindowsExecutablePath,
+                    "/uninstalltunnelservice",
+                    wireguardInterface.Name,
+                ] as const;
+                const wgQuickCommandNix = [bundledWgQuickExecutablePath, "down", file] as const;
+                const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
+                yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
+                return wireguardInterface;
+            });
+
+        const upScoped: _WireguardControl.WireguardControl["upScoped"] = (wireguardConfig, wireguardInterface) => {
+            const _down = (wireguardGoSubprocess?: ChildProcessSpawner.ChildProcessHandle | undefined) =>
+                down(wireguardConfig, wireguardInterface, wireguardGoSubprocess).pipe(Effect.orDie);
+            const _up = internalUp(wireguardConfig, wireguardInterface);
+            return Effect.map(
+                Effect.acquireRelease(_up, (data) => {
+                    if (Array.isArray(data) && Tuple.isTupleOf(data, 2)) {
+                        const wireguardGoSubprocess = data[1];
+                        return _down(wireguardGoSubprocess);
+                    } else {
+                        return _down();
+                    }
+                }),
+                (data) => data[0]
+            );
+        };
+
+        const up: _WireguardControl.WireguardControl["up"] = (wireguardConfig, wireguardInterface) =>
+            Effect.map(internalUp(wireguardConfig, wireguardInterface), (data) => data[0]);
+
+        return WireguardControl.of({
+            [TypeId]: TypeId,
+            up,
+            down,
+            upScoped,
+        });
     });
-};
 
 /**
  * @since 1.0.0
  * @category Layers
  */
-export const UserspaceLayer = Layer.sync(WireguardControl, makeUserspaceLayer);
+export const UserspaceLayer = Layer.effect(WireguardControl, makeUserspaceLayer);
 
 /**
  * @since 1.0.0
  * @category Layers
  */
-export const BundledWgQuickLayer = Layer.sync(WireguardControl, () =>
+export const BundledWgQuickLayer = Layer.effect(
+    WireguardControl,
     makeBundledWgQuickLayer({
         sudo: true,
     })

@@ -53,9 +53,10 @@ const command = Command.make(
         }).pipe(Effect.provide(SocketServerNode.layer({ port: serverPort })))
 ).pipe(Command.withDescription("Wireguard demo server implementing the same protocol as demo.wireguard.com"));
 
-const wireguardControlLive = Layer.sync(WireguardControl.WireguardControl, () =>
+const WireguardControlLive = Layer.effect(
+    WireguardControl.WireguardControl,
     WireguardControl.makeBundledWgQuickLayer({ sudo: true })
 );
 
-const appLive = Layer.mergeAll(NodeServices.layer, wireguardControlLive);
-Command.run(command, { version: "v0.0.1" }).pipe(Effect.scoped, Effect.provide(appLive), NodeRuntime.runMain);
+const AppLive = Layer.provideMerge(WireguardControlLive, NodeServices.layer);
+Command.run(command, { version: "v0.0.1" }).pipe(Effect.scoped, Effect.provide(AppLive), NodeRuntime.runMain);
