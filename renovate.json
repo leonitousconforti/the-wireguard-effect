@@ -56,6 +56,7 @@
             "description": "Group all Effect-TS packages into one PR",
             "matchPackageNames": [
                 "effect",
+                "effect-schemas",
                 "/^@effect//",
                 "!@effect/docgen",
                 "!@effect/build-utils",
