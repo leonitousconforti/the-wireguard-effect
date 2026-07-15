@@ -15,9 +15,9 @@ allowBuilds:
     msgpackr-extract: true
 
 overrides:
-  "@effect/docgen>typescript": "6.0.3"
-  "madge>typescript": "6.0.3"
+    "@effect/docgen>typescript": "6.0.3"
+    "madge>typescript": "6.0.3"
 
 peerDependencyRules:
-  allowedVersions:
-    typescript: "6.0.3"
+    allowedVersions:
+        typescript: "6.0.3"
