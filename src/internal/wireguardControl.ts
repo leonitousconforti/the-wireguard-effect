@@ -213,7 +213,7 @@ export const makeBundledWgQuickLayer = (options: {
                 const wgQuickCommand = process.platform === "win32" ? wgQuickCommandWin : wgQuickCommandNix;
 
                 if (process.platform === "win32") {
-                    const retrySchedule = Schedule.both(Schedule.recurs(5), Schedule.exponential(2_000));
+                    const retrySchedule = Schedule.max([Schedule.recurs(5), Schedule.exponential(2_000)]);
                     const runningWireguardGoProcess = yield* execCommandWireguardGoWindows(
                         bundledWireguardGoExecutablePath,
                         wireguardInterface.Name
