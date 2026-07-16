@@ -60,7 +60,7 @@ export const httpRequest = (
     Function.pipe(
         Effect.map(
             HttpClient.HttpClient,
-            HttpClient.retry(Schedule.both(Schedule.recurs(5), Schedule.exponential(2_000)))
+            HttpClient.retry(Schedule.max([Schedule.recurs(5), Schedule.exponential(2_000)]))
         ),
         Effect.flatMap((client) => client.get(url)),
         Effect.flatMap(HttpClientResponse.filterStatusOk),
