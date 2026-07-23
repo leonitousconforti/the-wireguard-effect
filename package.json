@@ -72,7 +72,7 @@
         "prepare": "effect-language-service patch"
     },
     "dependencies": {
-        "effect-schemas": "0.0.16",
+        "effect-schemas": "0.0.17",
         "ini": "^7.0.0"
     },
     "devDependencies": {
@@ -84,13 +84,13 @@
         "@effect/build-utils": "0.8.9",
         "@effect/docgen": "https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@e57e5f5",
         "@effect/language-service": "0.87.0",
-        "@effect/platform-node": "4.0.0-beta.99",
-        "@effect/vitest": "4.0.0-beta.99",
+        "@effect/platform-node": "4.0.0-beta.100",
+        "@effect/vitest": "4.0.0-beta.100",
         "@types/ini": "4.1.1",
         "@types/node": "25.9.5",
         "@vitest/coverage-v8": "4.1.10",
         "babel-plugin-annotate-pure-calls": "0.5.0",
-        "effect": "4.0.0-beta.99",
+        "effect": "4.0.0-beta.100",
         "es-main": "1.4.0",
         "fast-check": "4.9.0",
         "glob": "13.0.6",
@@ -105,8 +105,8 @@
         "vitest": "4.1.10"
     },
     "peerDependencies": {
-        "@effect/platform-node": "4.0.0-beta.99",
-        "effect": "4.0.0-beta.99"
+        "@effect/platform-node": "4.0.0-beta.100",
+        "effect": "4.0.0-beta.100"
     },
     "engines": {
         "node": ">=20.0.0"
