@@ -41,8 +41,8 @@ importers:
         specifier: https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@e57e5f5
         version: https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@e57e5f5(tsx@4.23.1)(typescript@6.0.3)
       '@effect/language-service':
-        specifier: 0.87.0
-        version: 0.87.0
+        specifier: 0.87.1
+        version: 0.87.1
       '@effect/platform-node':
         specifier: 4.0.0-beta.100
         version: 4.0.0-beta.100(effect@4.0.0-beta.100)(ioredis@5.11.1)
@@ -278,8 +278,8 @@ packages:
       tsx: ^4.19.3
       typescript: 6.0.3
 
-  '@effect/language-service@0.87.0':
-    resolution: {integrity: sha512-GwZtEwBaOMyKea6YAtN0T0OGBtzJ8/y0KUIfyg29u3hnMRiXKlR2BRDqJmi+SbgaODJNNB3YOd6KuRB/vsxnWw==}
+  '@effect/language-service@0.87.1':
+    resolution: {integrity: sha512-kcljlJmEgqg5mFAM6UShJYJjMqJb3TbHHxrK8Qoubvwugc0aVWpRkbdgQvK5b17puOt3BKXXKOmcV+oQt0oQqQ==}
     hasBin: true
 
   '@effect/markdown-toc@0.1.0':
@@ -2820,7 +2820,7 @@ snapshots:
       tsx: 4.23.1
       typescript: 6.0.3
 
-  '@effect/language-service@0.87.0': {}
+  '@effect/language-service@0.87.1': {}
 
   '@effect/markdown-toc@0.1.0':
     dependencies:
