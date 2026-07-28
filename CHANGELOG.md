@@ -1,5 +1,11 @@
 # the-wireguard-effect
 
+## 0.0.68
+
+### Patch Changes
+
+- f5ffd19: Bump deps
+
 ## 0.0.67
 
 ### Patch Changes
