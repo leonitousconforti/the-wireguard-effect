@@ -5,22 +5,22 @@ dedupePeerDependents: false
 strictPeerDependencies: true
 
 publicHoistPattern:
-  - "vitest"
-  - "@types/*"
-  - "@vitest/*"
-  - "@effect/vitest"
+    - "vitest"
+    - "@types/*"
+    - "@vitest/*"
+    - "@effect/vitest"
 
 allowBuilds:
-  esbuild: true
-  msgpackr-extract: true
+    esbuild: true
+    msgpackr-extract: true
 
 overrides:
-  "@effect/docgen>typescript": "6.0.3"
-  "madge>typescript": "6.0.3"
+    "@effect/docgen>typescript": "6.0.3"
+    "madge>typescript": "6.0.3"
 
 peerDependencyRules:
-  allowedVersions:
-    typescript: "6.0.3"
+    allowedVersions:
+        typescript: "6.0.3"
 
 minimumReleaseAgeExclude:
-  - effect-schemas
+    - effect-schemas
