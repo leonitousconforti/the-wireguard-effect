@@ -1,7 +1,9 @@
 {
     "$schema": "./node_modules/@effect/docgen/schema.json",
-    "srcLink": "https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/",
+    "srcLink": "https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/",
     "exclude": ["src/internal/**/*.ts"],
+    "runExamples": true,
+    "projectHomepage": "https://github.com/leonitousconforti/the-wireguard-effect/",
     "examplesCompilerOptions": {
         "noEmit": true,
         "strict": true,

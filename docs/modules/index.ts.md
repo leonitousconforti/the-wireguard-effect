@@ -39,7 +39,7 @@ Re-exports all named exports from the "./InternetSchemas.ts" module as `Internet
 export * as InternetSchemas from "./InternetSchemas.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L10)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/index.ts#L10)
 
 Since v1.0.0
 
@@ -53,7 +53,7 @@ Re-exports all named exports from the "./WireguardConfig.ts" module as `Wireguar
 export * as WireguardConfig from "./WireguardConfig.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L17)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/index.ts#L17)
 
 Since v1.0.0
 
@@ -67,7 +67,7 @@ Re-exports all named exports from the "./WireguardControl.ts" module as `Wiregua
 export * as WireguardControl from "./WireguardControl.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L24)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/index.ts#L24)
 
 Since v1.0.0
 
@@ -81,7 +81,7 @@ Re-exports all named exports from the "./WireguardErrors.ts" module as `Wireguar
 export * as WireguardErrors from "./WireguardErrors.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L31)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/index.ts#L31)
 
 Since v1.0.0
 
@@ -95,7 +95,7 @@ Re-exports all named exports from the "./WireguardGenerate.ts" module as `Wiregu
 export * as WireguardGenerate from "./WireguardGenerate.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L38)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/index.ts#L38)
 
 Since v1.0.0
 
@@ -109,7 +109,7 @@ Re-exports all named exports from the "./WireguardInterface.ts" module as `Wireg
 export * as WireguardInterface from "./WireguardInterface.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L45)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/index.ts#L45)
 
 Since v1.0.0
 
@@ -123,7 +123,7 @@ Re-exports all named exports from the "./WireguardKey.ts" module as `WireguardKe
 export * as WireguardKey from "./WireguardKey.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L52)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/index.ts#L52)
 
 Since v1.0.0
 
@@ -137,7 +137,7 @@ Re-exports all named exports from the "./WireguardPeer.ts" module as `WireguardP
 export * as WireguardPeer from "./WireguardPeer.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L59)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/index.ts#L59)
 
 Since v1.0.0
 
@@ -151,6 +151,6 @@ Re-exports all named exports from the "./WireguardServer.ts" module as `Wireguar
 export * as WireguardServer from "./WireguardServer.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/index.ts#L66)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/index.ts#L66)
 
 Since v1.0.0

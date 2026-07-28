@@ -37,10 +37,16 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const makeBundledWgQuickLayer: (options: { sudo: boolean }) => WireguardControl
+declare const makeBundledWgQuickLayer: (options: {
+  sudo: boolean
+}) => Effect.Effect<
+  WireguardControl,
+  never,
+  ChildProcessSpawner.ChildProcessSpawner | FileSystem.FileSystem | Path.Path
+>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L97)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardControl.ts#L96)
 
 Since v1.0.0
 
@@ -49,10 +55,10 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const makeUserspaceLayer: () => WireguardControl
+declare const makeUserspaceLayer: Effect.Effect<WireguardControl, never, FileSystem.FileSystem>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L104)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardControl.ts#L108)
 
 Since v1.0.0
 
@@ -63,10 +69,14 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const BundledWgQuickLayer: Layer.Layer<WireguardControl, never, never>
+declare const BundledWgQuickLayer: Layer.Layer<
+  WireguardControl,
+  never,
+  FileSystem.FileSystem | Path.Path | ChildProcessSpawner.ChildProcessSpawner
+>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L116)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardControl.ts#L121)
 
 Since v1.0.0
 
@@ -75,10 +85,10 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const UserspaceLayer: Layer.Layer<WireguardControl, never, never>
+declare const UserspaceLayer: Layer.Layer<WireguardControl, never, FileSystem.FileSystem>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L110)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardControl.ts#L115)
 
 Since v1.0.0
 
@@ -103,7 +113,7 @@ export interface WireguardControl {
     | PlatformError.BadArgument
     | PlatformError.PlatformError
     | Cause.TimeoutError,
-    FileSystem.FileSystem | Path.Path | ChildProcessSpawner.ChildProcessSpawner
+    never
   >
 
   readonly down: (
@@ -117,7 +127,7 @@ export interface WireguardControl {
     | PlatformError.PlatformError
     | Schema.SchemaError
     | Cause.TimeoutError,
-    FileSystem.FileSystem | Path.Path | ChildProcessSpawner.ChildProcessSpawner
+    never
   >
 
   readonly upScoped: (
@@ -131,12 +141,12 @@ export interface WireguardControl {
     | PlatformError.BadArgument
     | PlatformError.PlatformError
     | Cause.TimeoutError,
-    FileSystem.FileSystem | Path.Path | Scope.Scope | ChildProcessSpawner.ChildProcessSpawner
+    Scope.Scope
   >
 }
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L41)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardControl.ts#L40)
 
 Since v1.0.0
 
@@ -150,7 +160,7 @@ Since v1.0.0
 declare const WireguardControl: Context.Service<WireguardControl, WireguardControl>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L91)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardControl.ts#L90)
 
 Since v1.0.0
 
@@ -164,7 +174,7 @@ Since v1.0.0
 declare const TypeId: unique symbol
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L29)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardControl.ts#L28)
 
 Since v1.0.0
 
@@ -176,6 +186,6 @@ Since v1.0.0
 type TypeId = typeof TypeId
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardControl.ts#L35)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardControl.ts#L34)
 
 Since v1.0.0

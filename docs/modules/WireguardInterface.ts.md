@@ -31,6 +31,6 @@ A wireguard interface name.
 declare const WireguardInterface: typeof WireguardInterface
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardInterface.ts#L14)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardInterface.ts#L14)
 
 Since v1.0.0

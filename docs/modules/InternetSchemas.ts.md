@@ -40,7 +40,7 @@ Transforms a `number` of seconds into a `Duration`.
 declare const DurationFromSeconds: Schema.decodeTo<Schema.Duration, Schema.Int, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L22)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/InternetSchemas.ts#L22)
 
 Since v1.0.0
 
@@ -202,7 +202,7 @@ declare const Endpoint: Schema.Union<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L269)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/InternetSchemas.ts#L269)
 
 Since v1.0.0
 
@@ -240,7 +240,7 @@ declare const HostnameEndpoint: Schema.decodeTo<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L190)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/InternetSchemas.ts#L190)
 
 Since v1.0.0
 
@@ -291,7 +291,7 @@ declare const HostnameIPv4SetupData: Schema.Tuple<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L318)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/InternetSchemas.ts#L318)
 
 Since v1.0.0
 
@@ -342,7 +342,7 @@ declare const HostnameIPv6SetupData: Schema.Tuple<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L331)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/InternetSchemas.ts#L331)
 
 Since v1.0.0
 
@@ -385,7 +385,7 @@ assumed that the nat port and listen port are the same.
 declare const IPv4Endpoint: Schema.decodeTo<Schema.Struct<{ readonly address: Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv4">; readonly ip: Schema.brand<Schema.String, "IPv4">; }>, Schema.String, never, never>; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly ip: Schema.String; readonly port: Schema.Number; readonly family: Schema.Literal<"ipv4">; }>, Schema.Struct<{ readonly ip: Schema.String; readonly natPort: Schema.Number; readonly listenPort: Schema.Number; readonly family: Schema.Literal<"ipv4">; }>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]>]>, never, never>
 ````
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L62)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/InternetSchemas.ts#L62)
 
 Since v1.0.0
 
@@ -452,7 +452,7 @@ declare const IPv4SetupData: Schema.Tuple<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L287)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/InternetSchemas.ts#L287)
 
 Since v1.0.0
 
@@ -499,7 +499,7 @@ is provided, it is assumed that the nat port and listen port are the same.
 declare const IPv6Endpoint: Schema.decodeTo<Schema.Struct<{ readonly address: Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv6">; readonly ip: Schema.brand<Schema.String, "IPv6">; }>, Schema.String, never, never>; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly ip: Schema.String; readonly port: Schema.Number; readonly family: Schema.Literal<"ipv6">; }>, Schema.Struct<{ readonly ip: Schema.String; readonly natPort: Schema.Number; readonly listenPort: Schema.Number; readonly family: Schema.Literal<"ipv6">; }>, Schema.TemplateLiteral<readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Number]>, Schema.TemplateLiteral<readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]>]>, never, never>
 ````
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L132)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/InternetSchemas.ts#L132)
 
 Since v1.0.0
 
@@ -576,7 +576,7 @@ declare const IPv6SetupData: Schema.Tuple<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L305)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/InternetSchemas.ts#L305)
 
 Since v1.0.0
 
@@ -608,6 +608,6 @@ A wireguard setup data, which consists of an endpoint followed by an address.
 declare const SetupData: Schema.Union<readonly [Schema.Tuple<readonly [Schema.decodeTo<Schema.Struct<{ readonly address: Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv4">; readonly ip: Schema.brand<Schema.String, "IPv4">; }>, Schema.String, never, never>; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly ip: Schema.String; readonly port: Schema.Number; readonly family: Schema.Literal<"ipv4">; }>, Schema.Struct<{ readonly ip: Schema.String; readonly natPort: Schema.Number; readonly listenPort: Schema.Number; readonly family: Schema.Literal<"ipv4">; }>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]>]>, never, never>, Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv4">; readonly ip: Schema.brand<Schema.String, "IPv4">; }>, Schema.String, never, never>]>, Schema.Tuple<readonly [Schema.decodeTo<Schema.Struct<{ readonly address: Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv6">; readonly ip: Schema.brand<Schema.String, "IPv6">; }>, Schema.String, never, never>; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly ip: Schema.String; readonly port: Schema.Number; readonly family: Schema.Literal<"ipv6">; }>, Schema.Struct<{ readonly ip: Schema.String; readonly natPort: Schema.Number; readonly listenPort: Schema.Number; readonly family: Schema.Literal<"ipv6">; }>, Schema.TemplateLiteral<readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Number]>, Schema.TemplateLiteral<readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]>]>, never, never>, Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv6">; readonly ip: Schema.brand<Schema.String, "IPv6">; }>, Schema.String, never, never>]>, Schema.Tuple<readonly [Schema.decodeTo<Schema.Struct<{ readonly host: Schema.String; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Number; }>, Schema.Struct<{ readonly host: Schema.String; readonly natPort: Schema.Number; readonly listenPort: Schema.Number; }>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]>]>, never, never>, Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv4">; readonly ip: Schema.brand<Schema.String, "IPv4">; }>, Schema.String, never, never>]>, Schema.Tuple<readonly [Schema.decodeTo<Schema.Struct<{ readonly host: Schema.String; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Number; }>, Schema.Struct<{ readonly host: Schema.String; readonly natPort: Schema.Number; readonly listenPort: Schema.Number; }>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]>]>, never, never>, Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv6">; readonly ip: Schema.brand<Schema.String, "IPv6">; }>, Schema.String, never, never>]>]>
 ````
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/InternetSchemas.ts#L356)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/InternetSchemas.ts#L356)
 
 Since v1.0.0

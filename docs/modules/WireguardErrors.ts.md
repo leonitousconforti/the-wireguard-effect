@@ -33,7 +33,7 @@ A wireguard userspace api Errno return message.
 declare const SuccessErrno: Schema.brand<Schema.TemplateLiteral<readonly ["errno=", Schema.Literal<0>]>, "SuccessErrno">
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardErrors.ts#L17)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardErrors.ts#L17)
 
 Since v1.0.0
 
@@ -45,7 +45,7 @@ Since v1.0.0
 type SuccessErrno = Schema.Schema.Type<typeof SuccessErrno>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardErrors.ts#L27)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardErrors.ts#L27)
 
 Since v1.0.0
 
@@ -57,6 +57,6 @@ Since v1.0.0
 declare class WireguardError
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardErrors.ts#L33)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardErrors.ts#L33)
 
 Since v1.0.0

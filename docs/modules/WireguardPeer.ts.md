@@ -61,7 +61,7 @@ A wireguard peer configuration.
 declare class WireguardPeer
 ````
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L53)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L53)
 
 Since v1.0.0
 
@@ -77,7 +77,7 @@ declare const hasBidirectionalTraffic: (
 ) => Effect.Effect<boolean, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L378)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L378)
 
 Since v1.0.0
 
@@ -91,7 +91,7 @@ declare const hasHandshakedRecently: (
 ) => Effect.Effect<boolean, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L386)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L386)
 
 Since v1.0.0
 
@@ -256,7 +256,7 @@ declare const WireguardUapiGetPeer: Schema.decodeTo<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L302)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L302)
 
 Since v1.0.0
 
@@ -272,7 +272,7 @@ Since v1.0.0
 declare const WireguardUapiSetPeer: Schema.decodeTo<Schema.String, typeof WireguardPeer, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L244)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L244)
 
 Since v1.0.0
 
@@ -321,6 +321,6 @@ A wireguard peer configuration encoded in INI format.
 declare const WireguardIniPeer: Schema.decodeTo<Schema.String, typeof WireguardPeer, never, never>
 ````
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L152)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L152)
 
 Since v1.0.0
