@@ -94,7 +94,7 @@
         "es-main": "1.4.0",
         "fast-check": "4.9.0",
         "glob": "13.0.6",
-        "ioredis": "5.11.1",
+        "ioredis": "6.0.0",
         "madge": "8.0.0",
         "oxfmt": "0.61.0",
         "oxlint": "1.76.0",
