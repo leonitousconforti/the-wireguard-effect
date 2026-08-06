@@ -278,12 +278,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         Result.match(InterfaceRegExpForPlatform, {
             onSuccess: (regex): Ast.Filter<string> => Schema.isPattern(regex),
             onFailure: (error): Ast.Filter<string> =>
-                Schema.makeFilter(
-                    (input) =>
-                        new SchemaIssue.InvalidValue(Option.some(input), {
-                            message: error.message,
-                        })
-                ),
+                Schema.makeFilter(() => new SchemaIssue.InvalidValue({ message: error.message })),
         })
     ),
 }) {

@@ -243,9 +243,7 @@ export const WireguardIniPeer = WireguardPeer.pipe(
  */
 export const WireguardUapiSetPeer = WireguardPeer.pipe(
     Schema.decodeTo(Schema.String, {
-        encode: SchemaGetter.fail(
-            (input) => new SchemaIssue.Forbidden(input, { message: "Can not encode a UAPI set peer" })
-        ),
+        encode: SchemaGetter.fail(() => new SchemaIssue.Forbidden({ message: "Can not encode a UAPI set peer" })),
         decode: SchemaGetter.transform((peer: WireguardPeer) => {
             const publicKey: `public_key=${string}\n` = Function.pipe(
                 peer.PublicKey,
@@ -301,9 +299,7 @@ export const WireguardUapiSetPeer = WireguardPeer.pipe(
  */
 export const WireguardUapiGetPeer = Schema.String.pipe(
     Schema.decodeTo(WireguardPeer["uapi"], {
-        encode: SchemaGetter.fail(
-            (input) => new SchemaIssue.Forbidden(input, { message: "Can not encode a UAPI get peer" })
-        ),
+        encode: SchemaGetter.fail(() => new SchemaIssue.Forbidden({ message: "Can not encode a UAPI get peer" })),
 
         decode: SchemaGetter.transform((uapiPeer: string) => {
             const data = ini.decode(uapiPeer);
