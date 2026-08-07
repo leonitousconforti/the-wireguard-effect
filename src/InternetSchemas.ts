@@ -60,10 +60,10 @@ export const DurationFromSeconds = Schema.Int.pipe(
  *     ```;
  */
 export const IPv4Endpoint = Schema.Union([
-    Schema.Struct({ ip: Schema.String, port: Schema.Number, family: IPv4Family }),
-    Schema.Struct({ ip: Schema.String, natPort: Schema.Number, listenPort: Schema.Number, family: IPv4Family }),
-    Schema.TemplateLiteral([Schema.String, Schema.Literal(":"), Schema.Number]),
-    Schema.TemplateLiteral([Schema.String, Schema.Literal(":"), Schema.Number, Schema.Literal(":"), Schema.Number]),
+    Schema.Struct({ ip: Schema.String, port: Schema.Finite, family: IPv4Family }),
+    Schema.Struct({ ip: Schema.String, natPort: Schema.Finite, listenPort: Schema.Finite, family: IPv4Family }),
+    Schema.TemplateLiteral([Schema.String, Schema.Literal(":"), Schema.Finite]),
+    Schema.TemplateLiteral([Schema.String, Schema.Literal(":"), Schema.Finite, Schema.Literal(":"), Schema.Finite]),
 ]).pipe(
     Schema.decodeTo(Schema.Struct({ address: IPv4, natPort: Port, listenPort: Port }), {
         decode: SchemaGetter.transform((data) => {
@@ -130,23 +130,23 @@ export const IPv4Endpoint = Schema.Union([
  *     ```;
  */
 export const IPv6Endpoint = Schema.Union([
-    Schema.Struct({ ip: Schema.String, port: Schema.Number, family: IPv6Family }),
-    Schema.Struct({ ip: Schema.String, natPort: Schema.Number, listenPort: Schema.Number, family: IPv6Family }),
+    Schema.Struct({ ip: Schema.String, port: Schema.Finite, family: IPv6Family }),
+    Schema.Struct({ ip: Schema.String, natPort: Schema.Finite, listenPort: Schema.Finite, family: IPv6Family }),
     Schema.TemplateLiteral([
         Schema.Literal("["),
         Schema.String,
         Schema.Literal("]"),
         Schema.Literal(":"),
-        Schema.Number,
+        Schema.Finite,
     ]),
     Schema.TemplateLiteral([
         Schema.Literal("["),
         Schema.String,
         Schema.Literal("]"),
         Schema.Literal(":"),
-        Schema.Number,
+        Schema.Finite,
         Schema.Literal(":"),
-        Schema.Number,
+        Schema.Finite,
     ]),
 ]).pipe(
     Schema.decodeTo(Schema.Struct({ address: IPv6, natPort: Port, listenPort: Port }), {
@@ -188,10 +188,10 @@ export const IPv6Endpoint = Schema.Union([
  * @category Schemas
  */
 export const HostnameEndpoint = Schema.Union([
-    Schema.Struct({ host: Schema.String, port: Schema.Number }),
-    Schema.Struct({ host: Schema.String, natPort: Schema.Number, listenPort: Schema.Number }),
-    Schema.TemplateLiteral([Schema.String, Schema.Literal(":"), Schema.Number]),
-    Schema.TemplateLiteral([Schema.String, Schema.Literal(":"), Schema.Number, Schema.Literal(":"), Schema.Number]),
+    Schema.Struct({ host: Schema.String, port: Schema.Finite }),
+    Schema.Struct({ host: Schema.String, natPort: Schema.Finite, listenPort: Schema.Finite }),
+    Schema.TemplateLiteral([Schema.String, Schema.Literal(":"), Schema.Finite]),
+    Schema.TemplateLiteral([Schema.String, Schema.Literal(":"), Schema.Finite, Schema.Literal(":"), Schema.Finite]),
 ]).pipe(
     Schema.decodeTo(Schema.Struct({ host: Schema.String, natPort: Port, listenPort: Port }), {
         decode: SchemaGetter.transform((data) => {

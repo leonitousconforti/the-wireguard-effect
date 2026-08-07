@@ -31,6 +31,8 @@ import * as Socket from "effect/unstable/socket/Socket";
 import * as SocketServer from "effect/unstable/socket/SocketServer";
 
 import * as dns from "node:dns";
+// The node http module is required here to construct the NodeHttpServer layer.
+// @effect-diagnostics-next-line nodeBuiltinImport:off
 import * as http from "node:http";
 
 import type * as WireguardInternetSchemas from "./InternetSchemas.ts";
@@ -56,7 +58,7 @@ export const WireguardDemoServerSchema = Schema.TemplateLiteral([
     Schema.Literal(":"),
     Schema.String,
     Schema.Literal(":"),
-    Schema.Number,
+    Schema.Finite,
     Schema.Literal(":"),
     Schema.String,
     Schema.Literal("\n"),

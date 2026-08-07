@@ -54,7 +54,7 @@ export class WireguardConfig extends internalWireguardConfig.WireguardConfigVari
      */
     ListenPort: Schema.Union([
         InternetSchemas.Port,
-        Schema.NumberFromString.pipe(Schema.decodeTo(InternetSchemas.Port)),
+        Schema.FiniteFromString.pipe(Schema.decodeTo(InternetSchemas.Port)),
     ]),
 
     /**
@@ -62,7 +62,7 @@ export class WireguardConfig extends internalWireguardConfig.WireguardConfigVari
      * fwmark of the interface. The value may 0 in the case of a set operation,
      * in which case it indicates that the fwmark should be removed.
      */
-    FirewallMark: Schema.Number.pipe(Schema.NullOr, Schema.optional),
+    FirewallMark: Schema.Finite.pipe(Schema.NullOr, Schema.optional),
 
     /**
      * The value for this key should be a lowercase hex-encoded private key of
@@ -322,6 +322,7 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         // Construct the next available interface name. The names below are built from a validated
         // platform and an integer index, so decoding them cannot fail and does not need an Effect.
         // oxlint-disable-next-line effecttsgo/schema-sync-in-effect
+        // @effect-diagnostics-next-line schemaSyncInEffect:off
         const fromString = Schema.decodeSync(WireguardInterface);
         switch (platform) {
             case "win32":
