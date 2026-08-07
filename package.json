@@ -84,7 +84,7 @@
         "@effect/build-utils": "0.8.9",
         "@effect/docgen": "4.0.0-beta.103",
         "@effect/platform-node": "4.0.0-beta.103",
-        "@effect/tsgo": "0.32.1",
+        "@effect/tsgo": "0.33.0",
         "@effect/vitest": "4.0.0-beta.103",
         "@types/ini": "4.1.1",
         "@types/node": "25.9.5",
