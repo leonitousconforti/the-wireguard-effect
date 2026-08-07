@@ -1,8 +1,8 @@
 diff --git a/Makefile b/Makefile
-index 6a64e164..60ffef95 100644
+index ad7028c..e63d2be 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -1,6 +1,6 @@
+@@ -1,12 +1,12 @@
  GOFLAGS := -tags load_wgnt_from_rsrc -ldflags="-H windowsgui -s -w" -trimpath -buildvcs=false -v
  export GOOS := windows
 -export PATH := $(CURDIR)/.deps/go/bin:$(PATH)
@@ -10,3 +10,10 @@ index 6a64e164..60ffef95 100644
  
  VERSION := $(shell sed -n 's/^\s*Number\s*=\s*"\([0-9.]\+\)"$$/\1/p' version/version.go)
  empty :=
+ space := $(empty) $(empty)
+ comma := ,
+-RCFLAGS := -DWIREGUARD_VERSION_ARRAY=$(subst $(space),$(comma),$(wordlist 1,4,$(subst .,$(space),$(VERSION)) 0 0 0 0)) -DWIREGUARD_VERSION_STR=$(VERSION) -O coff -c 65001
++RCFLAGS := -DWIREGUARD_VERSION_ARRAY=$(subst $(space),$(comma),$(wordlist 1,4,$(subst .,$(space),$(VERSION)) 0 0 0 0)) -DWIREGUARD_VERSION_STR=$(VERSION) -DLANG_PERSIAN=0x29 -DLANG_SINHALESE=0x5b -O coff -c 65001
+ 
+ rwildcard=$(foreach d,$(filter-out .deps,$(wildcard $1*)),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+ SOURCE_FILES := $(call rwildcard,,*.go) .deps/go/prepared go.mod go.sum
