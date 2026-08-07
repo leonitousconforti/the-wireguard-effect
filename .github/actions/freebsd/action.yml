@@ -25,6 +25,8 @@ runs:
           npm install --global corepack@latest
           corepack enable
           corepack install
+          # The prepare script patches tsgo/oxlint native binaries which do not exist for the BSDs
+          npm pkg delete scripts.prepare
           pnpm install
           chmod +x ./src/*
           kldload linux64

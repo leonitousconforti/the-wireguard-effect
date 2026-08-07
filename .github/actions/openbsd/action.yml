@@ -18,13 +18,15 @@ runs:
         sync: rsync
         copyback: false
         prepare: |
-          pkg_add sudo-1.9.15.5 node bash
+          pkg_add sudo-- node bash
           npm -v
           node -v
         run: |
           npm install --global corepack@latest
           corepack enable
           corepack install
+          # The prepare script patches tsgo/oxlint native binaries which do not exist for the BSDs
+          npm pkg delete scripts.prepare
           pnpm install
           chmod +x ./src/*
           pnpm test
