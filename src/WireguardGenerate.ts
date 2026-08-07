@@ -506,11 +506,11 @@ export const toConfigs = <
                 const keysForNode = Record.get(keys, ipForNode(node)).pipe(Option.getOrThrow);
                 const endpointForNode = Record.get(endpointsByIp, ipForNode(node)).pipe(Option.getOrThrow);
 
-                const endpointForNodeEncoded = yield* Schema.is(WireguardInternetSchemas.SetupData)(endpointForNode)
-                    ? Schema.encodeEffect(WireguardInternetSchemas.SetupData)(endpointForNode).pipe(
+                const endpointForNodeEncoded = Schema.is(WireguardInternetSchemas.SetupData)(endpointForNode)
+                    ? yield* Schema.encodeEffect(WireguardInternetSchemas.SetupData)(endpointForNode).pipe(
                           Effect.map((x) => x[0])
                       )
-                    : Effect.sync(() => undefined);
+                    : undefined;
 
                 const address = Schema.is(WireguardInternetSchemas.SetupData)(endpointForNode)
                     ? endpointForNode[1].ip

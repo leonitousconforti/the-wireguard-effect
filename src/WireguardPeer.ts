@@ -93,10 +93,10 @@ export class WireguardPeer extends internalWireguardPeer.WireguardPeerConfigVari
     PresharedKey: WireguardKey.WireguardKey.pipe(Schema.OptionFromOptionalNullOr),
 
     /** The number of received bytes. */
-    rxBytes: internalWireguardPeer.WireguardPeerConfigVariantSchema.FieldOnly(["uapi"])(Schema.NumberFromString),
+    rxBytes: internalWireguardPeer.WireguardPeerConfigVariantSchema.FieldOnly(["uapi"])(Schema.FiniteFromString),
 
     /** The number of transmitted bytes. */
-    txBytes: internalWireguardPeer.WireguardPeerConfigVariantSchema.FieldOnly(["uapi"])(Schema.NumberFromString),
+    txBytes: internalWireguardPeer.WireguardPeerConfigVariantSchema.FieldOnly(["uapi"])(Schema.FiniteFromString),
 
     /**
      * The number of seconds since the most recent handshake, expressed relative
@@ -104,7 +104,7 @@ export class WireguardPeer extends internalWireguardPeer.WireguardPeerConfigVari
      */
     lastHandshake: internalWireguardPeer.WireguardPeerConfigVariantSchema.FieldOnly(["uapi"])(
         Function.pipe(
-            Schema.NumberFromString,
+            Schema.FiniteFromString,
             Schema.decode({
                 decode: SchemaGetter.passthrough(),
                 encode: SchemaGetter.transform(Number.multiply(1000)),
