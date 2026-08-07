@@ -30,4 +30,14 @@ runs:
           pnpm install
           chmod +x ./src/*
           kldload linux64
-          pnpm test
+          pnpm test || (
+            echo '=== debug: manual up sequence ==='
+            sudo timeout 15 ./src/freebsd-amd64-wireguard-go eth9
+            echo "wireguard-go exit: $?"
+            ls -la /var/run/wireguard/ || true
+            ifconfig eth9 || true
+            printf '[Interface]\nAddress = 192.168.4.99/24\n\n[Peer]\nPublicKey = JRI8Xc0zKP9kXk8qP84NdzzA0OU5CIoIF1pcbq/PJlw=\nAllowedIPs = 0.0.0.0/0\nEndpoint = demo.wireguard.com:12912\n' > /tmp/eth9.conf
+            sudo timeout 30 bash -x ./src/freebsd-wg-quick up /tmp/eth9.conf
+            echo "wg-quick exit: $?"
+            exit 1
+          )

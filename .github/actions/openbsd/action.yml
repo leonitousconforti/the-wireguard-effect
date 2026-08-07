@@ -29,4 +29,14 @@ runs:
           npm pkg delete scripts.prepare
           pnpm install
           chmod +x ./src/*
-          pnpm test
+          pnpm test || (
+            echo '=== debug: manual up sequence ==='
+            sudo timeout 15 ./src/openbsd-amd64-wireguard-go tun9
+            echo "wireguard-go exit: $?"
+            ls -la /var/run/wireguard/ || true
+            ifconfig tun9 || true
+            printf '[Interface]\nAddress = 192.168.4.99/24\n\n[Peer]\nPublicKey = JRI8Xc0zKP9kXk8qP84NdzzA0OU5CIoIF1pcbq/PJlw=\nAllowedIPs = 0.0.0.0/0\nEndpoint = demo.wireguard.com:12912\n' > /tmp/tun9.conf
+            sudo timeout 30 bash -x ./src/openbsd-wg-quick up /tmp/tun9.conf
+            echo "wg-quick exit: $?"
+            exit 1
+          )
