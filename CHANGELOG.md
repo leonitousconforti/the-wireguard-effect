@@ -1,5 +1,11 @@
 # the-wireguard-effect
 
+## 0.0.71
+
+### Patch Changes
+
+- 99ba8a4: Code cleanups in WireguardGenerate, WireguardPeer, and internal modules from enabling the type-aware Effect lints. No intended behavior changes.
+
 ## 0.0.70
 
 ### Patch Changes
