@@ -18,6 +18,6 @@ Effect.gen(function* () {
 
     yield* configB.writeToFile("B-bob-wireguard.conf");
     yield* configA.writeToFile("A-alice-wireguard.conf");
-    yield* configD!.writeToFile("D-dave-wireguard.conf");
-    yield* configC!.writeToFile("C-charlie-wireguard.conf");
+    yield* configD.writeToFile("D-dave-wireguard.conf");
+    yield* configC.writeToFile("C-charlie-wireguard.conf");
 }).pipe(Effect.provide(NodeServices.layer), NodeRuntime.runMain);

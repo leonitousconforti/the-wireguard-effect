@@ -183,7 +183,6 @@ export const WireguardIniPeer = WireguardPeer.pipe(
                 peer.AllowedIPs,
                 Array.fromIterable,
                 Array.map((ap) => `${ap.address.ip}/${ap.mask}` as const),
-                Array.map((ap) => `${ap}` as const),
                 Array.join(", "),
                 (x) => `AllowedIPs = ${x}` as const
             );
@@ -197,6 +196,8 @@ export const WireguardIniPeer = WireguardPeer.pipe(
                 iniPeer,
                 ini.decode,
                 (data) =>
+                    // `ini.parse` returns `any`; the shape is validated by the schema this getter feeds.
+                    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
                     data as {
                         PublicKey: string;
                         PresharedKey?: string | undefined | null;
@@ -313,6 +314,8 @@ export const WireguardUapiGetPeer = Schema.String.pipe(
                 public_key,
                 rx_bytes,
                 tx_bytes,
+                // `ini.parse` returns `any`; the uapi shape is validated by the schema this getter feeds.
+                // oxlint-disable-next-line typescript/no-unsafe-type-assertion
             } = data as {
                 allowed_ip:
                     | (typeof InternetSchemas.CidrBlockFromString)["Encoded"]

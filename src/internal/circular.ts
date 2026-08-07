@@ -108,7 +108,7 @@ export class WireguardConfig extends internalWireguardConfig.WireguardConfigVari
      */
     public up: {
         (
-            wireguardInterface?: WireguardInterface | undefined
+            wireguardInterface?: WireguardInterface
         ): Effect.Effect<
             WireguardInterface,
             | Socket.SocketError
@@ -123,7 +123,7 @@ export class WireguardConfig extends internalWireguardConfig.WireguardConfigVari
             | ChildProcessSpawner.ChildProcessSpawner
             | WireguardControl.WireguardControl
         >;
-    } = (wireguardInterface?: WireguardInterface | undefined) =>
+    } = (wireguardInterface?: WireguardInterface) =>
         Function.pipe(
             wireguardInterface,
             Option.fromUndefinedOr,
@@ -141,7 +141,7 @@ export class WireguardConfig extends internalWireguardConfig.WireguardConfigVari
      */
     public upScoped: {
         (
-            wireguardInterface?: WireguardInterface | undefined
+            wireguardInterface?: WireguardInterface
         ): Effect.Effect<
             WireguardInterface,
             | Socket.SocketError
@@ -157,7 +157,7 @@ export class WireguardConfig extends internalWireguardConfig.WireguardConfigVari
             | WireguardControl.WireguardControl
             | Scope.Scope
         >;
-    } = (wireguardInterface?: WireguardInterface | undefined) =>
+    } = (wireguardInterface?: WireguardInterface) =>
         Function.pipe(
             wireguardInterface,
             Option.fromUndefinedOr,
@@ -315,9 +315,13 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         // We know this will be a supported platform now because otherwise
         // the WireguardInterface.InterfaceRegExpForPlatform would have failed
         const platform: (typeof internalInterface.SupportedPlatforms)[number] =
+            // Guarded by the interface name regex above, so the platform is known supported here.
+            // oxlint-disable-next-line typescript/no-unsafe-type-assertion
             process.platform as (typeof internalInterface.SupportedPlatforms)[number];
 
-        // Construct the next available interface name
+        // Construct the next available interface name. The names below are built from a validated
+        // platform and an integer index, so decoding them cannot fail and does not need an Effect.
+        // oxlint-disable-next-line effecttsgo/schema-sync-in-effect
         const fromString = Schema.decodeSync(WireguardInterface);
         switch (platform) {
             case "win32":
@@ -347,6 +351,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         Match.when("darwin", () => `/var/run/wireguard/${this.Name}.sock`),
         Match.when("win32", () => `\\\\.\\pipe\\ProtectedPrefix\\Administrators\\WireGuard\\${this.Name}`),
         Match.exhaustive
+        // Guarded by the interface name regex above, so the platform is known supported here.
+        // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     )(process.platform as (typeof internalInterface.SupportedPlatforms)[number]);
 
     /**

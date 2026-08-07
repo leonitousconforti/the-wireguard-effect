@@ -69,7 +69,7 @@
         "lint-fix": "oxlint --disable-nested-config --fix && oxfmt --write !repos/** !submodules/**",
         "changeset-version": "changeset version",
         "changeset-publish": "pnpm build && changeset publish",
-        "prepare": "effect-tsgo patch"
+        "prepare": "effect-tsgo patch --typescript --oxlint"
     },
     "dependencies": {
         "effect-schemas": "0.0.21",
@@ -98,6 +98,7 @@
         "madge": "8.0.0",
         "oxfmt": "0.62.0",
         "oxlint": "1.77.0",
+        "oxlint-tsgolint": "7.0.2001",
         "rimraf": "6.1.3",
         "tsx": "4.23.9",
         "typescript": "7.0.2",
