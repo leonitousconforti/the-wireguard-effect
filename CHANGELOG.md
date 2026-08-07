@@ -1,5 +1,12 @@
 # the-wireguard-effect
 
+## 0.0.72
+
+### Patch Changes
+
+- 51bec9c: Update wireguard submodules (wireguard-go, wireguard-tools, wireguard-windows, osxcross) and fix the wireguard-windows prebuild: define LANG_PERSIAN and LANG_SINHALESE for windres, which are missing from mingw-w64 resource headers, and build with the go toolchain vendored by the wireguard-windows Makefile since its go.mod now requires go >= 1.25.
+- 1190ba5: Fix the remaining type-aware Effect lint diagnostics: use `Schema.Finite` and `Schema.FiniteFromString` for port, byte counter, and firewall mark schemas, and drop an unnecessary `Effect.sync` wrapper in WireguardGenerate. No intended behavior changes.
+
 ## 0.0.71
 
 ### Patch Changes
