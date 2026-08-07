@@ -1,5 +1,5 @@
 diff --git a/src/wg-quick/freebsd.bash b/src/wg-quick/freebsd.bash
-index f72daf6..0e3dcd6 100755
+index aeae18d..dd1e4da 100755
 --- a/src/wg-quick/freebsd.bash
 +++ b/src/wg-quick/freebsd.bash
 @@ -23,7 +23,6 @@ PRE_UP=( )
@@ -10,15 +10,15 @@ index f72daf6..0e3dcd6 100755
  CONFIG_FILE=""
  PROGRAM="${0##*/}"
  ARGS=( "$@" )
-@@ -94,7 +93,6 @@ parse_options() {
- 			PreDown) PRE_DOWN+=( "$value" ); continue ;;
- 			PostUp) POST_UP+=( "$value" ); continue ;;
- 			PostDown) POST_DOWN+=( "$value" ); continue ;;
+@@ -95,7 +94,6 @@ parse_options() {
+ 			PreDown) PRE_DOWN+=( "$unstripped_value" ); continue ;;
+ 			PostUp) POST_UP+=( "$unstripped_value" ); continue ;;
+ 			PostDown) POST_DOWN+=( "$unstripped_value" ); continue ;;
 -			SaveConfig) read_bool SAVE_CONFIG "$value"; continue ;;
  			esac
  		fi
  		WG_CONFIG+="$line"$'\n'
-@@ -102,32 +100,10 @@ parse_options() {
+@@ -103,32 +101,10 @@ parse_options() {
  	shopt -u nocasematch
  }
  
@@ -51,7 +51,7 @@ index f72daf6..0e3dcd6 100755
  del_routes() {
  	local todelete=( ) destination gateway netif
  	while read -r destination _ _ _ _ netif _; do
-@@ -192,7 +168,7 @@ set_mtu() {
+@@ -193,7 +169,7 @@ set_mtu() {
  		[[ ${BASH_REMATCH[1]} == *:* ]] && family=inet6
  		output="$(route -n get "-$family" "${BASH_REMATCH[1]}" || true)"
  		[[ $output =~ interface:\ ([^ ]+)$'\n' && $(ifconfig "${BASH_REMATCH[1]}") =~ mtu\ ([0-9]+) && ${BASH_REMATCH[1]} -gt $mtu ]] && mtu="${BASH_REMATCH[1]}"
@@ -60,7 +60,7 @@ index f72daf6..0e3dcd6 100755
  	if [[ $mtu -eq 0 ]]; then
  		read -r output < <(route -n get default || true) || true
  		[[ $output =~ interface:\ ([^ ]+)$'\n' && $(ifconfig "${BASH_REMATCH[1]}") =~ mtu\ ([0-9]+) && ${BASH_REMATCH[1]} -gt $mtu ]] && mtu="${BASH_REMATCH[1]}"
-@@ -225,7 +201,7 @@ collect_endpoints() {
+@@ -226,7 +202,7 @@ collect_endpoints() {
  	while read -r _ endpoint; do
  		[[ $endpoint =~ ^\[?([a-z0-9:.]+)\]?:[0-9]+$ ]] || continue
  		ENDPOINTS+=( "${BASH_REMATCH[1]}" )
@@ -69,12 +69,12 @@ index f72daf6..0e3dcd6 100755
  }
  
  set_endpoint_direct_route() {
-@@ -336,48 +312,6 @@ add_route() {
+@@ -337,48 +313,6 @@ add_route() {
  	fi
  }
  
 -set_config() {
--	echo "$WG_CONFIG" | cmd wg setconf "$INTERFACE" /dev/stdin
+-	echo "$WG_CONFIG" | cmd wg addconf "$INTERFACE" /dev/stdin
 -}
 -
 -save_config() {
@@ -118,7 +118,7 @@ index f72daf6..0e3dcd6 100755
  execute_hooks() {
  	local hook
  	for hook in "$@"; do
-@@ -387,49 +321,17 @@ execute_hooks() {
+@@ -388,49 +322,17 @@ execute_hooks() {
  	done
  }
  
@@ -169,7 +169,7 @@ index f72daf6..0e3dcd6 100755
  		add_route "$i"
  	done
  	[[ $AUTO_ROUTE4 -eq 1 || $AUTO_ROUTE6 -eq 1 ]] && set_endpoint_direct_route
-@@ -439,7 +341,7 @@ cmd_up() {
+@@ -440,7 +342,7 @@ cmd_up() {
  }
  
  cmd_down() {
@@ -178,7 +178,7 @@ index f72daf6..0e3dcd6 100755
  	execute_hooks "${PRE_DOWN[@]}"
  	[[ $SAVE_CONFIG -eq 0 ]] || save_config
  	del_if
-@@ -447,15 +349,6 @@ cmd_down() {
+@@ -448,15 +350,6 @@ cmd_down() {
  	execute_hooks "${POST_DOWN[@]}"
  }
  
@@ -194,7 +194,7 @@ index f72daf6..0e3dcd6 100755
  # ~~ function override insertion point ~~
  
  make_temp
-@@ -471,16 +364,7 @@ elif [[ $# -eq 2 && $1 == down ]]; then
+@@ -472,16 +365,7 @@ elif [[ $# -eq 2 && $1 == down ]]; then
  	auto_su
  	parse_options "$2"
  	cmd_down
