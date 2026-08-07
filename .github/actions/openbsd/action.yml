@@ -12,7 +12,7 @@ runs:
     - shell: bash
       run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
 
-    - uses: vmactions/openbsd-vm@v1
+    - uses: vmactions/openbsd-vm@e6c68b637a12e83519688d115d57d5b0b53923cd # v1.4.6
       with:
         usesh: true
         sync: rsync
