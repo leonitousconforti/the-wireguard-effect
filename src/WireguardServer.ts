@@ -322,6 +322,8 @@ export const WireguardDemoServer = (options: {
 
         // Start the server
         Layer.launch(HttpServer.serve(Effect.succeed(HttpServerResponse.html(hiddenPageContent)))).pipe(
+            // This is the entry point for the hidden page server: it is forked and owns its runtime.
+            // oxlint-disable-next-line effecttsgo/strict-effect-provide
             Effect.provide(
                 NodeHttpServer.layer(() => http.createServer(), {
                     port: 8080,

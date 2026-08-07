@@ -587,14 +587,13 @@ export const generateRemoteAccessToServer = <
     Nodes extends
         | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
         | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
-    NetworkCidr extends (Nodes[0] extends WireguardIPv4Node
+>(options: {
+    nodes: Nodes;
+    wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
         ? InternetSchemas.IPv4CidrBlock
         : Nodes[0] extends WireguardIPv6Node
           ? InternetSchemas.IPv6CidrBlock
-          : never),
->(options: {
-    nodes: Nodes;
-    wireguardNetworkCidr: NetworkCidr;
+          : never;
 }): WireguardNetwork<Nodes> =>
     Function.flow(generateKeys, addPreshareKeys, generateStarConnections, computeAllowedIPsFromConnections)(options);
 
@@ -609,20 +608,18 @@ export const generateRemoteAccessToLan = <
     Nodes extends
         | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
         | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
-    NetworkCidr1 extends (Nodes[0] extends WireguardIPv4Node
+>(options: {
+    nodes: Nodes;
+    wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
         ? InternetSchemas.IPv4CidrBlock
         : Nodes[0] extends WireguardIPv6Node
           ? InternetSchemas.IPv6CidrBlock
-          : never),
-    NetworkCidr2 extends (Nodes[0] extends WireguardIPv4Server
+          : never;
+    lanNetworkCidr: Nodes[0] extends WireguardIPv4Server
         ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
         : Nodes[0] extends WireguardIPv6Server
           ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
-          : never),
->(options: {
-    nodes: Nodes;
-    wireguardNetworkCidr: NetworkCidr1;
-    lanNetworkCidr: NetworkCidr2;
+          : never;
 }): WireguardNetwork<Nodes> =>
     Function.flow(
         generateRemoteAccessToServer,
@@ -632,6 +629,8 @@ export const generateRemoteAccessToLan = <
             Array.isArray(options.lanNetworkCidr)
                 ? options.lanNetworkCidr
                 : Array.of(
+                      // The node family fixes which cidr type this is; the compiler cannot follow it through the conditional.
+                      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
                       options.lanNetworkCidr as Nodes[0] extends WireguardIPv4Server
                           ? InternetSchemas.IPv4CidrBlock
                           : Nodes[0] extends WireguardIPv6Server
@@ -651,14 +650,13 @@ export const generateServerToServerAccess = <
     Nodes extends
         | readonly [server1: WireguardIPv4Server, server2: WireguardIPv4Server]
         | readonly [server1: WireguardIPv6Server, server2: WireguardIPv6Server],
-    NetworkCidr extends (Nodes[0] extends WireguardIPv4Node
+>(options: {
+    nodes: Nodes;
+    wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
         ? InternetSchemas.IPv4CidrBlock
         : Nodes[0] extends WireguardIPv6Node
           ? InternetSchemas.IPv6CidrBlock
-          : never),
->(options: {
-    nodes: Nodes;
-    wireguardNetworkCidr: NetworkCidr;
+          : never;
 }): WireguardNetwork<Nodes> =>
     Function.flow(
         generateKeys,
@@ -678,26 +676,23 @@ export const generateLanToLanAccess = <
     Nodes extends
         | readonly [server1: WireguardIPv4Server, server2: WireguardIPv4Server]
         | readonly [server1: WireguardIPv6Server, server2: WireguardIPv6Server],
-    NetworkCidr1 extends (Nodes[0] extends WireguardIPv4Node
-        ? InternetSchemas.IPv4CidrBlock
-        : Nodes[0] extends WireguardIPv6Node
-          ? InternetSchemas.IPv6CidrBlock
-          : never),
-    NetworkCidr2 extends (Nodes[0] extends WireguardIPv4Server
+>(options: {
+    nodes: Nodes;
+    server1Lan: Nodes[0] extends WireguardIPv4Server
         ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
         : Nodes[0] extends WireguardIPv6Server
           ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
-          : never),
-    NetworkCidr3 extends (Nodes[1] extends WireguardIPv4Server
+          : never;
+    server2Lan: Nodes[1] extends WireguardIPv4Server
         ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
         : Nodes[1] extends WireguardIPv6Server
           ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
-          : never),
->(options: {
-    nodes: Nodes;
-    server1Lan: NetworkCidr2;
-    server2Lan: NetworkCidr3;
-    wireguardNetworkCidr: NetworkCidr1;
+          : never;
+    wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
+        ? InternetSchemas.IPv4CidrBlock
+        : Nodes[0] extends WireguardIPv6Node
+          ? InternetSchemas.IPv6CidrBlock
+          : never;
 }): WireguardNetwork<Nodes> =>
     Function.flow(
         generateServerToServerAccess,
@@ -707,6 +702,8 @@ export const generateLanToLanAccess = <
             Array.isArray(options.server1Lan)
                 ? options.server1Lan
                 : Array.of(
+                      // The node family fixes which cidr type this is; the compiler cannot follow it through the conditional.
+                      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
                       options.server1Lan as Nodes[0] extends WireguardIPv4Server
                           ? InternetSchemas.IPv4CidrBlock
                           : Nodes[0] extends WireguardIPv6Server
@@ -720,6 +717,8 @@ export const generateLanToLanAccess = <
             Array.isArray(options.server2Lan)
                 ? options.server2Lan
                 : Array.of(
+                      // The node family fixes which cidr type this is; the compiler cannot follow it through the conditional.
+                      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
                       options.server2Lan as Nodes[1] extends WireguardIPv4Server
                           ? InternetSchemas.IPv4CidrBlock
                           : Nodes[1] extends WireguardIPv6Server
@@ -741,14 +740,13 @@ export const generateServerHubAndSpokeAccess = <
     Nodes extends
         | readonly [server: WireguardIPv4Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv4Node>]
         | readonly [server: WireguardIPv6Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv6Node>],
-    NetworkCidr extends (Nodes[0] extends WireguardIPv4Node
+>(options: {
+    nodes: Nodes;
+    wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
         ? InternetSchemas.IPv4CidrBlock
         : Nodes[0] extends WireguardIPv6Node
           ? InternetSchemas.IPv6CidrBlock
-          : never),
->(options: {
-    nodes: Nodes;
-    wireguardNetworkCidr: NetworkCidr;
+          : never;
 }): WireguardNetwork<Nodes> => {
     const clientNodes = Function.pipe(options.nodes, Array.map(ipForNode), Array.tailNonEmpty);
 
@@ -790,20 +788,18 @@ export const generateLanHubAndSpokeAccess = <
     Nodes extends
         | readonly [server: WireguardIPv4Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv4Node>]
         | readonly [server: WireguardIPv6Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv6Node>],
-    NetworkCidr extends (Nodes[0] extends WireguardIPv4Node
-        ? InternetSchemas.IPv4CidrBlock
-        : Nodes[0] extends WireguardIPv6Node
-          ? InternetSchemas.IPv6CidrBlock
-          : never),
-    NetworkCidr2 extends (Nodes[0] extends WireguardIPv4Server
+>(options: {
+    nodes: Nodes;
+    lanNetworkCidr: Nodes[0] extends WireguardIPv4Server
         ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
         : Nodes[0] extends WireguardIPv6Server
           ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
-          : never),
->(options: {
-    nodes: Nodes;
-    lanNetworkCidr: NetworkCidr2;
-    wireguardNetworkCidr: NetworkCidr;
+          : never;
+    wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
+        ? InternetSchemas.IPv4CidrBlock
+        : Nodes[0] extends WireguardIPv6Node
+          ? InternetSchemas.IPv6CidrBlock
+          : never;
 }): WireguardNetwork<Nodes> => {
     const addAllowedIPsToAllNodes = Function.pipe(
         options.nodes,
@@ -817,6 +813,8 @@ export const generateLanHubAndSpokeAccess = <
                     Array.isArray(options.lanNetworkCidr)
                         ? options.lanNetworkCidr
                         : Array.of(
+                              // The node family fixes which cidr type this is; the compiler cannot follow it through the conditional.
+                              // oxlint-disable-next-line typescript/no-unsafe-type-assertion
                               options.lanNetworkCidr as Nodes[0] extends WireguardIPv4Server
                                   ? InternetSchemas.IPv4CidrBlock
                                   : Nodes[0] extends WireguardIPv6Server
@@ -842,14 +840,13 @@ export const generateVpnTunneledAccess = <
     Nodes extends
         | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
         | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
-    NetworkCidr extends (Nodes[0] extends WireguardIPv4Node
+>(options: {
+    nodes: Nodes;
+    wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
         ? InternetSchemas.IPv4CidrBlock
         : Nodes[0] extends WireguardIPv6Node
           ? InternetSchemas.IPv6CidrBlock
-          : never),
->(options: {
-    nodes: Nodes;
-    wireguardNetworkCidr: NetworkCidr;
+          : never;
 }): WireguardNetwork<Nodes> =>
     Function.flow(
         generateRemoteAccessToServer,
@@ -867,20 +864,18 @@ export const generateRemoteTunneledAccess = <
     Nodes extends
         | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
         | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
-    NetworkCidr1 extends (Nodes[0] extends WireguardIPv4Node
-        ? InternetSchemas.IPv4CidrBlock
-        : Nodes[0] extends WireguardIPv6Node
-          ? InternetSchemas.IPv6CidrBlock
-          : never),
-    NetworkCidr2 extends (Nodes[0] extends WireguardIPv4Server
+>(options: {
+    nodes: Nodes;
+    lanNetworkCidr: Nodes[0] extends WireguardIPv4Server
         ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
         : Nodes[0] extends WireguardIPv6Server
           ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
-          : never),
->(options: {
-    nodes: Nodes;
-    lanNetworkCidr: NetworkCidr2;
-    wireguardNetworkCidr: NetworkCidr1;
+          : never;
+    wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
+        ? InternetSchemas.IPv4CidrBlock
+        : Nodes[0] extends WireguardIPv6Node
+          ? InternetSchemas.IPv6CidrBlock
+          : never;
 }): WireguardNetwork<Nodes> =>
     Function.flow(
         generateRemoteAccessToLan,

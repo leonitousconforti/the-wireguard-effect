@@ -1,5 +1,5 @@
 {
-    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "$schema": "./node_modules/@effect/tsgo/oxlint-schema.json",
     "ignorePatterns": [
         "**/dist",
         "**/build",
@@ -11,7 +11,10 @@
         "repos/**",
         "submodules/**"
     ],
-    "plugins": ["typescript", "import", "oxc", "eslint", "unicorn", "node"],
+    "plugins": ["typescript", "import", "oxc", "eslint", "unicorn", "node", "effecttsgo"],
+    "options": {
+        "typeAware": true
+    },
     "categories": {
         "correctness": "error",
         "suspicious": "error",
@@ -19,9 +22,11 @@
     },
     "overrides": [
         {
-            "files": ["**/{test,typetest,examples,ai-docs,benchmark,bundle,scripts,scratchpad}/**"],
+            "files": ["**/{test,typetest,examples,ai-docs,benchmark,bundle,scripts,scratchpad,bin,e2e}/**"],
             "rules": {
-                "eslint/no-console": "off"
+                "eslint/no-console": "off",
+                // These are application entry points, so composing and providing layers here is correct.
+                "effecttsgo/strict-effect-provide": "off"
             }
         }
     ],
@@ -41,6 +46,9 @@
         "typescript/no-unnecessary-type-assertion": "error",
         "typescript/no-unnecessary-type-constraint": "error",
         "typescript/no-useless-empty-export": "error",
+        // Writing out the defaulted `never` channels keeps the public signatures readable
+        // side by side, so this one stays off.
+        "typescript/no-unnecessary-type-arguments": "off",
         // Code quality
         "eslint/no-console": "error",
         "eslint/no-var": "error",

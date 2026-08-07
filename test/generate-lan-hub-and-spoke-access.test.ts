@@ -14,8 +14,8 @@ describe("wireguard generate lan hub and spoke access", () => {
 
             const config0 = yield* Schema.encodeEffect(WireguardConfig.WireguardConfig)(configs[0]);
             const config1 = yield* Schema.encodeEffect(WireguardConfig.WireguardConfig)(configs[1]);
-            const config2 = yield* Schema.encodeEffect(WireguardConfig.WireguardConfig)(configs[2]!);
-            const config3 = yield* Schema.encodeEffect(WireguardConfig.WireguardConfig)(configs[3]!);
+            const config2 = yield* Schema.encodeEffect(WireguardConfig.WireguardConfig)(configs[2]);
+            const config3 = yield* Schema.encodeEffect(WireguardConfig.WireguardConfig)(configs[3]);
 
             const keyMatcher = expect.stringMatching(/^[\d+/A-Za-z]{42}[048AEIMQUYcgkosw]=$/);
             const peerEntryMatcher = { PublicKey: keyMatcher, PresharedKey: keyMatcher };

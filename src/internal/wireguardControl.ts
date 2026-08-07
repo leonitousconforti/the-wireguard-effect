@@ -23,6 +23,8 @@ import type * as _WireguardControl from "../WireguardControl.ts";
 import type * as WireguardInterface from "../WireguardInterface.ts";
 
 /** @internal */
+// `Symbol.for` returns `symbol`; the branded TypeId is what the module contract declares.
+// oxlint-disable-next-line typescript/no-unsafe-type-assertion
 export const TypeId: _WireguardControl.TypeId = Symbol.for(
     "@leonitousconforti/the-wireguard-effect/WireguardControl"
 ) as _WireguardControl.TypeId;
@@ -263,7 +265,7 @@ export const makeBundledWgQuickLayer = (options: {
             });
 
         const upScoped: _WireguardControl.WireguardControl["upScoped"] = (wireguardConfig, wireguardInterface) => {
-            const _down = (wireguardGoSubprocess?: ChildProcessSpawner.ChildProcessHandle | undefined) =>
+            const _down = (wireguardGoSubprocess?: ChildProcessSpawner.ChildProcessHandle) =>
                 down(wireguardConfig, wireguardInterface, wireguardGoSubprocess).pipe(Effect.orDie);
             const _up = internalUp(wireguardConfig, wireguardInterface);
             return Effect.map(

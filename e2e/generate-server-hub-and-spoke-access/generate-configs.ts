@@ -14,7 +14,7 @@ Effect.gen(function* () {
         serverAddress
     );
     yield* configBob.writeToFile("B-bob-wireguard.conf");
-    yield* configDave!.writeToFile("D-dave-wireguard.conf");
+    yield* configDave.writeToFile("D-dave-wireguard.conf");
     yield* configAlice.writeToFile("A-alice-wireguard.conf");
-    yield* configCharlie!.writeToFile("C-charlie-wireguard.conf");
+    yield* configCharlie.writeToFile("C-charlie-wireguard.conf");
 }).pipe(Effect.provide(NodeServices.layer), NodeRuntime.runMain);
