@@ -20,10 +20,10 @@ Since v1.0.0
   - [hasBidirectionalTraffic](#hasbidirectionaltraffic)
   - [hasHandshakedRecently](#hashandshakedrecently)
 - [Schemas](#schemas)
-  - [WireguardUapiGetPeer (class)](#wireguarduapigetpeer-class)
-  - [WireguardUapiSetPeer (class)](#wireguarduapisetpeer-class)
+  - [WireguardUapiGetPeer](#wireguarduapigetpeer)
+  - [WireguardUapiSetPeer](#wireguarduapisetpeer)
 - [Transformations](#transformations)
-  - [WireguardIniPeer (class)](#wireguardinipeer-class)
+  - [WireguardIniPeer](#wireguardinipeer)
 
 ---
 
@@ -35,55 +35,33 @@ A wireguard peer configuration.
 
 **Example**
 
-```ts
-import * as Schema from "effect/Schema"
-import * as Duration from "effect/Duration"
-import * as Option from "effect/Option"
-import * as InternetSchemas from "the-wireguard-effect/InternetSchemas"
-import * as WireguardKey from "the-wireguard-effect/WireguardKey"
+````ts
 
-import { WireguardPeer } from "the-wireguard-effect/WireguardPeer"
+    import * as Schema from "effect/Schema";
+    import * as WireguardKey from "the-wireguard-effect/WireguardKey";
 
-const preshareKey = WireguardKey.generatePreshareKey()
-const { publicKey, privateKey: _privateKey } = WireguardKey.generateKeyPair()
+    import { WireguardPeer } from "the-wireguard-effect/WireguardPeer";
 
-// WireguardPeer
-const peerDirectInstantiation = new WireguardPeer({
-  PublicKey: publicKey,
-  AllowedIPs: [
-    InternetSchemas.CidrBlock({
-      ipv4: InternetSchemas.IPv4("192.168.0.0"),
-      mask: InternetSchemas.IPv4CidrMask(24)
-    })
-  ],
-  Endpoint: InternetSchemas.Endpoint(
-    InternetSchemas.IPv4Endpoint({
-      ip: InternetSchemas.IPv4("192.168.0.1"),
-      natPort: InternetSchemas.Port(51820),
-      listenPort: InternetSchemas.Port(51820)
-    })
-  ),
-  PersistentKeepalive: Duration.seconds(20),
-  PresharedKey: Option.none()
-})
+    const preshareKey = WireguardKey.generatePreshareKey();
+    const { publicKey, privateKey: _privateKey } =
+        WireguardKey.generateKeyPair();
 
-// Effect.Effect<WireguardPeer, ParseResult.ParseError, never>
-const peerSchemaInstantiation = Schema.decode(WireguardPeer)({
-  PublicKey: publicKey,
-  PresharedKey: preshareKey,
-  Endpoint: "192.168.0.1:51820",
-  AllowedIPs: ["192.168.0.0/24"],
-  PersistentKeepalive: Duration.seconds(20)
-})
-```
+    const peerSchemaInstantiation = Schema.decodeEffect(WireguardPeer)({
+        PublicKey: publicKey,
+        PresharedKey: preshareKey,
+        Endpoint: "192.168.0.1:51820",
+        AllowedIPs: new Set(["192.168.0.0/24"]),
+        PersistentKeepalive: 20,
+    });
+    ```;
 
 **Signature**
 
 ```ts
 declare class WireguardPeer
-```
+````
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L71)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L53)
 
 Since v1.0.0
 
@@ -99,7 +77,7 @@ declare const hasBidirectionalTraffic: (
 ) => Effect.Effect<boolean, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L383)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L378)
 
 Since v1.0.0
 
@@ -113,13 +91,13 @@ declare const hasHandshakedRecently: (
 ) => Effect.Effect<boolean, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L391)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L386)
 
 Since v1.0.0
 
 # Schemas
 
-## WireguardUapiGetPeer (class)
+## WireguardUapiGetPeer
 
 **See**
 
@@ -128,14 +106,161 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare class WireguardUapiGetPeer
+declare const WireguardUapiGetPeer: Schema.decodeTo<
+  Schema.Struct<{
+    readonly PersistentKeepalive: Schema.OptionFromOptionalNullOr<
+      Schema.decodeTo<Schema.Duration, Schema.Int, never, never>
+    >
+    readonly AllowedIPs: Schema.withDecodingDefault<
+      Schema.$ReadonlySet<
+        Schema.decodeTo<
+          Schema.Union<readonly [typeof InternetSchemas.IPv4CidrBlock, typeof InternetSchemas.IPv6CidrBlock]>,
+          Schema.TemplateLiteral<readonly [Schema.String, "/", Schema.Number]>,
+          never,
+          never
+        >
+      >,
+      never
+    >
+    readonly Endpoint: Schema.optional<
+      Schema.NullOr<
+        Schema.Union<
+          readonly [
+            Schema.decodeTo<
+              Schema.Struct<{
+                readonly address: Schema.decodeTo<
+                  Schema.Struct<{
+                    readonly family: Schema.Literal<"ipv4">
+                    readonly ip: Schema.brand<Schema.String, "IPv4">
+                  }>,
+                  Schema.String,
+                  never,
+                  never
+                >
+                readonly natPort: Schema.brand<Schema.Int, "Port">
+                readonly listenPort: Schema.brand<Schema.Int, "Port">
+              }>,
+              Schema.Union<
+                readonly [
+                  Schema.Struct<{
+                    readonly ip: Schema.String
+                    readonly port: Schema.Number
+                    readonly family: Schema.Literal<"ipv4">
+                  }>,
+                  Schema.Struct<{
+                    readonly ip: Schema.String
+                    readonly natPort: Schema.Number
+                    readonly listenPort: Schema.Number
+                    readonly family: Schema.Literal<"ipv4">
+                  }>,
+                  Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>,
+                  Schema.TemplateLiteral<
+                    readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]
+                  >
+                ]
+              >,
+              never,
+              never
+            >,
+            Schema.decodeTo<
+              Schema.Struct<{
+                readonly address: Schema.decodeTo<
+                  Schema.Struct<{
+                    readonly family: Schema.Literal<"ipv6">
+                    readonly ip: Schema.brand<Schema.String, "IPv6">
+                  }>,
+                  Schema.String,
+                  never,
+                  never
+                >
+                readonly natPort: Schema.brand<Schema.Int, "Port">
+                readonly listenPort: Schema.brand<Schema.Int, "Port">
+              }>,
+              Schema.Union<
+                readonly [
+                  Schema.Struct<{
+                    readonly ip: Schema.String
+                    readonly port: Schema.Number
+                    readonly family: Schema.Literal<"ipv6">
+                  }>,
+                  Schema.Struct<{
+                    readonly ip: Schema.String
+                    readonly natPort: Schema.Number
+                    readonly listenPort: Schema.Number
+                    readonly family: Schema.Literal<"ipv6">
+                  }>,
+                  Schema.TemplateLiteral<
+                    readonly [
+                      Schema.Literal<"[">,
+                      Schema.String,
+                      Schema.Literal<"]">,
+                      Schema.Literal<":">,
+                      Schema.Number
+                    ]
+                  >,
+                  Schema.TemplateLiteral<
+                    readonly [
+                      Schema.Literal<"[">,
+                      Schema.String,
+                      Schema.Literal<"]">,
+                      Schema.Literal<":">,
+                      Schema.Number,
+                      Schema.Literal<":">,
+                      Schema.Number
+                    ]
+                  >
+                ]
+              >,
+              never,
+              never
+            >,
+            Schema.decodeTo<
+              Schema.Struct<{
+                readonly host: Schema.String
+                readonly natPort: Schema.brand<Schema.Int, "Port">
+                readonly listenPort: Schema.brand<Schema.Int, "Port">
+              }>,
+              Schema.Union<
+                readonly [
+                  Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Number }>,
+                  Schema.Struct<{
+                    readonly host: Schema.String
+                    readonly natPort: Schema.Number
+                    readonly listenPort: Schema.Number
+                  }>,
+                  Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>,
+                  Schema.TemplateLiteral<
+                    readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]
+                  >
+                ]
+              >,
+              never,
+              never
+            >
+          ]
+        >
+      >
+    >
+    readonly PublicKey: Schema.brand<Schema.String, "WireguardKey">
+    readonly PresharedKey: Schema.OptionFromOptionalNullOr<Schema.brand<Schema.String, "WireguardKey">>
+    readonly rxBytes: Schema.NumberFromString
+    readonly txBytes: Schema.NumberFromString
+    readonly lastHandshake: Schema.compose<
+      Schema.DateTimeUtcFromMillis,
+      Schema.decodeTo<Schema.toType<Schema.NumberFromString>, Schema.NumberFromString, never, never>
+    >
+  }>,
+  Schema.String,
+  never,
+  never
+>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L312)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L302)
 
 Since v1.0.0
 
-## WireguardUapiSetPeer (class)
+## WireguardUapiSetPeer
 
 **See**
 
@@ -144,45 +269,47 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare class WireguardUapiSetPeer
+declare const WireguardUapiSetPeer: Schema.decodeTo<Schema.String, typeof WireguardPeer, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L259)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L244)
 
 Since v1.0.0
 
 # Transformations
 
-## WireguardIniPeer (class)
+## WireguardIniPeer
 
 A wireguard peer configuration encoded in INI format.
 
 **Example**
 
-```ts
-import * as Effect from "effect/Effect"
-import * as Function from "effect/Function"
-import * as Schema from "effect/Schema"
-import * as WireguardKey from "the-wireguard-effect/WireguardKey"
-import * as WireguardPeer from "the-wireguard-effect/WireguardPeer"
+````ts
 
-const preshareKey = WireguardKey.generatePreshareKey()
-const { publicKey, privateKey: _privateKey } = WireguardKey.generateKeyPair()
+    import * as Effect from "effect/Effect";
+    import * as Function from "effect/Function";
+    import * as Schema from "effect/Schema";
+    import * as WireguardKey from "the-wireguard-effect/WireguardKey";
+    import * as WireguardPeer from "the-wireguard-effect/WireguardPeer";
 
-const peer = Schema.decode(WireguardPeer.WireguardPeer)({
-  PublicKey: publicKey,
-  PresharedKey: preshareKey,
-  AllowedIPs: new Set(["192.168.0.0/24"]),
-  Endpoint: "192.168.0.1:51820",
-  PersistentKeepalive: 20
-})
+    const preshareKey = WireguardKey.generatePreshareKey();
+    const { publicKey, privateKey: _privateKey } =
+        WireguardKey.generateKeyPair();
 
-const iniPeer = Function.pipe(
-  peer,
-  Effect.flatMap(Schema.encode(WireguardPeer.WireguardPeer)),
-  Effect.flatMap(Schema.decode(WireguardPeer.WireguardIniPeer))
-)
-```
+    const peer = Schema.decodeEffect(WireguardPeer.WireguardPeer)({
+        PublicKey: publicKey,
+        PresharedKey: preshareKey,
+        AllowedIPs: new Set(["192.168.0.0/24"]),
+        Endpoint: "192.168.0.1:51820",
+        PersistentKeepalive: 20,
+    });
+
+    const iniPeer = Function.pipe(
+        peer,
+        Effect.flatMap(Schema.encodeEffect(WireguardPeer.WireguardPeer)),
+        Effect.flatMap(Schema.decodeEffect(WireguardPeer.WireguardIniPeer))
+    );
+    ```;
 
 **See**
 
@@ -191,9 +318,9 @@ const iniPeer = Function.pipe(
 **Signature**
 
 ```ts
-declare class WireguardIniPeer
-```
+declare const WireguardIniPeer: Schema.decodeTo<Schema.String, typeof WireguardPeer, never, never>
+````
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardPeer.ts#L173)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L152)
 
 Since v1.0.0

@@ -32,18 +32,19 @@ Generates a wireguard public private key pair.
 
 **Example**
 
-```ts
-import { generateKeyPair } from "the-wireguard-effect/WireguardKey"
-const { privateKey, publicKey } = generateKeyPair()
-```
+````ts
+
+    import { generateKeyPair } from "the-wireguard-effect/WireguardKey";
+    const { privateKey, publicKey } = generateKeyPair();
+    ```;
 
 **Signature**
 
 ```ts
-declare const generateKeyPair: () => { readonly privateKey: WireguardKey; readonly publicKey: WireguardKey }
-```
+declare const generateKeyPair: () => { readonly privateKey: WireguardKey; readonly publicKey: WireguardKey; }
+````
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardKey.ts#L42)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardKey.ts#L46)
 
 Since v1.0.0
 
@@ -53,18 +54,19 @@ Generates a wireguard preshare key.
 
 **Example**
 
-```ts
-import { generatePreshareKey } from "the-wireguard-effect/WireguardKey"
-const preshareKey = generatePreshareKey()
-```
+````ts
+
+    import { generatePreshareKey } from "the-wireguard-effect/WireguardKey";
+    const preshareKey = generatePreshareKey();
+    ```;
 
 **Signature**
 
 ```ts
 declare const generatePreshareKey: () => WireguardKey
-```
+````
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardKey.ts#L61)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardKey.ts#L68)
 
 Since v1.0.0
 
@@ -82,10 +84,10 @@ A wireguard key, which is a 44 character base64 string.
 **Signature**
 
 ```ts
-declare const WireguardKey: Schema.brand<Schema.refine<string, typeof Schema.String>, "WireguardKey">
+declare const WireguardKey: Schema.brand<Schema.String, "WireguardKey">
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardKey.ts#L20)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardKey.ts#L21)
 
 Since v1.0.0
 
@@ -99,6 +101,6 @@ Since v1.0.0
 type WireguardKey = Schema.Schema.Type<typeof WireguardKey>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardKey.ts#L31)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardKey.ts#L32)
 
 Since v1.0.0

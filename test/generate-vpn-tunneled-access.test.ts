@@ -1,8 +1,9 @@
-import { describe, expect, it } from "@effect/vitest";
-
 import * as Effect from "effect/Effect";
 import * as Schema from "effect/Schema";
+
+import { describe, expect, it } from "@effect/vitest";
 import * as WireguardConfig from "the-wireguard-effect/WireguardConfig";
+
 import * as GenerateExample from "../examples/generate-vpn-tunneled-access.js";
 
 describe("wireguard generate vpn tunneled access", () => {
@@ -11,8 +12,8 @@ describe("wireguard generate vpn tunneled access", () => {
             const configs = yield* GenerateExample.program();
             expect(configs).toHaveLength(2);
 
-            const config0 = yield* Schema.encode(WireguardConfig.WireguardConfig)(configs[0]);
-            const config1 = yield* Schema.encode(WireguardConfig.WireguardConfig)(configs[1]);
+            const config0 = yield* Schema.encodeEffect(WireguardConfig.WireguardConfig)(configs[0]);
+            const config1 = yield* Schema.encodeEffect(WireguardConfig.WireguardConfig)(configs[1]);
 
             const keyMatcher = expect.stringMatching(/^[\d+/A-Za-z]{42}[048AEIMQUYcgkosw]=$/);
             const peerEntryMatcher = { PublicKey: keyMatcher, PresharedKey: keyMatcher };

@@ -1,5 +1,5 @@
 diff --git a/src/wg-quick/darwin.bash b/src/wg-quick/darwin.bash
-index c938112..eb58f48 100755
+index 1b7fe5e..fe3a53d 100755
 --- a/src/wg-quick/darwin.bash
 +++ b/src/wg-quick/darwin.bash
 @@ -24,7 +24,6 @@ PRE_UP=( )
@@ -10,18 +10,18 @@ index c938112..eb58f48 100755
  CONFIG_FILE=""
  PROGRAM="${0##*/}"
  ARGS=( "$@" )
-@@ -76,7 +75,6 @@ parse_options() {
- 			PreDown) PRE_DOWN+=( "$value" ); continue ;;
- 			PostUp) POST_UP+=( "$value" ); continue ;;
- 			PostDown) POST_DOWN+=( "$value" ); continue ;;
+@@ -77,7 +76,6 @@ parse_options() {
+ 			PreDown) PRE_DOWN+=( "$unstripped_value" ); continue ;;
+ 			PostUp) POST_UP+=( "$unstripped_value" ); continue ;;
+ 			PostDown) POST_DOWN+=( "$unstripped_value" ); continue ;;
 -			SaveConfig) read_bool SAVE_CONFIG "$value"; continue ;;
  			esac
  		fi
  		WG_CONFIG+="$line"$'\n'
-@@ -84,49 +82,10 @@ parse_options() {
+@@ -85,49 +83,10 @@ parse_options() {
  	shopt -u nocasematch
  }
-
+ 
 -detect_launchd() {
 -	unset LAUNCHED_BY_LAUNCHD
 -	local line
@@ -44,7 +44,7 @@ index c938112..eb58f48 100755
  auto_su() {
  	[[ $UID == 0 ]] || exec sudo -p "$PROGRAM must be run as root. Please enter the password for %u to continue: " -- "$BASH" -- "$SELF" "${ARGS[@]}"
  }
-
+ 
 -get_real_interface() {
 -	local interface diff
 -	wg show interfaces >/dev/null
@@ -68,29 +68,29 @@ index c938112..eb58f48 100755
  del_routes() {
  	[[ -n $REAL_INTERFACE ]] || return 0
  	local todelete=( ) destination gateway netif
-@@ -212,7 +171,7 @@ collect_endpoints() {
+@@ -213,7 +172,7 @@ collect_endpoints() {
  	while read -r _ endpoint; do
  		[[ $endpoint =~ ^\[?([a-z0-9:.]+)\]?:[0-9]+$ ]] || continue
  		ENDPOINTS+=( "${BASH_REMATCH[1]}" )
 -	done < <(wg show "$REAL_INTERFACE" endpoints)
 +	done < <(darwin-wg show "$REAL_INTERFACE" endpoints)
  }
-
+ 
  declare -A SERVICE_DNS
-@@ -342,7 +301,6 @@ monitor_daemon() {
+@@ -343,7 +302,6 @@ monitor_daemon() {
  		fi
  	done
  	kill $mpid) &
 -	[[ -n $LAUNCHED_BY_LAUNCHD ]] || disown
  }
-
+ 
  add_route() {
-@@ -368,46 +326,6 @@ add_route() {
+@@ -369,46 +327,6 @@ add_route() {
  	fi
  }
-
+ 
 -set_config() {
--	cmd wg setconf "$REAL_INTERFACE" <(echo "$WG_CONFIG")
+-	cmd wg addconf "$REAL_INTERFACE" <(echo "$WG_CONFIG")
 -}
 -
 -save_config() {
@@ -132,10 +132,10 @@ index c938112..eb58f48 100755
  execute_hooks() {
  	local hook
  	for hook in "$@"; do
-@@ -418,49 +336,17 @@ execute_hooks() {
+@@ -419,49 +337,17 @@ execute_hooks() {
  	done
  }
-
+ 
 -cmd_usage() {
 -	cat >&2 <<-_EOF
 -	Usage: $PROGRAM [ up | down | save | strip ] [ CONFIG_FILE | INTERFACE ]
@@ -184,9 +184,9 @@ index c938112..eb58f48 100755
  		add_route "$i"
  	done
  	[[ $AUTO_ROUTE4 -eq 1 || $AUTO_ROUTE6 -eq 1 ]] && set_endpoint_direct_route
-@@ -471,52 +357,26 @@ cmd_up() {
+@@ -472,52 +358,26 @@ cmd_up() {
  }
-
+ 
  cmd_down() {
 -	if ! get_real_interface || [[ " $(wg show interfaces) " != *" $REAL_INTERFACE "* ]]; then
 -		die "\`$INTERFACE' is not a WireGuard interface"
@@ -197,7 +197,7 @@ index c938112..eb58f48 100755
  	del_if
  	execute_hooks "${POST_DOWN[@]}"
  }
-
+ 
 -cmd_save() {
 -	if ! get_real_interface || [[ " $(wg show interfaces) " != *" $REAL_INTERFACE "* ]]; then
 -		die "\`$INTERFACE' is not a WireGuard interface"
@@ -210,7 +210,7 @@ index c938112..eb58f48 100755
 -}
 -
  # ~~ function override insertion point ~~
-
+ 
  if [[ $# -eq 1 && ( $1 == --help || $1 == -h || $1 == help ) ]]; then
  	cmd_usage
  elif [[ $# -eq 2 && $1 == up ]]; then
@@ -234,7 +234,7 @@ index c938112..eb58f48 100755
 -	cmd_usage
  	exit 1
  fi
-
+ 
 -[[ -n $LAUNCHED_BY_LAUNCHD ]] && wait
 -
  exit 0

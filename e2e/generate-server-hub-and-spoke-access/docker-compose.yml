@@ -1,5 +1,4 @@
 services:
-
   alice:
     build:
       context: ..

@@ -1,10 +1,23 @@
 {
-    "extends": "./tsconfig.base.json",
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "./tsconfig.base.jsonc",
     "include": ["bin"],
     "references": [{ "path": "./tsconfig.src.json" }],
     "compilerOptions": {
+        "tsBuildInfoFile": ".tsbuildinfo/bin.tsbuildinfo",
+        "outDir": ".tsbuildinfo/bin",
         "noEmit": true,
-        "rootDir": "bin",
-        "tsBuildInfoFile": ".tsbuildinfo/bin.tsbuildinfo"
+        "erasableSyntaxOnly": false,
+        "paths": {
+            "the-wireguard-effect": ["./src/index.ts"],
+            "the-wireguard-effect/*": ["./src/*.ts"]
+        },
+        "types": ["node"],
+        "plugins": [
+            {
+                "name": "@effect/language-service",
+                "namespaceImportPackages": []
+            }
+        ]
     }
 }

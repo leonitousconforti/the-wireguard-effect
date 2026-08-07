@@ -39,14 +39,14 @@ The motivation for this project came from wanting to create wireguard configurat
 
 Here is some content I am stealing from the [Unraid forums](https://forums.unraid.net/topic/84226-wireguard-quickstart/)
 
- - Remote access to server: Use your phone or computer to remotely access just the wireguard server.
- - Remote access to LAN: Builds on "Remote access to server", allowing you to access your entire LAN as well.
- - Server to server access: Allows two servers to connect to each other.
- - LAN to LAN access: Builds on "Server to server access", allowing two entire networks to communicate.
- - Server hub & spoke access: Builds on "Remote access to server", except that all of the VPN clients can connect to each other as well. Note that all traffic passes through the server.
- - LAN hub & spoke access: Builds on "Server hub & spoke access", allowing you to access your entire LAN as well.
- - VPN tunneled access: Route specific traffic through a commercial WireGuard VPN provider
- - Remote tunneled access: Securely access the Internet from untrusted networks by routing all of your traffic through the VPN and out the server's internet connection
+- Remote access to server: Use your phone or computer to remotely access just the wireguard server.
+- Remote access to LAN: Builds on "Remote access to server", allowing you to access your entire LAN as well.
+- Server to server access: Allows two servers to connect to each other.
+- LAN to LAN access: Builds on "Server to server access", allowing two entire networks to communicate.
+- Server hub & spoke access: Builds on "Remote access to server", except that all of the VPN clients can connect to each other as well. Note that all traffic passes through the server.
+- LAN hub & spoke access: Builds on "Server hub & spoke access", allowing you to access your entire LAN as well.
+- VPN tunneled access: Route specific traffic through a commercial WireGuard VPN provider
+- Remote tunneled access: Securely access the Internet from untrusted networks by routing all of your traffic through the VPN and out the server's internet connection
 
 ![Image](./media/wireguard-help.png)
 
@@ -66,4 +66,4 @@ Contributions, suggestions, and questions are welcome! If you are interested in 
 
 ## License :page_facing_up:
 
-If the GNU General Public License v3.0 does not work for you, please reach out and let me know, I can be accommodating
+If the GNU General Public License v3.0 does not work for you, please reach out and let me know, I can be accommodating.

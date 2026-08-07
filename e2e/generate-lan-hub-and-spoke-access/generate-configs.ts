@@ -1,6 +1,7 @@
-import * as NodeContext from "@effect/platform-node/NodeContext";
-import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as Effect from "effect/Effect";
+
+import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
+import * as NodeServices from "@effect/platform-node/NodeServices";
 
 import * as GenerateExample from "../../examples/generate-lan-hub-and-spoke-access.js";
 
@@ -17,8 +18,6 @@ Effect.gen(function* () {
 
     yield* configB.writeToFile("B-bob-wireguard.conf");
     yield* configA.writeToFile("A-alice-wireguard.conf");
-    yield* configD!.writeToFile("D-dave-wireguard.conf");
-    yield* configC!.writeToFile("C-charlie-wireguard.conf");
-})
-    .pipe(Effect.provide(NodeContext.layer))
-    .pipe(NodeRuntime.runMain);
+    yield* configD.writeToFile("D-dave-wireguard.conf");
+    yield* configC.writeToFile("C-charlie-wireguard.conf");
+}).pipe(Effect.provide(NodeServices.layer), NodeRuntime.runMain);

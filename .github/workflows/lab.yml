@@ -8,21 +8,21 @@ on:
         required: true
         description: Which platform to start a lab instance on
         options:
-        - e2e
-        - linux
-        - freebsd
-        - openbsd
-        - windows
-        - windows-wsl2
-        - macos-intel
-        - macos-apple-silicon
+          - e2e
+          - linux
+          - freebsd
+          - openbsd
+          - windows
+          - windows-wsl2
+          - macos-intel
+          - macos-apple-silicon
 
 jobs:
   build:
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           submodules: "true"
       - uses: ./.github/actions/build
@@ -33,9 +33,9 @@ jobs:
     timeout-minutes: 20
     needs: [build]
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/e2e
-      - uses: mxschmitt/action-tmate@c606f8612a802e46b3742322514c09fbc8c4afee # v3
+      - uses: mxschmitt/action-tmate@35b54afac29c97fb54faba5b513f8fbd1882f113 # v3
         if: ${{ always() }}
 
   linux-lab:
@@ -44,9 +44,9 @@ jobs:
     timeout-minutes: 60
     needs: [build]
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/linux
-      - uses: mxschmitt/action-tmate@c606f8612a802e46b3742322514c09fbc8c4afee # v3
+      - uses: mxschmitt/action-tmate@35b54afac29c97fb54faba5b513f8fbd1882f113 # v3
         if: ${{ always() }}
 
   freebsd-lab:
@@ -55,9 +55,9 @@ jobs:
     timeout-minutes: 60
     needs: [build]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/freebsd
-      - uses: mxschmitt/action-tmate@v3
+      - uses: mxschmitt/action-tmate@35b54afac29c97fb54faba5b513f8fbd1882f113 # v3
         if: ${{ always() }}
 
   openbsd-lab:
@@ -66,31 +66,31 @@ jobs:
     timeout-minutes: 60
     needs: [build]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/openbsd
-      - uses: mxschmitt/action-tmate@v3
+      - uses: mxschmitt/action-tmate@35b54afac29c97fb54faba5b513f8fbd1882f113 # v3
         if: ${{ always() }}
 
   macos-intel-lab:
     if: github.event.inputs.platform == 'macos-intel'
-    runs-on: macos-13
+    runs-on: macos-26-intel
     timeout-minutes: 60
     needs: [build]
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/mac-intel
-      - uses: mxschmitt/action-tmate@c606f8612a802e46b3742322514c09fbc8c4afee # v3
+      - uses: mxschmitt/action-tmate@35b54afac29c97fb54faba5b513f8fbd1882f113 # v3
         if: ${{ always() }}
 
   macos-apple-silicon-lab:
     if: github.event.inputs.platform == 'macos-apple-silicon'
-    runs-on: macos-14
+    runs-on: macos-26
     timeout-minutes: 60
     needs: [build]
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/mac-apple-silicon
-      - uses: mxschmitt/action-tmate@c606f8612a802e46b3742322514c09fbc8c4afee # v3
+      - uses: mxschmitt/action-tmate@35b54afac29c97fb54faba5b513f8fbd1882f113 # v3
         if: ${{ always() }}
 
   windows-lab:
@@ -99,9 +99,9 @@ jobs:
     timeout-minutes: 60
     needs: [build]
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/windows
-      - uses: mxschmitt/action-tmate@c606f8612a802e46b3742322514c09fbc8c4afee # v3
+      - uses: mxschmitt/action-tmate@35b54afac29c97fb54faba5b513f8fbd1882f113 # v3
         if: ${{ always() }}
 
   windows-wsl2-lab:
@@ -110,7 +110,7 @@ jobs:
     timeout-minutes: 60
     needs: [build]
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/windows-wsl2
-      - uses: mxschmitt/action-tmate@c606f8612a802e46b3742322514c09fbc8c4afee # v3
+      - uses: mxschmitt/action-tmate@35b54afac29c97fb54faba5b513f8fbd1882f113 # v3
         if: ${{ always() }}

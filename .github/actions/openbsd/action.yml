@@ -4,7 +4,7 @@ description: "Reusable openbsd test action"
 runs:
   using: "composite"
   steps:
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
       with:
         name: the-wireguard-effect
         path: /tmp/the-wireguard-effect

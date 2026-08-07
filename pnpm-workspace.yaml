@@ -1,0 +1,28 @@
+hoist: false
+hoistPattern: []
+autoInstallPeers: false
+dedupePeerDependents: false
+strictPeerDependencies: true
+
+publicHoistPattern:
+    - "vitest"
+    - "@types/*"
+    - "@vitest/*"
+    - "@effect/vitest"
+
+allowBuilds:
+    esbuild: true
+    msgpackr-extract: true
+
+overrides:
+    "@effect/docgen>typescript": "7.0.2"
+    "madge>typescript": "7.0.2"
+
+peerDependencyRules:
+    allowedVersions:
+        typescript: "7.0.2"
+        # babel-plugin-annotate-pure-calls still declares a `@babel/core: ^7.0.0` peer.
+        "@babel/core": "8.0.1"
+
+minimumReleaseAgeExclude:
+    - effect-schemas

@@ -6,6 +6,7 @@
 
 import * as Function from "effect/Function";
 import * as Schema from "effect/Schema";
+
 import * as crypto from "node:crypto";
 
 /**
@@ -19,8 +20,8 @@ import * as crypto from "node:crypto";
  */
 export const WireguardKey = Function.pipe(
     Schema.String,
-    Schema.pattern(/^[\d+/A-Za-z]{42}[048AEIMQUYcgkosw]=$/),
-    Schema.annotations({ identifier: "WireguardKey", description: "A wireguard key" }),
+    Schema.check(Schema.isPattern(/^[\d+/A-Za-z]{42}[048AEIMQUYcgkosw]=$/)),
+    Schema.annotate({ identifier: "WireguardKey", description: "A wireguard key" }),
     Schema.brand("WireguardKey")
 );
 
@@ -36,8 +37,11 @@ export type WireguardKey = Schema.Schema.Type<typeof WireguardKey>;
  * @since 1.0.0
  * @category Crypto
  * @example
+ *     ```ts
+ *
  *     import { generateKeyPair } from "the-wireguard-effect/WireguardKey";
  *     const { privateKey, publicKey } = generateKeyPair();
+ *     ```;
  */
 export const generateKeyPair = (): { readonly privateKey: WireguardKey; readonly publicKey: WireguardKey } => {
     const keys = crypto.generateKeyPairSync("x25519", {
@@ -55,8 +59,11 @@ export const generateKeyPair = (): { readonly privateKey: WireguardKey; readonly
  * @since 1.0.0
  * @category Crypto
  * @example
+ *     ```ts
+ *
  *     import { generatePreshareKey } from "the-wireguard-effect/WireguardKey";
  *     const preshareKey = generatePreshareKey();
+ *     ```;
  */
 export const generatePreshareKey = (): WireguardKey => {
     const key = crypto.generateKeySync("hmac", { length: 256 });

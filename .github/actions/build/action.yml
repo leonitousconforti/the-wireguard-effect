@@ -5,13 +5,13 @@ runs:
   using: "composite"
   steps:
     # Setup go and node
-    - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5
-    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+    - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+    - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
       with:
-        node-version: "22.x"
+        node-version: "24.x"
 
     # Setup pnpm
-    - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4
+    - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
 
     # Install build deps
     - shell: bash
@@ -36,6 +36,8 @@ runs:
       run: |
         sudo rm -rf .git/
         sudo rm -rf node_modules/
+        sudo rm -rf repos/effect
+        sudo rm -rf repos/effect-smol
         sudo rm -rf submodules/wintun
         sudo rm -rf submodules/nvlist
         sudo rm -rf submodules/osxcross
@@ -49,7 +51,7 @@ runs:
       run: tar -cvf /tmp/the-wireguard-effect.tar .
 
     # Upload the artifact
-    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+    - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
       with:
         name: the-wireguard-effect
         path: /tmp/the-wireguard-effect.tar

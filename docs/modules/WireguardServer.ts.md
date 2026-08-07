@@ -14,31 +14,13 @@ Since v1.0.0
 
 ## Exports Grouped by Category
 
-- [Encoded types](#encoded-types)
-  - [WireguardDemoServerSchemaEncoded (type alias)](#wireguarddemoserverschemaencoded-type-alias)
 - [Schema](#schema)
   - [WireguardDemoServerSchema](#wireguarddemoserverschema)
-- [Unbranded types](#unbranded-types)
-  - [WireguardDemoServerSchema (type alias)](#wireguarddemoserverschema-type-alias)
 - [utils](#utils)
   - [WireguardDemoServer](#wireguarddemoserver)
   - [requestWireguardDemoConfig](#requestwireguarddemoconfig)
 
 ---
-
-# Encoded types
-
-## WireguardDemoServerSchemaEncoded (type alias)
-
-**Signature**
-
-```ts
-type WireguardDemoServerSchemaEncoded = Schema.Schema.Encoded<typeof WireguardDemoServerSchema>
-```
-
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardServer.ts#L56)
-
-Since v1.0.0
 
 # Schema
 
@@ -47,32 +29,45 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const WireguardDemoServerSchema: Schema.transform<
-  Schema.TemplateLiteral<`OK:${string}:${number}:${string}
-`>,
+declare const WireguardDemoServerSchema: Schema.decodeTo<
   Schema.Struct<{
-    serverPort: InternetSchemas.$Port
-    serverPublicKey: Schema.brand<Schema.refine<string, typeof Schema.String>, "WireguardKey">
-    yourWireguardAddress: InternetSchemas.$Address
-  }>
+    readonly serverPort: Schema.brand<Schema.Int, "Port">
+    readonly serverPublicKey: Schema.brand<Schema.String, "WireguardKey">
+    readonly yourWireguardAddress: Schema.Union<
+      readonly [
+        Schema.decodeTo<
+          Schema.Struct<{ readonly family: Schema.Literal<"ipv4">; readonly ip: Schema.brand<Schema.String, "IPv4"> }>,
+          Schema.String,
+          never,
+          never
+        >,
+        Schema.decodeTo<
+          Schema.Struct<{ readonly family: Schema.Literal<"ipv6">; readonly ip: Schema.brand<Schema.String, "IPv6"> }>,
+          Schema.String,
+          never,
+          never
+        >
+      ]
+    >
+  }>,
+  Schema.TemplateLiteral<
+    readonly [
+      Schema.Literal<"OK">,
+      Schema.Literal<":">,
+      Schema.String,
+      Schema.Literal<":">,
+      Schema.Number,
+      Schema.Literal<":">,
+      Schema.String,
+      Schema.Literal<"\n">
+    ]
+  >,
+  never,
+  never
 >
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardServer.ts#L62)
-
-Since v1.0.0
-
-# Unbranded types
-
-## WireguardDemoServerSchema (type alias)
-
-**Signature**
-
-```ts
-type WireguardDemoServerSchema = Schema.Schema.Type<typeof WireguardDemoServerSchema>
-```
-
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardServer.ts#L50)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardServer.ts#L54)
 
 Since v1.0.0
 
@@ -91,26 +86,28 @@ Mock implementation of the Wireguard demo server at demo.wireguard.com
 ```ts
 declare const WireguardDemoServer: (options: {
   maxPeers?: number | undefined
-  serverEndpoint: InternetSchemas.Endpoint
-  wireguardNetwork: InternetSchemas.CidrBlockFromStringEncoded
+  serverEndpoint: Schema.Schema.Type<typeof WireguardInternetSchemas.Endpoint>
+  wireguardNetwork: (typeof InternetSchemas.CidrBlockFromString)["Encoded"]
 }) => Effect.Effect<
   void,
   | Socket.SocketError
-  | ParseResult.ParseError
-  | Cause.TimeoutException
+  | Schema.SchemaError
+  | Cause.TimeoutError
   | WireguardErrors.WireguardError
   | PlatformError.PlatformError
+  | PlatformError.SystemError
+  | PlatformError.BadArgument
   | SocketServer.SocketServerError,
   | Scope.Scope
   | FileSystem.FileSystem
   | Path.Path
   | SocketServer.SocketServer
   | WireguardControl.WireguardControl
-  | CommandExecutor.CommandExecutor
+  | ChildProcessSpawner.ChildProcessSpawner
 >
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardServer.ts#L187)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardServer.ts#L188)
 
 Since v1.0.0
 
@@ -132,9 +129,9 @@ declare const requestWireguardDemoConfig: (
     privateKey,
     publicKey
   }?: { readonly privateKey: WireguardKey.WireguardKey; readonly publicKey: WireguardKey.WireguardKey }
-) => Effect.Effect<WireguardConfig.WireguardConfig, Socket.SocketError | ParseResult.ParseError, never>
+) => Effect.Effect<WireguardConfig.WireguardConfig, Socket.SocketError | Schema.SchemaError, never>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardServer.ts#L120)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardServer.ts#L121)
 
 Since v1.0.0

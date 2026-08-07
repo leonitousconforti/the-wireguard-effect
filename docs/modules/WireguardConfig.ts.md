@@ -34,14 +34,10 @@ Loads a wireguard interface configuration from an INI file.
 ```ts
 declare const fromConfigFile: (
   file: string
-) => Effect.Effect<
-  circular.WireguardConfig,
-  ParseResult.ParseError | PlatformError.PlatformError,
-  FileSystem.FileSystem
->
+) => Effect.Effect<circular.WireguardConfig, Schema.SchemaError | PlatformError.PlatformError, FileSystem.FileSystem>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardConfig.ts#L43)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardConfig.ts#L43)
 
 Since v1.0.0
 
@@ -58,10 +54,10 @@ A wireguard configuration encoded in the INI format.
 **Signature**
 
 ```ts
-declare const WireguardIniConfig: typeof circular.WireguardIniConfig
+declare const WireguardIniConfig: Schema.decodeTo<Schema.String, typeof circular.WireguardConfig, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardConfig.ts#L33)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardConfig.ts#L33)
 
 Since v1.0.0
 
@@ -77,6 +73,6 @@ A wireguard configuration.
 declare const WireguardConfig: typeof circular.WireguardConfig
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/WireguardConfig.ts#L22)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardConfig.ts#L22)
 
 Since v1.0.0

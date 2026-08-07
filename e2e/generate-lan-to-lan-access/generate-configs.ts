@@ -1,6 +1,7 @@
-import * as NodeContext from "@effect/platform-node/NodeContext";
-import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as Effect from "effect/Effect";
+
+import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
+import * as NodeServices from "@effect/platform-node/NodeServices";
 
 import * as GenerateExample from "../../examples/generate-lan-to-lan-access.js";
 
@@ -20,6 +21,4 @@ Effect.gen(function* () {
     );
     yield* configBob.writeToFile("B-bob-wireguard.conf");
     yield* configAlice.writeToFile("A-alice-wireguard.conf");
-})
-    .pipe(Effect.provide(NodeContext.layer))
-    .pipe(NodeRuntime.runMain);
+}).pipe(Effect.provide(NodeServices.layer), NodeRuntime.runMain);

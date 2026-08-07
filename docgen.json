@@ -1,7 +1,9 @@
 {
     "$schema": "./node_modules/@effect/docgen/schema.json",
-    "srcLink": "https://github.com/leonitousconforti/the-wireguard-effect/tree/main/src/",
+    "srcLink": "https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/",
     "exclude": ["src/internal/**/*.ts"],
+    "runExamples": true,
+    "projectHomepage": "https://github.com/leonitousconforti/the-wireguard-effect/",
     "examplesCompilerOptions": {
         "noEmit": true,
         "strict": true,
@@ -9,11 +11,12 @@
         "moduleResolution": "Bundler",
         "module": "ES2022",
         "target": "ES2022",
-        "lib": ["ES2022"],
-        "baseUrl": "../../",
+        "rewriteRelativeImportExtensions": true,
+        "allowImportingTsExtensions": true,
+        "types": ["node"],
         "paths": {
-            "the-wireguard-effect": ["./src/index.js"],
-            "the-wireguard-effect/*": ["./src/*.js"]
+            "the-wireguard-effect": ["../../src/index.ts"],
+            "the-wireguard-effect/*": ["../../src/*.ts"]
         }
     }
 }
