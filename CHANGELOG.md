@@ -1,5 +1,11 @@
 # the-wireguard-effect
 
+## 0.0.70
+
+### Patch Changes
+
+- 7e84ff4: Update Effect-TS packages to v4.0.0-beta.104
+
 ## 0.0.69
 
 ### Patch Changes
