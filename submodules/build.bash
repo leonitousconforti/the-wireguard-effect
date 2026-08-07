@@ -31,8 +31,10 @@ sudo ldconfig
 
 # wg-quick prebuilds
 (cd ./wireguard-tools/src && make clean && PLATFORM=linux make && cp ./wg ../../prebuilds/linux-wg && chmod +x ../../prebuilds/linux-wg)
-(cd ./wireguard-tools/src && make clean && PLATFORM=freebsd make && cp ./wg ../../prebuilds/freebsd-wg && chmod +x ../../prebuilds/freebsd-wg)
-(cd ./wireguard-tools/src && make clean && PLATFORM=openbsd make && cp ./wg ../../prebuilds/openbsd-wg && chmod +x ../../prebuilds/openbsd-wg)
+# The BSD wg builds compile on the linux host, so ipc.c still selects ipc-linux.h and needs
+# the vendored linux uapi headers which PLATFORM=freebsd/openbsd swap out of the include path
+(cd ./wireguard-tools/src && make clean && PLATFORM=freebsd CPPFLAGS="-isystem uapi/linux" make && cp ./wg ../../prebuilds/freebsd-wg && chmod +x ../../prebuilds/freebsd-wg)
+(cd ./wireguard-tools/src && make clean && PLATFORM=openbsd CPPFLAGS="-isystem uapi/linux" make && cp ./wg ../../prebuilds/openbsd-wg && chmod +x ../../prebuilds/openbsd-wg)
 (cd ./wireguard-tools/src && make clean && docker run --rm -v "$(pwd)":/workdir -e PLATFORM=darwin -e CROSS_TRIPLE=x86_64-apple-darwin multiarch/crossbuild make && cp ./wg ../../prebuilds/darwin-wg && chmod +x ../../prebuilds/darwin-wg)
 
 (cd ./wireguard-tools && git apply ../../patches/wg-quick-linux.patch && cp src/wg-quick/linux.bash ../prebuilds/linux-wg-quick && chmod +x ../prebuilds/linux-wg-quick && git apply -R ../../patches/wg-quick-linux.patch)
