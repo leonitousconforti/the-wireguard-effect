@@ -9,7 +9,6 @@
         ".agents/**/*",
         "**/index.ts",
         "repos/**",
-        "**/CHANGELOG.md",
         "submodules/**"
     ],
     "sortPackageJson": true,
