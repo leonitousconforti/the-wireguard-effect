@@ -1,5 +1,12 @@
 # the-wireguard-effect
 
+## 0.0.73
+
+### Patch Changes
+
+- 7f820d3: Update Effect-TS packages
+- 7f820d3: Update Effect-TS packages
+
 ## 0.0.72
 
 ### Patch Changes
