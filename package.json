@@ -89,7 +89,7 @@
         "@effect/vitest": "4.0.0-rc.111",
         "@types/ini": "4.1.1",
         "@types/node": "25.9.5",
-        "@vitest/coverage-v8": "4.1.11",
+        "@vitest/coverage-v8": "5.0.0",
         "babel-plugin-annotate-pure-calls": "0.5.0",
         "effect": "4.0.0-rc.111",
         "es-main": "1.4.0",
@@ -104,7 +104,7 @@
         "tsx": "4.23.13",
         "typescript": "7.0.2",
         "vite": "8.2.2",
-        "vitest": "4.1.11"
+        "vitest": "5.0.0"
     },
     "peerDependencies": {
         "@effect/platform-node": "4.0.0-rc.111",
