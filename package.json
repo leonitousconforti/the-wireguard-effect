@@ -76,8 +76,8 @@
         "ini": "^7.0.0"
     },
     "devDependencies": {
-        "@babel/cli": "8.0.4",
-        "@babel/core": "8.0.1",
+        "@babel/cli": "8.0.5",
+        "@babel/core": "8.0.5",
         "@babel/plugin-transform-export-namespace-from": "8.0.1",
         "@babel/plugin-transform-modules-commonjs": "8.0.1",
         "@changesets/cli": "3.0.2",
