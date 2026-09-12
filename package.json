@@ -93,7 +93,7 @@
         "babel-plugin-annotate-pure-calls": "0.5.0",
         "effect": "4.0.0-rc.111",
         "es-main": "1.4.0",
-        "fast-check": "4.9.0",
+        "fast-check": "4.10.0",
         "glob": "13.0.6",
         "madge": "8.0.0",
         "oxfmt": "0.67.0",
