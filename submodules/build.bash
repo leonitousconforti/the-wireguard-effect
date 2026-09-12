@@ -7,23 +7,40 @@ mkdir -p ./prebuilds
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=windows GOARCH=amd64 make && mv wireguard-go ../prebuilds/win32-amd64-wireguard-go.exe && chmod +x ../prebuilds/win32-amd64-wireguard-go.exe)
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=linux GOARCH=amd64 make && mv wireguard-go ../prebuilds/linux-amd64-wireguard-go && chmod +x ../prebuilds/linux-amd64-wireguard-go)
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=darwin GOARCH=amd64 make && mv wireguard-go ../prebuilds/darwin-amd64-wireguard-go && chmod +x ../prebuilds/darwin-amd64-wireguard-go)
+(cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=freebsd GOARCH=amd64 make && mv wireguard-go ../prebuilds/freebsd-amd64-wireguard-go && chmod +x ../prebuilds/freebsd-amd64-wireguard-go)
+(cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=openbsd GOARCH=amd64 make && mv wireguard-go ../prebuilds/openbsd-amd64-wireguard-go && chmod +x ../prebuilds/openbsd-amd64-wireguard-go)
 
 # arm64 wireguard-go prebuilds
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=windows GOARCH=arm64 make && mv wireguard-go ../prebuilds/win32-arm64-wireguard-go.exe && chmod +x ../prebuilds/win32-arm64-wireguard-go.exe)
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=linux GOARCH=arm64 make && mv wireguard-go ../prebuilds/linux-arm64-wireguard-go && chmod +x ../prebuilds/linux-arm64-wireguard-go)
 (cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=darwin GOARCH=arm64 make && mv wireguard-go ../prebuilds/darwin-arm64-wireguard-go && chmod +x ../prebuilds/darwin-arm64-wireguard-go)
+(cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=freebsd GOARCH=arm64 make && mv wireguard-go ../prebuilds/freebsd-arm64-wireguard-go && chmod +x ../prebuilds/freebsd-arm64-wireguard-go)
+(cd ./wireguard-go && make clean && GOFLAGS="-buildvcs=false" GOOS=openbsd GOARCH=arm64 make && mv wireguard-go ../prebuilds/openbsd-arm64-wireguard-go && chmod +x ../prebuilds/openbsd-arm64-wireguard-go)
 
 # wintun prebuilds (TODO: acquire these from a public source and check hashes)
 # (cd ./wintun && cp wintun-amd64.dll ../prebuilds/win32-amd64-wintun.dll)
 # (cd ./wintun && cp wintun-arm64.dll ../prebuilds/win32-arm64-wintun.dll)
 (cd ./wintun && cp wintun-amd64.dll ../prebuilds/wintun.dll)
 
+# nvlist prebuilds (for wg-quick freebsd)
+(cd ./nvlist && git apply ../../patches/nvlist.patch && cd pkg && make deb && make clean && rm -r ./debian/{.debhelper,libnv-dev,libnv1,libnv1-dbg,tmp,*.log,*.substvars,files,debhelper-build-stamp})
+sudo apt-get install ./nvlist/libnv1_0.0.1_amd64.deb
+sudo apt-get install ./nvlist/libnv-dev_0.0.1_amd64.deb
+sudo ldconfig
+(cd ./nvlist && rm -r {*.deb,*.buildinfo,*.changes} && git apply -R ../../patches/nvlist.patch)
+
 # wg-quick prebuilds
 (cd ./wireguard-tools/src && make clean && PLATFORM=linux make && cp ./wg ../../prebuilds/linux-wg && chmod +x ../../prebuilds/linux-wg)
+# The BSD wg builds compile on the linux host, so ipc.c still selects ipc-linux.h and needs
+# the vendored linux uapi headers which PLATFORM=freebsd/openbsd swap out of the include path
+(cd ./wireguard-tools/src && make clean && PLATFORM=freebsd CPPFLAGS="-isystem uapi/linux" make && cp ./wg ../../prebuilds/freebsd-wg && chmod +x ../../prebuilds/freebsd-wg)
+(cd ./wireguard-tools/src && make clean && PLATFORM=openbsd CPPFLAGS="-isystem uapi/linux" make && cp ./wg ../../prebuilds/openbsd-wg && chmod +x ../../prebuilds/openbsd-wg)
 (cd ./wireguard-tools/src && make clean && docker run --rm -v "$(pwd)":/workdir -e PLATFORM=darwin -e CROSS_TRIPLE=x86_64-apple-darwin multiarch/crossbuild make && cp ./wg ../../prebuilds/darwin-wg && chmod +x ../../prebuilds/darwin-wg)
 
 (cd ./wireguard-tools && git apply ../../patches/wg-quick-linux.patch && cp src/wg-quick/linux.bash ../prebuilds/linux-wg-quick && chmod +x ../prebuilds/linux-wg-quick && git apply -R ../../patches/wg-quick-linux.patch)
 (cd ./wireguard-tools && git apply ../../patches/wg-quick-darwin.patch && cp src/wg-quick/darwin.bash ../prebuilds/darwin-wg-quick && chmod +x ../prebuilds/darwin-wg-quick && git apply -R ../../patches/wg-quick-darwin.patch)
+(cd ./wireguard-tools && git apply ../../patches/wg-quick-freebsd.patch && cp src/wg-quick/freebsd.bash ../prebuilds/freebsd-wg-quick && chmod +x ../prebuilds/freebsd-wg-quick && git apply -R ../../patches/wg-quick-freebsd.patch)
+(cd ./wireguard-tools && git apply ../../patches/wg-quick-openbsd.patch && cp src/wg-quick/openbsd.bash ../prebuilds/openbsd-wg-quick && chmod +x ../prebuilds/openbsd-wg-quick && git apply -R ../../patches/wg-quick-openbsd.patch)
 
 # Wireguard-windows prebuilds
 (cd ./wireguard-windows && git apply ../../patches/wireguard-windows-makefile.patch)
