@@ -88,7 +88,7 @@
         "@effect/tsgo": "0.44.0",
         "@effect/vitest": "4.0.0-rc.111",
         "@types/ini": "4.1.1",
-        "@types/node": "25.9.6",
+        "@types/node": "25.9.7",
         "@vitest/coverage-v8": "4.1.11",
         "babel-plugin-annotate-pure-calls": "0.5.0",
         "effect": "4.0.0-rc.111",
