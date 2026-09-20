@@ -229,8 +229,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       fast-check:
-        specifier: 4.9.0
-        version: 4.9.0
+        specifier: 4.10.1
+        version: 4.10.1
       glob:
         specifier: 13.0.6
         version: 13.0.6
@@ -1714,6 +1714,10 @@ packages:
   extend-shallow@2.0.1:
     resolution: {integrity: sha512-zCnTtlxNoAiDc3gqY2aYAWFx7XWWiasuF2K8Me5WbN8otHKTUKBwjPtNpRs/rbUZm7KxWAaNj7P1a/p52GbVug==}
     engines: {node: '>=0.10.0'}
+
+  fast-check@4.10.1:
+    resolution: {integrity: sha512-sB5Vghiu8MyCyToHoBVGsT0baZg3sZWNIY+a6Ct2EDrQJlT4YdH6MC1BSLNe3kX1k5i5g0q1O52XFgcKK/rGHg==}
+    engines: {node: '>=12.17.0'}
 
   fast-check@4.9.0:
     resolution: {integrity: sha512-7ms6T7SybUev/PQITciI0yLM2pOSFy5zpG8Ty7tQofcVaQUvrMXp6CBwqF6fThLCLOrfBtuHAtwq6Yu4XPCllg==}
@@ -3853,6 +3857,10 @@ snapshots:
   extend-shallow@2.0.1:
     dependencies:
       is-extendable: 0.1.1
+
+  fast-check@4.10.1:
+    dependencies:
+      pure-rand: 8.4.2
 
   fast-check@4.9.0:
     dependencies:
