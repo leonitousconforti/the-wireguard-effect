@@ -83,15 +83,15 @@
         "@changesets/cli": "3.0.3",
         "@changesets/config": "4.0.1",
         "@effect/build-utils": "0.8.9",
-        "@effect/docgen": "4.0.0-rc.111",
-        "@effect/platform-node": "4.0.0-rc.111",
+        "@effect/docgen": "4.0.0-rc.117",
+        "@effect/platform-node": "4.0.0-rc.117",
         "@effect/tsgo": "0.44.0",
-        "@effect/vitest": "4.0.0-rc.111",
+        "@effect/vitest": "4.0.0-rc.117",
         "@types/ini": "4.1.1",
         "@types/node": "25.9.8",
         "@vitest/coverage-v8": "4.1.11",
         "babel-plugin-annotate-pure-calls": "0.5.0",
-        "effect": "4.0.0-rc.111",
+        "effect": "4.0.0-rc.117",
         "es-main": "1.4.0",
         "fast-check": "4.10.2",
         "glob": "13.0.6",
@@ -107,8 +107,8 @@
         "vitest": "4.1.11"
     },
     "peerDependencies": {
-        "@effect/platform-node": "4.0.0-rc.111",
-        "effect": "4.0.0-rc.111"
+        "@effect/platform-node": "4.0.0-rc.117",
+        "effect": "4.0.0-rc.117"
     },
     "engines": {
         "node": ">=20.0.0"
