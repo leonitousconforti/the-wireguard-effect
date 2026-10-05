@@ -118,9 +118,17 @@ export const makeBundledWgQuickLayer = (options: {
                 return subprocess;
             }).pipe(Effect.provideService(ChildProcessSpawner.ChildProcessSpawner, executor));
 
-        const execCommand = (
+        /**
+         * Runs a command to completion, failing if it exits with a non-zero
+         * code.
+         *
+         * When `detach` is set the spawned process is unreferenced, which stops
+         * the scope finalizer from signalling its process group on release.
+         */
+        const execCommandWith = (
+            detach: boolean,
             command: string,
-            ...args: Array<string>
+            args: ReadonlyArray<string>
         ): Effect.Effect<void, PlatformError.SystemError | PlatformError.PlatformError | Cause.TimeoutError, never> =>
             Function.pipe(
                 executor.spawn(
@@ -128,6 +136,7 @@ export const makeBundledWgQuickLayer = (options: {
                         ? ChildProcess.make("sudo", [command, ...args])
                         : ChildProcess.make(command, args)
                 ),
+                Effect.tap((process) => (detach ? process.unref.pipe(Effect.asVoid) : Effect.void)),
                 Effect.flatMap((process) =>
                     Effect.all(
                         [
@@ -166,6 +175,25 @@ export const makeBundledWgQuickLayer = (options: {
                 Effect.timeout("10 seconds"),
                 Effect.scoped
             );
+
+        const execCommand = (
+            command: string,
+            ...args: Array<string>
+        ): Effect.Effect<void, PlatformError.SystemError | PlatformError.PlatformError | Cause.TimeoutError, never> =>
+            execCommandWith(false, command, args);
+
+        /**
+         * `wireguard-go` daemonizes by opening the UAPI socket, forking, and
+         * exiting zero in the parent. The daemon stays in the process group
+         * that was created for the parent, so a referenced spawn would have it
+         * signalled as soon as this scope closes and the socket would be gone
+         * before `setConfig` could reach it.
+         */
+        const execCommandWireguardGoNix = (
+            command: string,
+            ...args: Array<string>
+        ): Effect.Effect<void, PlatformError.SystemError | PlatformError.PlatformError | Cause.TimeoutError, never> =>
+            execCommandWith(true, command, args);
 
         const internalUp: (
             wireguardConfig: WireguardConfig.WireguardConfig,
@@ -225,7 +253,7 @@ export const makeBundledWgQuickLayer = (options: {
                     yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
                     return Tuple.make(wireguardInterface, runningWireguardGoProcess);
                 } else {
-                    yield* execCommand(bundledWireguardGoExecutablePath, wireguardInterface.Name);
+                    yield* execCommandWireguardGoNix(bundledWireguardGoExecutablePath, wireguardInterface.Name);
                     yield* wireguardInterface.setConfig(wireguardConfig);
                     yield* execCommand(wgQuickCommand[0], ...wgQuickCommand.slice(1));
                     return Tuple.make(wireguardInterface);

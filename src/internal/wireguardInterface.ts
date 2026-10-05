@@ -36,6 +36,16 @@ export const DarwinInterfaceNameRegExp: RegExp = /^utun\d+$/;
 /** @internal */
 export const WindowsInterfaceNameRegExp: RegExp = /^eth\d+$/;
 
+/**
+ * The userspace api answers a request and then hangs up, so a clean close is
+ * how a complete response terminates rather than a failure. The trailing errno
+ * line is what tells us the request was understood.
+ *
+ * @internal
+ */
+export const isCleanClose = (error: Socket.SocketError): boolean =>
+    error.reason._tag === "SocketCloseError" && error.reason.code === 1000;
+
 /** @internal */
 export const userspaceContact = (
     wireguardInterface: WireguardInterface.WireguardInterface,
@@ -48,6 +58,7 @@ export const userspaceContact = (
                 path: wireguardInterface.SocketLocation,
             })
         ),
+        Stream.catchIf(isCleanClose, () => Stream.empty),
         Stream.decodeText(),
         Stream.flatMap(Function.compose(String.linesIterator, Stream.fromIterable)),
         Stream.map(String.trimEnd),
