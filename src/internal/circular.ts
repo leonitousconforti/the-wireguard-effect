@@ -1,9 +1,9 @@
 import type * as Cause from "effect/Cause";
 import type * as PlatformError from "effect/PlatformError";
+import type * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 import type * as Ast from "effect/SchemaAST";
 import type * as Scope from "effect/Scope";
-import type * as ChildProcessSpawner from "effect/unstable/process/ChildProcessSpawner";
-import type * as Socket from "effect/unstable/socket/Socket";
+import type * as Socket from "effect/socket/Socket";
 
 import * as Array from "effect/Array";
 import * as Effect from "effect/Effect";
@@ -170,7 +170,7 @@ export class WireguardConfig extends internalWireguardConfig.WireguardConfigVari
 export const WireguardIniConfig = WireguardConfig.pipe(
     Schema.decodeTo(Schema.String, {
         // Encoding is non-trivial, as we need to handle all the peers individually.
-        decode: SchemaGetter.transformOrFail((config: WireguardConfig) =>
+        decode: SchemaGetter.transformEffect((config: WireguardConfig) =>
             Effect.gen(function* () {
                 const listenPort = `ListenPort = ${config.ListenPort}\n`;
                 const privateKey = `PrivateKey = ${config.PrivateKey}\n`;
@@ -193,7 +193,7 @@ export const WireguardIniConfig = WireguardConfig.pipe(
         ),
 
         // Decoding is likewise non-trivial, as we need to parse all the peers from the ini config.
-        encode: SchemaGetter.transformOrFail((iniConfig: string) =>
+        encode: SchemaGetter.transformEffect((iniConfig: string) =>
             Effect.gen(function* () {
                 const sections = iniConfig.split(/(?=\[Peer\])/g);
                 const maybeInterfaceSection = Array.findFirst(sections, (text) => text.startsWith("[Interface]"));

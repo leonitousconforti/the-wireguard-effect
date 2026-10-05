@@ -1,18 +1,18 @@
 import type * as Cause from "effect/Cause";
+import type * as HttpClientError from "effect/http/HttpClientError";
 import type * as Schema from "effect/Schema";
-import type * as HttpClientError from "effect/unstable/http/HttpClientError";
-import type * as Socket from "effect/unstable/socket/Socket";
+import type * as Socket from "effect/socket/Socket";
 
 import * as Config from "effect/Config";
 import * as Console from "effect/Console";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
+import * as HttpClient from "effect/http/HttpClient";
+import * as HttpClientResponse from "effect/http/HttpClientResponse";
 import * as Layer from "effect/Layer";
 import * as Schedule from "effect/Schedule";
 import * as Stream from "effect/Stream";
-import * as HttpClient from "effect/unstable/http/HttpClient";
-import * as HttpClientResponse from "effect/unstable/http/HttpClientResponse";
 
 import type * as WireguardInterface from "the-wireguard-effect/WireguardInterface";
 
@@ -23,9 +23,9 @@ import * as WireguardControl from "the-wireguard-effect/WireguardControl";
 import * as WireguardPeer from "the-wireguard-effect/WireguardPeer";
 import * as WireguardServer from "the-wireguard-effect/WireguardServer";
 
-const portConfig = Config.number("WIREGUARD_DEMO_PORT").pipe(Config.withDefault(42912));
-const hostConfig = Config.string("WIREGUARD_DEMO_HOST").pipe(Config.withDefault("demo.wireguard.com"));
-const hiddenPageUrlConfig = Config.string("HIDDEN_PAGE").pipe(Config.withDefault("http://192.168.4.1:80"));
+const portConfig = Config.Number("WIREGUARD_DEMO_PORT").pipe(Config.withDefault(42912));
+const hostConfig = Config.String("WIREGUARD_DEMO_HOST").pipe(Config.withDefault("demo.wireguard.com"));
+const hiddenPageUrlConfig = Config.String("HIDDEN_PAGE").pipe(Config.withDefault("http://192.168.4.1:80"));
 
 const WireguardControlLive = Layer.effect(
     WireguardControl.WireguardControl,

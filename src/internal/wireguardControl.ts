@@ -1,6 +1,6 @@
 import type * as Cause from "effect/Cause";
 import type * as Schema from "effect/Schema";
-import type * as Socket from "effect/unstable/socket/Socket";
+import type * as Socket from "effect/socket/Socket";
 
 import * as Array from "effect/Array";
 import * as Context from "effect/Context";
@@ -10,24 +10,25 @@ import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Path from "effect/Path";
 import * as PlatformError from "effect/PlatformError";
+import * as ChildProcess from "effect/process/ChildProcess";
+import * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 import * as Schedule from "effect/Schedule";
 import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
-import * as ChildProcess from "effect/unstable/process/ChildProcess";
-import * as ChildProcessSpawner from "effect/unstable/process/ChildProcessSpawner";
 
 import type * as WireguardConfig from "../WireguardConfig.ts";
 import type * as _WireguardControl from "../WireguardControl.ts";
 import type * as WireguardInterface from "../WireguardInterface.ts";
 
 /** @internal */
-// `Symbol.for` returns `symbol`; the branded TypeId is what the module contract declares.
-// oxlint-disable-next-line typescript/no-unsafe-type-assertion
+/* oxlint-disable typescript/no-unsafe-type-assertion */
 export const TypeId: _WireguardControl.TypeId = Symbol.for(
     "@leonitousconforti/the-wireguard-effect/WireguardControl"
 ) as _WireguardControl.TypeId;
+
+/* oxlint-enable typescript/no-unsafe-type-assertion */
 
 /** @internal */
 export const WireguardControl = Context.Service<_WireguardControl.WireguardControl>(

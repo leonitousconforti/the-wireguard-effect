@@ -56,7 +56,7 @@ declare const WireguardDemoServerSchema: Schema.decodeTo<
       Schema.Literal<":">,
       Schema.String,
       Schema.Literal<":">,
-      Schema.Number,
+      Schema.Finite,
       Schema.Literal<":">,
       Schema.String,
       Schema.Literal<"\n">
@@ -67,7 +67,7 @@ declare const WireguardDemoServerSchema: Schema.decodeTo<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardServer.ts#L54)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardServer.ts#L56)
 
 Since v1.0.0
 
@@ -107,7 +107,7 @@ declare const WireguardDemoServer: (options: {
 >
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardServer.ts#L188)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardServer.ts#L190)
 
 Since v1.0.0
 
@@ -132,6 +132,6 @@ declare const requestWireguardDemoConfig: (
 ) => Effect.Effect<WireguardConfig.WireguardConfig, Socket.SocketError | Schema.SchemaError, never>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardServer.ts#L121)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardServer.ts#L123)
 
 Since v1.0.0

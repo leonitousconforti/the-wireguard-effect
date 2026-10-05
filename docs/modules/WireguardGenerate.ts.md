@@ -227,25 +227,23 @@ LAN as well.
 declare const generateLanHubAndSpokeAccess: <
   Nodes extends
     | readonly [server: WireguardIPv4Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv4Node>]
-    | readonly [server: WireguardIPv6Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv6Node>],
-  NetworkCidr extends (Nodes[0] extends WireguardIPv4Node
-    ? InternetSchemas.IPv4CidrBlock
-    : Nodes[0] extends WireguardIPv6Node
-      ? InternetSchemas.IPv6CidrBlock
-      : never),
-  NetworkCidr2 extends (Nodes[0] extends WireguardIPv4Server
+    | readonly [server: WireguardIPv6Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv6Node>]
+>(options: {
+  nodes: Nodes
+  lanNetworkCidr: Nodes[0] extends WireguardIPv4Server
     ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
     : Nodes[0] extends WireguardIPv6Server
       ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
-      : never)
->(options: {
-  nodes: Nodes
-  lanNetworkCidr: NetworkCidr2
-  wireguardNetworkCidr: NetworkCidr
+      : never
+  wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
+    ? InternetSchemas.IPv4CidrBlock
+    : Nodes[0] extends WireguardIPv6Node
+      ? InternetSchemas.IPv6CidrBlock
+      : never
 }) => WireguardNetwork<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardGenerate.ts#L789)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardGenerate.ts#L787)
 
 Since v1.0.0
 
@@ -260,31 +258,28 @@ communicate.
 declare const generateLanToLanAccess: <
   Nodes extends
     | readonly [server1: WireguardIPv4Server, server2: WireguardIPv4Server]
-    | readonly [server1: WireguardIPv6Server, server2: WireguardIPv6Server],
-  NetworkCidr1 extends (Nodes[0] extends WireguardIPv4Node
-    ? InternetSchemas.IPv4CidrBlock
-    : Nodes[0] extends WireguardIPv6Node
-      ? InternetSchemas.IPv6CidrBlock
-      : never),
-  NetworkCidr2 extends (Nodes[0] extends WireguardIPv4Server
+    | readonly [server1: WireguardIPv6Server, server2: WireguardIPv6Server]
+>(options: {
+  nodes: Nodes
+  server1Lan: Nodes[0] extends WireguardIPv4Server
     ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
     : Nodes[0] extends WireguardIPv6Server
       ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
-      : never),
-  NetworkCidr3 extends (Nodes[1] extends WireguardIPv4Server
+      : never
+  server2Lan: Nodes[1] extends WireguardIPv4Server
     ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
     : Nodes[1] extends WireguardIPv6Server
       ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
-      : never)
->(options: {
-  nodes: Nodes
-  server1Lan: NetworkCidr2
-  server2Lan: NetworkCidr3
-  wireguardNetworkCidr: NetworkCidr1
+      : never
+  wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
+    ? InternetSchemas.IPv4CidrBlock
+    : Nodes[0] extends WireguardIPv6Node
+      ? InternetSchemas.IPv6CidrBlock
+      : never
 }) => WireguardNetwork<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardGenerate.ts#L677)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardGenerate.ts#L675)
 
 Since v1.0.0
 
@@ -299,25 +294,23 @@ as well.
 declare const generateRemoteAccessToLan: <
   Nodes extends
     | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
-    | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
-  NetworkCidr1 extends (Nodes[0] extends WireguardIPv4Node
+    | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node]
+>(options: {
+  nodes: Nodes
+  wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
     ? InternetSchemas.IPv4CidrBlock
     : Nodes[0] extends WireguardIPv6Node
       ? InternetSchemas.IPv6CidrBlock
-      : never),
-  NetworkCidr2 extends (Nodes[0] extends WireguardIPv4Server
+      : never
+  lanNetworkCidr: Nodes[0] extends WireguardIPv4Server
     ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
     : Nodes[0] extends WireguardIPv6Server
       ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
-      : never)
->(options: {
-  nodes: Nodes
-  wireguardNetworkCidr: NetworkCidr1
-  lanNetworkCidr: NetworkCidr2
+      : never
 }) => WireguardNetwork<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardGenerate.ts#L608)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardGenerate.ts#L607)
 
 Since v1.0.0
 
@@ -331,15 +324,14 @@ Use your phone or computer to remotely access just the wireguard server.
 declare const generateRemoteAccessToServer: <
   Nodes extends
     | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
-    | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
-  NetworkCidr extends (Nodes[0] extends WireguardIPv4Node
+    | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node]
+>(options: {
+  nodes: Nodes
+  wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
     ? InternetSchemas.IPv4CidrBlock
     : Nodes[0] extends WireguardIPv6Node
       ? InternetSchemas.IPv6CidrBlock
-      : never)
->(options: {
-  nodes: Nodes
-  wireguardNetworkCidr: NetworkCidr
+      : never
 }) => WireguardNetwork<Nodes>
 ```
 
@@ -358,25 +350,23 @@ traffic through the VPN and out the server's internet connection.
 declare const generateRemoteTunneledAccess: <
   Nodes extends
     | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
-    | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
-  NetworkCidr1 extends (Nodes[0] extends WireguardIPv4Node
-    ? InternetSchemas.IPv4CidrBlock
-    : Nodes[0] extends WireguardIPv6Node
-      ? InternetSchemas.IPv6CidrBlock
-      : never),
-  NetworkCidr2 extends (Nodes[0] extends WireguardIPv4Server
+    | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node]
+>(options: {
+  nodes: Nodes
+  lanNetworkCidr: Nodes[0] extends WireguardIPv4Server
     ? InternetSchemas.IPv4CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv4CidrBlock>
     : Nodes[0] extends WireguardIPv6Server
       ? InternetSchemas.IPv6CidrBlock | Array.NonEmptyArray<InternetSchemas.IPv6CidrBlock>
-      : never)
->(options: {
-  nodes: Nodes
-  lanNetworkCidr: NetworkCidr2
-  wireguardNetworkCidr: NetworkCidr1
+      : never
+  wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
+    ? InternetSchemas.IPv4CidrBlock
+    : Nodes[0] extends WireguardIPv6Node
+      ? InternetSchemas.IPv6CidrBlock
+      : never
 }) => WireguardNetwork<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardGenerate.ts#L866)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardGenerate.ts#L863)
 
 Since v1.0.0
 
@@ -392,19 +382,18 @@ through the server.
 declare const generateServerHubAndSpokeAccess: <
   Nodes extends
     | readonly [server: WireguardIPv4Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv4Node>]
-    | readonly [server: WireguardIPv6Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv6Node>],
-  NetworkCidr extends (Nodes[0] extends WireguardIPv4Node
+    | readonly [server: WireguardIPv6Server, ...nodes: Array.NonEmptyReadonlyArray<WireguardIPv6Node>]
+>(options: {
+  nodes: Nodes
+  wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
     ? InternetSchemas.IPv4CidrBlock
     : Nodes[0] extends WireguardIPv6Node
       ? InternetSchemas.IPv6CidrBlock
-      : never)
->(options: {
-  nodes: Nodes
-  wireguardNetworkCidr: NetworkCidr
+      : never
 }) => WireguardNetwork<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardGenerate.ts#L740)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardGenerate.ts#L739)
 
 Since v1.0.0
 
@@ -418,19 +407,18 @@ Allows two servers to connect to each other.
 declare const generateServerToServerAccess: <
   Nodes extends
     | readonly [server1: WireguardIPv4Server, server2: WireguardIPv4Server]
-    | readonly [server1: WireguardIPv6Server, server2: WireguardIPv6Server],
-  NetworkCidr extends (Nodes[0] extends WireguardIPv4Node
+    | readonly [server1: WireguardIPv6Server, server2: WireguardIPv6Server]
+>(options: {
+  nodes: Nodes
+  wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
     ? InternetSchemas.IPv4CidrBlock
     : Nodes[0] extends WireguardIPv6Node
       ? InternetSchemas.IPv6CidrBlock
-      : never)
->(options: {
-  nodes: Nodes
-  wireguardNetworkCidr: NetworkCidr
+      : never
 }) => WireguardNetwork<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardGenerate.ts#L650)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardGenerate.ts#L649)
 
 Since v1.0.0
 
@@ -444,19 +432,18 @@ Route specific traffic through a commercial WireGuard VPN provider.
 declare const generateVpnTunneledAccess: <
   Nodes extends
     | readonly [server: WireguardIPv4Server, client: WireguardIPv4Node]
-    | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node],
-  NetworkCidr extends (Nodes[0] extends WireguardIPv4Node
+    | readonly [server: WireguardIPv6Server, client: WireguardIPv6Node]
+>(options: {
+  nodes: Nodes
+  wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
     ? InternetSchemas.IPv4CidrBlock
     : Nodes[0] extends WireguardIPv6Node
       ? InternetSchemas.IPv6CidrBlock
-      : never)
->(options: {
-  nodes: Nodes
-  wireguardNetworkCidr: NetworkCidr
+      : never
 }) => WireguardNetwork<Nodes>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardGenerate.ts#L841)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardGenerate.ts#L839)
 
 Since v1.0.0
 
@@ -511,7 +498,11 @@ Layer containing the allowed IPs for each node in the network.
 **Signature**
 
 ```ts
-type AllowedIPsLayer<Nodes> = ConnectionsLayer<Nodes> & {
+type AllowedIPsLayer<
+  Nodes extends
+    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
+    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
+> = ConnectionsLayer<Nodes> & {
   allowedIPs: Record.ReadonlyRecord<
     Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
     Array.NonEmptyReadonlyArray<{
@@ -533,7 +524,11 @@ Layer containing the connections for each node in the network.
 **Signature**
 
 ```ts
-type ConnectionsLayer<Nodes> = keysLayer<Nodes> & {
+type ConnectionsLayer<
+  Nodes extends
+    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
+    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
+> = keysLayer<Nodes> & {
   connections: Record.ReadonlyRecord<
     Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
     Array.NonEmptyReadonlyArray<
@@ -554,7 +549,11 @@ Base layer containing just the nodes in the network.
 **Signature**
 
 ```ts
-type NodesLayer<Nodes> = {
+type NodesLayer<
+  Nodes extends
+    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
+    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
+> = {
   nodes: Nodes
   wireguardNetworkCidr: Nodes[0] extends WireguardIPv4Node
     ? InternetSchemas.IPv4CidrBlock
@@ -575,7 +574,11 @@ The final network type.
 **Signature**
 
 ```ts
-type WireguardNetwork<Nodes> = AllowedIPsLayer<Nodes>
+type WireguardNetwork<
+  Nodes extends
+    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
+    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
+> = AllowedIPsLayer<Nodes>
 ```
 
 [Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardGenerate.ts#L144)
@@ -589,7 +592,11 @@ Layer containing the keys for each node in the network.
 **Signature**
 
 ```ts
-type keysLayer<Nodes> = NodesLayer<Nodes> & {
+type keysLayer<
+  Nodes extends
+    | readonly [node1: WireguardIPv4Node, node2: WireguardIPv4Node, ...rest: Array<WireguardIPv4Node>]
+    | readonly [node1: WireguardIPv6Node, node2: WireguardIPv6Node, ...rest: Array<WireguardIPv6Node>]
+> = NodesLayer<Nodes> & {
   keys: Record.ReadonlyRecord<
     Extract<Nodes[number], WireguardRoamingPeer>["ip"] | Extract<Nodes[number], WireguardServer>[1]["ip"],
     Keys

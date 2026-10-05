@@ -1,8 +1,8 @@
+import * as Command from "effect/cli/Command";
+import * as Flag from "effect/cli/Flag";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Schema from "effect/Schema";
-import * as Command from "effect/unstable/cli/Command";
-import * as Flag from "effect/unstable/cli/Flag";
 
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as NodeServices from "@effect/platform-node/NodeServices";
@@ -12,30 +12,30 @@ import * as InternetSchemas from "effect-schemas/Internet";
 import * as WireguardControl from "../src/WireguardControl.js";
 import * as WireguardServer from "../src/WireguardServer.js";
 
-const maxPeers = Flag.integer("maxPeers").pipe(
+const maxPeers = Flag.Int("maxPeers").pipe(
     Flag.withDefault(256),
     Flag.withDescription("The maximum number of peers allowed to be connected at one time")
 );
 
-const wireguardPort = Flag.integer("wireguardPort").pipe(
+const wireguardPort = Flag.Int("wireguardPort").pipe(
     Flag.withDefault(51820),
     Flag.withSchema(InternetSchemas.Port),
     Flag.withDescription("The port to listen on for wireguard connections")
 );
 
-const serverPort = Flag.integer("serverPort").pipe(
+const serverPort = Flag.Int("serverPort").pipe(
     Flag.withDefault(42912),
     Flag.withSchema(InternetSchemas.Port),
     Flag.withDescription("The port to listen on for connections")
 );
 
-const hiddenServerPort = Flag.integer("hiddenServerPort").pipe(
+const hiddenServerPort = Flag.Int("hiddenServerPort").pipe(
     Flag.withDefault(8080),
     Flag.withSchema(InternetSchemas.Port),
     Flag.withDescription("The port to listen on for hidden server connections")
 );
 
-const wireguardNetwork = Flag.string("wireguardNetwork").pipe(
+const wireguardNetwork = Flag.String("wireguardNetwork").pipe(
     Flag.withDefault("192.168.4.1/24" as const),
     Flag.withSchema(Schema.String.pipe(Schema.decodeTo(InternetSchemas.CidrBlockFromString))),
     Flag.withDescription("The wireguard network cidr to use"),

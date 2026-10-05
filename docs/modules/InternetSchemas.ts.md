@@ -114,18 +114,18 @@ declare const Endpoint: Schema.Union<
         readonly [
           Schema.Struct<{
             readonly ip: Schema.String
-            readonly port: Schema.Number
+            readonly port: Schema.Finite
             readonly family: Schema.Literal<"ipv4">
           }>,
           Schema.Struct<{
             readonly ip: Schema.String
-            readonly natPort: Schema.Number
-            readonly listenPort: Schema.Number
+            readonly natPort: Schema.Finite
+            readonly listenPort: Schema.Finite
             readonly family: Schema.Literal<"ipv4">
           }>,
-          Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>,
+          Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite]>,
           Schema.TemplateLiteral<
-            readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]
+            readonly [Schema.String, Schema.Literal<":">, Schema.Finite, Schema.Literal<":">, Schema.Finite]
           >
         ]
       >,
@@ -147,17 +147,17 @@ declare const Endpoint: Schema.Union<
         readonly [
           Schema.Struct<{
             readonly ip: Schema.String
-            readonly port: Schema.Number
+            readonly port: Schema.Finite
             readonly family: Schema.Literal<"ipv6">
           }>,
           Schema.Struct<{
             readonly ip: Schema.String
-            readonly natPort: Schema.Number
-            readonly listenPort: Schema.Number
+            readonly natPort: Schema.Finite
+            readonly listenPort: Schema.Finite
             readonly family: Schema.Literal<"ipv6">
           }>,
           Schema.TemplateLiteral<
-            readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Number]
+            readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Finite]
           >,
           Schema.TemplateLiteral<
             readonly [
@@ -165,9 +165,9 @@ declare const Endpoint: Schema.Union<
               Schema.String,
               Schema.Literal<"]">,
               Schema.Literal<":">,
-              Schema.Number,
+              Schema.Finite,
               Schema.Literal<":">,
-              Schema.Number
+              Schema.Finite
             ]
           >
         ]
@@ -183,15 +183,15 @@ declare const Endpoint: Schema.Union<
       }>,
       Schema.Union<
         readonly [
-          Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Number }>,
+          Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Finite }>,
           Schema.Struct<{
             readonly host: Schema.String
-            readonly natPort: Schema.Number
-            readonly listenPort: Schema.Number
+            readonly natPort: Schema.Finite
+            readonly listenPort: Schema.Finite
           }>,
-          Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>,
+          Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite]>,
           Schema.TemplateLiteral<
-            readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]
+            readonly [Schema.String, Schema.Literal<":">, Schema.Finite, Schema.Literal<":">, Schema.Finite]
           >
         ]
       >,
@@ -223,15 +223,15 @@ declare const HostnameEndpoint: Schema.decodeTo<
   }>,
   Schema.Union<
     readonly [
-      Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Number }>,
+      Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Finite }>,
       Schema.Struct<{
         readonly host: Schema.String
-        readonly natPort: Schema.Number
-        readonly listenPort: Schema.Number
+        readonly natPort: Schema.Finite
+        readonly listenPort: Schema.Finite
       }>,
-      Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>,
+      Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite]>,
       Schema.TemplateLiteral<
-        readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]
+        readonly [Schema.String, Schema.Literal<":">, Schema.Finite, Schema.Literal<":">, Schema.Finite]
       >
     ]
   >,
@@ -266,15 +266,15 @@ declare const HostnameIPv4SetupData: Schema.Tuple<
       }>,
       Schema.Union<
         readonly [
-          Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Number }>,
+          Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Finite }>,
           Schema.Struct<{
             readonly host: Schema.String
-            readonly natPort: Schema.Number
-            readonly listenPort: Schema.Number
+            readonly natPort: Schema.Finite
+            readonly listenPort: Schema.Finite
           }>,
-          Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>,
+          Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite]>,
           Schema.TemplateLiteral<
-            readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]
+            readonly [Schema.String, Schema.Literal<":">, Schema.Finite, Schema.Literal<":">, Schema.Finite]
           >
         ]
       >,
@@ -317,15 +317,15 @@ declare const HostnameIPv6SetupData: Schema.Tuple<
       }>,
       Schema.Union<
         readonly [
-          Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Number }>,
+          Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Finite }>,
           Schema.Struct<{
             readonly host: Schema.String
-            readonly natPort: Schema.Number
-            readonly listenPort: Schema.Number
+            readonly natPort: Schema.Finite
+            readonly listenPort: Schema.Finite
           }>,
-          Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>,
+          Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite]>,
           Schema.TemplateLiteral<
-            readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]
+            readonly [Schema.String, Schema.Literal<":">, Schema.Finite, Schema.Literal<":">, Schema.Finite]
           >
         ]
       >,
@@ -382,7 +382,7 @@ assumed that the nat port and listen port are the same.
 **Signature**
 
 ```ts
-declare const IPv4Endpoint: Schema.decodeTo<Schema.Struct<{ readonly address: Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv4">; readonly ip: Schema.brand<Schema.String, "IPv4">; }>, Schema.String, never, never>; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly ip: Schema.String; readonly port: Schema.Number; readonly family: Schema.Literal<"ipv4">; }>, Schema.Struct<{ readonly ip: Schema.String; readonly natPort: Schema.Number; readonly listenPort: Schema.Number; readonly family: Schema.Literal<"ipv4">; }>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]>]>, never, never>
+declare const IPv4Endpoint: Schema.decodeTo<Schema.Struct<{ readonly address: Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv4">; readonly ip: Schema.brand<Schema.String, "IPv4">; }>, Schema.String, never, never>; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly ip: Schema.String; readonly port: Schema.Finite; readonly family: Schema.Literal<"ipv4">; }>, Schema.Struct<{ readonly ip: Schema.String; readonly natPort: Schema.Finite; readonly listenPort: Schema.Finite; readonly family: Schema.Literal<"ipv4">; }>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite]>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite, Schema.Literal<":">, Schema.Finite]>]>, never, never>
 ````
 
 [Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/InternetSchemas.ts#L62)
@@ -424,18 +424,18 @@ declare const IPv4SetupData: Schema.Tuple<
         readonly [
           Schema.Struct<{
             readonly ip: Schema.String
-            readonly port: Schema.Number
+            readonly port: Schema.Finite
             readonly family: Schema.Literal<"ipv4">
           }>,
           Schema.Struct<{
             readonly ip: Schema.String
-            readonly natPort: Schema.Number
-            readonly listenPort: Schema.Number
+            readonly natPort: Schema.Finite
+            readonly listenPort: Schema.Finite
             readonly family: Schema.Literal<"ipv4">
           }>,
-          Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>,
+          Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite]>,
           Schema.TemplateLiteral<
-            readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]
+            readonly [Schema.String, Schema.Literal<":">, Schema.Finite, Schema.Literal<":">, Schema.Finite]
           >
         ]
       >,
@@ -496,7 +496,7 @@ is provided, it is assumed that the nat port and listen port are the same.
 **Signature**
 
 ```ts
-declare const IPv6Endpoint: Schema.decodeTo<Schema.Struct<{ readonly address: Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv6">; readonly ip: Schema.brand<Schema.String, "IPv6">; }>, Schema.String, never, never>; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly ip: Schema.String; readonly port: Schema.Number; readonly family: Schema.Literal<"ipv6">; }>, Schema.Struct<{ readonly ip: Schema.String; readonly natPort: Schema.Number; readonly listenPort: Schema.Number; readonly family: Schema.Literal<"ipv6">; }>, Schema.TemplateLiteral<readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Number]>, Schema.TemplateLiteral<readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]>]>, never, never>
+declare const IPv6Endpoint: Schema.decodeTo<Schema.Struct<{ readonly address: Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv6">; readonly ip: Schema.brand<Schema.String, "IPv6">; }>, Schema.String, never, never>; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly ip: Schema.String; readonly port: Schema.Finite; readonly family: Schema.Literal<"ipv6">; }>, Schema.Struct<{ readonly ip: Schema.String; readonly natPort: Schema.Finite; readonly listenPort: Schema.Finite; readonly family: Schema.Literal<"ipv6">; }>, Schema.TemplateLiteral<readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Finite]>, Schema.TemplateLiteral<readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Finite, Schema.Literal<":">, Schema.Finite]>]>, never, never>
 ````
 
 [Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/InternetSchemas.ts#L132)
@@ -538,17 +538,17 @@ declare const IPv6SetupData: Schema.Tuple<
         readonly [
           Schema.Struct<{
             readonly ip: Schema.String
-            readonly port: Schema.Number
+            readonly port: Schema.Finite
             readonly family: Schema.Literal<"ipv6">
           }>,
           Schema.Struct<{
             readonly ip: Schema.String
-            readonly natPort: Schema.Number
-            readonly listenPort: Schema.Number
+            readonly natPort: Schema.Finite
+            readonly listenPort: Schema.Finite
             readonly family: Schema.Literal<"ipv6">
           }>,
           Schema.TemplateLiteral<
-            readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Number]
+            readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Finite]
           >,
           Schema.TemplateLiteral<
             readonly [
@@ -556,9 +556,9 @@ declare const IPv6SetupData: Schema.Tuple<
               Schema.String,
               Schema.Literal<"]">,
               Schema.Literal<":">,
-              Schema.Number,
+              Schema.Finite,
               Schema.Literal<":">,
-              Schema.Number
+              Schema.Finite
             ]
           >
         ]
@@ -605,7 +605,7 @@ A wireguard setup data, which consists of an endpoint followed by an address.
 **Signature**
 
 ```ts
-declare const SetupData: Schema.Union<readonly [Schema.Tuple<readonly [Schema.decodeTo<Schema.Struct<{ readonly address: Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv4">; readonly ip: Schema.brand<Schema.String, "IPv4">; }>, Schema.String, never, never>; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly ip: Schema.String; readonly port: Schema.Number; readonly family: Schema.Literal<"ipv4">; }>, Schema.Struct<{ readonly ip: Schema.String; readonly natPort: Schema.Number; readonly listenPort: Schema.Number; readonly family: Schema.Literal<"ipv4">; }>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]>]>, never, never>, Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv4">; readonly ip: Schema.brand<Schema.String, "IPv4">; }>, Schema.String, never, never>]>, Schema.Tuple<readonly [Schema.decodeTo<Schema.Struct<{ readonly address: Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv6">; readonly ip: Schema.brand<Schema.String, "IPv6">; }>, Schema.String, never, never>; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly ip: Schema.String; readonly port: Schema.Number; readonly family: Schema.Literal<"ipv6">; }>, Schema.Struct<{ readonly ip: Schema.String; readonly natPort: Schema.Number; readonly listenPort: Schema.Number; readonly family: Schema.Literal<"ipv6">; }>, Schema.TemplateLiteral<readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Number]>, Schema.TemplateLiteral<readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]>]>, never, never>, Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv6">; readonly ip: Schema.brand<Schema.String, "IPv6">; }>, Schema.String, never, never>]>, Schema.Tuple<readonly [Schema.decodeTo<Schema.Struct<{ readonly host: Schema.String; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Number; }>, Schema.Struct<{ readonly host: Schema.String; readonly natPort: Schema.Number; readonly listenPort: Schema.Number; }>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]>]>, never, never>, Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv4">; readonly ip: Schema.brand<Schema.String, "IPv4">; }>, Schema.String, never, never>]>, Schema.Tuple<readonly [Schema.decodeTo<Schema.Struct<{ readonly host: Schema.String; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Number; }>, Schema.Struct<{ readonly host: Schema.String; readonly natPort: Schema.Number; readonly listenPort: Schema.Number; }>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]>]>, never, never>, Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv6">; readonly ip: Schema.brand<Schema.String, "IPv6">; }>, Schema.String, never, never>]>]>
+declare const SetupData: Schema.Union<readonly [Schema.Tuple<readonly [Schema.decodeTo<Schema.Struct<{ readonly address: Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv4">; readonly ip: Schema.brand<Schema.String, "IPv4">; }>, Schema.String, never, never>; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly ip: Schema.String; readonly port: Schema.Finite; readonly family: Schema.Literal<"ipv4">; }>, Schema.Struct<{ readonly ip: Schema.String; readonly natPort: Schema.Finite; readonly listenPort: Schema.Finite; readonly family: Schema.Literal<"ipv4">; }>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite]>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite, Schema.Literal<":">, Schema.Finite]>]>, never, never>, Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv4">; readonly ip: Schema.brand<Schema.String, "IPv4">; }>, Schema.String, never, never>]>, Schema.Tuple<readonly [Schema.decodeTo<Schema.Struct<{ readonly address: Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv6">; readonly ip: Schema.brand<Schema.String, "IPv6">; }>, Schema.String, never, never>; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly ip: Schema.String; readonly port: Schema.Finite; readonly family: Schema.Literal<"ipv6">; }>, Schema.Struct<{ readonly ip: Schema.String; readonly natPort: Schema.Finite; readonly listenPort: Schema.Finite; readonly family: Schema.Literal<"ipv6">; }>, Schema.TemplateLiteral<readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Finite]>, Schema.TemplateLiteral<readonly [Schema.Literal<"[">, Schema.String, Schema.Literal<"]">, Schema.Literal<":">, Schema.Finite, Schema.Literal<":">, Schema.Finite]>]>, never, never>, Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv6">; readonly ip: Schema.brand<Schema.String, "IPv6">; }>, Schema.String, never, never>]>, Schema.Tuple<readonly [Schema.decodeTo<Schema.Struct<{ readonly host: Schema.String; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Finite; }>, Schema.Struct<{ readonly host: Schema.String; readonly natPort: Schema.Finite; readonly listenPort: Schema.Finite; }>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite]>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite, Schema.Literal<":">, Schema.Finite]>]>, never, never>, Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv4">; readonly ip: Schema.brand<Schema.String, "IPv4">; }>, Schema.String, never, never>]>, Schema.Tuple<readonly [Schema.decodeTo<Schema.Struct<{ readonly host: Schema.String; readonly natPort: Schema.brand<Schema.Int, "Port">; readonly listenPort: Schema.brand<Schema.Int, "Port">; }>, Schema.Union<readonly [Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Finite; }>, Schema.Struct<{ readonly host: Schema.String; readonly natPort: Schema.Finite; readonly listenPort: Schema.Finite; }>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite]>, Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite, Schema.Literal<":">, Schema.Finite]>]>, never, never>, Schema.decodeTo<Schema.Struct<{ readonly family: Schema.Literal<"ipv6">; readonly ip: Schema.brand<Schema.String, "IPv6">; }>, Schema.String, never, never>]>]>
 ````
 
 [Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/InternetSchemas.ts#L356)

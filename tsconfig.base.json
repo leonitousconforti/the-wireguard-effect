@@ -5,7 +5,7 @@
         "incremental": true,
         "composite": true,
         // Target modern JavaScript (ES2022+) whilst staying closely compatible with the Node.js module system.
-        "target": "ES2022",
+        "target": "ESNEXT",
         "module": "NodeNext",
         "moduleDetection": "force", // Treat every non-declaration file as a module.
         "verbatimModuleSyntax": true, // Only transform/eliminate type-only import/export statements.
@@ -19,6 +19,7 @@
         "strict": true,
         "exactOptionalPropertyTypes": true,
         "noUnusedLocals": true,
+        "noUnusedParameters": true,
         "noImplicitOverride": true,
         "noFallthroughCasesInSwitch": true,
         // Miscellaneous
@@ -28,7 +29,6 @@
         "plugins": [
             {
                 "name": "@effect/language-service",
-                "transform": "@effect/language-service/transform",
                 "namespaceImportPackages": ["effect", "@effect/*"],
                 // Effect suggestions and warnings surface in the editor and in `tsc` output, but
                 // they do not fail the build. Only Effect diagnostics raised to `error` do.
@@ -56,9 +56,9 @@
                     "preferSchemaOverJson": "warning",
                     "processEnv": "warning",
                     "processEnvInEffect": "warning",
-                    "unsafeEffectTypeAssertion": "warning",
-                },
-            },
-        ],
-    },
+                    "unsafeEffectTypeAssertion": "warning"
+                }
+            }
+        ]
+    }
 }

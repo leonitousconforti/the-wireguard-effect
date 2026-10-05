@@ -5,6 +5,7 @@ dedupePeerDependents: false
 strictPeerDependencies: true
 
 publicHoistPattern:
+    - "vite"
     - "vitest"
     - "@types/*"
     - "@vitest/*"
@@ -22,7 +23,12 @@ peerDependencyRules:
     allowedVersions:
         typescript: "7.0.2"
         # babel-plugin-annotate-pure-calls still declares a `@babel/core: ^7.0.0` peer.
-        "@babel/core": "8.0.1"
+        "@babel/core": "8.0.6"
 
 minimumReleaseAgeExclude:
+    - effect
     - effect-schemas
+    - "@effect/docgen"
+    - "@effect/platform-node"
+    - "@effect/platform-node-shared"
+    - "@effect/vitest"

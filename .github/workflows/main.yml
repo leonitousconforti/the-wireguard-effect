@@ -12,6 +12,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name != 'schedule' }}
 
+permissions: {}
+
 jobs:
   build:
     runs-on: ubuntu-22.04

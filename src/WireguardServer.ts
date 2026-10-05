@@ -8,13 +8,15 @@ import type * as Cause from "effect/Cause";
 import type * as FileSystem from "effect/FileSystem";
 import type * as Path from "effect/Path";
 import type * as PlatformError from "effect/PlatformError";
+import type * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 import type * as Scope from "effect/Scope";
-import type * as ChildProcessSpawner from "effect/unstable/process/ChildProcessSpawner";
 
 import * as Array from "effect/Array";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
+import * as HttpServer from "effect/http/HttpServer";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import * as Layer from "effect/Layer";
 import * as HashMap from "effect/MutableHashMap";
 import * as Option from "effect/Option";
@@ -22,13 +24,11 @@ import * as Queue from "effect/Queue";
 import * as Schema from "effect/Schema";
 import * as SchemaGetter from "effect/SchemaGetter";
 import * as Sink from "effect/Sink";
+import * as Socket from "effect/socket/Socket";
+import * as SocketServer from "effect/socket/SocketServer";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
-import * as HttpServer from "effect/unstable/http/HttpServer";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
-import * as Socket from "effect/unstable/socket/Socket";
-import * as SocketServer from "effect/unstable/socket/SocketServer";
 
 import * as dns from "node:dns";
 // The node http module is required here to construct the NodeHttpServer layer.

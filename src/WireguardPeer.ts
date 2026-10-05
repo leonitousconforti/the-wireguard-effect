@@ -191,7 +191,7 @@ export const WireguardIniPeer = WireguardPeer.pipe(
         }),
 
         // Encoding is trivial using the ini library
-        encode: SchemaGetter.transformOrFail((iniPeer: string) =>
+        encode: SchemaGetter.transformEffect((iniPeer: string) =>
             Function.pipe(
                 iniPeer,
                 ini.decode,

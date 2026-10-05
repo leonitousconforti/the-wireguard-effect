@@ -77,7 +77,7 @@ declare const hasBidirectionalTraffic: (
 ) => Effect.Effect<boolean, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L378)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L377)
 
 Since v1.0.0
 
@@ -91,7 +91,7 @@ declare const hasHandshakedRecently: (
 ) => Effect.Effect<boolean, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L386)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L385)
 
 Since v1.0.0
 
@@ -115,7 +115,7 @@ declare const WireguardUapiGetPeer: Schema.decodeTo<
       Schema.$ReadonlySet<
         Schema.decodeTo<
           Schema.Union<readonly [typeof InternetSchemas.IPv4CidrBlock, typeof InternetSchemas.IPv6CidrBlock]>,
-          Schema.TemplateLiteral<readonly [Schema.String, "/", Schema.Number]>,
+          Schema.TemplateLiteral<readonly [Schema.String, "/", Schema.Finite]>,
           never,
           never
         >
@@ -144,18 +144,18 @@ declare const WireguardUapiGetPeer: Schema.decodeTo<
                 readonly [
                   Schema.Struct<{
                     readonly ip: Schema.String
-                    readonly port: Schema.Number
+                    readonly port: Schema.Finite
                     readonly family: Schema.Literal<"ipv4">
                   }>,
                   Schema.Struct<{
                     readonly ip: Schema.String
-                    readonly natPort: Schema.Number
-                    readonly listenPort: Schema.Number
+                    readonly natPort: Schema.Finite
+                    readonly listenPort: Schema.Finite
                     readonly family: Schema.Literal<"ipv4">
                   }>,
-                  Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>,
+                  Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite]>,
                   Schema.TemplateLiteral<
-                    readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]
+                    readonly [Schema.String, Schema.Literal<":">, Schema.Finite, Schema.Literal<":">, Schema.Finite]
                   >
                 ]
               >,
@@ -180,13 +180,13 @@ declare const WireguardUapiGetPeer: Schema.decodeTo<
                 readonly [
                   Schema.Struct<{
                     readonly ip: Schema.String
-                    readonly port: Schema.Number
+                    readonly port: Schema.Finite
                     readonly family: Schema.Literal<"ipv6">
                   }>,
                   Schema.Struct<{
                     readonly ip: Schema.String
-                    readonly natPort: Schema.Number
-                    readonly listenPort: Schema.Number
+                    readonly natPort: Schema.Finite
+                    readonly listenPort: Schema.Finite
                     readonly family: Schema.Literal<"ipv6">
                   }>,
                   Schema.TemplateLiteral<
@@ -195,7 +195,7 @@ declare const WireguardUapiGetPeer: Schema.decodeTo<
                       Schema.String,
                       Schema.Literal<"]">,
                       Schema.Literal<":">,
-                      Schema.Number
+                      Schema.Finite
                     ]
                   >,
                   Schema.TemplateLiteral<
@@ -204,9 +204,9 @@ declare const WireguardUapiGetPeer: Schema.decodeTo<
                       Schema.String,
                       Schema.Literal<"]">,
                       Schema.Literal<":">,
-                      Schema.Number,
+                      Schema.Finite,
                       Schema.Literal<":">,
-                      Schema.Number
+                      Schema.Finite
                     ]
                   >
                 ]
@@ -222,15 +222,15 @@ declare const WireguardUapiGetPeer: Schema.decodeTo<
               }>,
               Schema.Union<
                 readonly [
-                  Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Number }>,
+                  Schema.Struct<{ readonly host: Schema.String; readonly port: Schema.Finite }>,
                   Schema.Struct<{
                     readonly host: Schema.String
-                    readonly natPort: Schema.Number
-                    readonly listenPort: Schema.Number
+                    readonly natPort: Schema.Finite
+                    readonly listenPort: Schema.Finite
                   }>,
-                  Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Number]>,
+                  Schema.TemplateLiteral<readonly [Schema.String, Schema.Literal<":">, Schema.Finite]>,
                   Schema.TemplateLiteral<
-                    readonly [Schema.String, Schema.Literal<":">, Schema.Number, Schema.Literal<":">, Schema.Number]
+                    readonly [Schema.String, Schema.Literal<":">, Schema.Finite, Schema.Literal<":">, Schema.Finite]
                   >
                 ]
               >,
@@ -243,11 +243,11 @@ declare const WireguardUapiGetPeer: Schema.decodeTo<
     >
     readonly PublicKey: Schema.brand<Schema.String, "WireguardKey">
     readonly PresharedKey: Schema.OptionFromOptionalNullOr<Schema.brand<Schema.String, "WireguardKey">>
-    readonly rxBytes: Schema.NumberFromString
-    readonly txBytes: Schema.NumberFromString
+    readonly rxBytes: Schema.FiniteFromString
+    readonly txBytes: Schema.FiniteFromString
     readonly lastHandshake: Schema.compose<
       Schema.DateTimeUtcFromMillis,
-      Schema.decodeTo<Schema.toType<Schema.NumberFromString>, Schema.NumberFromString, never, never>
+      Schema.decodeTo<Schema.toType<Schema.FiniteFromString>, Schema.FiniteFromString, never, never>
     >
   }>,
   Schema.String,
@@ -256,7 +256,7 @@ declare const WireguardUapiGetPeer: Schema.decodeTo<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L302)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L301)
 
 Since v1.0.0
 
@@ -272,7 +272,7 @@ Since v1.0.0
 declare const WireguardUapiSetPeer: Schema.decodeTo<Schema.String, typeof WireguardPeer, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L244)
+[Source](https://github.com/leonitousconforti/the-wireguard-effect/blob/main/src/WireguardPeer.ts#L245)
 
 Since v1.0.0
 

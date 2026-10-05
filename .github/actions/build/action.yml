@@ -23,11 +23,22 @@ runs:
     - shell: bash
       run: pnpm install
     - shell: bash
+      run: pnpm clean
+    - shell: bash
+      run: pnpm codegen
+    - shell: bash
       run: pnpm check
     - shell: bash
       run: pnpm lint
     - shell: bash
       run: pnpm circular
+    - shell: bash
+      run: pnpm docgen
+
+    # Fail if `pnpm codegen` produced anything that is not already committed.
+    - shell: bash
+      run: git add src && git diff-index --cached HEAD --exit-code src
+
     - shell: bash
       run: pnpm build
 

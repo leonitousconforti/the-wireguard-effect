@@ -1,4 +1,4 @@
-import type * as Socket from "effect/unstable/socket/Socket";
+import type * as Socket from "effect/socket/Socket";
 
 import * as Array from "effect/Array";
 import * as Effect from "effect/Effect";
