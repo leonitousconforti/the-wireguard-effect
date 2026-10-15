@@ -13,3 +13,6 @@
 [submodule "submodules/osxcross"]
 	path = submodules/osxcross
 	url = https://github.com/tpoechtrager/osxcross.git
+[submodule "submodules/nvlist"]
+	path = submodules/nvlist
+	url = https://github.com/fudosecurity/nvlist.git

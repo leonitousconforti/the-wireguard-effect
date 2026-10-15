@@ -258,6 +258,8 @@ export const InterfaceRegExpForPlatform: Result.Result<RegExp, WireguardErrors.W
     Match.when(String.endsWith(":linux"), () => Result.succeed(internalInterface.LinuxInterfaceNameRegExp)),
     Match.when(String.endsWith(":win32"), () => Result.succeed(internalInterface.WindowsInterfaceNameRegExp)),
     Match.when(String.endsWith(":darwin"), () => Result.succeed(internalInterface.DarwinInterfaceNameRegExp)),
+    Match.when(String.endsWith(":openbsd"), () => Result.succeed(internalInterface.OpenBSDInterfaceNameRegExp)),
+    Match.when(String.endsWith(":freebsd"), () => Result.succeed(internalInterface.FreeBSDInterfaceNameRegExp)),
     Match.orElse(UnsupportedArchitecture)
 );
 
@@ -329,6 +331,10 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
                 return fromString({ Name: `eth${nextAvailableInterfaceIndex}` });
             case "linux":
                 return fromString({ Name: `wg${nextAvailableInterfaceIndex}` });
+            case "openbsd":
+                return fromString({ Name: `tun${nextAvailableInterfaceIndex}` });
+            case "freebsd":
+                return fromString({ Name: `eth${nextAvailableInterfaceIndex}` });
             case "darwin":
                 return fromString({ Name: `utun${nextAvailableInterfaceIndex}` });
             default:
@@ -350,6 +356,8 @@ export class WireguardInterface extends Schema.Class<WireguardInterface>("Wiregu
         Match.type<(typeof internalInterface.SupportedPlatforms)[number]>(),
         Match.when("linux", () => `/var/run/wireguard/${this.Name}.sock`),
         Match.when("darwin", () => `/var/run/wireguard/${this.Name}.sock`),
+        Match.when("freebsd", () => `/var/run/wireguard/${this.Name}.sock`),
+        Match.when("openbsd", () => `/var/run/wireguard/${this.Name}.sock`),
         Match.when("win32", () => `\\\\.\\pipe\\ProtectedPrefix\\Administrators\\WireGuard\\${this.Name}`),
         Match.exhaustive
         // Guarded by the interface name regex above, so the platform is known supported here.

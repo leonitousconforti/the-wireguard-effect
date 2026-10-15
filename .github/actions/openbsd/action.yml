@@ -1,0 +1,44 @@
+name: "OpenBSD Test"
+description: "Reusable openbsd test action"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+      with:
+        name: the-wireguard-effect
+        path: /tmp/the-wireguard-effect
+
+    - shell: bash
+      run: tar -xvf /tmp/the-wireguard-effect/the-wireguard-effect.tar
+
+    - uses: vmactions/openbsd-vm@e6c68b637a12e83519688d115d57d5b0b53923cd # v1.4.6
+      with:
+        usesh: true
+        sync: rsync
+        copyback: false
+        prepare: |
+          pkg_add sudo-- node bash
+          # sudo >= 1.9.14 defaults to use_pty which never returns when the
+          # command daemonizes, like wireguard-go does
+          echo 'Defaults !use_pty' >> /etc/sudoers
+          npm -v
+          node -v
+        run: |
+          npm install --global corepack@latest
+          corepack enable
+          corepack install
+          # The prepare script patches tsgo/oxlint native binaries which do not exist for the BSDs
+          npm pkg delete scripts.prepare
+          pnpm install
+          chmod +x ./src/*
+          pnpm test || (
+            echo '=== debug: manual up sequence ==='
+            sudo timeout 15 ./src/openbsd-amd64-wireguard-go tun3 || echo "wireguard-go exit: $?"
+            ls -la /var/run/wireguard/ || true
+            ifconfig tun3 || true
+            file ./src/openbsd-wg || true
+            printf '[Interface]\nAddress = 192.168.4.99/24\n\n[Peer]\nPublicKey = JRI8Xc0zKP9kXk8qP84NdzzA0OU5CIoIF1pcbq/PJlw=\nAllowedIPs = 0.0.0.0/0\nEndpoint = demo.wireguard.com:12912\n' > /tmp/tun3.conf
+            sudo timeout 30 bash -x ./src/openbsd-wg-quick up /tmp/tun3.conf || echo "wg-quick exit: $?"
+            exit 1
+          )
